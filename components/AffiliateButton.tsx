@@ -1,0 +1,40 @@
+import { buttonVariants } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
+interface AffiliateButtonProps {
+  amount: number;
+  url: string;
+}
+
+export function AffiliateButton({ amount, url }: AffiliateButtonProps) {
+  return (
+    <TooltipProvider delay={150}>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <a 
+              href={url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={buttonVariants({ 
+                className: "w-full md:w-auto min-w-[140px] rounded-[6px] text-[14px] font-semibold bg-brand-primary hover:bg-brand-primaryDark text-white transition-colors" 
+              })}
+            />
+          }
+        >
+          Open Account &rarr;
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[200px] text-center bg-brand-textPrimary text-white shadow-md border-none p-2 rounded-md">
+          <p className="text-xs">
+            We earn ₱{amount} if you open this account. This doesn&apos;t affect the rates we show.
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
