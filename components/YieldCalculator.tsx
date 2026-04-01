@@ -147,51 +147,54 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
         {/* Right: Results Dashboard */}
         <div className="w-full lg:w-[55%] flex flex-col justify-center">
             <div className="bg-[#F8F9FB] dark:bg-slate-950 border border-brand-border dark:border-white/10 rounded-2xl p-6 lg:p-8 h-full flex flex-col">
-               <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand-border/60 dark:border-white/10">
+               <div className="flex items-center justify-between mb-8 pb-4 border-b border-brand-border/60 dark:border-white/10">
                   <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">Top 3 Recommended</span>
                   <span className="text-sm font-medium text-brand-textPrimary dark:text-gray-300">Projected Return</span>
                </div>
                
-               <div className="flex-1 flex flex-col gap-4 justify-center">
+               <div className="flex-1 flex flex-col gap-6 justify-center">
                  <AnimatePresence mode='popLayout'>
-                    {topResults.map((result, index) => (
-                      <motion.div 
-                        layout
-                        key={result.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
-                        transition={{ delay: index * 0.1, duration: 0.3 }}
-                        className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-brand-border/80 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md hover:border-brand-primary/30 transition-all group"
-                      >
-                         <div className="flex items-center gap-3">
-                           <div className="w-8 h-8 rounded-full font-bold bg-brand-surface dark:bg-slate-800 text-brand-textSecondary dark:text-gray-400 flex items-center justify-center shrink-0 border border-brand-border dark:border-white/10">
-                             {index + 1}
-                           </div>
-                           <div className="w-10 h-10 overflow-hidden rounded-md border border-brand-border dark:border-white/10 bg-white flex items-center justify-center p-1 shrink-0">
-                             <img src={result.logo} alt={result.provider} className="w-full h-full object-contain" />
-                           </div>
-                           <div>
-                              <div className="font-semibold text-[15px] text-brand-textPrimary dark:text-gray-100 leading-tight">
-                                {result.provider}
+                    {topResults.map((result, index) => {
+                      const maxReturn = topResults[0] ? topResults[0].projectedReturn : 1;
+                      const percentage = Math.max((result.projectedReturn / maxReturn) * 100, 2);
+                      
+                      return (
+                        <motion.div 
+                          layout
+                          key={result.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
+                          transition={{ delay: index * 0.1, duration: 0.3 }}
+                          className="relative"
+                        >
+                           <div className="flex items-center justify-between mb-2.5">
+                              <div className="flex items-center gap-2">
+                                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${index === 0 ? 'bg-[#FFD700]' : index === 1 ? 'bg-[#C0C0C0]' : 'bg-[#CD7F32]'}`}>
+                                  {index + 1}
+                                </span>
+                                <span className="font-semibold text-[15px] text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
                               </div>
-                              <div className="text-[12px] font-medium text-brand-textSecondary dark:text-gray-500 mt-0.5 flex items-center gap-1">
-                                {(result.afterTaxRate * 100).toFixed(2)}% After Tax
-                                {result.pdic && <ShieldCheck className="w-3 h-3 text-positive" />}
+                              <div className="text-right">
+                                  <span className="text-brand-textPrimary dark:text-gray-100 font-bold tabular-nums">+{formatCurrency(result.projectedReturn)}</span>
+                                  <span className="text-[12px] font-medium text-brand-textSecondary dark:text-gray-500 ml-2">
+                                    {(result.afterTaxRate * 100).toFixed(2)}%
+                                  </span>
                               </div>
                            </div>
-                         </div>
-                         
-                         <div className="text-right">
-                            <div className="text-lg font-bold text-positive tabular-nums leading-tight">
-                              +{formatCurrency(result.projectedReturn)}
-                            </div>
-                            <div className="text-xs font-medium text-brand-textSecondary dark:text-gray-500 mt-0.5">
-                              in {months} mo{months > 1 ? 's' : ''}
-                            </div>
-                         </div>
-                      </motion.div>
-                    ))}
+                           
+                           {/* Horizontal Chart Bar */}
+                           <div className="h-4 w-full bg-brand-border/50 dark:bg-white/5 rounded-full overflow-hidden flex shadow-inner">
+                              <motion.div 
+                                className={`h-full rounded-full shadow-sm ${index === 0 ? 'bg-positive/90 dark:bg-positive' : index === 1 ? 'bg-brand-primary' : 'bg-brand-textSecondary/70'}`}
+                                initial={{ width: '0%' }}
+                                animate={{ width: `${percentage}%` }}
+                                transition={{ duration: 1, ease: 'easeOut', delay: index * 0.1 + 0.2 }}
+                              />
+                           </div>
+                        </motion.div>
+                      );
+                    })}
                  </AnimatePresence>
                  
                  {topResults.length === 0 && (

@@ -1,4 +1,5 @@
 import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   Tooltip,
   TooltipContent,
@@ -21,9 +22,10 @@ export function AffiliateButton({ amount, url }: AffiliateButtonProps) {
               href={url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className={buttonVariants({ 
-                className: "w-full md:w-auto min-w-[140px] rounded-[6px] text-[14px] font-semibold bg-brand-primary hover:bg-brand-primaryDark text-white transition-colors" 
-              })}
+              className={cn(
+                buttonVariants(),
+                "w-full md:w-auto min-w-[140px] rounded-[6px] text-[14px] font-semibold bg-brand-primary hover:bg-brand-primaryDark text-white transition-colors border-none" 
+              )}
             />
           }
         >
