@@ -1,20 +1,22 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { updateSession } from '@/utils/supabase/middleware';
 
 const PUBLIC_ROUTES = ['/', '/calculator'];
 const PUBLIC_PREFIXES = ['/api/rates', '/api/defi', '/api/newsletter', '/_next', '/logos', '/favicon'];
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
+  const { supabaseResponse, user } = await updateSession(req);
+
   const path = req.nextUrl.pathname;
   
   const isPublicRoute = PUBLIC_ROUTES.includes(path) || PUBLIC_PREFIXES.some(prefix => path.startsWith(prefix));
   
-  if (!isPublicRoute) {
-    // Week 1 MVP: Redirect to home. Auth will be added in Week 3
+  if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/', req.url));
   }
   
-  return NextResponse.next();
+  return supabaseResponse;
 }
 
 export const config = {

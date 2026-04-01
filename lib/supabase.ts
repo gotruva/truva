@@ -1,4 +1,5 @@
-export function createSupabaseServerClient() {
-  console.warn('Supabase not yet configured — stub returning null (Week 3)');
-  return null;
+import { createClient } from '@/utils/supabase/server';
+
+export async function createSupabaseServerClient() {
+  return await createClient();
 }
