@@ -11,9 +11,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 export function RateCard({ rate }: { rate: RateProduct }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <motion.div 
       whileHover={{ y: -4 }}
@@ -55,10 +58,35 @@ export function RateCard({ rate }: { rate: RateProduct }) {
         </div>
       </div>
 
-      <p className="text-sm text-brand-textPrimary dark:text-gray-200 mb-6 bg-white dark:bg-slate-800 p-3 rounded-md border border-brand-border dark:border-white/10 shadow-sm transition-colors duration-300">
-        <strong className="block text-xs uppercase text-brand-textSecondary dark:text-gray-400 mb-1 tracking-wider">Conditions</strong>
-        {rate.conditions}
-      </p>
+      {/* Expandable Conditions */}
+      <div className="mb-6">
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center justify-between w-full bg-brand-surface dark:bg-slate-800 p-3 rounded-lg border border-brand-border dark:border-white/10 shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700/80"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">Review Conditions</span>
+          </div>
+          <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} className="text-brand-textSecondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </motion.div>
+        </button>
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="p-3 mt-2 bg-white dark:bg-slate-900 border border-brand-border dark:border-white/5 rounded-lg text-[14px] text-brand-textPrimary dark:text-gray-300 shadow-inner">
+                {rate.conditions}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
         <Badge variant="secondary" className="bg-brand-primaryLight text-brand-primary hover:bg-brand-primaryLight border-none font-medium">

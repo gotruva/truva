@@ -38,16 +38,22 @@ export function HeroSection() {
           {/* Redesigned AI Search Bar */}
           <div className="relative group">
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-            <div className="relative flex items-center bg-white dark:bg-slate-900 border border-white/40 dark:border-slate-700 p-2 pl-4 rounded-2xl shadow-2xl backdrop-blur-xl">
-               <Search className="w-6 h-6 text-brand-primary dark:text-blue-500 shrink-0" />
+             <div className="relative flex items-center bg-white/70 dark:bg-slate-900/70 border border-white/40 dark:border-slate-700 p-2 pl-4 rounded-2xl shadow-xl backdrop-blur-xl opacity-90">
+               <Search className="w-6 h-6 text-brand-textSecondary dark:text-gray-500 shrink-0" />
                <input 
                  type="text" 
-                 placeholder="Ask Truva AI: 'Where should I park ₱100k for 6 months?'" 
-                 className="flex-1 bg-transparent text-brand-textPrimary dark:text-white outline-none px-4 font-medium h-12 w-full text-base md:text-lg placeholder:text-gray-400 dark:placeholder:text-gray-500" 
+                 disabled
+                 placeholder="Where should I park ₱100k?" 
+                 className="flex-1 bg-transparent text-brand-textSecondary dark:text-gray-400 outline-none px-4 font-medium h-12 w-full text-base md:text-lg placeholder:text-gray-400 cursor-not-allowed" 
                />
-               <button className="flex items-center justify-center gap-2 bg-brand-primary hover:bg-brand-primaryDark dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition-colors rounded-xl px-5 h-12 font-semibold shrink-0">
+               
+               {/* Coming in v2 Badge */}
+               <div className="absolute -top-3 right-4 bg-brand-textPrimary text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-lg border border-white/20 whitespace-nowrap z-20">
+                 Coming in v2
+               </div>
+
+               <button disabled className="flex items-center justify-center gap-2 bg-brand-textSecondary/20 dark:bg-slate-700 text-brand-textSecondary dark:text-gray-400 cursor-not-allowed rounded-xl px-5 h-12 font-semibold shrink-0">
                  <span>Analyze</span>
-                 <ArrowRight className="w-4 h-4" />
                </button>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calculator, Zap, ShieldCheck, ChevronRight } from 'lucide-react';
 import { AffiliateButton } from '@/components/AffiliateButton';
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 
 interface YieldCalculatorProps {
   rates: RateProduct[];
@@ -147,16 +148,42 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
         {/* Right: Results Dashboard */}
         <div className="w-full lg:w-[55%] flex flex-col justify-center">
             <div className="bg-[#F8F9FB] dark:bg-slate-950 border border-brand-border dark:border-white/10 rounded-2xl p-6 lg:p-8 h-full flex flex-col">
-               <div className="flex items-center justify-between mb-8 pb-4 border-b border-brand-border/60 dark:border-white/10">
-                  <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">Top 3 Recommended</span>
-                  <span className="text-sm font-medium text-brand-textPrimary dark:text-gray-300">Projected Return</span>
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-brand-border/60 dark:border-white/10">
+                  <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">Projected Output</span>
+                  <span className="text-sm font-medium text-brand-textPrimary dark:text-gray-300">Total Return</span>
                </div>
+
+               {/* RECHARTS VISUALIZATION */}
+               {topResults.length > 0 && (
+                 <div className="w-full h-[180px] mb-6">
+                   <ResponsiveContainer width="100%" height="100%" minHeight={180}>
+                     <BarChart data={topResults} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(150,150,150,0.15)" />
+                       <XAxis dataKey="provider" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
+                       <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₱${val > 999 ? (val/1000).toFixed(0) + 'k' : val}`} tick={{ fontSize: 12, fill: '#888' }} />
+                       <RechartsTooltip 
+                         cursor={{fill: 'rgba(0,0,0,0.02)'}}
+                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                         formatter={(value: any) => [formatCurrency(Number(value) || 0), 'Return']}
+                       />
+                       <Bar dataKey="projectedReturn" radius={[4, 4, 0, 0]}>
+                         {topResults.map((entry, index) => (
+                           <Cell key={`cell-${index}`} fill={index === 0 ? '#12B76A' : index === 1 ? '#0052FF' : '#94A3B8'} />
+                         ))}
+                       </Bar>
+                     </BarChart>
+                   </ResponsiveContainer>
+                 </div>
+               )}
                
                <div className="flex-1 flex flex-col gap-6 justify-center">
                  <AnimatePresence mode='popLayout'>
                     {topResults.map((result, index) => {
                       const maxReturn = topResults[0] ? topResults[0].projectedReturn : 1;
                       const percentage = Math.max((result.projectedReturn / maxReturn) * 100, 2);
+                      const percentDiff = index === 0 && topResults.length > 1 && topResults[1].projectedReturn > 0
+                        ? ((result.projectedReturn - topResults[1].projectedReturn) / Math.abs(topResults[1].projectedReturn)) * 100
+                        : 0;
                       
                       return (
                         <motion.div 
@@ -174,6 +201,11 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                                   {index + 1}
                                 </span>
                                 <span className="font-semibold text-[15px] text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
+                                {index === 0 && percentDiff > 0 && (
+                                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800/50">
+                                    +{percentDiff.toFixed(0)}% better
+                                  </span>
+                                )}
                               </div>
                               <div className="text-right">
                                   <span className="text-brand-textPrimary dark:text-gray-100 font-bold tabular-nums">+{formatCurrency(result.projectedReturn)}</span>
