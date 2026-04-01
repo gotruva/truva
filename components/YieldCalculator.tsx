@@ -181,9 +181,26 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                     {topResults.map((result, index) => {
                       const maxReturn = topResults[0] ? topResults[0].projectedReturn : 1;
                       const percentage = Math.max((result.projectedReturn / maxReturn) * 100, 2);
-                      const percentDiff = index === 0 && topResults.length > 1 && topResults[1].projectedReturn > 0
-                        ? ((result.projectedReturn - topResults[1].projectedReturn) / Math.abs(topResults[1].projectedReturn)) * 100
-                        : 0;
+                      let badgeElement = null;
+                      if (index === 0 && topResults.length > 1 && topResults[1].projectedReturn > 0) {
+                        const topAdvantage = ((result.projectedReturn - topResults[1].projectedReturn) / Math.abs(topResults[1].projectedReturn)) * 100;
+                        if (topAdvantage > 0) {
+                          badgeElement = (
+                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800/50">
+                              +{topAdvantage.toFixed(0)}% better
+                            </span>
+                          );
+                        }
+                      } else if (index > 0 && topResults[0].projectedReturn > 0) {
+                        const disadvantage = ((result.projectedReturn - topResults[0].projectedReturn) / Math.abs(topResults[0].projectedReturn)) * 100;
+                        if (disadvantage < 0) {
+                          badgeElement = (
+                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100/80 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-900/50">
+                              {disadvantage.toFixed(0)}% vs top
+                            </span>
+                          );
+                        }
+                      }
                       
                       return (
                         <motion.div 
@@ -201,11 +218,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                                   {index + 1}
                                 </span>
                                 <span className="font-semibold text-[15px] text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
-                                {index === 0 && percentDiff > 0 && (
-                                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800/50">
-                                    +{percentDiff.toFixed(0)}% better
-                                  </span>
-                                )}
+                                {badgeElement}
                               </div>
                               <div className="text-right">
                                   <span className="text-brand-textPrimary dark:text-gray-100 font-bold tabular-nums">+{formatCurrency(result.projectedReturn)}</span>
