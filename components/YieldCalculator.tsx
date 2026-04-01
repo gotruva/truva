@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { RateProduct } from '@/types';
+import { RateProduct, LiquidityFilter } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Calculator, AlertTriangle, ShieldCheck, ChevronDown, Lock, Info } from 'lucide-react';
@@ -19,14 +19,12 @@ interface YieldCalculatorProps {
   rates: RateProduct[];
 }
 
-type ScenarioMode = 'best' | 'base';
-
 export function YieldCalculator({ rates }: YieldCalculatorProps) {
   const [amount, setAmount] = useState<string>('100000');
   const [months, setMonths] = useState<number>(12);
   const [includeDefi, setIncludeDefi] = useState<boolean>(false);
-  const [scenarioMode, setScenarioMode] = useState<ScenarioMode>('best');
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
+  const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
 
   const HORIZON_OPTIONS = [
     { label: '3 Mo', value: 3 },
@@ -35,10 +33,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
     { label: '2 Years', value: 24 },
   ];
 
-  const topResults = useMemo(() => {
-    const numAmount = parseFloat(amount.replace(/,/g, ''));
-    if (isNaN(numAmount) || numAmount <= 0) return [];
-
+  const filteredRates = useMemo(() => {
     let filtered = rates;
     
     // Risk filter
@@ -47,34 +42,43 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
     }
 
     // Lock-in filter
-    const horizonDays = months * 30;
+    // Map standard durations to exact bank/bond terms (e.g. 1 Year -> 365 days)
+    const horizonMap: Record<number, number> = {
+      3: 91,    // covers 91-day T-bill and 90-day TDs
+      6: 182,   // covers 182-day T-bill
+      12: 365,  // covers 364-day T-bill and 365-day TDs
+      24: 730
+    };
+    const horizonDays = horizonMap[months] || months * 30;
     filtered = filtered.filter(r => r.lockInDays === 0 || r.lockInDays <= horizonDays);
+    
+    if (liquidityFilter === 'liquid') {
+      filtered = filtered.filter(r => r.lockInDays === 0);
+    } else if (liquidityFilter === 'locked') {
+      filtered = filtered.filter(r => r.lockInDays > 0);
+    }
+    
+    return filtered;
+  }, [rates, months, includeDefi, liquidityFilter]);
+
+  const topResults = useMemo(() => {
+    const numAmount = parseFloat(amount.replace(/,/g, ''));
+    if (isNaN(numAmount) || numAmount <= 0) return [];
 
     // Compute blended returns with dual-scenario
-    const computed = filtered.map(rate => {
+    const computed = filteredRates.map(rate => {
       const dual = computeDualScenario(numAmount, rate, months);
-      const projectedReturn = scenarioMode === 'best'
-        ? dual.withConditions.return
-        : dual.withoutConditions.return;
-      const effectiveRate = scenarioMode === 'best'
-        ? dual.withConditions.effectiveRate
-        : dual.withoutConditions.effectiveRate;
 
       return {
         ...rate,
-        projectedReturn,
-        effectiveRate,
+        projectedReturn: dual.withConditions.return,
+        effectiveRate: dual.withConditions.effectiveRate,
         dual,
       };
     });
 
     return computed.sort((a, b) => b.projectedReturn - a.projectedReturn).slice(0, 3);
-  }, [rates, amount, months, includeDefi, scenarioMode]);
-
-  // Check if any product in the full dataset has conditions (not just top 3)
-  const hasAnyConditions = useMemo(() => {
-    return rates.some(r => r.conditions.length > 0 && r.conditions.some(c => c.type !== 'none'));
-  }, [rates]);
+  }, [filteredRates, amount, months]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/[^0-9]/g, '');
@@ -138,7 +142,47 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
               </div>
 
               {/* Advanced Filters */}
-              <div className="pt-4 border-t border-brand-border dark:border-white/10">
+              <div className="pt-4 border-t border-brand-border dark:border-white/10 space-y-5">
+                
+                {/* Liquidity Toggle */}
+                <div>
+                  <label className="block text-[13px] font-semibold text-brand-textSecondary dark:text-gray-400 mb-2.5 uppercase tracking-wider">
+                    Cash Accessibility
+                  </label>
+                  <div className="flex bg-brand-surface dark:bg-slate-950 p-1.5 rounded-xl border border-brand-border dark:border-white/10 w-full sm:w-fit">
+                    <button
+                      onClick={() => setLiquidityFilter('all')}
+                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                        liquidityFilter === 'all'
+                          ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border/50'
+                          : 'text-brand-textSecondary hover:text-brand-textPrimary'
+                      }`}
+                    >
+                      All Options
+                    </button>
+                    <button
+                      onClick={() => setLiquidityFilter('liquid')}
+                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                        liquidityFilter === 'liquid'
+                          ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border/50'
+                          : 'text-brand-textSecondary hover:text-brand-textPrimary'
+                      }`}
+                    >
+                      Liquid Only
+                    </button>
+                    <button
+                      onClick={() => setLiquidityFilter('locked')}
+                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                        liquidityFilter === 'locked'
+                          ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border/50'
+                          : 'text-brand-textSecondary hover:text-brand-textPrimary'
+                      }`}
+                    >
+                      Time Locked
+                    </button>
+                  </div>
+                </div>
+
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div>
                     <span className="block text-[15px] font-semibold text-brand-textPrimary dark:text-gray-200">Include Crypto/DeFi Yields</span>
@@ -165,53 +209,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 pb-4 border-b border-brand-border/60 dark:border-white/10 gap-3">
                   <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">Projected Output</span>
                   
-                  {/* Option C: Scenario Toggle */}
-                  {hasAnyConditions && (
-                    <div className="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-brand-border dark:border-white/10 p-0.5 shadow-sm">
-                      <button
-                        onClick={() => setScenarioMode('best')}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                          scenarioMode === 'best'
-                            ? 'bg-positive/10 text-positive shadow-sm border border-positive/20'
-                            : 'text-brand-textSecondary hover:text-brand-textPrimary'
-                        }`}
-                      >
-                        Best Case
-                      </button>
-                      <button
-                        onClick={() => setScenarioMode('base')}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                          scenarioMode === 'base'
-                            ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 shadow-sm border border-amber-200 dark:border-amber-800/50'
-                            : 'text-brand-textSecondary hover:text-brand-textPrimary'
-                        }`}
-                      >
-                        No Conditions Met
-                      </button>
-                    </div>
-                  )}
                 </div>
-
-                {/* Scenario explanation */}
-                {hasAnyConditions && (
-                  <div className={`flex items-start gap-2 px-3 py-2.5 rounded-lg mb-4 text-xs leading-relaxed ${
-                    scenarioMode === 'best'
-                      ? 'bg-positive/5 text-positive border border-positive/10'
-                      : 'bg-amber-50 dark:bg-amber-900/10 text-amber-700 dark:text-amber-400 border border-amber-200/50 dark:border-amber-800/30'
-                  }`}>
-                    {scenarioMode === 'best' ? (
-                      <>
-                        <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
-                        <span><strong>Best Case:</strong> Assumes all spending/deposit conditions are met. This shows the maximum yield each bank offers.</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                        <span><strong>Base Rate:</strong> What you earn if you don&apos;t meet any spending or deposit conditions. This is the guaranteed minimum yield.</span>
-                      </>
-                    )}
-                  </div>
-                )}
 
                 {/* RECHARTS VISUALIZATION */}
                 {topResults.length > 0 && (
@@ -219,7 +217,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                     <ResponsiveContainer width="100%" height="100%" minHeight={180}>
                       <BarChart data={topResults} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(150,150,150,0.15)" />
-                        <XAxis dataKey="provider" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
                         <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₱${val > 999 ? (val/1000).toFixed(0) + 'k' : val}`} tick={{ fontSize: 12, fill: '#888' }} />
                         <RechartsTooltip 
                           cursor={{fill: 'rgba(0,0,0,0.02)'}}
@@ -255,11 +253,17 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                          }
                        }
 
-                       // Condition badge if this product has conditions
-                       const conditionBadge = result.dual.hasConditions && scenarioMode === 'best' ? (
+                       const conditionBadge = result.dual.hasConditions ? (
                          <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
                            <AlertTriangle className="w-2.5 h-2.5 mr-0.5" />
                            Conditions
+                         </span>
+                       ) : null;
+                       
+                       const lockBadge = result.lockInDays > 0 ? (
+                         <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
+                           <Lock className="w-2.5 h-2.5 mr-0.5" />
+                           Locked {result.lockInDays}d
                          </span>
                        ) : null;
                        
@@ -279,8 +283,10 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                                    {index + 1}
                                  </span>
                                  <span className="font-semibold text-[15px] text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
+                                 <span className="text-[13px] font-medium text-brand-textSecondary dark:text-gray-400 ml-1">{result.name}</span>
                                  {badgeElement}
                                  {conditionBadge}
+                                 {lockBadge}
                                </div>
                                <div className="text-right">
                                    <span className="text-brand-textPrimary dark:text-gray-100 font-bold tabular-nums">+{formatPHP(result.projectedReturn)}</span>
@@ -294,11 +300,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                             {result.dual.hasConditions && result.dual.conditionBoost > 0 && (
                               <div className="flex items-center gap-2 mb-2 text-[11px]">
                                 <span className="text-brand-textSecondary dark:text-gray-500">
-                                  {scenarioMode === 'best' ? (
-                                    <>Without conditions: <span className="font-semibold text-amber-600 dark:text-amber-400">{formatPHP(result.dual.withoutConditions.return)}</span> ({formatRate(result.dual.withoutConditions.effectiveRate)})</>
-                                  ) : (
-                                    <>With conditions met: <span className="font-semibold text-positive">{formatPHP(result.dual.withConditions.return)}</span> ({formatRate(result.dual.withConditions.effectiveRate)})</>
-                                  )}
+                                  Without conditions: <span className="font-semibold text-amber-600 dark:text-amber-400">{formatPHP(result.dual.withoutConditions.return)}</span> ({formatRate(result.dual.withoutConditions.effectiveRate)})
                                 </span>
                               </div>
                             )}
