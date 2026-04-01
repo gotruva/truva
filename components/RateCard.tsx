@@ -164,10 +164,15 @@ export function RateCard({ rate }: { rate: RateProduct }) {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
-        <Badge variant="secondary" className="bg-brand-primaryLight text-brand-primary hover:bg-brand-primaryLight border-none font-medium">
-          <Lock className="w-3 h-3 mr-1" />
-          {rate.lockInDays === 0 ? 'Liquid' : `${rate.lockInDays}d lock`}
-        </Badge>
+        {rate.lockInDays === 0 ? (
+          <Badge variant="secondary" className="bg-brand-primaryLight text-brand-primary hover:bg-brand-primaryLight border-none font-medium">
+            <Lock className="w-3 h-3 mr-1" /> Liquid
+          </Badge>
+        ) : (
+          <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-500/30 font-bold">
+            <Lock className="w-3 h-3 mr-1" /> Locked {rate.lockInDays}d
+          </Badge>
+        )}
         {rate.pdic && (
            <Badge variant="secondary" className="bg-[#E7F8F0] text-positive hover:bg-[#E7F8F0] border-none font-medium">
              <ShieldCheck className="w-3 h-3 mr-1" /> PDIC

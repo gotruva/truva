@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar } from 'lucide-react';
+import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { computeEffectiveRate, formatRate } from '@/utils/yieldEngine';
 
@@ -107,8 +107,25 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                   <td className="p-4 text-sm font-medium text-brand-textSecondary dark:text-gray-300">
                     {rate.name}
                   </td>
-                  <td className="p-4 text-center text-[14px] text-brand-textSecondary dark:text-gray-400 font-medium">
-                    {rate.lockInDays === 0 ? 'Liquid' : `${rate.lockInDays} days`}
+                  <td className="p-4 text-center">
+                    {rate.lockInDays === 0 ? (
+                      <span className="text-[14px] text-brand-textSecondary dark:text-gray-400 font-medium">Liquid</span>
+                    ) : (
+                      <div className="flex justify-center">
+                        <TooltipProvider delay={100}>
+                          <Tooltip>
+                            <TooltipTrigger render={<button className="cursor-help" />}>
+                              <Badge variant="outline" className="text-[12px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0.5">
+                                <Lock className="w-3 h-3 mr-1" /> {rate.lockInDays} Days
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-[240px] p-3 text-sm text-left font-normal border-amber-200 dark:border-amber-900">
+                              <p>Funds are locked for <strong>{rate.lockInDays} days</strong>. Early withdrawal typically results in lost interest and/or penalties.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    )}
                   </td>
                   <td className="p-4 text-center">
                     <div className="flex flex-col items-center gap-1.5">

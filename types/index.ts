@@ -1,5 +1,6 @@
 export type RiskLevel = 'Low' | 'Medium' | 'DeFi';
 export type FilterCategory = 'all' | 'banks' | 'govt' | 'uitfs' | 'defi';
+export type LiquidityFilter = 'all' | 'liquid' | 'locked';
 
 /** A single rate tier with balance bounds */
 export interface RateTier {

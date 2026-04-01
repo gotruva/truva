@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { RateProduct, FilterCategory } from '@/types';
+import { RateProduct, FilterCategory, LiquidityFilter } from '@/types';
 import { RateTable } from './RateTable';
 import { RateCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
@@ -14,12 +14,16 @@ import { Button } from '@/components/ui/button';
 
 export function RateSection({ rates }: { rates: RateProduct[] }) {
   const [filter, setFilter] = useState<FilterCategory>('all');
+  const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
   const [showPreQual, setShowPreQual] = useState(false);
   const [answers, setAnswers] = useState<PreQualAnswers | null>(null);
   const [showAllCards, setShowAllCards] = useState(false);
 
   const filteredRates = rates.filter((r) => {
     if (filter !== 'all' && r.category !== filter) return false;
+    
+    if (liquidityFilter === 'liquid' && r.lockInDays > 0) return false;
+    if (liquidityFilter === 'locked' && r.lockInDays === 0) return false;
     
     if (answers) {
       // Risk checking: If PDIC, must be PDIC. If Medium, hide DeFi. If DeFi, allow all.
@@ -47,7 +51,12 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
 
   return (
     <section>
-      <FilterTabs active={filter} onChange={setFilter} />
+      <FilterTabs 
+        active={filter} 
+        onChange={setFilter} 
+        activeLiquidity={liquidityFilter}
+        onLiquidityChange={setLiquidityFilter}
+      />
       
       <div className="max-w-5xl mx-auto px-4 md:px-0">
         <RateTable rates={sortedRates} />
