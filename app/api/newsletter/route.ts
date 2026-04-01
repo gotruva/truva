@@ -11,7 +11,7 @@ const MAX_REQUESTS_PER_WINDOW = 5;
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+    const ip = req.headers.get('x-forwarded-for') || 'unknown';
     const now = Date.now();
     
     let rateData = rateLimitMap.get(ip);

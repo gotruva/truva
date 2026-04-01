@@ -3,7 +3,13 @@
 import { RateProduct } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { AffiliateButton } from './AffiliateButton';
-import { Lock, ShieldCheck } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { motion } from 'framer-motion';
 
@@ -29,8 +35,20 @@ export function RateCard({ rate }: { rate: RateProduct }) {
         <div className="text-[40px] font-bold text-positive tabular-nums leading-none tracking-tight">
           {(rate.afterTaxRate * 100).toFixed(2)}%
         </div>
-        <div className="text-[13px] font-semibold text-brand-textSecondary dark:text-gray-400 mt-1 uppercase tracking-wider">
+        <div className="text-[13px] font-semibold text-brand-textSecondary dark:text-gray-400 mt-1 uppercase tracking-wider flex items-center gap-1.5">
           After Tax
+          <TooltipProvider delay={150}>
+            <Tooltip>
+              <TooltipTrigger render={<button className="cursor-help text-brand-textSecondary/70 dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors" />}>
+                <AlertCircle className="w-4 h-4" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[280px] p-3 text-sm leading-relaxed text-left font-normal normal-case tracking-normal">
+                <p>
+                  The <strong>effective rate</strong> is what you actually earn after deducting the 20% Philippine Final Withholding Tax (FWT).
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <div className="text-[15px] text-brand-textSecondary dark:text-gray-400 font-medium mt-1">
           ({(rate.grossRate * 100).toFixed(2)}% gross)

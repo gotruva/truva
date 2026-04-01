@@ -131,5 +131,43 @@
     "referralCode": "",
     "payoutAmount": 0,
     "palagoScore": 3
+  },
+  {
+    "id": "uniondigital-savings",
+    "name": "UnionDigital Savings",
+    "provider": "UnionDigital Bank",
+    "logo": "/logos/uniondigital.svg",
+    "category": "banks",
+    "grossRate": 0.03,
+    "afterTaxRate": 0.024,
+    "taxExempt": false,
+    "conditions": "Base rate. Liquid.",
+    "balanceCap": null,
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": true,
+    "affiliateUrl": "#",
+    "referralCode": "UD004",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "ownbank-td",
+    "name": "OwnBank Time Deposit",
+    "provider": "OwnBank",
+    "logo": "/logos/ownbank.svg",
+    "category": "banks",
+    "grossRate": 0.045,
+    "afterTaxRate": 0.036,
+    "taxExempt": false,
+    "conditions": "90 days time deposit. Early withdrawal penalties apply.",
+    "balanceCap": null,
+    "lockInDays": 90,
+    "riskLevel": "Low",
+    "pdic": true,
+    "affiliateUrl": "#",
+    "referralCode": "OWN005",
+    "payoutAmount": 0,
+    "palagoScore": 3
   }
 ]

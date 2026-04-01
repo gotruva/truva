@@ -23,7 +23,23 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
           <tr>
             <th className="p-4 py-5 font-semibold">Product</th>
             <th className="p-4 py-5 font-semibold text-right">Gross Rate</th>
-            <th className="p-4 py-5 font-semibold text-right">After-Tax Return</th>
+            <th className="p-4 py-5 font-semibold text-right">
+              <TooltipProvider delay={150}>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={<button className="inline-flex items-center gap-1.5 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors cursor-help" />}
+                  >
+                    After-Tax Return
+                    <AlertCircle className="w-4 h-4 text-brand-textSecondary/70 dark:text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[280px] p-3 text-sm leading-relaxed text-left font-normal">
+                    <p>
+                      This is the <strong>effective rate</strong>—what you actually earn. It automatically deducts the 20% Philippine Final Withholding Tax (FWT) from standard bank interest.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </th>
             <th className="p-4 py-5 font-semibold">Conditions</th>
             <th className="p-4 py-5 font-semibold text-center">Lock-In</th>
             <th className="p-4 py-5 font-semibold text-center">Risk / PDIC</th>
