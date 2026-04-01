@@ -37,7 +37,7 @@ export default async function HomePage() {
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 pt-12 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
-          <YieldCalculator />
+          <YieldCalculator rates={rates} />
           
           <div className="px-4 mt-8">
              <div className="max-w-3xl mb-8">
