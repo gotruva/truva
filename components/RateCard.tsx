@@ -3,7 +3,7 @@
 import { RateProduct } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { AffiliateButton } from './AffiliateButton';
-import { Lock, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle, AlertTriangle, Calendar } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -13,9 +13,17 @@ import {
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { formatRate } from '@/utils/yieldEngine';
 
 export function RateCard({ rate }: { rate: RateProduct }) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Determine best (headline) after-tax and base after-tax for display
+  const bestAfterTax = rate.taxExempt ? rate.headlineRate : rate.headlineRate * 0.8;
+  const baseAfterTax = rate.baseRate.afterTaxRate;
+  const hasMultipleTiers = rate.tiers.length > 1;
+  const hasConditions = rate.conditions.length > 0 && rate.conditions.some(c => c.type !== 'none');
+  const headlineOverstated = hasMultipleTiers || hasConditions;
 
   return (
     <motion.div 
@@ -32,11 +40,16 @@ export function RateCard({ rate }: { rate: RateProduct }) {
              <span className="block font-semibold text-brand-textPrimary dark:text-gray-100 text-lg leading-tight">{rate.provider}</span>
            </div>
         </div>
+        {/* Last verified date */}
+        <div className="flex items-center gap-1 text-[10px] text-brand-textSecondary dark:text-gray-500">
+          <Calendar className="w-3 h-3" />
+          <span>Verified {rate.lastVerified}</span>
+        </div>
       </div>
       
       <div className="mb-4">
         <div className="text-[40px] font-bold text-positive tabular-nums leading-none tracking-tight">
-          {(rate.afterTaxRate * 100).toFixed(2)}%
+          {(bestAfterTax * 100).toFixed(2)}%
         </div>
         <div className="text-[13px] font-semibold text-brand-textSecondary dark:text-gray-400 mt-1 uppercase tracking-wider flex items-center gap-1.5">
           After Tax
@@ -54,18 +67,33 @@ export function RateCard({ rate }: { rate: RateProduct }) {
           </TooltipProvider>
         </div>
         <div className="text-[15px] text-brand-textSecondary dark:text-gray-400 font-medium mt-1">
-          ({(rate.grossRate * 100).toFixed(2)}% gross)
+          ({(rate.headlineRate * 100).toFixed(2)}% gross)
         </div>
+
+        {/* Overstated rate warning */}
+        {headlineOverstated && (
+          <div className="flex items-center gap-1.5 mt-2.5 px-2.5 py-1.5 bg-amber-50 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-800/40 rounded-lg">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium leading-snug">
+              {hasMultipleTiers 
+                ? `Rate applies up to ${rate.tiers[0].maxBalance ? `₱${(rate.tiers[0].maxBalance).toLocaleString()}` : 'cap'}. Base rate: ${formatRate(baseAfterTax)}`
+                : `Requires conditions. Base rate: ${formatRate(baseAfterTax)}`
+              }
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Expandable Conditions */}
+      {/* Expandable Conditions & Tiers */}
       <div className="mb-6">
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center justify-between w-full bg-brand-surface dark:bg-slate-800 p-3 rounded-lg border border-brand-border dark:border-white/10 shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700/80"
         >
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">Review Conditions</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
+              {hasMultipleTiers ? 'Rate Tiers & Conditions' : 'Review Conditions'}
+            </span>
           </div>
           <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} className="text-brand-textSecondary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -80,8 +108,55 @@ export function RateCard({ rate }: { rate: RateProduct }) {
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className="p-3 mt-2 bg-white dark:bg-slate-900 border border-brand-border dark:border-white/5 rounded-lg text-[14px] text-brand-textPrimary dark:text-gray-300 shadow-inner">
-                {rate.conditions}
+              <div className="p-3 mt-2 bg-white dark:bg-slate-900 border border-brand-border dark:border-white/5 rounded-lg shadow-inner space-y-3">
+                {/* Tier breakdown */}
+                {rate.tiers.length > 0 && (
+                  <div>
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-2">Rate Tiers</h4>
+                    <div className="space-y-1.5">
+                      {rate.tiers.map((tier, i) => (
+                        <div key={i} className="flex items-center justify-between text-[13px] text-brand-textPrimary dark:text-gray-300">
+                          <span>
+                            {tier.maxBalance !== null 
+                              ? `₱${tier.minBalance.toLocaleString()} – ₱${tier.maxBalance.toLocaleString()}`
+                              : `₱${tier.minBalance.toLocaleString()}+`
+                            }
+                          </span>
+                          <span className="font-semibold tabular-nums text-positive">
+                            {formatRate(tier.afterTaxRate)} <span className="text-brand-textSecondary font-normal">({formatRate(tier.grossRate)} gross)</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Conditions */}
+                {rate.conditions.length > 0 && rate.conditions.some(c => c.type !== 'none') && (
+                  <div className="pt-2 border-t border-brand-border/50 dark:border-white/5">
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-2">Conditions</h4>
+                    <ul className="space-y-1">
+                      {rate.conditions.filter(c => c.type !== 'none').map((cond, i) => (
+                        <li key={i} className="flex items-start gap-2 text-[13px] text-brand-textPrimary dark:text-gray-300 leading-relaxed">
+                          <span className="text-amber-500 mt-0.5">•</span>
+                          <span>
+                            {cond.description}
+                            {cond.expiresAt && (
+                              <span className="ml-1 text-[11px] text-red-500 font-semibold">(Expires {cond.expiresAt})</span>
+                            )}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Fallback for products with no special conditions */}
+                {rate.conditions.length === 0 && rate.tiers.length <= 1 && (
+                  <p className="text-[13px] text-brand-textPrimary dark:text-gray-300">
+                    Flat rate with no special conditions. What you see is what you get.
+                  </p>
+                )}
               </div>
             </motion.div>
           )}

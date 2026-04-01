@@ -6,6 +6,7 @@ import { RateTable } from './RateTable';
 import { RateCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
 import { PreQualFlow, PreQualAnswers } from './PreQualFlow';
+import { computeEffectiveRate } from '@/utils/yieldEngine';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Target } from 'lucide-react';
@@ -34,7 +35,13 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
     return true;
   });
 
-  const sortedRates = [...filteredRates].sort((a, b) => b.afterTaxRate - a.afterTaxRate);
+  // Sort by effective rate on the user's amount (or ₱100k default)
+  const sortAmount = answers?.amount ?? 100000;
+  const sortedRates = [...filteredRates].sort((a, b) => {
+    const rateA = computeEffectiveRate(sortAmount, a.tiers);
+    const rateB = computeEffectiveRate(sortAmount, b.tiers);
+    return rateB - rateA;
+  });
   
   const displayedRates = (answers && !showAllCards) ? sortedRates.slice(0, 3) : sortedRates;
 

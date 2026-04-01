@@ -15,10 +15,14 @@ export async function getLiveRates(): Promise<RateProduct[]> {
   
   return staticRates.map((r) => {
     if (r.id === 'aave-v3-usdc-base' && defiRate) {
+      const liveGross = defiRate.apy / 100;
       return { 
         ...r, 
-        grossRate: defiRate.apy / 100, 
-        afterTaxRate: defiRate.apy / 100 
+        headlineRate: liveGross,
+        baseRate: { grossRate: liveGross, afterTaxRate: liveGross },
+        tiers: [
+          { minBalance: 0, maxBalance: null, grossRate: liveGross, afterTaxRate: liveGross }
+        ],
       };
     }
     return r;

@@ -17,15 +17,15 @@ export function HeroSection() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 dark:bg-blue-900/30 border border-white/20 dark:border-blue-700/50 text-sm font-semibold mb-6 backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-blue-300" />
-            <span className="text-blue-50">Truva AI Optimization</span>
+            <span className="text-blue-50">After-Tax. After Conditions. After the Fine Print.</span>
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-3xl leading-[1.1]">
-            Find the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-blue-600">True Yield</span> of Your Cash
+            See the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-blue-600">True Value</span> of Every Peso
           </h1>
           
           <p className="text-lg md:text-xl font-medium mb-10 max-w-2xl text-blue-100/90 dark:text-gray-300">
-            Stop guessing. We calculate the exact after-tax returns for PH digital banks and DeFi so you can maximize your savings immediately.
+            Compare after-tax returns across PH digital banks and DeFi yields — with real math, not marketing rates.
           </p>
         </motion.div>
 

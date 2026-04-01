@@ -47,10 +47,10 @@ export function NewsletterSignup() {
   return (
     <section className="max-w-xl mx-auto py-16 px-4 text-center">
       <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary mb-3">
-        Sign up for the PH Savings Pulse
+        Get The Truva Brief
       </h3>
       <p className="text-brand-textSecondary mb-8 text-[16px]">
-        Get weekly updates on the highest yielding bank accounts and time deposits in the Philippines.
+        A free weekly breakdown of the best PH savings rates, new promos, and after-tax yield changes — straight to your inbox.
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative">
@@ -68,7 +68,7 @@ export function NewsletterSignup() {
           disabled={status === 'loading' || status === 'success'}
           className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-colors"
         >
-          {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+          {status === 'loading' ? 'Subscribing...' : 'Get the weekly rate update'}
         </Button>
       </form>
       
