@@ -210,5 +210,267 @@
     "referralCode": "OWN005",
     "payoutAmount": 0,
     "palagoScore": 3
+  },
+  {
+    "id": "tbill-91",
+    "name": "T-Bill 91-Day",
+    "provider": "Bureau of Treasury",
+    "logo": "/logos/btr.svg",
+    "category": "govt",
+    "headlineRate": 0.057,
+    "baseRate": { "grossRate": 0.057, "afterTaxRate": 0.0456 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.057, "afterTaxRate": 0.0456 }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "₱5,000 minimum. Rate set at weekly BTr auction — fluctuates weekly. Accessible via BTr Online Ordering Facility or GCash Bonds.ph.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "lockInDays": 91,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "tbill-182",
+    "name": "T-Bill 182-Day",
+    "provider": "Bureau of Treasury",
+    "logo": "/logos/btr.svg",
+    "category": "govt",
+    "headlineRate": 0.058,
+    "baseRate": { "grossRate": 0.058, "afterTaxRate": 0.0464 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.058, "afterTaxRate": 0.0464 }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "₱5,000 minimum. Rate set at weekly BTr auction — fluctuates weekly. Accessible via BTr Online Ordering Facility or GCash Bonds.ph.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "lockInDays": 182,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "tbill-364",
+    "name": "T-Bill 364-Day",
+    "provider": "Bureau of Treasury",
+    "logo": "/logos/btr.svg",
+    "category": "govt",
+    "headlineRate": 0.059,
+    "baseRate": { "grossRate": 0.059, "afterTaxRate": 0.0472 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.059, "afterTaxRate": 0.0472 }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "₱5,000 minimum. Rate set at weekly BTr auction — fluctuates weekly. Accessible via BTr Online Ordering Facility or GCash Bonds.ph.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "lockInDays": 364,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "pagibig-mp2",
+    "name": "Pag-IBIG MP2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "logo": "/logos/hdmf.svg",
+    "category": "govt",
+    "headlineRate": 0.0703,
+    "baseRate": { "grossRate": 0.0703, "afterTaxRate": 0.0703 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.0703, "afterTaxRate": 0.0703 }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Requires active Pag-IBIG (HDMF) membership. 5-year mandatory lock-in — not suitable as liquid savings. Dividend rate declared annually; shown rate is 2023 dividend.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": true,
+    "lockInDays": 1825,
+    "riskLevel": "Low",
+    "pdic": false,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "https://www.pagibigfund.gov.ph/MP2.html",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "rtb-27",
+    "name": "RTB Series 27",
+    "provider": "Bureau of Treasury",
+    "logo": "/logos/btr.svg",
+    "category": "govt",
+    "headlineRate": 0.0625,
+    "baseRate": { "grossRate": 0.0625, "afterTaxRate": 0.05 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.0625, "afterTaxRate": 0.05 }
+    ],
+    "conditions": [
+      {
+        "type": "promo",
+        "description": "RTBs are only available during issuance windows. Rate is fixed at time of issuance. Check BTr or your broker for availability.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "lockInDays": 1825,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "landbank-iaccess",
+    "name": "iAccess Savings",
+    "provider": "Landbank of the Philippines",
+    "logo": "/logos/landbank.svg",
+    "category": "banks",
+    "headlineRate": 0.0175,
+    "baseRate": { "grossRate": 0.0175, "afterTaxRate": 0.014 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.0175, "afterTaxRate": 0.014 }
+    ],
+    "conditions": [],
+    "taxExempt": false,
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "dbp-savings",
+    "name": "DBP Savings",
+    "provider": "Development Bank of the Philippines",
+    "logo": "/logos/dbp.svg",
+    "category": "banks",
+    "headlineRate": 0.02,
+    "baseRate": { "grossRate": 0.02, "afterTaxRate": 0.016 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.02, "afterTaxRate": 0.016 }
+    ],
+    "conditions": [],
+    "taxExempt": false,
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "ofbank-savings",
+    "name": "OFBank Savings",
+    "provider": "Overseas Filipino Bank",
+    "logo": "/logos/ofbank.svg",
+    "category": "banks",
+    "headlineRate": 0.03,
+    "baseRate": { "grossRate": 0.03, "afterTaxRate": 0.024 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.03, "afterTaxRate": 0.024 }
+    ],
+    "conditions": [],
+    "taxExempt": false,
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": true,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "bdo-mmf-uitf",
+    "name": "BDO Peso Money Market Fund",
+    "provider": "BDO Unibank",
+    "logo": "/logos/bdo.svg",
+    "category": "uitfs",
+    "headlineRate": 0.045,
+    "baseRate": { "grossRate": 0.045, "afterTaxRate": 0.036 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.045, "afterTaxRate": 0.036 }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Mark-to-market fund — returns not guaranteed. Indicative yield based on current NAVPS. Not PDIC-insured. Redeemable on banking days.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": false,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
+  },
+  {
+    "id": "bpi-mmf-uitf",
+    "name": "BPI Money Market Fund",
+    "provider": "Bank of the Philippine Islands",
+    "logo": "/logos/bpi.svg",
+    "category": "uitfs",
+    "headlineRate": 0.044,
+    "baseRate": { "grossRate": 0.044, "afterTaxRate": 0.0352 },
+    "tiers": [
+      { "minBalance": 0, "maxBalance": null, "grossRate": 0.044, "afterTaxRate": 0.0352 }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Mark-to-market fund — returns not guaranteed. Indicative yield based on current NAVPS. Not PDIC-insured. Redeemable on banking days.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": false,
+    "lastVerified": "2026-04-01",
+    "affiliateUrl": "#",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "palagoScore": 3
   }
 ]
