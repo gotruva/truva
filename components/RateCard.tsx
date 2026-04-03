@@ -3,7 +3,7 @@
 import { RateProduct } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { AffiliateButton } from './AffiliateButton';
-import { Lock, ShieldCheck, AlertCircle, AlertTriangle, Calendar } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle, AlertTriangle, Calendar, Building2 } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -14,19 +14,23 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { formatRate } from '@/utils/yieldEngine';
+import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 
 export function RateCard({ rate }: { rate: RateProduct }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Determine best (headline) after-tax and base after-tax for display
-  const bestAfterTax = rate.taxExempt ? rate.headlineRate : rate.headlineRate * 0.8;
-  const baseAfterTax = rate.baseRate.afterTaxRate;
+  const bestAfterTax = rate.taxExempt
+    ? calcTaxExempt(rate.headlineRate)
+    : calcAfterTaxPhp(rate.headlineRate);
+  const baseAfterTax = rate.taxExempt
+    ? calcTaxExempt(rate.baseRate.grossRate)
+    : calcAfterTaxPhp(rate.baseRate.grossRate);
   const hasMultipleTiers = rate.tiers.length > 1;
   const hasConditions = rate.conditions.length > 0 && rate.conditions.some(c => c.type !== 'none');
   const headlineOverstated = hasMultipleTiers || hasConditions;
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="bg-brand-surface dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-lg p-5 mb-4 block md:hidden shadow-sm hover:shadow-md transition-shadow"
@@ -46,7 +50,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
           <span>Verified {rate.lastVerified}</span>
         </div>
       </div>
-      
+
       <div className="mb-4">
         <div className="text-[40px] font-bold text-positive tabular-nums leading-none tracking-tight">
           {(bestAfterTax * 100).toFixed(2)}%
@@ -61,6 +65,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
               <TooltipContent side="top" className="max-w-[280px] p-3 text-sm leading-relaxed text-left font-normal normal-case tracking-normal">
                 <p>
                   The <strong>effective rate</strong> is what you actually earn after deducting the 20% Philippine Final Withholding Tax (FWT).
+                  {rate.taxExempt && ' This product is tax-exempt — no FWT applies.'}
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -75,7 +80,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
           <div className="flex items-center gap-1.5 mt-2.5 px-2.5 py-1.5 bg-amber-50 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-800/40 rounded-lg">
             <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium leading-snug">
-              {hasMultipleTiers 
+              {hasMultipleTiers
                 ? `Rate applies up to ${rate.tiers[0].maxBalance ? `₱${(rate.tiers[0].maxBalance).toLocaleString()}` : 'cap'}. Base rate: ${formatRate(baseAfterTax)}`
                 : `Requires conditions. Base rate: ${formatRate(baseAfterTax)}`
               }
@@ -86,7 +91,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
 
       {/* Expandable Conditions & Tiers */}
       <div className="mb-6">
-        <button 
+        <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center justify-between w-full bg-brand-surface dark:bg-slate-800 p-3 rounded-lg border border-brand-border dark:border-white/10 shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700/80"
         >
@@ -117,13 +122,14 @@ export function RateCard({ rate }: { rate: RateProduct }) {
                       {rate.tiers.map((tier, i) => (
                         <div key={i} className="flex items-center justify-between text-[13px] text-brand-textPrimary dark:text-gray-300">
                           <span>
-                            {tier.maxBalance !== null 
+                            {tier.maxBalance !== null
                               ? `₱${tier.minBalance.toLocaleString()} – ₱${tier.maxBalance.toLocaleString()}`
                               : `₱${tier.minBalance.toLocaleString()}+`
                             }
                           </span>
                           <span className="font-semibold tabular-nums text-positive">
-                            {formatRate(tier.afterTaxRate)} <span className="text-brand-textSecondary font-normal">({formatRate(tier.grossRate)} gross)</span>
+                            {formatRate(rate.taxExempt ? calcTaxExempt(tier.grossRate) : calcAfterTaxPhp(tier.grossRate))}{' '}
+                            <span className="text-brand-textSecondary font-normal">({formatRate(tier.grossRate)} gross)</span>
                           </span>
                         </div>
                       ))}
@@ -173,15 +179,24 @@ export function RateCard({ rate }: { rate: RateProduct }) {
             <Lock className="w-3 h-3 mr-1" /> Locked {rate.lockInDays}d
           </Badge>
         )}
-        {rate.pdic && (
-           <Badge variant="secondary" className="bg-[#E7F8F0] text-positive hover:bg-[#E7F8F0] border-none font-medium">
-             <ShieldCheck className="w-3 h-3 mr-1" /> PDIC
-           </Badge>
+
+        {/* Insurer badge */}
+        {rate.insurer === 'PDIC' && (
+          <Badge variant="secondary" className="bg-[#E7F8F0] text-positive hover:bg-[#E7F8F0] border-none font-medium">
+            <ShieldCheck className="w-3 h-3 mr-1" /> PDIC
+          </Badge>
         )}
-        <Badge variant="outline" className={`font-medium ${rate.riskLevel === 'DeFi' ? 'text-defi border-defi/40' : 'text-brand-textSecondary border-brand-border'}`}>
-          <div className={`w-2 h-2 rounded-full mr-1.5 ${rate.riskLevel === 'DeFi' ? 'bg-defi' : 'bg-positive'}`} />
-          {rate.riskLevel} Risk
-        </Badge>
+        {(rate.insurer === 'Bureau of Treasury' || rate.insurer === 'Pag-IBIG Fund') && (
+          <Badge variant="secondary" className="bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 hover:bg-blue-50 border-none font-medium">
+            <Building2 className="w-3 h-3 mr-1" />
+            {rate.insurer === 'Bureau of Treasury' ? 'BTr Guaranteed' : 'Pag-IBIG Guaranteed'}
+          </Badge>
+        )}
+        {rate.insurer === 'Not Insured' && (
+          <Badge variant="outline" className="text-brand-textSecondary dark:text-gray-400 border-brand-border dark:border-white/20 font-medium">
+            Not Insured
+          </Badge>
+        )}
       </div>
 
       <AffiliateButton amount={rate.payoutAmount} url={rate.affiliateUrl} />

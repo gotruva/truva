@@ -39,6 +39,7 @@ export interface RateProduct {
   lockInDays: number;               // 0 = liquid
   riskLevel: RiskLevel;
   pdic: boolean;
+  insurer: string;                  // e.g. "PDIC", "Bureau of Treasury", "Pag-IBIG Fund", "Not Insured"
   lastVerified: string;             // ISO date — when we last confirmed these rates
 
   // --- Affiliate / monetization ---

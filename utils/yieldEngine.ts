@@ -1,13 +1,16 @@
 import { RateProduct, RateTier } from '@/types';
+import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 
 /**
  * Compute the projected return using blended tiered rates.
- * Walks through each tier in order, allocating balance to each tier's range.
+ * Derives afterTaxRate from grossRate at runtime using lib/tax.ts — never reads
+ * the pre-computed afterTaxRate from the JSON so the formula stays in one place.
  */
 export function computeBlendedReturn(
   amount: number,
   tiers: RateTier[],
-  months: number
+  months: number,
+  taxExempt: boolean = false
 ): number {
   if (amount <= 0 || tiers.length === 0) return 0;
 
@@ -22,8 +25,11 @@ export function computeBlendedReturn(
       : Infinity;
     const tierAmount = Math.min(remaining, tierCapacity);
 
-    // Simple interest for the period
-    const yearlyReturn = tierAmount * tier.afterTaxRate;
+    const afterTaxRate = taxExempt
+      ? calcTaxExempt(tier.grossRate)
+      : calcAfterTaxPhp(tier.grossRate);
+
+    const yearlyReturn = tierAmount * afterTaxRate;
     totalReturn += (yearlyReturn / 12) * months;
 
     remaining -= tierAmount;
@@ -38,18 +44,17 @@ export function computeBlendedReturn(
  */
 export function computeEffectiveRate(
   amount: number,
-  tiers: RateTier[]
+  tiers: RateTier[],
+  taxExempt: boolean = false
 ): number {
   if (amount <= 0 || tiers.length === 0) return 0;
 
-  // Use 12-month return to derive annual effective rate
-  const yearlyReturn = computeBlendedReturn(amount, tiers, 12);
+  const yearlyReturn = computeBlendedReturn(amount, tiers, 12, taxExempt);
   return yearlyReturn / amount;
 }
 
 /**
  * Compute return using only the base rate (conditions NOT met).
- * Falls back to lowest tier rate if no base rate is defined.
  */
 export function computeBaseReturn(
   amount: number,
@@ -57,7 +62,10 @@ export function computeBaseReturn(
   months: number
 ): number {
   if (amount <= 0) return 0;
-  const yearlyReturn = amount * product.baseRate.afterTaxRate;
+  const afterTaxRate = product.taxExempt
+    ? calcTaxExempt(product.baseRate.grossRate)
+    : calcAfterTaxPhp(product.baseRate.grossRate);
+  const yearlyReturn = amount * afterTaxRate;
   return (yearlyReturn / 12) * months;
 }
 
@@ -75,16 +83,16 @@ export function compareHeadlineVsEffective(
   isOverstated: boolean;
 } {
   const headlineAfterTax = product.taxExempt
-    ? product.headlineRate
-    : product.headlineRate * 0.8;
-  const effectiveRate = computeEffectiveRate(amount, product.tiers);
+    ? calcTaxExempt(product.headlineRate)
+    : calcAfterTaxPhp(product.headlineRate);
+  const effectiveRate = computeEffectiveRate(amount, product.tiers, product.taxExempt);
   const gapPercentagePoints = (headlineAfterTax - effectiveRate) * 100;
 
   return {
     headlineAfterTax,
     effectiveRate,
     gapPercentagePoints,
-    isOverstated: gapPercentagePoints > 0.5, // flag if gap > 0.5pp
+    isOverstated: gapPercentagePoints > 0.5,
   };
 }
 
@@ -100,16 +108,20 @@ export function computeDualScenario(
   withConditions: { return: number; effectiveRate: number };
   withoutConditions: { return: number; effectiveRate: number };
   hasConditions: boolean;
-  conditionBoost: number; // how much more you earn by meeting conditions
+  conditionBoost: number;
 } {
   const hasConditions = product.conditions.length > 0 &&
     product.conditions.some(c => c.type !== 'none');
 
-  const withConditionsReturn = computeBlendedReturn(amount, product.tiers, months);
-  const withConditionsRate = computeEffectiveRate(amount, product.tiers);
+  const withConditionsReturn = computeBlendedReturn(amount, product.tiers, months, product.taxExempt);
+  const withConditionsRate = computeEffectiveRate(amount, product.tiers, product.taxExempt);
 
   const withoutConditionsReturn = computeBaseReturn(amount, product, months);
-  const withoutConditionsRate = amount > 0 ? product.baseRate.afterTaxRate : 0;
+  const withoutConditionsRate = amount > 0
+    ? (product.taxExempt
+        ? calcTaxExempt(product.baseRate.grossRate)
+        : calcAfterTaxPhp(product.baseRate.grossRate))
+    : 0;
 
   return {
     withConditions: {

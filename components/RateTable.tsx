@@ -10,9 +10,37 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock } from 'lucide-react';
+import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { computeEffectiveRate, formatRate } from '@/utils/yieldEngine';
+import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
+
+function InsurerCell({ insurer }: { insurer: string }) {
+  if (insurer === 'PDIC') {
+    return (
+      <div className="flex flex-col items-center gap-0.5">
+        <span className="flex items-center text-[11px] font-semibold text-positive uppercase tracking-wide">
+          <ShieldCheck className="w-3 h-3 mr-1" /> PDIC
+        </span>
+        <span className="text-[10px] text-brand-textSecondary dark:text-gray-500">₱1M Covered</span>
+      </div>
+    );
+  }
+  if (insurer === 'Bureau of Treasury' || insurer === 'Pag-IBIG Fund') {
+    const label = insurer === 'Bureau of Treasury' ? 'BTr' : 'Pag-IBIG';
+    return (
+      <div className="flex flex-col items-center gap-0.5">
+        <span className="flex items-center text-[11px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+          <Building2 className="w-3 h-3 mr-1" /> {label}
+        </span>
+        <span className="text-[10px] text-brand-textSecondary dark:text-gray-500">Gov't Guaranteed</span>
+      </div>
+    );
+  }
+  return (
+    <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">Not Insured</span>
+  );
+}
 
 export function RateTable({ rates }: { rates: RateProduct[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -21,7 +49,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
   const referenceAmount = 100000;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -51,21 +79,22 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
             </th>
             <th className="p-4 py-5 font-semibold">Product Name</th>
             <th className="p-4 py-5 font-semibold text-center">Lock-In</th>
-            <th className="p-4 py-5 font-semibold text-center">Risk / PDIC</th>
+            <th className="p-4 py-5 font-semibold text-center">Insurer</th>
             <th className="p-4 py-5 font-semibold"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-brand-border dark:divide-white/10">
           {rates.map((rate) => {
-            // Compute effective blended rate for this reference amount
-            const effectiveRate = computeEffectiveRate(referenceAmount, rate.tiers);
-            const bestAfterTax = rate.taxExempt ? rate.headlineRate : rate.headlineRate * 0.8;
-            const gapPP = (bestAfterTax - effectiveRate) * 100; // gap in percentage points
+            const headlineAfterTax = rate.taxExempt
+              ? calcTaxExempt(rate.headlineRate)
+              : calcAfterTaxPhp(rate.headlineRate);
+            const effectiveRate = computeEffectiveRate(referenceAmount, rate.tiers, rate.taxExempt);
+            const gapPP = (headlineAfterTax - effectiveRate) * 100;
             const isOverstated = gapPP > 0.5;
 
             return (
               <React.Fragment key={rate.id}>
-                <tr 
+                <tr
                   onClick={() => setExpandedId(expandedId === rate.id ? null : rate.id)}
                   className="h-16 hover:bg-brand-surface dark:hover:bg-slate-800 transition-colors group cursor-pointer"
                 >
@@ -78,7 +107,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                     </div>
                   </td>
                   <td className="p-4 text-right tabular-nums text-brand-textPrimary dark:text-gray-100 text-[15px] font-medium">
-                    {(bestAfterTax * 100).toFixed(2)}%
+                    {(headlineAfterTax * 100).toFixed(2)}%
                     <span className="block text-[11px] text-brand-textSecondary dark:text-gray-500 font-normal">
                       ({(rate.headlineRate * 100).toFixed(2)}% gross)
                     </span>
@@ -128,23 +157,12 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                     )}
                   </td>
                   <td className="p-4 text-center">
-                    <div className="flex flex-col items-center gap-1.5">
-                       {rate.riskLevel === 'DeFi' ? (
-                           <Badge variant="outline" className="text-[11px] text-defi border-defi/30 h-5 px-2 bg-defi/5">DeFi Risk</Badge>
-                       ) : (
-                           <Badge variant="outline" className="text-[11px] text-brand-textSecondary dark:text-gray-300 border-brand-border dark:border-white/20 h-5 px-2">{rate.riskLevel} Risk</Badge>
-                       )}
-                       {rate.pdic && (
-                           <span className="flex items-center text-[11px] font-semibold text-positive uppercase tracking-wide">
-                               <ShieldCheck className="w-3 h-3 mr-1" /> PDIC
-                           </span>
-                       )}
-                    </div>
+                    <InsurerCell insurer={rate.insurer} />
                   </td>
                   <td className="p-4" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-3">
                       <AffiliateButton amount={rate.payoutAmount} url={rate.affiliateUrl} />
-                      <button 
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setExpandedId(expandedId === rate.id ? null : rate.id);
@@ -176,13 +194,16 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                                   {rate.tiers.map((tier, i) => (
                                     <div key={i} className="flex items-center justify-between text-sm">
                                       <span className="text-brand-textSecondary dark:text-gray-400">
-                                        {tier.maxBalance !== null 
+                                        {tier.maxBalance !== null
                                           ? `₱${tier.minBalance.toLocaleString()} – ₱${tier.maxBalance.toLocaleString()}`
                                           : `₱${tier.minBalance.toLocaleString()}+`
                                         }
                                       </span>
                                       <span className="font-semibold text-brand-textPrimary dark:text-gray-200 tabular-nums">
-                                        {formatRate(tier.afterTaxRate)}
+                                        {formatRate(rate.taxExempt ? calcTaxExempt(tier.grossRate) : calcAfterTaxPhp(tier.grossRate))}
+                                        <span className="text-brand-textSecondary dark:text-gray-500 font-normal ml-1">
+                                          ({formatRate(tier.grossRate)} gross)
+                                        </span>
                                       </span>
                                     </div>
                                   ))}
