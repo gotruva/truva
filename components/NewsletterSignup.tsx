@@ -46,10 +46,10 @@ export function NewsletterSignup() {
 
   return (
     <section className="max-w-xl mx-auto py-16 px-4 text-center">
-      <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary mb-3">
+      <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary dark:text-gray-100 mb-3">
         Get The Truva Brief
       </h3>
-      <p className="text-brand-textSecondary mb-8 text-[16px]">
+      <p className="text-brand-textSecondary dark:text-gray-400 mb-8 text-[16px]">
         A free weekly breakdown of the best PH savings rates, new promos, and after-tax yield changes — straight to your inbox.
       </p>
 
@@ -75,7 +75,7 @@ export function NewsletterSignup() {
       {status === 'success' && <p className="text-positive text-sm mt-4 font-medium">{message}</p>}
       {status === 'error' && <p className="text-danger text-sm mt-4 font-medium">{message}</p>}
 
-      <p className="text-xs text-brand-textSecondary mt-6">
+      <p className="text-xs text-brand-textSecondary dark:text-gray-400 mt-6">
         Your privacy is respected. Unsubscribe anytime.
       </p>
     </section>

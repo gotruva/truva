@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Calculator, AlertTriangle, ShieldCheck, ChevronDown, Lock, Info } from 'lucide-react';
 import { AffiliateButton } from '@/components/AffiliateButton';
-import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import {
   computeDualScenario,
   formatPHP,
@@ -17,10 +17,20 @@ interface YieldCalculatorProps {
   rates: RateProduct[];
 }
 
+const LINE_COLORS = ['#12B76A', '#0052FF', '#94A3B8'];
+
+function formatLockPeriod(days: number): string {
+  const months = Math.round(days / 30.4375);
+  if (months < 12) return `${months}mo`;
+  const years = months / 12;
+  if (years % 1 === 0) return `${years}yr`;
+  return `${years.toFixed(1)}yr`;
+}
+
 export function YieldCalculator({ rates }: YieldCalculatorProps) {
   const [amount, setAmount] = useState<string>('100000');
   const [months, setMonths] = useState<number>(12);
-  const [includeDefi, setIncludeDefi] = useState<boolean>(false);
+  const includeDefi = false;
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
   const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
 
@@ -77,6 +87,34 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
 
     return computed.sort((a, b) => b.projectedReturn - a.projectedReturn).slice(0, 3);
   }, [filteredRates, amount, months]);
+
+  const chartData = useMemo(() => {
+    if (topResults.length === 0) return [];
+    const numAmount = parseFloat(amount.replace(/,/g, '')) || 0;
+    if (numAmount <= 0) return [];
+
+    const isShortTerm = months <= 6;
+    if (isShortTerm) {
+      const totalWeeks = Math.round((months / 12) * 52);
+      return Array.from({ length: totalWeeks + 1 }, (_, w) => {
+        const t = w / 52;
+        const point: Record<string, string | number> = { label: w === 0 ? 'Start' : `Wk ${w}` };
+        topResults.forEach((r, idx) => { point[`result_${idx}`] = Math.round(numAmount * r.effectiveRate * t); });
+        return point;
+      });
+    } else {
+      return Array.from({ length: months + 1 }, (_, m) => {
+        const t = m / 12;
+        const point: Record<string, string | number> = { label: m === 0 ? 'Start' : `Mo ${m}` };
+        topResults.forEach((r, idx) => { point[`result_${idx}`] = Math.round(numAmount * r.effectiveRate * t); });
+        return point;
+      });
+    }
+  }, [topResults, amount, months]);
+
+  const xAxisInterval = months <= 6
+    ? Math.ceil(Math.round((months / 12) * 52) / 6)
+    : Math.ceil(months / 6);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/[^0-9]/g, '');
@@ -181,21 +219,6 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                   </div>
                 </div>
 
-                <label className="flex items-center justify-between cursor-pointer group">
-                  <div>
-                    <span className="block text-[15px] font-semibold text-brand-textPrimary dark:text-gray-200">Include Crypto/DeFi Yields</span>
-                    <span className="block text-sm text-brand-textSecondary dark:text-gray-500 mt-0.5">Higher risk, variable rates via USDC</span>
-                  </div>
-                  <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${includeDefi ? 'bg-brand-primary' : 'bg-gray-200 dark:bg-gray-700'}`}>
-                    <input 
-                       type="checkbox" 
-                       className="sr-only" 
-                       checked={includeDefi} 
-                       onChange={(e) => setIncludeDefi(e.target.checked)} 
-                    />
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${includeDefi ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </div>
-                </label>
               </div>
            </div>
         </div>
@@ -209,25 +232,31 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                   
                 </div>
 
-                {/* RECHARTS VISUALIZATION */}
-                {topResults.length > 0 && (
+                {/* RECHARTS LINE CHART */}
+                {topResults.length > 0 && chartData.length > 0 && (
                   <div className="w-full h-[180px] mb-6">
                     <ResponsiveContainer width="100%" height="100%" minHeight={180}>
-                      <BarChart data={topResults} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(150,150,150,0.15)" />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
-                        <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₱${val > 999 ? (val/1000).toFixed(0) + 'k' : val}`} tick={{ fontSize: 12, fill: '#888' }} />
-                        <RechartsTooltip 
-                          cursor={{fill: 'rgba(0,0,0,0.02)'}}
-                          contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                          formatter={(value) => [formatPHP(Number(value) || 0), 'Return']}
+                        <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#888' }} dy={8} interval={xAxisInterval} />
+                        <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₱${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`} tick={{ fontSize: 11, fill: '#888' }} />
+                        <RechartsTooltip
+                          contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                          formatter={(value: number, name: string) => [formatPHP(value), name]}
                         />
-                        <Bar dataKey="projectedReturn" radius={[4, 4, 0, 0]}>
-                          {topResults.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={index === 0 ? '#12B76A' : index === 1 ? '#0052FF' : '#94A3B8'} />
-                          ))}
-                        </Bar>
-                      </BarChart>
+                        {topResults.map((result, idx) => (
+                          <Line
+                            key={result.id}
+                            type="monotone"
+                            dataKey={`result_${idx}`}
+                            name={result.provider}
+                            stroke={LINE_COLORS[idx]}
+                            strokeWidth={idx === 0 ? 2.5 : 2}
+                            dot={false}
+                            activeDot={{ r: 4, strokeWidth: 0 }}
+                          />
+                        ))}
+                      </LineChart>
                     </ResponsiveContainer>
                   </div>
                 )}
@@ -261,7 +290,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                        const lockBadge = result.lockInDays > 0 ? (
                          <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
                            <Lock className="w-2.5 h-2.5 mr-0.5" />
-                           Locked {result.lockInDays}d
+                           Locked {formatLockPeriod(result.lockInDays)}
                          </span>
                        ) : null;
                        
@@ -388,14 +417,18 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                                     <div className="pt-2 border-t border-brand-border/40 dark:border-white/5 flex flex-wrap gap-3 text-[11px] text-brand-textSecondary dark:text-gray-500">
                                       <span className="flex items-center gap-1">
                                         <Lock className="w-3 h-3" />
-                                        {result.lockInDays === 0 ? 'Liquid — withdraw anytime' : `${result.lockInDays}-day lock-in`}
+                                        {result.lockInDays === 0 ? 'Liquid — withdraw anytime' : `${formatLockPeriod(result.lockInDays)} lock-in`}
                                       </span>
                                       {result.pdic && (
                                         <span className="flex items-center gap-1 text-positive font-medium">
                                           <ShieldCheck className="w-3 h-3" /> PDIC Insured
                                         </span>
                                       )}
-                                      <span>Verified: {result.lastVerified}</span>
+                                    </div>
+
+                                    {/* Open Account CTA */}
+                                    <div className="pt-2 border-t border-brand-border/40 dark:border-white/5">
+                                      <AffiliateButton amount={result.payoutAmount} url={result.affiliateUrl} />
                                     </div>
                                   </div>
                                 </motion.div>

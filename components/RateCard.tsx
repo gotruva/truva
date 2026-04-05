@@ -4,10 +4,50 @@ import { useState } from 'react';
 import { RateProduct } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { AffiliateButton } from './AffiliateButton';
-import { Lock, ShieldCheck, AlertTriangle, Calendar, Building2, ChevronDown, Trophy } from 'lucide-react';
+import { Lock, ShieldCheck, AlertTriangle, Calendar, ChevronDown, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { computeEffectiveRate, computeReturn, formatRate, formatPHP } from '@/utils/yieldEngine';
+import { formatRate, formatPHP } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
+
+function formatLockIn(days: number): string {
+  if (days === 0) return 'Withdraw Anytime';
+  const months = Math.round(days / 30.4375);
+  if (months < 12) return `${months} month${months !== 1 ? 's' : ''}`;
+  const years = months / 12;
+  if (years % 1 === 0) return `${years} year${years !== 1 ? 's' : ''}`;
+  return `${years.toFixed(1)} years`;
+}
+
+function formatPayoutFrequency(freq: string): string {
+  switch (freq) {
+    case 'daily': return 'Daily';
+    case 'monthly': return 'Monthly';
+    case 'quarterly': return 'Quarterly';
+    case 'annually': return 'Annually';
+    case 'at_maturity': return 'At Maturity';
+    default: return freq;
+  }
+}
+
+function getPeriodicPayout(amount: number, effectiveRate: number, freq: string): number {
+  switch (freq) {
+    case 'daily': return Math.round(amount * effectiveRate / 365);
+    case 'monthly': return Math.round(amount * effectiveRate / 12);
+    case 'quarterly': return Math.round(amount * effectiveRate / 4);
+    case 'annually': return Math.round(amount * effectiveRate);
+    default: return 0;
+  }
+}
+
+function getPayoutPeriodLabel(freq: string): string {
+  switch (freq) {
+    case 'daily': return 'day';
+    case 'monthly': return 'mo';
+    case 'quarterly': return 'quarter';
+    case 'annually': return 'yr';
+    default: return '';
+  }
+}
 
 /* ─── Single product row inside expanded card ─── */
 function ProductRow({ product, amount, months, isBest }: {
@@ -36,12 +76,15 @@ function ProductRow({ product, amount, months, isBest }: {
           </div>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             {product.lockInDays === 0 ? (
-              <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">Liquid</span>
+              <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">Withdraw Anytime</span>
             ) : (
               <Badge variant="outline" className="text-[10px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0">
-                <Lock className="w-2.5 h-2.5 mr-0.5" /> {product.lockInDays}d
+                <Lock className="w-2.5 h-2.5 mr-0.5" /> {formatLockIn(product.lockInDays)}
               </Badge>
             )}
+            <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 flex items-center gap-0.5">
+              <Calendar className="w-2.5 h-2.5" /> {formatPayoutFrequency(product.payoutFrequency)}
+            </span>
             {hasConditions && (
               <span className="inline-flex items-center text-[10px] text-amber-600 dark:text-amber-400 font-medium">
                 <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Conditions
@@ -137,6 +180,26 @@ function ProductRow({ product, amount, months, isBest }: {
                 </p>
               )}
 
+              {/* Payout Schedule */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-1">Interest Payout</h4>
+                <div className="flex items-center justify-between text-[12px]">
+                  <span className="text-brand-textSecondary dark:text-gray-500 flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {formatPayoutFrequency(product.payoutFrequency)}
+                  </span>
+                  {amount > 0 && product.payoutFrequency !== 'at_maturity' ? (
+                    <span className="font-semibold text-brand-textPrimary dark:text-gray-200 tabular-nums">
+                      ~{formatPHP(getPeriodicPayout(amount, product.effectiveRate, product.payoutFrequency))} / {getPayoutPeriodLabel(product.payoutFrequency)}
+                    </span>
+                  ) : amount > 0 ? (
+                    <span className="font-semibold text-positive tabular-nums">
+                      +{formatPHP(product.projectedReturn)} after {months}mo
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+
               {/* Verified + CTA */}
               <div className="flex items-center justify-between pt-1">
                 <span className="text-[10px] text-brand-textSecondary dark:text-gray-500 flex items-center gap-1">
@@ -227,7 +290,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
                 {formatRate(bestEffectiveRate)}
               </div>
               <div className="text-[11px] font-semibold text-brand-textSecondary dark:text-gray-400 mt-0.5">
-                after tax · {best.lockInDays === 0 ? 'liquid' : `${best.lockInDays}d lock-in`}
+                after tax · {best.lockInDays === 0 ? 'withdraw anytime' : `${formatLockIn(best.lockInDays)} lock-in`}
               </div>
             </div>
             {amount > 0 && (

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { RateProduct, FilterCategory, LiquidityFilter } from '@/types';
+import { RateProduct, FilterCategory, LiquidityFilter, PayoutFilter } from '@/types';
 import { RateTable } from './RateTable';
 import { BankCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
@@ -14,8 +14,9 @@ import { Sparkles, X, Target, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function RateSection({ rates }: { rates: RateProduct[] }) {
-  const [filter, setFilter] = useState<FilterCategory>('all');
+  const [filter, setFilter] = useState<FilterCategory>('banks');
   const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
+  const [payoutFilter, setPayoutFilter] = useState<PayoutFilter>('all');
   const [showPreQual, setShowPreQual] = useState(false);
   const [answers, setAnswers] = useState<PreQualAnswers | null>(null);
 
@@ -40,7 +41,9 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
     if (filter !== 'all' && r.category !== filter) return false;
     if (liquidityFilter === 'liquid' && r.lockInDays > 0) return false;
     if (liquidityFilter === 'locked' && r.lockInDays === 0) return false;
-    
+    if (payoutFilter === 'monthly' && !['daily', 'monthly', 'quarterly'].includes(r.payoutFrequency)) return false;
+    if (payoutFilter === 'at_maturity' && !['at_maturity', 'annually'].includes(r.payoutFrequency)) return false;
+
     if (answers) {
       if (answers.risk === 'PDIC' && !r.pdic) return false;
       if (answers.risk === 'Medium' && r.riskLevel === 'DeFi') return false;
@@ -51,7 +54,7 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
   });
 
   // Sort by effective rate on the user's amount (or ₱100k default)
-  const sortAmount = answers?.amount ?? numMobileAmount || 100000;
+  const sortAmount = (answers?.amount ?? numMobileAmount) || 100000;
   const sortedRates = [...filteredRates].sort((a, b) => {
     const rateA = computeEffectiveRate(sortAmount, a);
     const rateB = computeEffectiveRate(sortAmount, b);
@@ -93,11 +96,13 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
 
   return (
     <section>
-      <FilterTabs 
-        active={filter} 
-        onChange={setFilter} 
+      <FilterTabs
+        active={filter}
+        onChange={setFilter}
         activeLiquidity={liquidityFilter}
         onLiquidityChange={setLiquidityFilter}
+        activePayoutFilter={payoutFilter}
+        onPayoutFilterChange={setPayoutFilter}
       />
       
       <div className="max-w-5xl mx-auto px-4 md:px-0">

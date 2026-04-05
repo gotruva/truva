@@ -11,12 +11,31 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, Building2, Wallet, TrendingUp, Trophy } from 'lucide-react';
+import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, Building2, Wallet, Trophy, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { computeEffectiveRate, computeReturn, formatRate, formatPHP } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 
 /* ─── Helpers ─── */
+
+function formatLockIn(days: number): string {
+  if (days === 0) return 'Withdraw Anytime';
+  const months = Math.round(days / 30.4375);
+  if (months < 12) return `${months} month${months !== 1 ? 's' : ''}`;
+  const years = months / 12;
+  if (years % 1 === 0) return `${years} year${years !== 1 ? 's' : ''}`;
+  return `${years.toFixed(1)} years`;
+}
+
+function formatPayoutFrequency(freq: RateProduct['payoutFrequency']): string {
+  switch (freq) {
+    case 'daily': return 'Daily';
+    case 'monthly': return 'Monthly';
+    case 'quarterly': return 'Quarterly';
+    case 'annually': return 'Annually';
+    case 'at_maturity': return 'At Maturity';
+  }
+}
 
 function InsurerBadge({ insurer }: { insurer: string }) {
   if (insurer === 'PDIC') {
@@ -41,11 +60,11 @@ function InsurerBadge({ insurer }: { insurer: string }) {
 
 function LockBadge({ days }: { days: number }) {
   if (days === 0) {
-    return <span className="text-[13px] text-brand-textSecondary dark:text-gray-400 font-medium">Liquid</span>;
+    return <span className="text-[13px] text-brand-textSecondary dark:text-gray-400 font-medium">Withdraw Anytime</span>;
   }
   return (
-    <Badge variant="outline" className="text-[11px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0.5">
-      <Lock className="w-3 h-3 mr-0.5" /> {days}d
+    <Badge variant="outline" className="text-[11px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0">
+      <Lock className="w-3 h-3 mr-0.5" /> Locked {formatLockIn(days)}
     </Badge>
   );
 }
@@ -56,6 +75,8 @@ function RankBadge({ rank }: { rank: number }) {
   if (rank === 3) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-amber-600 to-amber-700 shadow-sm">3</span>;
   return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-brand-textSecondary dark:text-gray-500 bg-gray-100 dark:bg-slate-800">{rank}</span>;
 }
+
+type SortCol = 'provider' | 'rate' | 'effective' | 'return' | null;
 
 /* ─── Types ─── */
 
@@ -75,6 +96,8 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [tableAmount, setTableAmount] = useState<string>('100000');
   const [tableMonths, setTableMonths] = useState<number>(12);
+  const [sortCol, setSortCol] = useState<SortCol>(null);
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
   const numAmount = parseFloat(tableAmount.replace(/,/g, '')) || 0;
 
@@ -89,6 +112,22 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
     { label: '1 Year', value: 12 },
     { label: '2 Years', value: 24 },
   ];
+
+  function handleSort(col: SortCol) {
+    if (sortCol === col) {
+      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortCol(col);
+      setSortDir(col === 'provider' ? 'asc' : 'desc');
+    }
+  }
+
+  function SortIcon({ col }: { col: SortCol }) {
+    if (sortCol !== col) return <ChevronsUpDown className="w-3.5 h-3.5 opacity-40" />;
+    return sortDir === 'asc'
+      ? <ChevronUp className="w-3.5 h-3.5 text-brand-primary" />
+      : <ChevronDown className="w-3.5 h-3.5 text-brand-primary" />;
+  }
 
   // Group products by provider and find best product per bank
   const bankGroups: BankGroup[] = useMemo(() => {
@@ -122,10 +161,30 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
       });
     }
 
-    // Sort groups by best effective rate descending
+    // Default sort: best effective rate descending
     groups.sort((a, b) => b.bestEffectiveRate - a.bestEffectiveRate);
+
+    // Apply user sort
+    if (sortCol === 'provider') {
+      groups.sort((a, b) => sortDir === 'asc'
+        ? a.provider.localeCompare(b.provider)
+        : b.provider.localeCompare(a.provider));
+    } else if (sortCol === 'rate') {
+      groups.sort((a, b) => sortDir === 'asc'
+        ? a.bestProduct.headlineRate - b.bestProduct.headlineRate
+        : b.bestProduct.headlineRate - a.bestProduct.headlineRate);
+    } else if (sortCol === 'effective') {
+      groups.sort((a, b) => sortDir === 'asc'
+        ? a.bestEffectiveRate - b.bestEffectiveRate
+        : b.bestEffectiveRate - a.bestEffectiveRate);
+    } else if (sortCol === 'return') {
+      groups.sort((a, b) => sortDir === 'asc'
+        ? a.bestReturn - b.bestReturn
+        : b.bestReturn - a.bestReturn);
+    }
+
     return groups;
-  }, [rates, numAmount, tableMonths]);
+  }, [rates, numAmount, tableMonths, sortCol, sortDir]);
 
   return (
     <motion.div
@@ -178,16 +237,36 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
         <thead className="bg-[#F9FAFB] dark:bg-slate-950 border-b border-brand-border dark:border-white/10 text-[12px] font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider transition-colors duration-300">
           <tr>
             <th className="p-4 py-3.5 font-semibold w-12"></th>
-            <th className="p-4 py-3.5 font-semibold">Bank / Provider</th>
-            <th className="p-4 py-3.5 font-semibold text-right">Best Rate</th>
+            <th className="p-4 py-3.5 font-semibold">
+              <button
+                onClick={() => handleSort('provider')}
+                className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors"
+              >
+                Bank / Provider <SortIcon col="provider" />
+              </button>
+            </th>
+            <th className="p-4 py-3.5 font-semibold text-right">
+              <button
+                onClick={() => handleSort('rate')}
+                className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors ml-auto"
+              >
+                Marketed Rate <SortIcon col="rate" />
+              </button>
+            </th>
             <th className="p-4 py-3.5 font-semibold text-right">
               <TooltipProvider delay={150}>
                 <Tooltip>
                   <TooltipTrigger
-                    render={<button className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors cursor-help" />}
+                    render={
+                      <button
+                        onClick={() => handleSort('effective')}
+                        className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors ml-auto"
+                      />
+                    }
                   >
-                    You Earn (After Tax)
+                    After Tax Rate
                     <AlertCircle className="w-3.5 h-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
+                    <SortIcon col="effective" />
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-[300px] p-3 text-sm leading-relaxed text-left font-normal bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 shadow-lg">
                     <p>
@@ -201,10 +280,15 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
               <TooltipProvider delay={150}>
                 <Tooltip>
                   <TooltipTrigger
-                    render={<button className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors cursor-help" />}
+                    render={
+                      <button
+                        onClick={() => handleSort('return')}
+                        className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors ml-auto"
+                      />
+                    }
                   >
-                    <TrendingUp className="w-3.5 h-3.5 mr-0.5" />
                     Projected Return
+                    <SortIcon col="return" />
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-[280px] p-3 text-sm leading-relaxed text-left font-normal bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 shadow-lg">
                     <p>
@@ -214,8 +298,9 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                 </Tooltip>
               </TooltipProvider>
             </th>
-            <th className="p-4 py-3.5 font-semibold text-center">Best Term</th>
-            <th className="p-4 py-3.5 font-semibold text-center">Insured</th>
+            <th className="p-4 py-3.5 font-semibold text-center">Deposit Locked</th>
+            <th className="p-4 py-3.5 font-semibold text-center">Interest Paid</th>
+            <th className="p-4 py-3.5 font-semibold text-center">Insured By</th>
             <th className="p-4 py-3.5 font-semibold w-12"></th>
           </tr>
         </thead>
@@ -224,9 +309,6 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
             const isExpanded = expandedProvider === group.provider;
             const best = group.bestProduct;
             const headlineGross = best.headlineRate;
-            const headlineAfterTax = best.taxExempt
-              ? calcTaxExempt(headlineGross)
-              : calcAfterTaxPhp(headlineGross);
 
             return (
               <React.Fragment key={group.provider}>
@@ -301,6 +383,14 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                     <LockBadge days={best.lockInDays} />
                   </td>
 
+                  {/* Payout frequency */}
+                  <td className="p-4 text-center">
+                    <div className="flex items-center justify-center gap-1 text-[12px] font-medium text-brand-textSecondary dark:text-gray-400">
+                      <Calendar className="w-3 h-3 shrink-0" />
+                      {formatPayoutFrequency(best.payoutFrequency)}
+                    </div>
+                  </td>
+
                   {/* Insurer */}
                   <td className="p-4 text-center">
                     <InsurerBadge insurer={group.insurer} />
@@ -321,7 +411,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                 <AnimatePresence>
                   {isExpanded && (
                     <tr>
-                      <td colSpan={8} className="p-0">
+                      <td colSpan={9} className="p-0">
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
@@ -334,10 +424,6 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                               const isBest = pIndex === 0;
                               const tierCount = product.tiers.length;
                               const hasConditions = product.conditions.length > 0 && product.conditions.some(c => c.type !== 'none');
-                              const grossRate = product.taxExempt
-                                ? calcTaxExempt(product.headlineRate)
-                                : product.headlineRate;
-
                               return (
                                 <div
                                   key={product.id}
@@ -357,6 +443,10 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                                         </Badge>
                                       )}
                                       <LockBadge days={product.lockInDays} />
+                                      <span className="inline-flex items-center gap-1 text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
+                                        <Calendar className="w-3 h-3 shrink-0" />
+                                        Interest Paid: {formatPayoutFrequency(product.payoutFrequency)}
+                                      </span>
                                     </div>
 
                                     {/* Tier breakdown */}
@@ -366,11 +456,6 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                                           const tierAfterTax = product.taxExempt
                                             ? calcTaxExempt(tier.grossRate)
                                             : calcAfterTaxPhp(tier.grossRate);
-                                          const isActiveTier = product.tierType === 'threshold'
-                                            ? numAmount >= tier.minBalance && (tier.maxBalance === null || numAmount < tier.maxBalance)
-                                            : true;
-                                          // For threshold, highlight the single active tier
-                                          // Also handle edge case: last tier with no max
                                           const isLastTier = i === product.tiers.length - 1;
                                           const isActiveThreshold = product.tierType === 'threshold' &&
                                             (numAmount >= tier.minBalance && (tier.maxBalance === null || numAmount <= tier.maxBalance || (isLastTier && numAmount >= tier.minBalance)));
@@ -428,9 +513,6 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                                         </span>
                                       </div>
                                     )}
-                                    <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5 flex items-center justify-end gap-1">
-                                      <Calendar className="w-3 h-3" /> {product.lastVerified}
-                                    </div>
                                   </div>
 
                                   {/* CTA */}
@@ -451,7 +533,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
           })}
           {bankGroups.length === 0 && (
             <tr>
-              <td colSpan={8} className="p-8 text-center text-brand-textSecondary dark:text-gray-400">
+              <td colSpan={9} className="p-8 text-center text-brand-textSecondary dark:text-gray-400">
                 No rates found for this category.
               </td>
             </tr>

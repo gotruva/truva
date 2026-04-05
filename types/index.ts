@@ -1,6 +1,7 @@
 export type RiskLevel = 'Low' | 'Medium' | 'DeFi';
 export type FilterCategory = 'all' | 'banks' | 'govt' | 'uitfs' | 'defi';
 export type LiquidityFilter = 'all' | 'liquid' | 'locked';
+export type PayoutFilter = 'all' | 'monthly' | 'at_maturity';
 
 /** A single rate tier with balance bounds */
 export interface RateTier {
@@ -35,6 +36,9 @@ export interface RateProduct {
   tiers: RateTier[];                // ordered from lowest to highest balance
   conditions: RateCondition[];      // conditions to unlock higher tiers
   taxExempt: boolean;
+
+  // --- Payout schedule ---
+  payoutFrequency: 'daily' | 'monthly' | 'quarterly' | 'annually' | 'at_maturity';
 
   // --- Product metadata ---
   lockInDays: number;               // 0 = liquid
