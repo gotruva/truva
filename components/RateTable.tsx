@@ -99,7 +99,7 @@ interface BankGroup {
 
 /* ─── Component ─── */
 
-export function RateTable({ rates }: { rates: RateProduct[] }) {
+export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]; recommendedIds?: string[] }) {
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [tableAmount, setTableAmount] = useState<string>('100000');
   const [tableMonths, setTableMonths] = useState<number>(12);
@@ -316,6 +316,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
             const isExpanded = expandedProvider === group.provider;
             const best = group.bestProduct;
             const headlineGross = best.headlineRate;
+            const isRecommended = group.products.some(p => recommendedIds.includes(p.id));
 
             return (
               <React.Fragment key={group.provider}>
@@ -341,7 +342,14 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                         <img src={resolveLogoSrc(group.logo)} alt={group.provider} className="w-7 h-7 object-contain" />
                       </div>
                       <div>
-                        <div className="font-bold text-brand-textPrimary dark:text-gray-100 text-[15px] leading-tight">{group.provider}</div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-brand-textPrimary dark:text-gray-100 text-[15px] leading-tight">{group.provider}</span>
+                          {isRecommended && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-positive/10 text-positive border border-positive/20 whitespace-nowrap">
+                              ★ Quick Match
+                            </span>
+                          )}
+                        </div>
                         <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
                           {group.products.length} product{group.products.length > 1 ? 's' : ''} compared
                         </div>
@@ -413,7 +421,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                       }`}
                       aria-label={`Expand ${group.provider} products`}
                     >
-                      <span>{isExpanded ? 'Hide details' : 'More info'}</span>
+                      <span>{isExpanded ? 'Hide' : 'More'}</span>
                       <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                     </button>
                   </td>

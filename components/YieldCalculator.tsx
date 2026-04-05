@@ -14,8 +14,15 @@ import {
 } from '@/utils/yieldEngine';
 import { resolveLogoSrc } from '@/lib/logo';
 
+interface YieldCalculatorPrefill {
+  amount?: number;
+  months?: number;
+  liquidityFilter?: LiquidityFilter;
+}
+
 interface YieldCalculatorProps {
   rates: RateProduct[];
+  prefill?: YieldCalculatorPrefill;
 }
 
 const LINE_COLORS = ['#12B76A', '#0052FF', '#94A3B8'];
@@ -28,12 +35,12 @@ function formatLockPeriod(days: number): string {
   return `${years.toFixed(1)}yr`;
 }
 
-export function YieldCalculator({ rates }: YieldCalculatorProps) {
-  const [amount, setAmount] = useState<string>('100000');
-  const [months, setMonths] = useState<number>(12);
+export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
+  const [amount, setAmount] = useState<string>(prefill?.amount ? String(prefill.amount) : '100000');
+  const [months, setMonths] = useState<number>(prefill?.months ?? 12);
   const includeDefi = false;
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
-  const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
+  const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>(prefill?.liquidityFilter ?? 'all');
   const [infoOpen, setInfoOpen] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
 

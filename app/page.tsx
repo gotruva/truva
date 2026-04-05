@@ -1,8 +1,7 @@
 import { getLiveRates } from '@/lib/rates';
-import { RateSection } from '@/components/RateSection';
-import { YieldCalculator } from '@/components/YieldCalculator';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { HeroSection } from '@/components/HeroSection';
+import { CompareHub } from '@/components/CompareHub';
 
 export default async function HomePage() {
   const rates = await getLiveRates();
@@ -41,23 +40,8 @@ export default async function HomePage() {
 
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 pt-12 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto">
-          <div id="calculator">
-            <YieldCalculator rates={rates} />
-          </div>
-
-          <div id="deposit-rates" className="px-4 mt-8">
-             <div className="max-w-3xl mb-8">
-                <h2 className="text-2xl font-bold text-brand-textPrimary dark:text-gray-100">Compare Today&apos;s Best Rates</h2>
-                {formattedDate && (
-                  <p className="text-sm text-brand-textSecondary dark:text-gray-400 mt-2 flex items-center gap-1.5">
-                    <span className="text-positive font-semibold">✓</span>
-                    Rates last verified {formattedDate}
-                  </p>
-                )}
-             </div>
-             <RateSection rates={rates} />
-          </div>
+        <div className="max-w-7xl mx-auto" id="compare-hub">
+          <CompareHub rates={rates} formattedDate={formattedDate} />
         </div>
       </div>
       

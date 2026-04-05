@@ -73,3 +73,14 @@ export interface DefiRate {
 export interface NewsletterPayload {
   email: string;
 }
+
+// ─── Quick Match ───
+
+export interface QuickMatchAnswers {
+  purpose: 'emergency' | 'short-term' | 'idle-cash' | 'long-term' | 'monthly-income';
+  amount: number;
+  timeline: 'anytime' | '3mo' | '3-6mo' | '6-12mo' | '1yr+';
+  lockFlexibility: 'no-lock' | 'maybe' | 'yes-lock';
+  payoutPreference: 'no-preference' | 'monthly' | 'at-maturity';
+  insurancePreference: 'insured-only' | 'show-both' | 'open-all';
+}

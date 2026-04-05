@@ -105,7 +105,7 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
   }, []);
 
   return (
-    <div className={`sticky top-[76px] z-10 mb-4 border-b border-brand-border bg-white/95 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.02)] transition-all duration-300 dark:border-white/10 dark:bg-slate-950/95 md:mb-8 md:py-4 ${
+    <div className={`sticky top-[76px] z-10 mb-4 border-b border-brand-border bg-[#F8F9FB]/95 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.02)] transition-all duration-300 dark:border-white/10 dark:bg-slate-950/95 md:mb-8 md:py-4 ${
       isMobileCondensed ? 'py-2' : 'py-3'
     }`}>
       <div className="mx-auto max-w-5xl px-4 md:px-0">
@@ -117,29 +117,27 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
               <button
                 type="button"
                 onClick={() => setIsMobileExpanded((prev) => !prev)}
-                className="flex w-full items-center justify-between rounded-xl border border-brand-border/80 bg-white px-3 py-2 text-left transition-all dark:border-white/10 dark:bg-slate-950"
+                className="flex w-full items-center gap-2 rounded-xl border border-brand-border/80 bg-white px-3 py-2.5 text-left transition-all dark:border-white/10 dark:bg-slate-950"
                 aria-expanded={isMobileExpanded}
                 aria-label="Toggle filter controls"
               >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-                    <SlidersHorizontal className="h-3.5 w-3.5" />
-                    <span>Filters</span>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-[11px] font-semibold text-brand-primary dark:bg-brand-primary/20 dark:text-blue-300">
-                      {activeCategoryLabel}
-                    </span>
-                    <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
-                      {activeLiquidityLabel}
-                    </span>
-                    <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
-                      {activePayoutLabel}
-                    </span>
-                  </div>
+                <div className="flex shrink-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  <span>Filters</span>
+                </div>
+                <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
+                  <span className="shrink-0 rounded-full bg-brand-primary/10 px-2 py-0.5 text-[11px] font-semibold text-brand-primary dark:bg-brand-primary/20 dark:text-blue-300">
+                    {activeCategoryLabel}
+                  </span>
+                  <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
+                    {activeLiquidityLabel}
+                  </span>
+                  <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
+                    {activePayoutLabel}
+                  </span>
                 </div>
                 <ChevronDown
-                  className={`ml-3 h-4 w-4 shrink-0 text-brand-textSecondary transition-transform duration-200 dark:text-gray-400 ${
+                  className={`ml-auto h-4 w-4 shrink-0 text-brand-textSecondary transition-transform duration-200 dark:text-gray-400 ${
                     isMobileExpanded ? 'rotate-180' : ''
                   }`}
                 />
@@ -147,73 +145,74 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
             )}
 
             {isMobileExpanded && (
-              <div className={`space-y-2.5 ${isMobileCondensed ? 'mt-2' : ''}`}>
-              <div className="px-1 pt-0.5">
-                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-                  Bank Type
+              <div className={`space-y-3 ${isMobileCondensed ? 'mt-2' : ''}`}>
+                <div>
+                  <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+                    Bank Type
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
+                    {tabs.map((tab) => (
+                      <button
+                        key={tab.value}
+                        onClick={() => onChange(tab.value)}
+                        className={mobileButtonClass(active === tab.value)}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 gap-2">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.value}
-                      onClick={() => onChange(tab.value)}
-                      className={mobileButtonClass(active === tab.value)}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              <div className="border-t border-brand-border/50 dark:border-white/8 pt-2.5 px-1">
-                <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-                  <span>Cash Access</span>
-                  {liquidityHelp}
+                <div className="border-t border-brand-border/50 pt-3 dark:border-white/8">
+                  <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+                    <span>Cash Access</span>
+                    {liquidityHelp}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {liquidityTabs.map((tab) => (
+                      <button
+                        key={tab.value}
+                        onClick={() => onLiquidityChange(tab.value)}
+                        className={mobileButtonClass(activeLiquidity === tab.value)}
+                      >
+                        {tab.icon}
+                        <span>{tab.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {liquidityTabs.map((tab) => (
-                    <button
-                      key={tab.value}
-                      onClick={() => onLiquidityChange(tab.value)}
-                      className={mobileButtonClass(activeLiquidity === tab.value)}
-                    >
-                      {tab.icon}
-                      <span>{tab.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              <div className="border-t border-brand-border/50 dark:border-white/8 pt-2.5 px-1">
-                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-                  Interest Payout
+                <div className="border-t border-brand-border/50 pt-3 dark:border-white/8">
+                  <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+                    Interest Payout
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {payoutTabs.map((tab) => (
+                      <button
+                        key={tab.value}
+                        onClick={() => onPayoutFilterChange(tab.value)}
+                        className={mobileButtonClass(activePayoutFilter === tab.value)}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {payoutTabs.map((tab) => (
-                    <button
-                      key={tab.value}
-                      onClick={() => onPayoutFilterChange(tab.value)}
-                      className={mobileButtonClass(activePayoutFilter === tab.value)}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="hidden rounded-2xl border border-brand-border bg-white px-4 py-3.5 shadow-sm dark:border-white/10 dark:bg-slate-900 md:flex md:flex-col md:gap-3">
-          <div className="flex flex-wrap justify-center gap-2 md:flex-nowrap md:justify-start">
+        <div className="hidden rounded-2xl border border-brand-border bg-white px-4 py-3 shadow-sm dark:border-white/10 dark:bg-slate-900 md:flex md:items-center md:gap-3">
+          {/* Bank type */}
+          <div className="flex items-center gap-1.5">
             {tabs.map((tab) => (
               <button
                 key={tab.value}
                 onClick={() => onChange(tab.value)}
-                className={`rounded-full px-5 py-2 text-[14.5px] font-bold transition-all duration-300 active:scale-95 md:px-6 md:py-2.5 md:text-[15.5px] ${
+                className={`rounded-full px-4 py-1.5 text-[13.5px] font-bold transition-all duration-200 active:scale-95 ${
                   active === tab.value
-                    ? 'border border-brand-primary/20 bg-brand-primary text-white shadow-md shadow-brand-primary/20 dark:bg-blue-600'
+                    ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/20 dark:bg-blue-600'
                     : 'border border-gray-200 bg-white text-brand-textSecondary hover:border-gray-300 hover:bg-gray-50 hover:text-brand-textPrimary dark:border-white/10 dark:bg-slate-900 dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-gray-100'
                 }`}
               >
@@ -222,38 +221,48 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 md:flex-nowrap md:justify-start">
-            <div className="mr-1 hidden items-center gap-1 md:flex">
-              <span className="text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500">
-                Cash Access:
+          <div className="h-5 w-px shrink-0 bg-brand-border dark:bg-white/10" />
+
+          {/* Cash access */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500">
+                Cash Access
               </span>
               {liquidityHelp}
             </div>
-            {liquidityTabs.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => onLiquidityChange(tab.value)}
-                className={desktopPillClass(activeLiquidity === tab.value)}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
+            <div className="flex items-center gap-1">
+              {liquidityTabs.map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => onLiquidityChange(tab.value)}
+                  className={desktopPillClass(activeLiquidity === tab.value)}
+                >
+                  {tab.icon}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 md:flex-nowrap md:justify-start">
-            <span className="mr-1 hidden text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500 md:block">
-              Interest Payout:
+          <div className="h-5 w-px shrink-0 bg-brand-border dark:bg-white/10" />
+
+          {/* Interest payout */}
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500">
+              Payout
             </span>
-            {payoutTabs.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => onPayoutFilterChange(tab.value)}
-                className={desktopPillClass(activePayoutFilter === tab.value)}
-              >
-                {tab.label}
-              </button>
-            ))}
+            <div className="flex items-center gap-1">
+              {payoutTabs.map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => onPayoutFilterChange(tab.value)}
+                  className={desktopPillClass(activePayoutFilter === tab.value)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

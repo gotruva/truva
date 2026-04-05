@@ -237,9 +237,10 @@ interface BankCardProps {
   insurer: string;
   isExpanded: boolean;
   onToggle: () => void;
+  isRecommended?: boolean;
 }
 
-export function BankCard({ provider, logo, products, bestEffectiveRate, bestReturn, rank, amount, months, insurer, isExpanded, onToggle }: BankCardProps) {
+export function BankCard({ provider, logo, products, bestEffectiveRate, bestReturn, rank, amount, months, insurer, isExpanded, onToggle, isRecommended }: BankCardProps) {
 
   const best = products[0];
   const headlineGross = best.headlineRate;
@@ -279,7 +280,14 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-bold text-brand-textPrimary dark:text-gray-100 text-[16px] leading-tight">{provider}</div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-brand-textPrimary dark:text-gray-100 text-[16px] leading-tight">{provider}</span>
+                {isRecommended && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-positive/10 text-positive border border-positive/20 whitespace-nowrap">
+                    ★ Quick Match
+                  </span>
+                )}
+              </div>
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
                 {products.length} product{products.length > 1 ? 's' : ''} compared · <InsurerLabel insurer={insurer} />
               </div>
@@ -289,7 +297,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
                 ? 'border-brand-primary/20 bg-brand-primary text-white shadow-sm shadow-brand-primary/20 dark:bg-blue-500'
                 : 'border-brand-primary/20 bg-brand-primary/5 text-brand-primary dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300'
             }`}>
-              <span>{isExpanded ? 'Hide' : 'More info'}</span>
+              <span>{isExpanded ? 'Hide' : 'More'}</span>
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
             </span>
           </div>

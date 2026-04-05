@@ -13,17 +13,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Target, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function RateSection({ rates }: { rates: RateProduct[] }) {
+interface RateSectionPrefill {
+  amount?: number;
+  months?: number;
+  liquidityFilter?: LiquidityFilter;
+  payoutFilter?: PayoutFilter;
+  includePdicOnly?: boolean;
+}
+
+interface RateSectionProps {
+  rates: RateProduct[];
+  prefill?: RateSectionPrefill;
+  recommendedIds?: string[];
+}
+
+export function RateSection({ rates, prefill, recommendedIds = [] }: RateSectionProps) {
   const [filter, setFilter] = useState<FilterCategory>('banks');
-  const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
-  const [payoutFilter, setPayoutFilter] = useState<PayoutFilter>('all');
+  const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>(prefill?.liquidityFilter ?? 'all');
+  const [payoutFilter, setPayoutFilter] = useState<PayoutFilter>(prefill?.payoutFilter ?? 'all');
   const [showPreQual, setShowPreQual] = useState(false);
   const [answers, setAnswers] = useState<PreQualAnswers | null>(null);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   // Independent amount state for the rate section (mobile)
-  const [mobileAmount, setMobileAmount] = useState<string>('100000');
-  const [mobileMonths, setMobileMonths] = useState<number>(12);
+  const [mobileAmount, setMobileAmount] = useState<string>(prefill?.amount ? String(prefill.amount) : '100000');
+  const [mobileMonths, setMobileMonths] = useState<number>(prefill?.months ?? 12);
   const numMobileAmount = parseFloat(mobileAmount.replace(/,/g, '')) || 0;
 
   const handleMobileAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +123,7 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
           />
         </div>
 
-        <RateTable rates={sortedRates} />
+        <RateTable rates={sortedRates} recommendedIds={recommendedIds} />
 
         {/* ─── Mobile View ─── */}
         <div className="md:hidden">
@@ -230,6 +244,7 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
                   insurer={group.insurer}
                   isExpanded={expandedCard === group.provider}
                   onToggle={() => setExpandedCard(prev => prev === group.provider ? null : group.provider)}
+                  isRecommended={group.products.some(p => recommendedIds.includes(p.id))}
                 />
               </motion.div>
             ))}
