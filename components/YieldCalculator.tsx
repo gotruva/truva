@@ -242,7 +242,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                         <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₱${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`} tick={{ fontSize: 11, fill: '#888' }} />
                         <RechartsTooltip
                           contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px' }}
-                          formatter={(value: number, name: string) => [formatPHP(value), name]}
+                          formatter={(value) => typeof value === 'number' ? formatPHP(value) : 'N/A'}
                         />
                         {topResults.map((result, idx) => (
                           <Line
