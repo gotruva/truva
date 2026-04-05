@@ -3,8 +3,7 @@ import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 
 /**
  * Compute the projected return using blended tiered rates.
- * Derives afterTaxRate from grossRate at runtime using lib/tax.ts — never reads
- * the pre-computed afterTaxRate from the JSON so the formula stays in one place.
+ * Each balance band earns its own rate independently (e.g. Maya Personal Goals).
  */
 export function computeBlendedReturn(
   amount: number,
@@ -39,17 +38,86 @@ export function computeBlendedReturn(
 }
 
 /**
- * Compute the blended effective annual rate across tiers for a given amount.
- * This is the "real" rate the user earns — accounting for tier boundaries.
+ * Compute the projected return using threshold tiers.
+ * The entire balance earns the rate of whichever bracket it falls into
+ * (e.g. Salmon Bank: ₱1M+ gets 8% on the full amount).
  */
-export function computeEffectiveRate(
+export function computeThresholdReturn(
+  amount: number,
+  tiers: RateTier[],
+  months: number,
+  taxExempt: boolean = false
+): number {
+  if (amount <= 0 || tiers.length === 0) return 0;
+
+  // Find the highest tier the amount qualifies for
+  let applicableTier = tiers[0];
+  for (const tier of tiers) {
+    if (amount >= tier.minBalance) {
+      applicableTier = tier;
+    }
+  }
+
+  const afterTaxRate = taxExempt
+    ? calcTaxExempt(applicableTier.grossRate)
+    : calcAfterTaxPhp(applicableTier.grossRate);
+
+  return (amount * afterTaxRate / 12) * months;
+}
+
+/**
+ * Compute the threshold effective rate — just returns the bracket rate
+ * for the tier the amount falls into.
+ */
+export function computeThresholdEffectiveRate(
   amount: number,
   tiers: RateTier[],
   taxExempt: boolean = false
 ): number {
   if (amount <= 0 || tiers.length === 0) return 0;
 
-  const yearlyReturn = computeBlendedReturn(amount, tiers, 12, taxExempt);
+  let applicableTier = tiers[0];
+  for (const tier of tiers) {
+    if (amount >= tier.minBalance) {
+      applicableTier = tier;
+    }
+  }
+
+  return taxExempt
+    ? calcTaxExempt(applicableTier.grossRate)
+    : calcAfterTaxPhp(applicableTier.grossRate);
+}
+
+/**
+ * Unified return computation — dispatches to blended or threshold based on tierType.
+ */
+export function computeReturn(
+  amount: number,
+  product: RateProduct,
+  months: number
+): number {
+  if (product.tierType === 'threshold') {
+    return computeThresholdReturn(amount, product.tiers, months, product.taxExempt);
+  }
+  return computeBlendedReturn(amount, product.tiers, months, product.taxExempt);
+}
+
+/**
+ * Unified effective rate — dispatches to blended or threshold based on tierType.
+ * This is the "real" after-tax rate the user earns on their specific amount.
+ */
+export function computeEffectiveRate(
+  amount: number,
+  product: RateProduct
+): number {
+  if (amount <= 0 || product.tiers.length === 0) return 0;
+
+  if (product.tierType === 'threshold') {
+    return computeThresholdEffectiveRate(amount, product.tiers, product.taxExempt);
+  }
+
+  // Blended: derive from return
+  const yearlyReturn = computeBlendedReturn(amount, product.tiers, 12, product.taxExempt);
   return yearlyReturn / amount;
 }
 
@@ -70,7 +138,7 @@ export function computeBaseReturn(
 }
 
 /**
- * Compare headline rate vs the effective blended rate for a given amount.
+ * Compare headline rate vs the effective rate for a given amount.
  * Returns the gap — positive means headline overstates the real yield.
  */
 export function compareHeadlineVsEffective(
@@ -85,7 +153,7 @@ export function compareHeadlineVsEffective(
   const headlineAfterTax = product.taxExempt
     ? calcTaxExempt(product.headlineRate)
     : calcAfterTaxPhp(product.headlineRate);
-  const effectiveRate = computeEffectiveRate(amount, product.tiers, product.taxExempt);
+  const effectiveRate = computeEffectiveRate(amount, product);
   const gapPercentagePoints = (headlineAfterTax - effectiveRate) * 100;
 
   return {
@@ -97,7 +165,7 @@ export function compareHeadlineVsEffective(
 }
 
 /**
- * Option C dual-scenario computation:
+ * Dual-scenario computation:
  * Returns both "conditions met" (full tiers) and "conditions not met" (base rate) projections.
  */
 export function computeDualScenario(
@@ -113,8 +181,8 @@ export function computeDualScenario(
   const hasConditions = product.conditions.length > 0 &&
     product.conditions.some(c => c.type !== 'none');
 
-  const withConditionsReturn = computeBlendedReturn(amount, product.tiers, months, product.taxExempt);
-  const withConditionsRate = computeEffectiveRate(amount, product.tiers, product.taxExempt);
+  const withConditionsReturn = computeReturn(amount, product, months);
+  const withConditionsRate = computeEffectiveRate(amount, product);
 
   const withoutConditionsReturn = computeBaseReturn(amount, product, months);
   const withoutConditionsRate = amount > 0

@@ -8,8 +8,6 @@ import { Calculator, AlertTriangle, ShieldCheck, ChevronDown, Lock, Info } from 
 import { AffiliateButton } from '@/components/AffiliateButton';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 import {
-  computeBlendedReturn,
-  computeEffectiveRate,
   computeDualScenario,
   formatPHP,
   formatRate,

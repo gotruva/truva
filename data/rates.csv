@@ -1,0 +1,47 @@
+id,name,provider,category,tax_regime,headline_rate,base_rate,tier2_min_balance,tier2_rate,conditions,lock_in_days,pdic,insurer,open_account_url,last_verified
+,,,,standard=20% tax | exempt=0% tax | usd=7.5% tax,,,,,,,,,,
+,,,,RATES ARE GROSS % (e.g. 15 for 15%). After-tax is auto-calculated when syncing.,,,,,,,,,,
+maya-savings,Maya Savings,Maya Bank,banks,standard,12,2.5,100001,2.5,"10% requires ₱35k/month spend via QR/debit/online checkout/load/bills/stocks/funds. +2% for any Maya Easy Credit spend. Boosted rate on first ₱100k only.",0,yes,PDIC,#,2026-04-03
+maya-td-3mo,Maya Time Deposit Plus 3-Month,Maya Bank,banks,standard,5,5,,,"Max ₱1M per account. Up to 5 TD Plus accounts allowed.",91,yes,PDIC,#,2026-04-03
+maya-td-6mo,Maya Time Deposit Plus 6-Month,Maya Bank,banks,standard,6,6,,,"Max ₱1M per account. Up to 5 TD Plus accounts allowed.",182,yes,PDIC,#,2026-04-03
+maya-td-12mo,Maya Time Deposit Plus 12-Month,Maya Bank,banks,standard,5.5,5.5,,,"Max ₱1M per account. Up to 5 TD Plus accounts allowed.",365,yes,PDIC,#,2026-04-03
+maya-personal-goals,Maya Personal Goals,Maya Bank,banks,standard,8,4,,,"Stepped rate: ₱0-20k→4% | ₱20-40k→4.5% | ₱40-60k→5% | ₱60-80k→6.5% | ₱80-100k→8%. Blended ~5.6% on full ₱100k. Up to 5 goal accounts.",0,yes,PDIC,#,2026-04-03
+tonik-account,Tonik Account,Tonik Digital Bank,banks,standard,1,1,,,no conditions,0,yes,PDIC,#,2026-04-03
+tonik-savings,Tonik Solo Stash,Tonik Digital Bank,banks,standard,4,4,,,no conditions,0,yes,PDIC,#,2026-04-03
+tonik-group-stash,Tonik Group Stash,Tonik Digital Bank,banks,standard,4.5,4,,,"4% base rate as owner. Increases to 4.5% with owner + at least 2 participants.",0,yes,PDIC,#,2026-04-03
+tonik-td-6mo,Tonik Time Deposit 6-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,182,yes,PDIC,#,2026-04-03
+tonik-td-9mo,Tonik Time Deposit 9-Month,Tonik Digital Bank,banks,standard,7,7,,,no conditions,273,yes,PDIC,#,2026-04-03
+tonik-td-12mo,Tonik Time Deposit 12-Month,Tonik Digital Bank,banks,standard,8,8,,,no conditions,365,yes,PDIC,#,2026-04-03
+tonik-td-18mo,Tonik Time Deposit 18-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,548,yes,PDIC,#,2026-04-03
+tonik-td-24mo,Tonik Time Deposit 24-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,730,yes,PDIC,#,2026-04-03
+uno-ready,#UNOready,UNO Digital Bank,banks,standard,3.5,3,5000,3.5,"3% below ₱5k. 3.5% for ₱5k–₱4.99M. 1% for ₱5M+. Interest credited daily.",0,yes,PDIC,#,2026-04-03
+uno-td-365,#UNOearn,UNO Digital Bank,banks,standard,5.25,5.25,,,"12 or 24-month terms. Monthly interest paid out to #UNOready account.",365,yes,PDIC,#,2026-04-03
+gotyme-savings,GoSave,GoTyme Bank,banks,standard,3,3,,,no conditions,0,yes,PDIC,#,2026-04-03
+cimb-gsave,GSave,CIMB / GCash,banks,standard,2.6,2.6,,,"Interest paid out monthly.",0,yes,PDIC,#,2026-04-03
+cimb-maxsave-3mo,CIMB MaxSave 3-Month,CIMB Bank Philippines,banks,standard,4.25,4.25,,,"CIMBPrime/Biz accounts earn 4.75% for this term.",91,yes,PDIC,#,2026-04-03
+cimb-maxsave-6mo,CIMB MaxSave 6-Month,CIMB Bank Philippines,banks,standard,4.25,4.25,,,"CIMBPrime/Biz accounts earn 5.00% for this term.",182,yes,PDIC,#,2026-04-03
+cimb-maxsave-12mo,CIMB MaxSave 12-Month,CIMB Bank Philippines,banks,standard,4,4,,,"CIMBPrime/Biz accounts earn 4.25% for this term.",365,yes,PDIC,#,2026-04-03
+cimb-maxsave-24mo,CIMB MaxSave 24-Month,CIMB Bank Philippines,banks,standard,3.75,3.75,,,"CIMBPrime/Biz accounts earn 4.00% for this term.",730,yes,PDIC,#,2026-04-03
+maribank-savings,MariBank Savings,MariBank,banks,standard,3.75,3.25,1000001,3.75,no conditions,0,yes,PDIC,#,2026-04-03
+maribank-td-3mo,MariBank Time Deposit 3-Month,MariBank,banks,standard,3.75,3.75,,,"Maximum ₱1,000,000.",91,yes,PDIC,#,2026-04-03
+uniondigital-savings,UnionDigital Savings,UnionDigital Bank,banks,standard,3.25,3,5000001,3.25,no conditions,0,yes,PDIC,#,2026-04-03
+uniondigital-td,UD Time Deposit,UnionDigital Bank,banks,standard,3.15,3.15,,,"Terms: 30-59d (3.15%) | 60-89d (3.10%) | 90-119d (3.00%) | 120-179d (2.75%) | 180-364d (2.65%) | 1yr (2.50%). Min ₱1,000. Headline is 30-59 day rate.",30,yes,PDIC,#,2026-04-03
+salmon-td-6mo,Salmon Bank Time Deposit 6-Month,Salmon Bank,banks,standard,6,6,,,"Min ₱50,000. Monthly payout. 6% applies to all balance tiers for 6-month term. BSP-licensed rural bank.",182,yes,PDIC,#,2026-04-03
+salmon-td-12mo,Salmon Bank Time Deposit 12-Month,Salmon Bank,banks,standard,8,6,1000000,8,"Min ₱50,000. Monthly payout. ₱50k-₱499k: 6% | ₱500k-₱999k: 6.5% | ₱1M+: 8%. Same rates for 2-5yr terms. BSP-licensed rural bank.",365,yes,PDIC,#,2026-04-03
+netbank-savings,Netbank Savings,Netbank,banks,standard,3.25,3.25,,,"Daily interest crediting and compounding.",0,yes,PDIC,#,2026-04-03
+netbank-td-6mo,Netbank Time Deposit 6-Month,Netbank,banks,standard,4.5,4.5,,,no conditions,182,yes,PDIC,#,2026-04-03
+netbank-td-12mo,Netbank Time Deposit 12-Month,Netbank,banks,standard,5,5,,,no conditions,365,yes,PDIC,#,2026-04-03
+komo-savings,Komo Savings,Komo by EastWest Bank,banks,standard,2.5,2.5,500001,1.5,"Stepped rate: first ₱500k at 2.5% | ₱500k-₱2M at 1.5% | beyond ₱2M at 1%.",0,yes,PDIC,#,2026-04-03
+diskartech-savings,DiskarTech Savings,DiskarTech by RCBC,banks,standard,4,4,50001,1,"4% on first ₱50k. 1% on ₱50k-₱2M. Max deposit ₱2M. Full BDA verification required above ₱49,700.",0,yes,PDIC,#,2026-04-03
+ownbank-td,OwnBank Time Deposit,OwnBank,banks,standard,4.5,4.5,,,no conditions,90,yes,PDIC,#,2026-04-01
+landbank-iaccess,iAccess Savings,Landbank of the Philippines,banks,standard,1.75,1.75,,,no conditions,0,yes,PDIC,#,2026-04-01
+dbp-savings,DBP Savings,Development Bank of the Philippines,banks,standard,2,2,,,no conditions,0,yes,PDIC,#,2026-04-01
+ofbank-savings,OFBank Savings,Overseas Filipino Bank,banks,standard,0.05,0.05,,,no conditions,0,yes,PDIC,#,2026-04-03
+tbill-91,T-Bill 91-Day,Bureau of Treasury,govt,standard,5.7,5.7,,,"₱5,000 minimum. Rate set at weekly BTr auction — fluctuates weekly.",91,no,Bureau of Treasury,#,2026-04-01
+tbill-182,T-Bill 182-Day,Bureau of Treasury,govt,standard,5.8,5.8,,,"₱5,000 minimum. Rate set at weekly BTr auction — fluctuates weekly.",182,no,Bureau of Treasury,#,2026-04-01
+tbill-364,T-Bill 364-Day,Bureau of Treasury,govt,standard,5.9,5.9,,,"₱5,000 minimum. Rate set at weekly BTr auction — fluctuates weekly.",364,no,Bureau of Treasury,#,2026-04-01
+pagibig-mp2,Pag-IBIG MP2,HDMF (Pag-IBIG Fund),govt,exempt,7.03,7.03,,,"Requires active Pag-IBIG membership. 5-year lock-in. Dividend declared annually; shown rate is 2023 dividend.",1825,no,Pag-IBIG Fund,https://www.pagibigfund.gov.ph/MP2.html,2026-04-01
+rtb-27,RTB Series 27,Bureau of Treasury,govt,standard,6.25,6.25,,,RTBs only available during issuance windows. Rate fixed at issuance. Check BTr or broker for availability.,1825,no,Bureau of Treasury,#,2026-04-01
+bdo-mmf-uitf,BDO Peso Money Market Fund,BDO Unibank,uitfs,standard,4.5,4.5,,,Mark-to-market fund — returns not guaranteed. Indicative yield only. Not PDIC-insured.,0,no,Not Insured,#,2026-04-01
+bpi-mmf-uitf,BPI Money Market Fund,Bank of the Philippine Islands,uitfs,standard,4.4,4.4,,,Mark-to-market fund — returns not guaranteed. Indicative yield only. Not PDIC-insured.,0,no,Not Insured,#,2026-04-01
+aave-v3-usdc-base,USDC Base Market,Aave V3,defi,standard,0,0,,,DeFi lending protocol. Rates fluctuate based on utilization. Not PDIC insured.,0,no,Not Insured,#,2026-04-01

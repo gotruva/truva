@@ -1,40 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { RateProduct } from '@/types';
 import { AffiliateButton } from './AffiliateButton';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, Building2 } from 'lucide-react';
+import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, Building2, Wallet, TrendingUp, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { computeEffectiveRate, formatRate } from '@/utils/yieldEngine';
+import { computeEffectiveRate, computeReturn, formatRate, formatPHP } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 
-function InsurerCell({ insurer }: { insurer: string }) {
+/* ─── Helpers ─── */
+
+function InsurerBadge({ insurer }: { insurer: string }) {
   if (insurer === 'PDIC') {
     return (
-      <div className="flex flex-col items-center gap-0.5">
-        <span className="flex items-center text-[11px] font-semibold text-positive uppercase tracking-wide">
-          <ShieldCheck className="w-3 h-3 mr-1" /> PDIC
-        </span>
-        <span className="text-[10px] text-brand-textSecondary dark:text-gray-500">₱1M Covered</span>
-      </div>
+      <span className="inline-flex items-center text-[11px] font-semibold text-positive uppercase tracking-wide">
+        <ShieldCheck className="w-3 h-3 mr-0.5" /> PDIC
+      </span>
     );
   }
   if (insurer === 'Bureau of Treasury' || insurer === 'Pag-IBIG Fund') {
     const label = insurer === 'Bureau of Treasury' ? 'BTr' : 'Pag-IBIG';
     return (
-      <div className="flex flex-col items-center gap-0.5">
-        <span className="flex items-center text-[11px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
-          <Building2 className="w-3 h-3 mr-1" /> {label}
-        </span>
-        <span className="text-[10px] text-brand-textSecondary dark:text-gray-500">Gov't Guaranteed</span>
-      </div>
+      <span className="inline-flex items-center text-[11px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+        <Building2 className="w-3 h-3 mr-0.5" /> {label}
+      </span>
     );
   }
   return (
@@ -42,205 +39,407 @@ function InsurerCell({ insurer }: { insurer: string }) {
   );
 }
 
-export function RateTable({ rates }: { rates: RateProduct[] }) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+function LockBadge({ days }: { days: number }) {
+  if (days === 0) {
+    return <span className="text-[13px] text-brand-textSecondary dark:text-gray-400 font-medium">Liquid</span>;
+  }
+  return (
+    <Badge variant="outline" className="text-[11px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0.5">
+      <Lock className="w-3 h-3 mr-0.5" /> {days}d
+    </Badge>
+  );
+}
 
-  // Default reference amount for effective rate (₱100k)
-  const referenceAmount = 100000;
+function RankBadge({ rank }: { rank: number }) {
+  if (rank === 1) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-yellow-400 to-amber-500 shadow-sm"><Trophy className="w-3.5 h-3.5" /></span>;
+  if (rank === 2) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-gray-300 to-gray-400 shadow-sm">2</span>;
+  if (rank === 3) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-amber-600 to-amber-700 shadow-sm">3</span>;
+  return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-brand-textSecondary dark:text-gray-500 bg-gray-100 dark:bg-slate-800">{rank}</span>;
+}
+
+/* ─── Types ─── */
+
+interface BankGroup {
+  provider: string;
+  logo: string;
+  bestProduct: RateProduct;
+  bestEffectiveRate: number;
+  bestReturn: number;
+  products: Array<RateProduct & { effectiveRate: number; projectedReturn: number }>;
+  insurer: string;
+}
+
+/* ─── Component ─── */
+
+export function RateTable({ rates }: { rates: RateProduct[] }) {
+  const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
+  const [tableAmount, setTableAmount] = useState<string>('100000');
+  const [tableMonths, setTableMonths] = useState<number>(12);
+
+  const numAmount = parseFloat(tableAmount.replace(/,/g, '')) || 0;
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9]/g, '');
+    setTableAmount(val);
+  };
+
+  const MONTH_OPTIONS = [
+    { label: '3 Mo', value: 3 },
+    { label: '6 Mo', value: 6 },
+    { label: '1 Year', value: 12 },
+    { label: '2 Years', value: 24 },
+  ];
+
+  // Group products by provider and find best product per bank
+  const bankGroups: BankGroup[] = useMemo(() => {
+    const groupMap = new Map<string, RateProduct[]>();
+    for (const rate of rates) {
+      const existing = groupMap.get(rate.provider) || [];
+      existing.push(rate);
+      groupMap.set(rate.provider, existing);
+    }
+
+    const groups: BankGroup[] = [];
+    for (const [provider, products] of groupMap) {
+      const enriched = products.map(p => {
+        const effectiveRate = computeEffectiveRate(numAmount, p);
+        const projectedReturn = computeReturn(numAmount, p, tableMonths);
+        return { ...p, effectiveRate, projectedReturn };
+      });
+
+      // Sort products within group: highest effective rate first
+      enriched.sort((a, b) => b.effectiveRate - a.effectiveRate);
+
+      const best = enriched[0];
+      groups.push({
+        provider,
+        logo: best.logo,
+        bestProduct: best,
+        bestEffectiveRate: best.effectiveRate,
+        bestReturn: best.projectedReturn,
+        products: enriched,
+        insurer: best.insurer,
+      });
+    }
+
+    // Sort groups by best effective rate descending
+    groups.sort((a, b) => b.bestEffectiveRate - a.bestEffectiveRate);
+    return groups;
+  }, [rates, numAmount, tableMonths]);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="hidden md:block overflow-x-auto rounded-xl border border-brand-border dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm mb-12 transition-colors duration-300"
+      className="hidden md:block rounded-xl border border-brand-border dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm mb-12 transition-colors duration-300 overflow-hidden"
     >
+      {/* ─── Amount Input Bar ─── */}
+      <div className="bg-gradient-to-r from-brand-primary/5 via-brand-primaryLight/40 to-brand-primary/5 dark:from-blue-950/40 dark:via-slate-900 dark:to-blue-950/40 border-b border-brand-border dark:border-white/10 px-6 py-5">
+        <div className="flex items-center gap-6 flex-wrap">
+          <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+            <div className="flex items-center gap-2 text-sm font-semibold text-brand-textSecondary dark:text-gray-400 whitespace-nowrap">
+              <Wallet className="w-4 h-4 text-brand-primary" />
+              Your deposit:
+            </div>
+            <div className="relative max-w-[220px]">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">₱</span>
+              <Input
+                type="text"
+                value={new Intl.NumberFormat('en-US').format(numAmount)}
+                onChange={handleAmountChange}
+                className="pl-7 h-10 text-base font-bold bg-white dark:bg-slate-950 border-brand-border dark:border-white/20 rounded-lg shadow-inner focus-visible:ring-brand-primary"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 whitespace-nowrap">Duration:</span>
+            <div className="flex bg-white dark:bg-slate-950 p-1 rounded-lg border border-brand-border dark:border-white/10">
+              {MONTH_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setTableMonths(opt.value)}
+                  className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-all ${
+                    tableMonths === opt.value
+                      ? 'bg-brand-primary text-white shadow-sm'
+                      : 'text-brand-textSecondary dark:text-gray-500 hover:text-brand-textPrimary dark:hover:text-gray-300'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Table Header ─── */}
       <table className="w-full text-left border-collapse">
-        <thead className="bg-[#F9FAFB] dark:bg-slate-950 border-b border-brand-border dark:border-white/10 text-[13px] font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider transition-colors duration-300">
+        <thead className="bg-[#F9FAFB] dark:bg-slate-950 border-b border-brand-border dark:border-white/10 text-[12px] font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider transition-colors duration-300">
           <tr>
-            <th className="p-4 py-5 font-semibold">Product</th>
-            <th className="p-4 py-5 font-semibold text-right">Headline Rate</th>
-            <th className="p-4 py-5 font-semibold text-right">
+            <th className="p-4 py-3.5 font-semibold w-12"></th>
+            <th className="p-4 py-3.5 font-semibold">Bank / Provider</th>
+            <th className="p-4 py-3.5 font-semibold text-right">Best Rate</th>
+            <th className="p-4 py-3.5 font-semibold text-right">
               <TooltipProvider delay={150}>
                 <Tooltip>
                   <TooltipTrigger
-                    render={<button className="inline-flex items-center gap-1.5 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors cursor-help" />}
+                    render={<button className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors cursor-help" />}
                   >
-                    Effective Rate
-                    <AlertCircle className="w-4 h-4 text-brand-textSecondary/70 dark:text-gray-400" />
+                    You Earn (After Tax)
+                    <AlertCircle className="w-3.5 h-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[300px] p-3 text-sm leading-relaxed text-left font-normal">
+                  <TooltipContent side="top" className="max-w-[300px] p-3 text-sm leading-relaxed text-left font-normal bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 shadow-lg">
                     <p>
-                      The <strong>effective rate</strong> is the blended after-tax yield on a ₱100,000 deposit. For tiered products, this accounts for rate caps and balance limits — showing what you <em>actually</em> earn, not just the headline.
+                      The effective after-tax rate you&apos;d actually earn on ₱{numAmount.toLocaleString()} — accounting for balance tiers and 20% withholding tax.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </th>
-            <th className="p-4 py-5 font-semibold">Product Name</th>
-            <th className="p-4 py-5 font-semibold text-center">Lock-In</th>
-            <th className="p-4 py-5 font-semibold text-center">Insurer</th>
-            <th className="p-4 py-5 font-semibold"></th>
+            <th className="p-4 py-3.5 font-semibold text-right">
+              <TooltipProvider delay={150}>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={<button className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors cursor-help" />}
+                  >
+                    <TrendingUp className="w-3.5 h-3.5 mr-0.5" />
+                    Projected Return
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[280px] p-3 text-sm leading-relaxed text-left font-normal bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 shadow-lg">
+                    <p>
+                      How much interest you&apos;d earn on ₱{numAmount.toLocaleString()} over {tableMonths} month{tableMonths > 1 ? 's' : ''}, after 20% tax.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </th>
+            <th className="p-4 py-3.5 font-semibold text-center">Best Term</th>
+            <th className="p-4 py-3.5 font-semibold text-center">Insured</th>
+            <th className="p-4 py-3.5 font-semibold w-12"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-brand-border dark:divide-white/10">
-          {rates.map((rate) => {
-            const headlineAfterTax = rate.taxExempt
-              ? calcTaxExempt(rate.headlineRate)
-              : calcAfterTaxPhp(rate.headlineRate);
-            const effectiveRate = computeEffectiveRate(referenceAmount, rate.tiers, rate.taxExempt);
-            const gapPP = (headlineAfterTax - effectiveRate) * 100;
-            const isOverstated = gapPP > 0.5;
+          {bankGroups.map((group, groupIndex) => {
+            const isExpanded = expandedProvider === group.provider;
+            const best = group.bestProduct;
+            const headlineGross = best.headlineRate;
+            const headlineAfterTax = best.taxExempt
+              ? calcTaxExempt(headlineGross)
+              : calcAfterTaxPhp(headlineGross);
 
             return (
-              <React.Fragment key={rate.id}>
+              <React.Fragment key={group.provider}>
+                {/* ─── Bank Summary Row ─── */}
                 <tr
-                  onClick={() => setExpandedId(expandedId === rate.id ? null : rate.id)}
-                  className="h-16 hover:bg-brand-surface dark:hover:bg-slate-800 transition-colors group cursor-pointer"
+                  onClick={() => setExpandedProvider(isExpanded ? null : group.provider)}
+                  className={`h-[72px] transition-colors group cursor-pointer ${
+                    isExpanded
+                      ? 'bg-brand-primaryLight/30 dark:bg-blue-950/20'
+                      : 'hover:bg-brand-surface dark:hover:bg-slate-800'
+                  } ${groupIndex < 3 ? 'border-l-2 border-l-transparent' : ''}`}
+                  style={groupIndex === 0 ? { borderLeftColor: '#FFD700' } : groupIndex === 1 ? { borderLeftColor: '#C0C0C0' } : groupIndex === 2 ? { borderLeftColor: '#CD7F32' } : {}}
                 >
-                  <td className="p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-md border border-brand-border dark:border-white/10 bg-white dark:bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-                      <img src={rate.logo} alt={rate.provider} className="w-7 h-7 object-contain" />
-                    </div>
-                    <div>
-                        <div className="font-semibold text-brand-textPrimary dark:text-gray-100 text-[15px]">{rate.provider}</div>
-                    </div>
+                  {/* Rank */}
+                  <td className="pl-4 pr-1">
+                    <RankBadge rank={groupIndex + 1} />
                   </td>
-                  <td className="p-4 text-right tabular-nums text-brand-textPrimary dark:text-gray-100 text-[15px] font-medium">
-                    {(headlineAfterTax * 100).toFixed(2)}%
-                    <span className="block text-[11px] text-brand-textSecondary dark:text-gray-500 font-normal">
-                      ({(rate.headlineRate * 100).toFixed(2)}% gross)
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <span className={`tabular-nums text-[16px] font-bold ${isOverstated ? 'text-amber-600 dark:text-amber-400' : 'text-positive'}`}>
-                        {formatRate(effectiveRate)}
-                      </span>
-                      {isOverstated && (
-                        <TooltipProvider delay={100}>
-                          <Tooltip>
-                            <TooltipTrigger render={<button className="cursor-help" />}>
-                              <AlertTriangle className="w-4 h-4 text-amber-500" />
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[260px] p-3 text-sm leading-relaxed text-left font-normal">
-                              <p>
-                                The headline rate is <strong>{gapPP.toFixed(1)}pp higher</strong> than the effective blended rate on ₱{referenceAmount.toLocaleString()}. This bank uses tiered rates or conditions.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm font-medium text-brand-textSecondary dark:text-gray-300">
-                    {rate.name}
-                  </td>
-                  <td className="p-4 text-center">
-                    {rate.lockInDays === 0 ? (
-                      <span className="text-[14px] text-brand-textSecondary dark:text-gray-400 font-medium">Liquid</span>
-                    ) : (
-                      <div className="flex justify-center">
-                        <TooltipProvider delay={100}>
-                          <Tooltip>
-                            <TooltipTrigger render={<button className="cursor-help" />}>
-                              <Badge variant="outline" className="text-[12px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0.5">
-                                <Lock className="w-3 h-3 mr-1" /> {rate.lockInDays} Days
-                              </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[240px] p-3 text-sm text-left font-normal border-amber-200 dark:border-amber-900">
-                              <p>Funds are locked for <strong>{rate.lockInDays} days</strong>. Early withdrawal typically results in lost interest and/or penalties.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+
+                  {/* Bank name + logo */}
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg border border-brand-border dark:border-white/10 bg-white dark:bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
+                        <img src={group.logo} alt={group.provider} className="w-7 h-7 object-contain" />
                       </div>
+                      <div>
+                        <div className="font-bold text-brand-textPrimary dark:text-gray-100 text-[15px] leading-tight">{group.provider}</div>
+                        <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
+                          {group.products.length} product{group.products.length > 1 ? 's' : ''} available
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Best headline rate */}
+                  <td className="p-4 text-right">
+                    <div className="text-[15px] font-semibold tabular-nums text-brand-textPrimary dark:text-gray-100">
+                      {(headlineGross * 100).toFixed(2)}%
+                    </div>
+                    <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
+                      gross
+                    </div>
+                  </td>
+
+                  {/* Effective after-tax */}
+                  <td className="p-4 text-right">
+                    <div className={`text-[18px] font-bold tabular-nums ${groupIndex === 0 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
+                      {formatRate(group.bestEffectiveRate)}
+                    </div>
+                    <div className="text-[11px] text-positive font-medium mt-0.5">
+                      after tax
+                    </div>
+                  </td>
+
+                  {/* Projected return */}
+                  <td className="p-4 text-right">
+                    {numAmount > 0 ? (
+                      <>
+                        <div className="text-[15px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
+                          +{formatPHP(group.bestReturn)}
+                        </div>
+                        <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
+                          in {tableMonths} mo
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-[13px] text-brand-textSecondary dark:text-gray-500">—</span>
                     )}
                   </td>
+
+                  {/* Lock-in for best product */}
                   <td className="p-4 text-center">
-                    <InsurerCell insurer={rate.insurer} />
+                    <LockBadge days={best.lockInDays} />
                   </td>
-                  <td className="p-4" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-end gap-3">
-                      <AffiliateButton amount={rate.payoutAmount} url={rate.affiliateUrl} />
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setExpandedId(expandedId === rate.id ? null : rate.id);
-                        }}
-                        className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors text-brand-textSecondary"
-                      >
-                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${expandedId === rate.id ? 'rotate-180' : ''}`} />
-                      </button>
-                    </div>
+
+                  {/* Insurer */}
+                  <td className="p-4 text-center">
+                    <InsurerBadge insurer={group.insurer} />
+                  </td>
+
+                  {/* Expand chevron */}
+                  <td className="pr-4">
+                    <button
+                      className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors text-brand-textSecondary"
+                      aria-label={`Expand ${group.provider} products`}
+                    >
+                      <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                    </button>
                   </td>
                 </tr>
+
+                {/* ─── Expanded Product Details ─── */}
                 <AnimatePresence>
-                  {expandedId === rate.id && (
+                  {isExpanded && (
                     <tr>
-                      <td colSpan={7} className="p-0 border-b-0">
+                      <td colSpan={8} className="p-0">
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
+                          transition={{ duration: 0.25 }}
                           className="overflow-hidden"
                         >
-                          <div className="px-6 py-4 bg-brand-surface/50 dark:bg-slate-900/50 border-y border-brand-border/50 dark:border-white/5">
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                              {/* Tier breakdown */}
-                              <div>
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-2">Rate Tiers</h4>
-                                <div className="space-y-1.5">
-                                  {rate.tiers.map((tier, i) => (
-                                    <div key={i} className="flex items-center justify-between text-sm">
-                                      <span className="text-brand-textSecondary dark:text-gray-400">
-                                        {tier.maxBalance !== null
-                                          ? `₱${tier.minBalance.toLocaleString()} – ₱${tier.maxBalance.toLocaleString()}`
-                                          : `₱${tier.minBalance.toLocaleString()}+`
-                                        }
+                          <div className="bg-[#F8FAFB] dark:bg-slate-950/60 border-t border-brand-border/40 dark:border-white/5">
+                            {group.products.map((product, pIndex) => {
+                              const isBest = pIndex === 0;
+                              const tierCount = product.tiers.length;
+                              const hasConditions = product.conditions.length > 0 && product.conditions.some(c => c.type !== 'none');
+                              const grossRate = product.taxExempt
+                                ? calcTaxExempt(product.headlineRate)
+                                : product.headlineRate;
+
+                              return (
+                                <div
+                                  key={product.id}
+                                  className={`px-6 py-4 flex items-start gap-4 transition-colors ${
+                                    pIndex < group.products.length - 1 ? 'border-b border-brand-border/30 dark:border-white/5' : ''
+                                  } ${isBest ? 'bg-positive/5 dark:bg-positive/5' : 'hover:bg-white/60 dark:hover:bg-slate-900/40'}`}
+                                >
+                                  {/* Product info */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="font-semibold text-[14px] text-brand-textPrimary dark:text-gray-100">
+                                        {product.name}
                                       </span>
-                                      <span className="font-semibold text-brand-textPrimary dark:text-gray-200 tabular-nums">
-                                        {formatRate(rate.taxExempt ? calcTaxExempt(tier.grossRate) : calcAfterTaxPhp(tier.grossRate))}
-                                        <span className="text-brand-textSecondary dark:text-gray-500 font-normal ml-1">
-                                          ({formatRate(tier.grossRate)} gross)
-                                        </span>
-                                      </span>
+                                      {isBest && (
+                                        <Badge className="bg-positive/10 text-positive border-positive/20 text-[10px] font-bold py-0">
+                                          Best for ₱{numAmount.toLocaleString()}
+                                        </Badge>
+                                      )}
+                                      <LockBadge days={product.lockInDays} />
                                     </div>
-                                  ))}
-                                </div>
-                              </div>
 
-                              {/* Conditions */}
-                              <div>
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-2">Conditions</h4>
-                                {rate.conditions.length > 0 && rate.conditions.some(c => c.type !== 'none') ? (
-                                  <ul className="space-y-1">
-                                    {rate.conditions.filter(c => c.type !== 'none').map((cond, i) => (
-                                      <li key={i} className="text-sm text-brand-textPrimary dark:text-gray-300 flex items-start gap-1.5">
-                                        <span className="text-amber-500 mt-0.5">•</span>
-                                        <span>
-                                          {cond.description}
-                                          {cond.expiresAt && (
-                                            <span className="ml-1 text-[11px] text-red-500 font-semibold">(Expires {cond.expiresAt})</span>
-                                          )}
+                                    {/* Tier breakdown */}
+                                    {tierCount > 1 && (
+                                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                                        {product.tiers.map((tier, i) => {
+                                          const tierAfterTax = product.taxExempt
+                                            ? calcTaxExempt(tier.grossRate)
+                                            : calcAfterTaxPhp(tier.grossRate);
+                                          const isActiveTier = product.tierType === 'threshold'
+                                            ? numAmount >= tier.minBalance && (tier.maxBalance === null || numAmount < tier.maxBalance)
+                                            : true;
+                                          // For threshold, highlight the single active tier
+                                          // Also handle edge case: last tier with no max
+                                          const isLastTier = i === product.tiers.length - 1;
+                                          const isActiveThreshold = product.tierType === 'threshold' &&
+                                            (numAmount >= tier.minBalance && (tier.maxBalance === null || numAmount <= tier.maxBalance || (isLastTier && numAmount >= tier.minBalance)));
+
+                                          return (
+                                            <span
+                                              key={i}
+                                              className={`text-[12px] tabular-nums ${
+                                                isActiveThreshold
+                                                  ? 'text-positive font-bold'
+                                                  : 'text-brand-textSecondary dark:text-gray-500'
+                                              }`}
+                                            >
+                                              {tier.maxBalance !== null
+                                                ? `₱${tier.minBalance.toLocaleString()}–₱${tier.maxBalance.toLocaleString()}`
+                                                : `₱${tier.minBalance.toLocaleString()}+`
+                                              }: {(tier.grossRate * 100).toFixed(1)}%{' '}
+                                              <span className="text-[11px]">→ {(tierAfterTax * 100).toFixed(2)}%</span>
+                                              {isActiveThreshold && <span className="ml-1 text-[10px]">✓ your tier</span>}
+                                            </span>
+                                          );
+                                        })}
+                                      </div>
+                                    )}
+
+                                    {/* Conditions */}
+                                    {hasConditions && (
+                                      <div className="mt-1.5 flex items-center gap-1.5">
+                                        <AlertTriangle className="w-3 h-3 text-amber-500 shrink-0" />
+                                        <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium leading-snug line-clamp-1">
+                                          {product.conditions.filter(c => c.type !== 'none').map(c => c.description).join('; ')}
                                         </span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  <p className="text-sm text-brand-textPrimary dark:text-gray-300">No conditions. Flat rate applies to any balance.</p>
-                                )}
-                              </div>
+                                      </div>
+                                    )}
 
-                              {/* Verified date */}
-                              <div>
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-2">Verification</h4>
-                                <div className="flex items-center gap-1.5 text-sm text-brand-textSecondary dark:text-gray-400">
-                                  <Calendar className="w-3.5 h-3.5" />
-                                  <span>Last verified: {rate.lastVerified}</span>
+                                    {/* No conditions — clean message */}
+                                    {!hasConditions && tierCount <= 1 && (
+                                      <p className="mt-1.5 text-[11px] text-positive font-medium flex items-center gap-1">
+                                        <ShieldCheck className="w-3 h-3" /> No conditions — flat rate on any amount
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  {/* Mini calculator result */}
+                                  <div className="text-right shrink-0 min-w-[160px]">
+                                    <div className="text-[16px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
+                                      {formatRate(product.effectiveRate)}
+                                      <span className="text-[11px] font-medium text-brand-textSecondary dark:text-gray-500 ml-1">after tax</span>
+                                    </div>
+                                    {numAmount > 0 && (
+                                      <div className="text-[13px] font-semibold text-positive tabular-nums mt-0.5">
+                                        +{formatPHP(product.projectedReturn)}
+                                        <span className="text-[11px] font-normal text-brand-textSecondary dark:text-gray-500 ml-1">
+                                          / {tableMonths}mo
+                                        </span>
+                                      </div>
+                                    )}
+                                    <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5 flex items-center justify-end gap-1">
+                                      <Calendar className="w-3 h-3" /> {product.lastVerified}
+                                    </div>
+                                  </div>
+
+                                  {/* CTA */}
+                                  <div className="shrink-0 flex items-center" onClick={(e) => e.stopPropagation()}>
+                                    <AffiliateButton amount={product.payoutAmount} url={product.affiliateUrl} />
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
+                              );
+                            })}
                           </div>
                         </motion.div>
                       </td>
@@ -250,12 +449,12 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
               </React.Fragment>
             );
           })}
-          {rates.length === 0 && (
-              <tr>
-                  <td colSpan={7} className="p-8 text-center text-brand-textSecondary dark:text-gray-400">
-                      No rates found for this category.
-                  </td>
-              </tr>
+          {bankGroups.length === 0 && (
+            <tr>
+              <td colSpan={8} className="p-8 text-center text-brand-textSecondary dark:text-gray-400">
+                No rates found for this category.
+              </td>
+            </tr>
           )}
         </tbody>
       </table>
