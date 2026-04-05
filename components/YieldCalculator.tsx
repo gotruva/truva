@@ -12,6 +12,8 @@ import {
   formatPHP,
   formatRate,
 } from '@/utils/yieldEngine';
+import { resolveLogoSrc } from '@/lib/logo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface YieldCalculatorProps {
   rates: RateProduct[];
@@ -121,6 +123,29 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
     setAmount(val);
   };
 
+  const liquidityHelp = (
+    <TooltipProvider delay={0}>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <button
+              type="button"
+              aria-label="Explain cash access filters"
+              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-400 dark:hover:text-gray-100"
+            />
+          }
+        >
+          <Info className="h-3.5 w-3.5" />
+        </TooltipTrigger>
+        <TooltipContent className="max-w-[280px] border border-gray-200 bg-white p-3 text-left leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100">
+          <span>
+            Liquid means you can take your money out anytime. Time Locked means you commit it for a fixed period before you can access it freely.
+          </span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+
   return (
     <section className="bg-white dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-2xl p-6 lg:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] mb-12 relative overflow-hidden transition-colors duration-300">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-primaryLight/30 dark:bg-brand-primaryDark/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
@@ -131,7 +156,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
         <div className="w-full lg:w-[45%] flex flex-col justify-center">
            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primaryLight/60 dark:bg-brand-primary/20 text-brand-primary dark:text-blue-400 text-sm font-semibold mb-6 w-fit border border-brand-primary/10">
               <Calculator className="w-4 h-4" />
-              Yield Calculator
+              Earnings Calculator
            </div>
            
            <h2 className="text-3xl font-bold text-brand-textPrimary dark:text-gray-100 mb-8 tracking-tight">
@@ -182,9 +207,12 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                 
                 {/* Liquidity Toggle */}
                 <div>
-                  <label className="block text-[13px] font-semibold text-brand-textSecondary dark:text-gray-400 mb-2.5 uppercase tracking-wider">
-                    Cash Accessibility
-                  </label>
+                  <div className="mb-2.5 flex items-center gap-1.5">
+                    <label className="block text-[13px] font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
+                      Cash Access
+                    </label>
+                    {liquidityHelp}
+                  </div>
                   <div className="flex bg-brand-surface dark:bg-slate-950 p-1.5 rounded-xl border border-brand-border dark:border-white/10 w-full sm:w-fit">
                     <button
                       onClick={() => setLiquidityFilter('all')}
@@ -228,7 +256,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
             <div className="bg-[#F8F9FB] dark:bg-slate-950 border border-brand-border dark:border-white/10 rounded-2xl p-6 lg:p-8 h-full flex flex-col">
                 {/* Header with scenario toggle */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 pb-4 border-b border-brand-border/60 dark:border-white/10 gap-3">
-                  <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">Projected Output</span>
+                  <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">Estimated Earnings</span>
                   
                 </div>
 
@@ -309,6 +337,9 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${index === 0 ? 'bg-[#FFD700]' : index === 1 ? 'bg-[#C0C0C0]' : 'bg-[#CD7F32]'}`}>
                                    {index + 1}
                                  </span>
+                                 <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white">
+                                   <img src={resolveLogoSrc(result.logo)} alt={result.provider} className="h-6 w-6 object-contain" />
+                                 </div>
                                  <span className="font-semibold text-[15px] text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
                                  <span className="text-[13px] font-medium text-brand-textSecondary dark:text-gray-400 ml-1">{result.name}</span>
                                  {badgeElement}

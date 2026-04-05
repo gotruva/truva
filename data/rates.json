@@ -1873,7 +1873,7 @@
     "id": "bpi-banko-savings",
     "name": "BanKo Savings",
     "provider": "BanKo (by BPI)",
-    "logo": "/logos/bpi.svg",
+    "logo": "/logos/banko.svg",
     "category": "banks",
     "headlineRate": 0.05,
     "baseRate": {

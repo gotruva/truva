@@ -15,6 +15,7 @@ import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, B
 import { motion, AnimatePresence } from 'framer-motion';
 import { computeEffectiveRate, computeReturn, formatRate, formatPHP } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
+import { resolveLogoSrc } from '@/lib/logo';
 
 /* ─── Helpers ─── */
 
@@ -25,6 +26,12 @@ function formatLockIn(days: number): string {
   const years = months / 12;
   if (years % 1 === 0) return `${years} year${years !== 1 ? 's' : ''}`;
   return `${years.toFixed(1)} years`;
+}
+
+function formatLockLabel(days: number, verbose = false): string {
+  if (days === 0) return 'Withdraw Anytime';
+  const prefix = verbose ? 'Time Locked for ' : 'Locked ';
+  return `${prefix}${formatLockIn(days)}`;
 }
 
 function formatPayoutFrequency(freq: RateProduct['payoutFrequency']): string {
@@ -58,13 +65,13 @@ function InsurerBadge({ insurer }: { insurer: string }) {
   );
 }
 
-function LockBadge({ days }: { days: number }) {
+function LockBadge({ days, verbose = false }: { days: number; verbose?: boolean }) {
   if (days === 0) {
     return <span className="text-[13px] text-brand-textSecondary dark:text-gray-400 font-medium">Withdraw Anytime</span>;
   }
   return (
     <Badge variant="outline" className="text-[11px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0">
-      <Lock className="w-3 h-3 mr-0.5" /> Locked {formatLockIn(days)}
+      <Lock className="w-3 h-3 mr-0.5" /> {formatLockLabel(days, verbose)}
     </Badge>
   );
 }
@@ -331,12 +338,12 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg border border-brand-border dark:border-white/10 bg-white dark:bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-                        <img src={group.logo} alt={group.provider} className="w-7 h-7 object-contain" />
+                        <img src={resolveLogoSrc(group.logo)} alt={group.provider} className="w-7 h-7 object-contain" />
                       </div>
                       <div>
                         <div className="font-bold text-brand-textPrimary dark:text-gray-100 text-[15px] leading-tight">{group.provider}</div>
                         <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
-                          {group.products.length} product{group.products.length > 1 ? 's' : ''} available
+                          {group.products.length} product{group.products.length > 1 ? 's' : ''} compared
                         </div>
                       </div>
                     </div>
@@ -442,7 +449,7 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                                           Best for ₱{numAmount.toLocaleString()}
                                         </Badge>
                                       )}
-                                      <LockBadge days={product.lockInDays} />
+                                      <LockBadge days={product.lockInDays} verbose />
                                       <span className="inline-flex items-center gap-1 text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
                                         <Calendar className="w-3 h-3 shrink-0" />
                                         Interest Paid: {formatPayoutFrequency(product.payoutFrequency)}

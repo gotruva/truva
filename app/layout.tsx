@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn('font-sans antialiased text-brand-textPrimary', spaceGrotesk.variable, inter.variable)}>
       <body className="flex flex-col min-h-screen bg-brand-surface dark:bg-slate-950 overflow-x-hidden transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <Navbar />
           <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
             {children}

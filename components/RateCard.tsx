@@ -8,6 +8,7 @@ import { Lock, ShieldCheck, AlertTriangle, Calendar, ChevronDown, Trophy } from 
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatRate, formatPHP } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
+import { resolveLogoSrc } from '@/lib/logo';
 
 function formatLockIn(days: number): string {
   if (days === 0) return 'Withdraw Anytime';
@@ -16,6 +17,12 @@ function formatLockIn(days: number): string {
   const years = months / 12;
   if (years % 1 === 0) return `${years} year${years !== 1 ? 's' : ''}`;
   return `${years.toFixed(1)} years`;
+}
+
+function formatLockLabel(days: number, verbose = false): string {
+  if (days === 0) return 'Withdraw Anytime';
+  const prefix = verbose ? 'Time Locked for ' : '';
+  return `${prefix}${formatLockIn(days)}`;
 }
 
 function formatPayoutFrequency(freq: string): string {
@@ -79,7 +86,7 @@ function ProductRow({ product, amount, months, isBest }: {
               <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">Withdraw Anytime</span>
             ) : (
               <Badge variant="outline" className="text-[10px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0">
-                <Lock className="w-2.5 h-2.5 mr-0.5" /> {formatLockIn(product.lockInDays)}
+                <Lock className="w-2.5 h-2.5 mr-0.5" /> {formatLockLabel(product.lockInDays, true)}
               </Badge>
             )}
             <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 flex items-center gap-0.5">
@@ -200,11 +207,8 @@ function ProductRow({ product, amount, months, isBest }: {
                 </div>
               </div>
 
-              {/* Verified + CTA */}
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-[10px] text-brand-textSecondary dark:text-gray-500 flex items-center gap-1">
-                  <Calendar className="w-3 h-3" /> {product.lastVerified}
-                </span>
+              {/* CTA */}
+              <div className="flex justify-end pt-1">
                 <div onClick={(e) => e.stopPropagation()}>
                   <AffiliateButton amount={product.payoutAmount} url={product.affiliateUrl} />
                 </div>
@@ -264,7 +268,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-brand-textSecondary bg-gray-100 dark:bg-slate-800">{rank}</span>
           )}
           <div className="w-10 h-10 rounded-lg border border-brand-border dark:border-white/10 bg-white shadow-sm flex items-center justify-center overflow-hidden">
-            <img src={logo} alt={provider} className="w-7 h-7 object-contain" />
+            <img src={resolveLogoSrc(logo)} alt={provider} className="w-7 h-7 object-contain" />
           </div>
         </div>
 
@@ -274,7 +278,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
             <div>
               <div className="font-bold text-brand-textPrimary dark:text-gray-100 text-[16px] leading-tight">{provider}</div>
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
-                {products.length} option{products.length > 1 ? 's' : ''} · <InsurerLabel insurer={insurer} />
+                {products.length} product{products.length > 1 ? 's' : ''} compared · <InsurerLabel insurer={insurer} />
               </div>
             </div>
             <ChevronDown className={`w-5 h-5 text-brand-textSecondary dark:text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -284,19 +288,19 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
           <div className="flex items-end justify-between mt-2">
             <div>
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
-                Best: {(headlineGross * 100).toFixed(2)}% gross
+                Highest listed rate: {(headlineGross * 100).toFixed(2)}% gross
               </div>
               <div className={`text-[28px] font-bold tabular-nums leading-none tracking-tight ${rank === 1 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
                 {formatRate(bestEffectiveRate)}
               </div>
               <div className="text-[11px] font-semibold text-brand-textSecondary dark:text-gray-400 mt-0.5">
-                after tax · {best.lockInDays === 0 ? 'withdraw anytime' : `${formatLockIn(best.lockInDays)} lock-in`}
+                net after tax · {best.lockInDays === 0 ? 'withdraw anytime' : `time locked for ${formatLockIn(best.lockInDays)}`}
               </div>
             </div>
             {amount > 0 && (
               <div className="text-right">
                 <div className="text-[15px] font-bold text-positive tabular-nums">+{formatPHP(bestReturn)}</div>
-                <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">in {months}mo</div>
+                <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">estimated over {months} mo</div>
               </div>
             )}
           </div>
@@ -349,7 +353,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
     <div className="bg-white dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-lg p-5 mb-4 block md:hidden shadow-sm">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-md border border-brand-border dark:border-white/10 bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-          <img src={rate.logo} alt={rate.provider} className="w-7 h-7 object-contain" />
+          <img src={resolveLogoSrc(rate.logo)} alt={rate.provider} className="w-7 h-7 object-contain" />
         </div>
         <div>
           <span className="block font-semibold text-brand-textPrimary dark:text-gray-100 text-lg leading-tight">{rate.provider}</span>

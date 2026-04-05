@@ -6,7 +6,7 @@ import { RateTable } from './RateTable';
 import { BankCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
 import { PreQualFlow, PreQualAnswers } from './PreQualFlow';
-import { computeEffectiveRate, computeReturn, formatPHP } from '@/utils/yieldEngine';
+import { computeEffectiveRate, computeReturn } from '@/utils/yieldEngine';
 import { Input } from '@/components/ui/input';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -96,20 +96,85 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
 
   return (
     <section>
-      <FilterTabs
-        active={filter}
-        onChange={setFilter}
-        activeLiquidity={liquidityFilter}
-        onLiquidityChange={setLiquidityFilter}
-        activePayoutFilter={payoutFilter}
-        onPayoutFilterChange={setPayoutFilter}
-      />
-      
       <div className="max-w-5xl mx-auto px-4 md:px-0">
+        <div className="hidden md:block">
+          <FilterTabs
+            active={filter}
+            onChange={setFilter}
+            activeLiquidity={liquidityFilter}
+            onLiquidityChange={setLiquidityFilter}
+            activePayoutFilter={payoutFilter}
+            onPayoutFilterChange={setPayoutFilter}
+          />
+        </div>
+
         <RateTable rates={sortedRates} />
-        
+
         {/* ─── Mobile View ─── */}
         <div className="md:hidden">
+          {!showPreQual && !answers && (
+            <button
+              onClick={() => setShowPreQual(true)}
+              className="mb-4 w-full rounded-2xl border border-brand-primary/20 bg-brand-primaryLight p-4 text-left text-brand-primary shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="mt-0.5 h-5 w-5 shrink-0" />
+                  <div>
+                    <div className="font-semibold leading-tight">Get a personalized recommendation</div>
+                    <div className="mt-1 text-xs font-medium text-brand-primary/75">
+                      Answer a few questions and we&apos;ll sort the strongest matches first.
+                    </div>
+                  </div>
+                </div>
+                <span className="text-xl leading-none">&rarr;</span>
+              </div>
+            </button>
+          )}
+
+          {showPreQual && (
+            <div className="mb-4">
+              <PreQualFlow
+                onComplete={(ans) => {
+                  setAnswers(ans);
+                  setShowPreQual(false);
+                  setMobileAmount(ans.amount.toString());
+                }}
+                onCancel={() => setShowPreQual(false)}
+              />
+            </div>
+          )}
+
+          {answers && !showPreQual && (
+            <div className="mb-4 flex items-center justify-between rounded-xl border border-brand-border bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-800">
+              <div>
+                <h3 className="flex items-center gap-2 font-bold text-brand-textPrimary dark:text-gray-100">
+                  <Target className="h-4 w-4 text-brand-primary" /> Top Matches
+                </h3>
+                <p className="mt-1 text-xs text-brand-textSecondary dark:text-gray-400">
+                  Based on ₱{answers.amount.toLocaleString()}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setAnswers(null)}
+                className="h-8 border border-brand-border shadow-none dark:border-white/10"
+              >
+                <X className="mr-1 h-3 w-3" /> Clear
+              </Button>
+            </div>
+          )}
+
+          <FilterTabs
+            active={filter}
+            onChange={setFilter}
+            activeLiquidity={liquidityFilter}
+            onLiquidityChange={setLiquidityFilter}
+            activePayoutFilter={payoutFilter}
+            onPayoutFilterChange={setPayoutFilter}
+          />
+
           {/* Mobile amount input bar */}
           <div className="bg-white dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-xl p-4 mb-4 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
@@ -141,43 +206,6 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
               ))}
             </div>
           </div>
-
-          {!showPreQual && !answers && (
-            <button 
-              onClick={() => setShowPreQual(true)}
-              className="w-full flex items-center justify-between bg-brand-primaryLight border border-brand-primary/20 text-brand-primary p-4 rounded-xl mb-4 font-semibold shadow-sm"
-            >
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5" /> Get a personalized recommendation
-              </div>
-              <span className="text-xl leading-none">&rarr;</span>
-            </button>
-          )}
-
-          {showPreQual && (
-            <PreQualFlow 
-              onComplete={(ans) => {
-                setAnswers(ans);
-                setShowPreQual(false);
-                setMobileAmount(ans.amount.toString());
-              }} 
-              onCancel={() => setShowPreQual(false)} 
-            />
-          )}
-
-          {answers && !showPreQual && (
-            <div className="flex items-center justify-between mb-4 bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-brand-border">
-               <div>
-                 <h3 className="font-bold text-brand-textPrimary dark:text-gray-100 flex items-center gap-2">
-                    <Target className="w-4 h-4 text-brand-primary" /> Top Matches
-                 </h3>
-                 <p className="text-xs text-brand-textSecondary mt-1">Based on ₱{answers.amount.toLocaleString()}</p>
-               </div>
-               <Button variant="ghost" size="sm" onClick={() => setAnswers(null)} className="h-8 shadow-none border border-brand-border">
-                 <X className="w-3 h-3 mr-1" /> Clear
-               </Button>
-            </div>
-          )}
 
           {/* Grouped bank cards */}
           <AnimatePresence mode="popLayout">
