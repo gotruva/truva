@@ -13,7 +13,6 @@ import {
   formatRate,
 } from '@/utils/yieldEngine';
 import { resolveLogoSrc } from '@/lib/logo';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface YieldCalculatorProps {
   rates: RateProduct[];
@@ -125,27 +124,23 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
   };
 
   const liquidityHelp = (
-    <TooltipProvider delay={0}>
-      <Tooltip open={infoOpen} onOpenChange={setInfoOpen}>
-        <TooltipTrigger
-          render={
-            <button
-              type="button"
-              aria-label="Explain cash access filters"
-              onClick={() => setInfoOpen((o) => !o)}
-              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-400 dark:hover:text-gray-100"
-            />
-          }
-        >
-          <Info className="h-3.5 w-3.5" />
-        </TooltipTrigger>
-        <TooltipContent className="max-w-[280px] border border-gray-200 bg-white p-3 text-left leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100">
+    <div className="relative inline-block">
+      <button
+        type="button"
+        aria-label="Explain cash access filters"
+        onClick={() => setInfoOpen((o) => !o)}
+        className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-400 dark:hover:text-gray-100"
+      >
+        <Info className="h-3.5 w-3.5" />
+      </button>
+      {infoOpen && (
+        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-50 w-max max-w-[280px] rounded-md border border-gray-200 bg-white p-3 text-left leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100">
           <span>
             Liquid means you can take your money out anytime. Time Locked means you commit it for a fixed period before you can access it freely.
           </span>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        </div>
+      )}
+    </div>
   );
 
   return (
