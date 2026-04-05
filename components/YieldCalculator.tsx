@@ -35,6 +35,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
   const includeDefi = false;
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
   const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const HORIZON_OPTIONS = [
     { label: '3 Mo', value: 3 },
@@ -125,12 +126,13 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
 
   const liquidityHelp = (
     <TooltipProvider delay={0}>
-      <Tooltip>
+      <Tooltip open={infoOpen} onOpenChange={setInfoOpen}>
         <TooltipTrigger
           render={
             <button
               type="button"
               aria-label="Explain cash access filters"
+              onClick={() => setInfoOpen((o) => !o)}
               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-400 dark:hover:text-gray-100"
             />
           }

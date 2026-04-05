@@ -17,6 +17,7 @@ interface FilterTabsProps {
 export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChange, activePayoutFilter, onPayoutFilterChange }: FilterTabsProps) {
   const [isMobileCondensed, setIsMobileCondensed] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(true);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const tabs: { label: string; value: FilterCategory }[] = [
     { label: 'All Banks', value: 'banks' },
@@ -50,12 +51,13 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
 
   const liquidityHelp = (
     <TooltipProvider delay={0}>
-      <Tooltip>
+      <Tooltip open={infoOpen} onOpenChange={setInfoOpen}>
         <TooltipTrigger
           render={
             <button
               type="button"
               aria-label="Explain cash access filters"
+              onClick={() => setInfoOpen((o) => !o)}
               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-400 dark:hover:text-gray-100"
             />
           }
