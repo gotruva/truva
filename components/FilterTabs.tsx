@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FilterCategory, LiquidityFilter, PayoutFilter } from '@/types';
 import { Lock, Unlock, Layers, Info, ChevronDown, SlidersHorizontal } from 'lucide-react';
 
@@ -17,6 +17,7 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
   const [isMobileCondensed, setIsMobileCondensed] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(true);
   const [infoOpen, setInfoOpen] = useState(false);
+  const infoRef = useRef<HTMLDivElement>(null);
 
   const tabs: { label: string; value: FilterCategory }[] = [
     { label: 'All Banks', value: 'banks' },
@@ -49,7 +50,7 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
     }`;
 
   const liquidityHelp = (
-    <div className="relative inline-block">
+    <div ref={infoRef} className="relative inline-block">
       <button
         type="button"
         aria-label="Explain cash access filters"
@@ -71,6 +72,17 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
   const activeCategoryLabel = tabs.find((tab) => tab.value === active)?.label ?? 'All Banks';
   const activeLiquidityLabel = liquidityTabs.find((tab) => tab.value === activeLiquidity)?.label ?? 'All';
   const activePayoutLabel = payoutTabs.find((tab) => tab.value === activePayoutFilter)?.label ?? 'Any';
+
+  useEffect(() => {
+    if (!infoOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (infoRef.current && !infoRef.current.contains(e.target as Node)) {
+        setInfoOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [infoOpen]);
 
   useEffect(() => {
     const handleScroll = () => {

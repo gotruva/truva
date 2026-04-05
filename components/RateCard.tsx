@@ -233,10 +233,11 @@ interface BankCardProps {
   amount: number;
   months: number;
   insurer: string;
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
-export function BankCard({ provider, logo, products, bestEffectiveRate, bestReturn, rank, amount, months, insurer }: BankCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export function BankCard({ provider, logo, products, bestEffectiveRate, bestReturn, rank, amount, months, insurer, isExpanded, onToggle }: BankCardProps) {
 
   const best = products[0];
   const headlineGross = best.headlineRate;
@@ -251,7 +252,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
     >
       {/* Card Header */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={onToggle}
         className="w-full p-4 flex items-start gap-3 text-left transition-colors duration-200 hover:bg-brand-surface/70 dark:hover:bg-slate-800/60"
       >
         {/* Rank + Logo */}

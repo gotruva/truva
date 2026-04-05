@@ -19,6 +19,7 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
   const [payoutFilter, setPayoutFilter] = useState<PayoutFilter>('all');
   const [showPreQual, setShowPreQual] = useState(false);
   const [answers, setAnswers] = useState<PreQualAnswers | null>(null);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   // Independent amount state for the rate section (mobile)
   const [mobileAmount, setMobileAmount] = useState<string>('100000');
@@ -227,6 +228,8 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
                   amount={numMobileAmount}
                   months={mobileMonths}
                   insurer={group.insurer}
+                  isExpanded={expandedCard === group.provider}
+                  onToggle={() => setExpandedCard(prev => prev === group.provider ? null : group.provider)}
                 />
               </motion.div>
             ))}

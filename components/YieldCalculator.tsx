@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { RateProduct, LiquidityFilter } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -35,6 +35,18 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
   const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>('all');
   const [infoOpen, setInfoOpen] = useState(false);
+  const infoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!infoOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (infoRef.current && !infoRef.current.contains(e.target as Node)) {
+        setInfoOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [infoOpen]);
 
   const HORIZON_OPTIONS = [
     { label: '3 Mo', value: 3 },
@@ -124,7 +136,7 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
   };
 
   const liquidityHelp = (
-    <div className="relative inline-block">
+    <div ref={infoRef} className="relative inline-block">
       <button
         type="button"
         aria-label="Explain cash access filters"
