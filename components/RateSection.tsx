@@ -195,10 +195,10 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
                 <button
                   key={opt.value}
                   onClick={() => setMobileMonths(opt.value)}
-                  className={`py-1.5 text-[13px] font-semibold rounded-md transition-all ${
+                  className={`py-1.5 text-[13px] font-semibold rounded-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                     mobileMonths === opt.value
                       ? 'bg-brand-primary text-white shadow-sm'
-                      : 'text-brand-textSecondary dark:text-gray-500 hover:text-brand-textPrimary'
+                      : 'text-brand-textSecondary dark:text-gray-500 hover:bg-white dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
                   }`}
                 >
                   {opt.label}

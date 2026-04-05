@@ -142,10 +142,9 @@ export function Navbar() {
           {/* Join Waitlist CTA */}
           <Button
             onClick={() => setIsWaitlistOpen(true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 h-9 rounded-lg shadow-md shadow-orange-500/20 transition-all text-[14px]"
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3 sm:px-4 h-9 rounded-lg shadow-md shadow-orange-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-orange-500/30 active:translate-y-0 text-[13px] sm:text-[14px]"
           >
-            <span className="hidden sm:inline">Join Waitlist</span>
-            <span className="sm:hidden">Waitlist</span>
+            <span>Join Waitlist</span>
           </Button>
 
           <Button

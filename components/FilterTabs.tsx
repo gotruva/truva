@@ -35,17 +35,17 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
   ];
 
   const mobileButtonClass = (isActive: boolean) =>
-    `flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border px-3 py-2.5 text-center text-[13px] font-semibold transition-all duration-200 active:scale-[0.98] ${
+    `flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border px-3 py-2.5 text-center text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:scale-[0.98] ${
       isActive
         ? 'border-brand-primary bg-brand-primary text-white shadow-md shadow-brand-primary/20'
         : 'border-brand-border bg-white text-brand-textSecondary hover:border-brand-primary/30 hover:bg-brand-surface dark:border-white/10 dark:bg-slate-900 dark:text-gray-300 dark:hover:border-blue-500/30 dark:hover:bg-slate-800'
     }`;
 
   const desktopPillClass = (isActive: boolean) =>
-    `flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
+    `flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 ${
       isActive
         ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900 shadow-sm'
-        : 'bg-transparent text-brand-textSecondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
+        : 'bg-transparent text-brand-textSecondary dark:text-gray-400 hover:bg-gray-100 hover:shadow-sm dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
     }`;
 
   const liquidityHelp = (

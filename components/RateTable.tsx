@@ -225,10 +225,10 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                 <button
                   key={opt.value}
                   onClick={() => setTableMonths(opt.value)}
-                  className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-all ${
+                  className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                     tableMonths === opt.value
                       ? 'bg-brand-primary text-white shadow-sm'
-                      : 'text-brand-textSecondary dark:text-gray-500 hover:text-brand-textPrimary dark:hover:text-gray-300'
+                      : 'text-brand-textSecondary dark:text-gray-500 hover:bg-brand-surface dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
                   }`}
                 >
                   {opt.label}
@@ -406,10 +406,15 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
                   {/* Expand chevron */}
                   <td className="pr-4">
                     <button
-                      className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors text-brand-textSecondary"
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-all duration-200 ${
+                        isExpanded
+                          ? 'border-brand-primary/20 bg-brand-primary text-white shadow-sm shadow-brand-primary/20 dark:bg-blue-500'
+                          : 'border-brand-primary/20 bg-brand-primary/5 text-brand-primary hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white'
+                      }`}
                       aria-label={`Expand ${group.provider} products`}
                     >
-                      <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                      <span>{isExpanded ? 'Hide details' : 'More info'}</span>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                     </button>
                   </td>
                 </tr>

@@ -190,10 +190,10 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                      <button
                        key={opt.value}
                        onClick={() => setMonths(opt.value)}
-                       className={`py-2 text-sm font-semibold rounded-lg transition-all ${
+                       className={`py-2 text-sm font-semibold rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                          months === opt.value 
                           ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border dark:border-white/10' 
-                          : 'text-brand-textSecondary dark:text-gray-500 hover:text-brand-textPrimary dark:hover:text-gray-300'
+                          : 'text-brand-textSecondary dark:text-gray-500 hover:bg-white dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
                        }`}
                      >
                        {opt.label}
@@ -216,30 +216,30 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                   <div className="flex bg-brand-surface dark:bg-slate-950 p-1.5 rounded-xl border border-brand-border dark:border-white/10 w-full sm:w-fit">
                     <button
                       onClick={() => setLiquidityFilter('all')}
-                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                         liquidityFilter === 'all'
                           ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border/50'
-                          : 'text-brand-textSecondary hover:text-brand-textPrimary'
+                          : 'text-brand-textSecondary hover:bg-white dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
                       }`}
                     >
                       All Options
                     </button>
                     <button
                       onClick={() => setLiquidityFilter('liquid')}
-                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                         liquidityFilter === 'liquid'
                           ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border/50'
-                          : 'text-brand-textSecondary hover:text-brand-textPrimary'
+                          : 'text-brand-textSecondary hover:bg-white dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
                       }`}
                     >
                       Liquid Only
                     </button>
                     <button
                       onClick={() => setLiquidityFilter('locked')}
-                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                      className={`flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                         liquidityFilter === 'locked'
                           ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-blue-400 shadow-sm border border-brand-border/50'
-                          : 'text-brand-textSecondary hover:text-brand-textPrimary'
+                          : 'text-brand-textSecondary hover:bg-white dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
                       }`}
                     >
                       Time Locked
@@ -376,12 +376,12 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                             {/* Expandable condition & tier details */}
                             <button
                               onClick={() => setExpandedResultId(expandedResultId === result.id ? null : result.id)}
-                              className="flex items-center gap-1.5 mt-2.5 text-[12px] font-medium text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors group/detail"
+                              className="inline-flex items-center gap-1.5 mt-3 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1.5 text-[12px] font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white group/detail"
                               aria-expanded={expandedResultId === result.id}
-                              aria-label={`View conditions and rate tiers for ${result.provider}`}
+                              aria-label={`Click for more info about ${result.provider}`}
                             >
                               <Info className="w-3.5 h-3.5" />
-                              <span>View conditions & rate tiers</span>
+                              <span>Click for more info</span>
                               <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${expandedResultId === result.id ? 'rotate-180' : ''}`} />
                             </button>
 

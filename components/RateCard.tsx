@@ -114,9 +114,9 @@ function ProductRow({ product, amount, months, isBest }: {
       {/* Expandable detail */}
       <button
         onClick={() => setShowDetail(!showDetail)}
-        className="flex items-center gap-1 mt-2 text-[11px] text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary transition-colors"
+        className="inline-flex items-center gap-1.5 mt-2.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1.5 text-[11px] font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white"
       >
-        <span>{showDetail ? 'Hide' : 'View'} details</span>
+        <span>{showDetail ? 'Hide extra info' : 'Click for more info'}</span>
         <ChevronDown className={`w-3 h-3 transition-transform ${showDetail ? 'rotate-180' : ''}`} />
       </button>
 
@@ -252,7 +252,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
       {/* Card Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex items-start gap-3 text-left"
+        className="w-full p-4 flex items-start gap-3 text-left transition-colors duration-200 hover:bg-brand-surface/70 dark:hover:bg-slate-800/60"
       >
         {/* Rank + Logo */}
         <div className="flex flex-col items-center gap-1.5 shrink-0">
@@ -281,7 +281,14 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
                 {products.length} product{products.length > 1 ? 's' : ''} compared · <InsurerLabel insurer={insurer} />
               </div>
             </div>
-            <ChevronDown className={`w-5 h-5 text-brand-textSecondary dark:text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+            <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all duration-200 ${
+              isExpanded
+                ? 'border-brand-primary/20 bg-brand-primary text-white shadow-sm shadow-brand-primary/20 dark:bg-blue-500'
+                : 'border-brand-primary/20 bg-brand-primary/5 text-brand-primary dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300'
+            }`}>
+              <span>{isExpanded ? 'Hide' : 'More info'}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+            </span>
           </div>
 
           {/* Rate display */}
