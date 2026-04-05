@@ -113,7 +113,7 @@ export function RateSection({ rates }: { rates: RateProduct[] }) {
 
         {/* ─── Mobile View ─── */}
         <div className="md:hidden">
-          {!showPreQual && !answers && (
+          {false && !showPreQual && !answers && (
             <button
               onClick={() => setShowPreQual(true)}
               className="mb-4 w-full rounded-2xl border border-brand-primary/20 bg-brand-primaryLight p-4 text-left text-brand-primary shadow-sm"

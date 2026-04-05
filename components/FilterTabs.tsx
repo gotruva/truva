@@ -110,8 +110,8 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
     }`}>
       <div className="mx-auto max-w-5xl px-4 md:px-0">
         <div className="space-y-3 md:hidden">
-          <div className={`rounded-2xl border border-brand-border bg-[#F8FAFC] shadow-sm transition-all duration-300 dark:border-white/10 dark:bg-slate-900/80 ${
-            isMobileCondensed ? 'p-2.5' : 'p-3'
+          <div className={`rounded-2xl border border-brand-border bg-white shadow-sm transition-all duration-300 dark:border-white/10 dark:bg-slate-900 ${
+            isMobileCondensed ? 'p-2' : 'p-2.5'
           }`}>
             {isMobileCondensed && (
               <button
@@ -147,9 +147,9 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
             )}
 
             {isMobileExpanded && (
-              <div className={`space-y-3 ${isMobileCondensed ? 'mt-3' : ''}`}>
-              <div className="rounded-xl border border-brand-border/80 bg-white p-3 dark:border-white/10 dark:bg-slate-950">
-                <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+              <div className={`space-y-2.5 ${isMobileCondensed ? 'mt-2' : ''}`}>
+              <div className="px-1 pt-0.5">
+                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
                   Bank Type
                 </div>
                 <div className="grid grid-cols-1 gap-2">
@@ -165,8 +165,8 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
                 </div>
               </div>
 
-              <div className="rounded-xl border border-brand-border/80 bg-white p-3 dark:border-white/10 dark:bg-slate-950">
-                <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+              <div className="border-t border-brand-border/50 dark:border-white/8 pt-2.5 px-1">
+                <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
                   <span>Cash Access</span>
                   {liquidityHelp}
                 </div>
@@ -184,8 +184,8 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
                 </div>
               </div>
 
-              <div className="rounded-xl border border-brand-border/80 bg-white p-3 dark:border-white/10 dark:bg-slate-950">
-                <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+              <div className="border-t border-brand-border/50 dark:border-white/8 pt-2.5 px-1">
+                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
                   Interest Payout
                 </div>
                 <div className="grid grid-cols-3 gap-2">
@@ -205,7 +205,7 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
           </div>
         </div>
 
-        <div className="hidden rounded-2xl border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-slate-900 md:flex md:flex-col md:gap-4">
+        <div className="hidden rounded-2xl border border-brand-border bg-white px-4 py-3.5 shadow-sm dark:border-white/10 dark:bg-slate-900 md:flex md:flex-col md:gap-3">
           <div className="flex flex-wrap justify-center gap-2 md:flex-nowrap md:justify-start">
             {tabs.map((tab) => (
               <button

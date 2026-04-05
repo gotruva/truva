@@ -495,10 +495,10 @@ export function RateTable({ rates }: { rates: RateProduct[] }) {
 
                                     {/* Conditions */}
                                     {hasConditions && (
-                                      <div className="mt-1.5 flex items-center gap-1.5">
-                                        <AlertTriangle className="w-3 h-3 text-amber-500 shrink-0" />
-                                        <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium leading-snug line-clamp-1">
-                                          {product.conditions.filter(c => c.type !== 'none').map(c => c.description).join('; ')}
+                                      <div className="mt-1.5 flex items-start gap-1.5 rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200/60 dark:border-red-800/30 px-2 py-1">
+                                        <AlertTriangle className="w-3 h-3 text-red-500 shrink-0 mt-0.5" />
+                                        <span className="text-[11px] text-red-700 dark:text-red-400 font-semibold leading-snug">
+                                          Rate requires conditions: {product.conditions.filter(c => c.type !== 'none').map(c => c.description).join('; ')}
                                         </span>
                                       </div>
                                     )}

@@ -93,8 +93,8 @@ function ProductRow({ product, amount, months, isBest }: {
               <Calendar className="w-2.5 h-2.5" /> {formatPayoutFrequency(product.payoutFrequency)}
             </span>
             {hasConditions && (
-              <span className="inline-flex items-center text-[10px] text-amber-600 dark:text-amber-400 font-medium">
-                <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Conditions
+              <span className="inline-flex items-center text-[10px] text-red-600 dark:text-red-400 font-semibold">
+                <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Rate has requirements
               </span>
             )}
           </div>
@@ -168,12 +168,14 @@ function ProductRow({ product, amount, months, isBest }: {
 
               {/* Conditions */}
               {hasConditions && (
-                <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-1">Requirements</h4>
+                <div className="rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200/60 dark:border-red-800/30 px-3 py-2">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1 flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3" /> To earn this rate, you must:
+                  </h4>
                   <ul className="space-y-0.5">
                     {product.conditions.filter(c => c.type !== 'none').map((cond, i) => (
-                      <li key={i} className="text-[11px] text-brand-textPrimary dark:text-gray-300 flex items-start gap-1.5 leading-relaxed">
-                        <span className="text-amber-500 mt-0.5">•</span>
+                      <li key={i} className="text-[11px] text-red-800 dark:text-red-300 flex items-start gap-1.5 leading-relaxed">
+                        <span className="text-red-500 mt-0.5 shrink-0">•</span>
                         <span>{cond.description}</span>
                       </li>
                     ))}
