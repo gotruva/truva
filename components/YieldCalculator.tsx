@@ -245,6 +245,11 @@ export function YieldCalculator({ rates }: YieldCalculatorProps) {
                       Time Locked
                     </button>
                   </div>
+                  <p className="mt-2.5 text-[12px] leading-relaxed text-brand-textSecondary dark:text-gray-400">
+                    <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Liquid</span> lets you withdraw anytime.
+                    {' '}
+                    <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Time Locked</span> means your money stays deposited until the term ends.
+                  </p>
                 </div>
 
               </div>

@@ -107,6 +107,11 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
                     </button>
                   ))}
                 </div>
+                <p className="mt-2.5 text-[12px] leading-relaxed text-brand-textSecondary dark:text-gray-400">
+                  <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Liquid</span> lets you withdraw anytime.
+                  {' '}
+                  <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Time Locked</span> means your money stays deposited until the term ends.
+                </p>
               </div>
 
               <div className="rounded-xl border border-brand-border/80 bg-white p-3 dark:border-white/10 dark:bg-slate-950">
@@ -164,6 +169,11 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
               </button>
             ))}
           </div>
+          <p className="hidden text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400 md:block">
+            <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Liquid</span> lets you withdraw anytime.
+            {' '}
+            <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Time Locked</span> means your money stays deposited until the term ends.
+          </p>
 
           <div className="flex flex-wrap items-center justify-center gap-2 md:flex-nowrap md:justify-start">
             <span className="mr-1 hidden text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500 md:block">
