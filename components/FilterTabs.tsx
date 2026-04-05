@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { FilterCategory, LiquidityFilter, PayoutFilter } from '@/types';
-import { Lock, Unlock, Layers, Info } from 'lucide-react';
+import { Lock, Unlock, Layers, Info, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface FilterTabsProps {
@@ -14,6 +15,9 @@ interface FilterTabsProps {
 }
 
 export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChange, activePayoutFilter, onPayoutFilterChange }: FilterTabsProps) {
+  const [isMobileCondensed, setIsMobileCondensed] = useState(false);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(true);
+
   const tabs: { label: string; value: FilterCategory }[] = [
     { label: 'All Banks', value: 'banks' },
   ];
@@ -67,12 +71,74 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
     </TooltipProvider>
   );
 
+  const activeCategoryLabel = tabs.find((tab) => tab.value === active)?.label ?? 'All Banks';
+  const activeLiquidityLabel = liquidityTabs.find((tab) => tab.value === activeLiquidity)?.label ?? 'All';
+  const activePayoutLabel = payoutTabs.find((tab) => tab.value === activePayoutFilter)?.label ?? 'Any';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const nextCondensed = window.scrollY > 260;
+
+      setIsMobileCondensed((prev) => {
+        if (prev !== nextCondensed) {
+          setIsMobileExpanded(!nextCondensed);
+        }
+        return nextCondensed;
+      });
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="sticky top-[76px] z-10 mb-4 border-b border-brand-border bg-white/95 py-3 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.02)] transition-colors duration-300 dark:border-white/10 dark:bg-slate-950/95 md:mb-8 md:py-4">
+    <div className={`sticky top-[76px] z-10 mb-4 border-b border-brand-border bg-white/95 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.02)] transition-all duration-300 dark:border-white/10 dark:bg-slate-950/95 md:mb-8 md:py-4 ${
+      isMobileCondensed ? 'py-2' : 'py-3'
+    }`}>
       <div className="mx-auto max-w-5xl px-4 md:px-0">
         <div className="space-y-3 md:hidden">
-          <div className="rounded-2xl border border-brand-border bg-[#F8FAFC] p-3 shadow-sm dark:border-white/10 dark:bg-slate-900/80">
-            <div className="space-y-3">
+          <div className={`rounded-2xl border border-brand-border bg-[#F8FAFC] shadow-sm transition-all duration-300 dark:border-white/10 dark:bg-slate-900/80 ${
+            isMobileCondensed ? 'p-2.5' : 'p-3'
+          }`}>
+            {isMobileCondensed && (
+              <button
+                type="button"
+                onClick={() => setIsMobileExpanded((prev) => !prev)}
+                className="flex w-full items-center justify-between rounded-xl border border-brand-border/80 bg-white px-3 py-2 text-left transition-all dark:border-white/10 dark:bg-slate-950"
+                aria-expanded={isMobileExpanded}
+                aria-label="Toggle filter controls"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
+                    <span>Filters</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-[11px] font-semibold text-brand-primary dark:bg-brand-primary/20 dark:text-blue-300">
+                      {activeCategoryLabel}
+                    </span>
+                    <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
+                      {activeLiquidityLabel}
+                    </span>
+                    <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
+                      {activePayoutLabel}
+                    </span>
+                  </div>
+                </div>
+                <ChevronDown
+                  className={`ml-3 h-4 w-4 shrink-0 text-brand-textSecondary transition-transform duration-200 dark:text-gray-400 ${
+                    isMobileExpanded ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            )}
+
+            {isMobileExpanded && (
+              <div className={`space-y-3 ${isMobileCondensed ? 'mt-3' : ''}`}>
               <div className="rounded-xl border border-brand-border/80 bg-white p-3 dark:border-white/10 dark:bg-slate-950">
                 <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
                   Bank Type
@@ -107,11 +173,6 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
                     </button>
                   ))}
                 </div>
-                <p className="mt-2.5 text-[12px] leading-relaxed text-brand-textSecondary dark:text-gray-400">
-                  <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Liquid</span> lets you withdraw anytime.
-                  {' '}
-                  <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Time Locked</span> means your money stays deposited until the term ends.
-                </p>
               </div>
 
               <div className="rounded-xl border border-brand-border/80 bg-white p-3 dark:border-white/10 dark:bg-slate-950">
@@ -130,7 +191,8 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
                   ))}
                 </div>
               </div>
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -169,11 +231,6 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
               </button>
             ))}
           </div>
-          <p className="hidden text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400 md:block">
-            <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Liquid</span> lets you withdraw anytime.
-            {' '}
-            <span className="font-semibold text-brand-textPrimary dark:text-gray-100">Time Locked</span> means your money stays deposited until the term ends.
-          </p>
 
           <div className="flex flex-wrap items-center justify-center gap-2 md:flex-nowrap md:justify-start">
             <span className="mr-1 hidden text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500 md:block">
