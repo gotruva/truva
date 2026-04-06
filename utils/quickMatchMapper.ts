@@ -5,7 +5,6 @@ export interface CalculatorPrefill {
   months: number;
   liquidityFilter: LiquidityFilter;
   payoutFilter: PayoutFilter;
-  includeDefi: boolean;
   includePdicOnly: boolean;
 }
 
@@ -38,7 +37,6 @@ export function mapAnswersToFilters(a: QuickMatchAnswers): CalculatorPrefill {
     months: monthsMap[a.timeline],
     liquidityFilter: liquidityMap[a.lockFlexibility],
     payoutFilter: payoutMap[a.payoutPreference],
-    includeDefi: a.insurancePreference === 'open-all',
     includePdicOnly: a.insurancePreference === 'insured-only',
   };
 }

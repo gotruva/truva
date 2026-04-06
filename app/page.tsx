@@ -1,10 +1,11 @@
-import { getLiveRates } from '@/lib/rates';
+import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
+import Script from 'next/script';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
 
 export default async function HomePage() {
-  const rates = await getLiveRates();
+  const rates = await getPublicRates();
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -24,23 +25,21 @@ export default async function HomePage() {
     })),
   };
 
-  const latestVerified = rates.reduce((acc, r) => r.lastVerified > acc ? r.lastVerified : acc, '');
-  const [yr, mo, dy] = latestVerified.split('-');
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const formattedDate = latestVerified ? `${monthNames[parseInt(mo) - 1]} ${parseInt(dy)}, ${yr}` : '';
+  const formattedDate = formatVerifiedDate(getLatestVerifiedDate(rates));
 
   return (
     <>
-      <script
+      <Script
+        id="home-rate-list-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <HeroSection />
+      <HeroSection formattedDate={formattedDate} />
 
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 pt-12 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto" id="compare-hub">
+        <div className="max-w-7xl mx-auto scroll-mt-28" id="calculator">
           <CompareHub rates={rates} formattedDate={formattedDate} />
         </div>
       </div>

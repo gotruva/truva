@@ -38,7 +38,6 @@ function formatLockPeriod(days: number): string {
 export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
   const [amount, setAmount] = useState<string>(prefill?.amount ? String(prefill.amount) : '100000');
   const [months, setMonths] = useState<number>(prefill?.months ?? 12);
-  const includeDefi = false;
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
   const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>(prefill?.liquidityFilter ?? 'all');
   const [infoOpen, setInfoOpen] = useState(false);
@@ -64,11 +63,6 @@ export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
 
   const filteredRates = useMemo(() => {
     let filtered = rates;
-    
-    // Risk filter
-    if (!includeDefi) {
-      filtered = filtered.filter(r => r.category !== 'defi');
-    }
 
     // Lock-in filter
     // Map standard durations to exact bank/bond terms (e.g. 1 Year -> 365 days)
@@ -88,7 +82,7 @@ export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
     }
     
     return filtered;
-  }, [rates, months, includeDefi, liquidityFilter]);
+  }, [rates, months, liquidityFilter]);
 
   const topResults = useMemo(() => {
     const numAmount = parseFloat(amount.replace(/,/g, ''));
@@ -172,18 +166,18 @@ export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
         <div className="w-full lg:w-[45%] flex flex-col justify-center">
            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primaryLight/60 dark:bg-brand-primary/20 text-brand-primary dark:text-blue-400 text-sm font-semibold mb-6 w-fit border border-brand-primary/10">
               <Calculator className="w-4 h-4" />
-              Earnings Calculator
+              Savings Calculator
            </div>
            
            <h2 className="text-3xl font-bold text-brand-textPrimary dark:text-gray-100 mb-8 tracking-tight">
-             See exactly how much <br className="hidden lg:block"/>you could earn.
+             See how much <br className="hidden lg:block"/>you could earn.
            </h2>
 
            <div className="space-y-8">
               {/* Amount Input */}
               <div>
                 <label className="block text-sm font-semibold text-brand-textSecondary dark:text-gray-400 mb-3 uppercase tracking-wider">
-                  Initial Deposit
+                  How much are you saving?
                 </label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-semibold text-brand-textSecondary dark:text-gray-400">₱</span>
@@ -199,7 +193,7 @@ export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
               {/* Time Horizon Slider Tabs */}
               <div>
                 <label className="block text-sm font-semibold text-brand-textSecondary dark:text-gray-400 mb-3 uppercase tracking-wider">
-                  Investment Duration
+                  How long can you leave it there?
                 </label>
                 <div className="grid grid-cols-4 gap-2 bg-brand-surface dark:bg-slate-950 p-1.5 rounded-xl border border-brand-border dark:border-white/10">
                    {HORIZON_OPTIONS.map(opt => (
@@ -488,7 +482,7 @@ export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
                   
                   {topResults.length === 0 && (
                     <div className="text-center py-12 text-brand-textSecondary dark:text-gray-500">
-                       Enter an amount greater than 0 to view recommendations.
+                       Enter an amount greater than 0 to compare bank options.
                     </div>
                   )}
                 </div>

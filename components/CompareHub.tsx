@@ -68,7 +68,7 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            Quick Match
+            Find My Best Rate
           </button>
           <button
             onClick={handleAdvancedTab}
@@ -79,7 +79,7 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
             }`}
           >
             <Calculator className="w-4 h-4" />
-            Advanced Compare
+            Compare All Banks
           </button>
         </div>
       </div>
@@ -164,11 +164,11 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
       {/* ── Always visible: rate comparison table ── */}
       <div id="deposit-rates" className="px-4 mt-4">
         <div className="max-w-3xl mb-8">
-          <h2 className="text-2xl font-bold text-brand-textPrimary dark:text-gray-100">Compare Today&apos;s Best Rates</h2>
+          <h2 className="text-2xl font-bold text-brand-textPrimary dark:text-gray-100">Compare bank rates in one place</h2>
           {formattedDate && (
             <p className="text-sm text-brand-textSecondary dark:text-gray-400 mt-2 flex items-center gap-1.5">
               <span className="text-positive font-semibold">✓</span>
-              Rates last verified {formattedDate}
+              Rates last checked and verified on {formattedDate}
             </p>
           )}
         </div>

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 export interface PreQualAnswers {
   amount: number;
   lockIn: 'Liquid' | 'Short' | 'Long';
-  risk: 'PDIC' | 'Medium' | 'DeFi';
+  risk: 'PDIC' | 'AllBanks';
 }
 
 interface PreQualFlowProps {
@@ -20,7 +20,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
   const [step, setStep] = useState(1);
   const [amount, setAmount] = useState<string>('100000');
   const [lockIn, setLockIn] = useState<'Liquid' | 'Short' | 'Long' | null>(null);
-  const [risk, setRisk] = useState<'PDIC' | 'Medium' | 'DeFi' | null>(null);
+  const [risk, setRisk] = useState<'PDIC' | 'AllBanks' | null>(null);
 
   const handleNext = () => setStep((s) => s + 1);
 
@@ -124,15 +124,14 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-brand-textPrimary dark:text-gray-100 text-lg">What is your risk comfort?</h3>
-              <p className="text-sm text-brand-textSecondary dark:text-gray-400">We'll filter options based on safety.</p>
+              <h3 className="font-semibold text-brand-textPrimary dark:text-gray-100 text-lg">Which bank options do you want to see?</h3>
+              <p className="text-sm text-brand-textSecondary dark:text-gray-400">Keep the results conservative or compare the full bank list.</p>
             </div>
           </div>
           <div className="flex flex-col gap-3 mb-6">
             {[
-              { id: 'PDIC', label: 'No risk (PDIC Insured only)' },
-              { id: 'Medium', label: 'Some risk is OK' },
-              { id: 'DeFi', label: 'Include DeFi / Crypto options' },
+              { id: 'PDIC', label: 'PDIC-insured banks only' },
+              { id: 'AllBanks', label: 'Show all bank options' },
             ].map((opt) => (
               <button
                 key={opt.id}
@@ -151,7 +150,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
             onClick={finishFlow}
             disabled={!risk}
           >
-            Show My Top 3 Matches
+            Show My Best Matches
           </Button>
         </>, 3
       )}

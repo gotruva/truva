@@ -53,8 +53,6 @@ function getTradeoffs(product: RateProduct): string[] {
   if (spending) out.push(`Requires ₱${(spending.requiredMonthlySpend ?? 0).toLocaleString('en-PH')}/mo spend to unlock top rate`);
   const promo = product.conditions.find(c => c.type === 'promo' && c.expiresAt);
   if (promo) out.push(`Promo rate expires ${promo.expiresAt}`);
-  if (product.riskLevel === 'DeFi') out.push('Variable rate · not PDIC-insured · smart-contract risk');
-  if (!product.pdic && product.category === 'uitfs') out.push('UITF — returns not guaranteed, subject to market risk');
   return out;
 }
 
@@ -89,7 +87,7 @@ function buildReasons(product: TopProduct, answers: QuickMatchAnswers): string[]
   if (answers.payoutPreference === 'monthly' && ['daily', 'monthly'].includes(product.payoutFrequency)) {
     reasons.push('Interest credited monthly — matches your payout preference');
   } else if (answers.payoutPreference === 'at-maturity' && ['at_maturity', 'annually'].includes(product.payoutFrequency)) {
-    reasons.push('Pays at maturity — your money compounds without interim taxation friction');
+    reasons.push('Pays at maturity so your money can keep compounding until the end of the term');
   } else {
     reasons.push(`Interest paid ${formatPayout(product.payoutFrequency).toLowerCase()}`);
   }
@@ -98,7 +96,7 @@ function buildReasons(product: TopProduct, answers: QuickMatchAnswers): string[]
   if (answers.purpose === 'emergency' && product.lockInDays === 0) {
     reasons.push('Ideal emergency fund — liquid and insured');
   } else if (answers.purpose === 'monthly-income' && ['daily', 'monthly'].includes(product.payoutFrequency)) {
-    reasons.push('Regular monthly interest supports a passive income goal');
+    reasons.push('Regular interest payouts fit your goal for monthly income');
   } else if (answers.purpose === 'long-term' && product.lockInDays > 180) {
     reasons.push('Long lock-in aligns with your long-term savings goal');
   }
@@ -153,7 +151,7 @@ function RecommendationCard({
       {isTop && (
         <div className="flex items-center gap-2 px-4 py-1.5 bg-brand-primary">
           <Sparkles className="w-3.5 h-3.5 text-white" />
-          <span className="text-xs font-bold text-white uppercase tracking-wider">Best Overall Match</span>
+          <span className="text-xs font-bold text-white uppercase tracking-wider">Best Match for You</span>
         </div>
       )}
 
@@ -310,8 +308,8 @@ export function QuickMatchResults({ rates, answers, onSeeFullComparison, onAdjus
 
   const topProducts = useMemo<TopProduct[]>(() => {
     let filtered = rates.filter(r => {
-      if (r.category === 'defi' && !filters.includeDefi) return false;
-      if (filters.includePdicOnly && !r.pdic && r.category !== 'govt') return false;
+      if (r.category !== 'banks') return false;
+      if (filters.includePdicOnly && !r.pdic) return false;
 
       const horizonMap: Record<number, number> = { 3: 91, 6: 182, 12: 365, 24: 730 };
       const horizonDays = horizonMap[filters.months] ?? filters.months * 30;
@@ -328,8 +326,8 @@ export function QuickMatchResults({ rates, answers, onSeeFullComparison, onAdjus
     // Graceful fallback — relax payout/liquidity if too few results
     if (filtered.length < 3) {
       filtered = rates.filter(r => {
-        if (r.category === 'defi' && !filters.includeDefi) return false;
-        if (filters.includePdicOnly && !r.pdic && r.category !== 'govt') return false;
+        if (r.category !== 'banks') return false;
+        if (filters.includePdicOnly && !r.pdic) return false;
         return true;
       });
     }
@@ -350,7 +348,7 @@ export function QuickMatchResults({ rates, answers, onSeeFullComparison, onAdjus
   if (topProducts.length === 0) {
     return (
       <div className="text-center py-12 text-brand-textSecondary dark:text-gray-400">
-        <p className="mb-4">No products match your criteria.</p>
+        <p className="mb-4">No bank options match your criteria.</p>
         <Button variant="outline" onClick={onAdjustAnswers}>Adjust my answers</Button>
       </div>
     );

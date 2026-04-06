@@ -9,6 +9,28 @@ async function getStaticRates(): Promise<RateProduct[]> {
   return JSON.parse(fileContents) as RateProduct[];
 }
 
+export function getPublicRatesFromList(rates: RateProduct[]): RateProduct[] {
+  return rates.filter((rate) => rate.category === 'banks');
+}
+
+export async function getPublicRates(): Promise<RateProduct[]> {
+  return getPublicRatesFromList(await getStaticRates());
+}
+
+export function getLatestVerifiedDate(rates: RateProduct[]): string {
+  return rates.reduce((latest, rate) => (rate.lastVerified > latest ? rate.lastVerified : latest), '');
+}
+
+export function formatVerifiedDate(value: string): string {
+  if (!value) return '';
+
+  const [year, month, day] = value.split('-');
+  if (!year || !month || !day) return value;
+
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return `${monthNames[Number.parseInt(month, 10) - 1]} ${Number.parseInt(day, 10)}, ${year}`;
+}
+
 export async function getLiveRates(): Promise<RateProduct[]> {
   const staticRates = await getStaticRates();
   const defiRate = await fetchAaveBaseUSDC();

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { RateProduct, FilterCategory, LiquidityFilter, PayoutFilter } from '@/types';
+import { RateProduct, LiquidityFilter, PayoutFilter } from '@/types';
 import { RateTable } from './RateTable';
 import { BankCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
@@ -28,7 +28,6 @@ interface RateSectionProps {
 }
 
 export function RateSection({ rates, prefill, recommendedIds = [] }: RateSectionProps) {
-  const [filter, setFilter] = useState<FilterCategory>('banks');
   const [liquidityFilter, setLiquidityFilter] = useState<LiquidityFilter>(prefill?.liquidityFilter ?? 'all');
   const [payoutFilter, setPayoutFilter] = useState<PayoutFilter>(prefill?.payoutFilter ?? 'all');
   const [showPreQual, setShowPreQual] = useState(false);
@@ -53,7 +52,6 @@ export function RateSection({ rates, prefill, recommendedIds = [] }: RateSection
   ];
 
   const filteredRates = rates.filter((r) => {
-    if (filter !== 'all' && r.category !== filter) return false;
     if (liquidityFilter === 'liquid' && r.lockInDays > 0) return false;
     if (liquidityFilter === 'locked' && r.lockInDays === 0) return false;
     if (payoutFilter === 'monthly' && !['daily', 'monthly', 'quarterly'].includes(r.payoutFrequency)) return false;
@@ -61,7 +59,6 @@ export function RateSection({ rates, prefill, recommendedIds = [] }: RateSection
 
     if (answers) {
       if (answers.risk === 'PDIC' && !r.pdic) return false;
-      if (answers.risk === 'Medium' && r.riskLevel === 'DeFi') return false;
       if (answers.lockIn === 'Liquid' && r.lockInDays > 0) return false;
       if (answers.lockIn === 'Short' && r.lockInDays > 90) return false;
     }
@@ -114,8 +111,6 @@ export function RateSection({ rates, prefill, recommendedIds = [] }: RateSection
       <div className="max-w-5xl mx-auto px-4 md:px-0">
         <div className="hidden md:block">
           <FilterTabs
-            active={filter}
-            onChange={setFilter}
             activeLiquidity={liquidityFilter}
             onLiquidityChange={setLiquidityFilter}
             activePayoutFilter={payoutFilter}
@@ -182,8 +177,6 @@ export function RateSection({ rates, prefill, recommendedIds = [] }: RateSection
           )}
 
           <FilterTabs
-            active={filter}
-            onChange={setFilter}
             activeLiquidity={liquidityFilter}
             onLiquidityChange={setLiquidityFilter}
             activePayoutFilter={payoutFilter}

@@ -74,14 +74,14 @@ export function FeedbackModal({ onClose }: FeedbackModalProps) {
       />
 
       {/* Panel */}
-      <motion.div
-        className="fixed top-[84px] right-4 md:right-8 z-50 w-full max-w-sm"
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -12 }}
-        transition={{ duration: 0.2 }}
-      >
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-brand-border dark:border-white/10 overflow-hidden">
+      <div className="fixed inset-x-0 top-20 z-50 flex justify-center px-4 pb-8 pointer-events-none">
+        <motion.div
+          className="pointer-events-auto w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-brand-border dark:border-white/10"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+        >
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4">
             <h2 className="font-bold text-[15px] text-brand-textPrimary dark:text-gray-100">
@@ -129,7 +129,7 @@ export function FeedbackModal({ onClose }: FeedbackModalProps) {
                   onChange={(e) => setMessage(e.target.value.slice(0, 500))}
                   placeholder="What's on your mind?"
                   rows={4}
-                  className="w-full resize-none rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm text-brand-textPrimary dark:text-gray-100 placeholder:text-muted-foreground dark:bg-input/30 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 transition-colors"
+                  className="w-full resize-none rounded-lg border border-input bg-transparent px-3 py-2.5 text-sm text-brand-textPrimary dark:text-gray-100 placeholder:text-muted-foreground dark:placeholder:text-gray-300 dark:bg-slate-800 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 transition-colors"
                 />
                 <span className="text-right text-[11px] text-brand-textSecondary dark:text-gray-500">
                   {message.length}/500
@@ -159,8 +159,8 @@ export function FeedbackModal({ onClose }: FeedbackModalProps) {
               </Button>
             </form>
           )}
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </>
   );
 }

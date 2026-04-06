@@ -122,7 +122,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             onClick={onSkip}
             className="text-xs font-medium text-brand-textSecondary dark:text-gray-500 hover:text-brand-primary dark:hover:text-blue-400 transition-colors underline-offset-2 hover:underline"
           >
-            Compare manually
+            Compare all banks
           </button>
         </div>
         <div className="h-1.5 w-full bg-brand-border dark:bg-white/10 rounded-full overflow-hidden">
@@ -279,13 +279,12 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             {/* Step 6 — Insurance preference */}
             {step === 6 && (
               <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">How safe do you want your money to be?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">PDIC insures bank deposits up to ₱500,000. Government bonds are backed by the Bureau of Treasury.</p>
+                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">Do you want to stick to PDIC-insured banks only?</h3>
+                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">PDIC insures bank deposits up to ₱500,000 per depositor, per bank.</p>
                 <div className="space-y-2.5">
                   {([
-                    { id: 'insured-only', label: 'Insured options only', sub: 'PDIC banks and government bonds only' },
-                    { id: 'show-both', label: 'Show me both', sub: 'Include UITFs and other options, no crypto' },
-                    { id: 'open-all', label: 'I\'m open to non-bank options too', sub: 'Include DeFi and all yield sources' },
+                    { id: 'insured-only', label: 'PDIC-insured only', sub: 'Show only bank products with PDIC coverage' },
+                    { id: 'all-banks', label: 'Show all bank options', sub: 'Compare all public bank savings and time deposit rates' },
                   ] as const).map(opt => (
                     <button key={opt.id} onClick={() => setInsurancePreference(opt.id)} className={optionClass(insurancePreference === opt.id)}>
                       <div>
@@ -321,7 +320,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             {step < 6 ? (
               <>Next <ArrowRight className="w-4 h-4" /></>
             ) : (
-              'Find my best deposit'
+              'Find my best rate'
             )}
           </Button>
         </div>

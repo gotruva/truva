@@ -47,10 +47,10 @@ export function NewsletterSignup() {
   return (
     <section className="max-w-xl mx-auto py-16 px-4 text-center">
       <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary dark:text-gray-100 mb-3">
-        Get The Truva Brief
+        Get Weekly Rate Updates
       </h3>
       <p className="text-brand-textSecondary dark:text-gray-400 mb-8 text-[16px]">
-        A free weekly breakdown of the best PH savings rates, new promos, and after-tax yield changes — straight to your inbox.
+        A short weekly email with savings and time deposit rate changes, standout promos, and after-tax comparisons from Philippine banks.
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative">
@@ -68,7 +68,7 @@ export function NewsletterSignup() {
           disabled={status === 'loading' || status === 'success'}
           className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-colors"
         >
-          {status === 'loading' ? 'Subscribing...' : 'Get the weekly rate update'}
+          {status === 'loading' ? 'Subscribing...' : 'Get weekly updates'}
         </Button>
       </form>
       
@@ -76,7 +76,7 @@ export function NewsletterSignup() {
       {status === 'error' && <p className="text-danger text-sm mt-4 font-medium">{message}</p>}
 
       <p className="text-xs text-brand-textSecondary dark:text-gray-400 mt-6">
-        Your privacy is respected. Unsubscribe anytime.
+        Your privacy is respected. No spam. Unsubscribe anytime.
       </p>
     </section>
   );

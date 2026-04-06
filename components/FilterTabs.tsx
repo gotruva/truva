@@ -1,27 +1,21 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { FilterCategory, LiquidityFilter, PayoutFilter } from '@/types';
+import { LiquidityFilter, PayoutFilter } from '@/types';
 import { Lock, Unlock, Layers, Info, ChevronDown, SlidersHorizontal } from 'lucide-react';
 
 interface FilterTabsProps {
-  active: FilterCategory;
-  onChange: (category: FilterCategory) => void;
   activeLiquidity: LiquidityFilter;
   onLiquidityChange: (liquidity: LiquidityFilter) => void;
   activePayoutFilter: PayoutFilter;
   onPayoutFilterChange: (payout: PayoutFilter) => void;
 }
 
-export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChange, activePayoutFilter, onPayoutFilterChange }: FilterTabsProps) {
+export function FilterTabs({ activeLiquidity, onLiquidityChange, activePayoutFilter, onPayoutFilterChange }: FilterTabsProps) {
   const [isMobileCondensed, setIsMobileCondensed] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(true);
   const [infoOpen, setInfoOpen] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
-
-  const tabs: { label: string; value: FilterCategory }[] = [
-    { label: 'All Banks', value: 'banks' },
-  ];
 
   const liquidityTabs: { label: string; value: LiquidityFilter; icon: React.ReactNode }[] = [
     { label: 'All', value: 'all', icon: <Layers className="h-3.5 w-3.5" /> },
@@ -69,7 +63,6 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
     </div>
   );
 
-  const activeCategoryLabel = tabs.find((tab) => tab.value === active)?.label ?? 'All Banks';
   const activeLiquidityLabel = liquidityTabs.find((tab) => tab.value === activeLiquidity)?.label ?? 'All';
   const activePayoutLabel = payoutTabs.find((tab) => tab.value === activePayoutFilter)?.label ?? 'Any';
 
@@ -126,9 +119,6 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
                   <span>Filters</span>
                 </div>
                 <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
-                  <span className="shrink-0 rounded-full bg-brand-primary/10 px-2 py-0.5 text-[11px] font-semibold text-brand-primary dark:bg-brand-primary/20 dark:text-blue-300">
-                    {activeCategoryLabel}
-                  </span>
                   <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-gray-300">
                     {activeLiquidityLabel}
                   </span>
@@ -147,23 +137,6 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
             {isMobileExpanded && (
               <div className={`space-y-3 ${isMobileCondensed ? 'mt-2' : ''}`}>
                 <div>
-                  <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-                    Bank Type
-                  </div>
-                  <div className="grid grid-cols-1 gap-2">
-                    {tabs.map((tab) => (
-                      <button
-                        key={tab.value}
-                        onClick={() => onChange(tab.value)}
-                        className={mobileButtonClass(active === tab.value)}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border-t border-brand-border/50 pt-3 dark:border-white/8">
                   <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
                     <span>Cash Access</span>
                     {liquidityHelp}
@@ -204,25 +177,6 @@ export function FilterTabs({ active, onChange, activeLiquidity, onLiquidityChang
         </div>
 
         <div className="hidden rounded-2xl border border-brand-border bg-white px-4 py-3 shadow-sm dark:border-white/10 dark:bg-slate-900 md:flex md:items-center md:gap-3">
-          {/* Bank type */}
-          <div className="flex items-center gap-1.5">
-            {tabs.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => onChange(tab.value)}
-                className={`rounded-full px-4 py-1.5 text-[13.5px] font-bold transition-all duration-200 active:scale-95 ${
-                  active === tab.value
-                    ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/20 dark:bg-blue-600'
-                    : 'border border-gray-200 bg-white text-brand-textSecondary hover:border-gray-300 hover:bg-gray-50 hover:text-brand-textPrimary dark:border-white/10 dark:bg-slate-900 dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-gray-100'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="h-5 w-px shrink-0 bg-brand-border dark:bg-white/10" />
-
           {/* Cash access */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
