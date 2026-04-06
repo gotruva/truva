@@ -132,9 +132,11 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`,
            });
-           console.log('Welcome email sent successfully to:', email, 'Result:', result);
+           console.log('Welcome email sent successfully to:', email);
+           console.log('Sequenzy result:', JSON.stringify(result));
        } catch (emailErr: any) {
-           console.error('Sequenzy email error:', emailErr?.message || emailErr);
+           console.error('Sequenzy email error - Message:', emailErr?.message);
+           console.error('Sequenzy email error - Full:', JSON.stringify(emailErr));
            // Do not throw; we want UI to show success assuming they meant to signup
        }
     } else {
