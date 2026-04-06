@@ -58,7 +58,77 @@ export async function POST(req: NextRequest) {
              from: 'Truva <onboarding@resend.dev>', // Replace with your verified domain
              to: email,
              subject: 'Welcome to Truva — The PH Savings Pulse',
-             html: '<p>You are on the list! We will send you the highest yielding Philippine digital bank accounts and time deposits straight to your inbox.</p>',
+             html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Truva</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#1a56db;padding:36px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:13px;font-weight:600;letter-spacing:1.5px;color:rgba(255,255,255,0.7);text-transform:uppercase;">Philippine Savings Intelligence</p>
+              <h1 style="margin:0;font-size:32px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Truva</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+              <h2 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">You're on the list.</h2>
+              <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#374151;">
+                Every week, we cut through the noise and show you the <strong>highest after-tax yields</strong> from Philippine digital banks, time deposits, government bonds, and more — in plain language.
+              </p>
+
+              <!-- Highlight box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#eff6ff;border-left:4px solid #1a56db;border-radius:6px;margin-bottom:28px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0;font-size:14px;font-weight:600;color:#1e40af;">Why after-tax matters</p>
+                    <p style="margin:6px 0 0;font-size:14px;line-height:1.6;color:#1d4ed8;">
+                      A 6% gross rate is really 4.8% after the 20% withholding tax. We do the math so you don't have to.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#374151;">
+                Your first rate digest is coming soon. In the meantime, check out the live comparison table at <a href="https://truva.ph" style="color:#1a56db;font-weight:600;text-decoration:none;">truva.ph</a>.
+              </p>
+
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#1a56db;border-radius:8px;">
+                    <a href="https://truva.ph" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">View today's top rates →</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;border-top:1px solid #f3f4f6;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#9ca3af;line-height:1.6;">
+                You're receiving this because you signed up at truva.ph.<br />
+                No spam, ever. <a href="#" style="color:#6b7280;text-decoration:underline;">Unsubscribe anytime.</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
            });
        } catch (emailErr) {
            console.error('Resend email error:', emailErr);
