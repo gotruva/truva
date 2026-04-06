@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLiveRates } from '@/lib/rates';
-import { createSupabaseServerClient } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 
 export async function GET(
   req: NextRequest,
@@ -15,9 +15,12 @@ export async function GET(
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  // Log the click — don't block the redirect if this fails
+  // Log the click using service role key — bypasses RLS, never blocks redirect
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    );
     const { error: dbError } = await supabase.from('affiliate_clicks').insert({
       product_id: product.id,
       provider: product.provider,
