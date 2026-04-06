@@ -12,13 +12,50 @@ import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
+const BASE_URL = 'https://truva.ph';
+
 export const metadata: Metadata = {
-  title: 'Best Savings & Time Deposit Rates Philippines | Truva',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'Best Savings & Time Deposit Rates Philippines | Truva',
+    template: '%s | Truva',
+  },
   description: 'Compare savings and time deposit rates from Philippine banks. See after-tax returns, important account conditions, and the latest verified rates in one place.',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
+    type: 'website',
+    siteName: 'Truva',
+    url: BASE_URL,
     title: 'Truva | Compare Savings Rates in the Philippines',
     description: 'Compare savings and time deposit rates from Philippine banks with after-tax returns and clear account conditions.',
-  }
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Truva — Best Savings Rates Philippines',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Truva | Compare Savings Rates in the Philippines',
+    description: 'See after-tax savings yields from every major Philippine digital bank, T-Bill, and UITF — all in one place.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
+  },
 };
 
 export default async function RootLayout({

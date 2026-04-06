@@ -3,8 +3,22 @@ import { YieldCalculator } from '@/components/YieldCalculator';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Savings Interest Calculator Philippines | Truva',
-  description: 'Estimate how much your savings could earn after tax and compare Philippine bank savings and time deposit rates in one place.',
+  title: 'Savings Interest Calculator Philippines',
+  description: 'Estimate how much your savings could earn after tax. Compare Philippine digital bank, T-Bill, and UITF rates with our free after-tax savings calculator.',
+  alternates: {
+    canonical: '/calculator',
+  },
+  openGraph: {
+    title: 'Savings Interest Calculator Philippines | Truva',
+    description: 'Estimate how much your savings could earn after tax. Compare Philippine digital bank, T-Bill, and UITF rates in one place.',
+    url: '/calculator',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Savings Interest Calculator Philippines | Truva',
+    description: 'Free after-tax savings calculator for Philippine banks, T-Bills, and UITFs.',
+  },
 };
 
 export default async function CalculatorPage() {

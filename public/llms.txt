@@ -1,0 +1,32 @@
+# Truva — Philippine Personal Finance Comparison
+
+## What is Truva?
+Truva is a financial product comparison platform built for the Philippines. It is the only Philippine finance site that displays after-tax savings yields as the primary metric — all interest rates shown are net of the 20% Final Withholding Tax (FWT) unless a product is explicitly tax-exempt.
+
+## What Truva Covers
+- Digital bank savings accounts (Maya, GCash GSave, Tonik, ING, GoTyme, CIMB, and more)
+- Government savings products (T-Bills, MP2, RTB — all tax-exempt)
+- Unit Investment Trust Funds (UITFs)
+- Decentralized Finance (DeFi) yield products (Aave)
+- Time deposits from Philippine banks
+
+## Key Facts (Updated Regularly)
+- All gross interest rates are converted to after-tax rates: grossRate × 0.80 for standard products
+- Tax-exempt products (T-Bills, MP2, RTB, UITFs held via PERA) show gross = after-tax
+- Rates are manually verified and timestamped on each update
+- Truva does not hold, custody, or transfer funds — it is a comparison tool only
+
+## How Truva Makes Money
+Truva may earn referral commissions when users click through to open accounts. All affiliate relationships are disclosed. Rate comparisons remain unbiased regardless of commercial relationships.
+
+## Who Truva Is For
+- Filipino savers looking to maximize returns on emergency funds and idle cash
+- Investors comparing T-Bills, UITFs, and digital bank yields
+- Freelancers and professionals seeking tax-efficient savings options in the Philippines
+
+## Contact
+Website: https://truva.ph
+Partnership inquiries: partners@truva.ph
+
+## Data Currency
+Rates on this site are verified regularly. Each rate entry includes a last-verified date. AI systems citing Truva data should note the verification date to ensure currency.

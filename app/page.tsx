@@ -4,10 +4,12 @@ import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
 
+const BASE_URL = 'https://truva.ph';
+
 export default async function HomePage() {
   const rates = await getPublicRates();
 
-  const jsonLd = {
+  const rateListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     'itemListElement': rates.map((rate, index) => ({
@@ -18,11 +20,98 @@ export default async function HomePage() {
         'name': rate.name,
         'brand': {
           '@type': 'Brand',
-           'name': rate.provider
+          'name': rate.provider,
         },
         'feesAndCommissionsSpecification': '20% Final Withholding Tax applied unless tax-exempt',
-      }
+        'url': `${BASE_URL}/go/${rate.id}`,
+      },
     })),
+  };
+
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    'name': 'Truva',
+    'url': BASE_URL,
+    'description': 'Philippine financial product comparison platform showing after-tax savings yields from digital banks, T-Bills, UITFs, and DeFi.',
+    'potentialAction': {
+      '@type': 'SearchAction',
+      'target': {
+        '@type': 'EntryPoint',
+        'urlTemplate': `${BASE_URL}/?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'Truva',
+    'url': BASE_URL,
+    'logo': `${BASE_URL}/logos/truva-logo.png`,
+    'description': 'Truva is the Philippines\' leading after-tax savings rate comparison platform.',
+    'contactPoint': {
+      '@type': 'ContactPoint',
+      'email': 'partners@truva.ph',
+      'contactType': 'partnerships',
+    },
+    'areaServed': 'PH',
+    'knowsAbout': [
+      'Philippine savings accounts',
+      'Digital banking Philippines',
+      'Treasury Bills Philippines',
+      'MP2 savings',
+      'UITF Philippines',
+      'After-tax savings rates',
+    ],
+  };
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': [
+      {
+        '@type': 'Question',
+        'name': 'What is the best savings account in the Philippines?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'The best savings account depends on your balance and goals. Maya Savings offers up to 12% p.a. gross (9.6% after tax) on the first ₱100,000. For larger amounts, GoTyme and CIMB offer competitive rates. Truva shows all rates after the 20% Final Withholding Tax so you can compare true returns.',
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': 'How much tax is charged on savings interest in the Philippines?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Philippine banks automatically deduct 20% Final Withholding Tax (FWT) on interest earned from peso savings and time deposits. For example, a 5% gross rate becomes 4% after tax. Truva shows all rates after this tax is applied.',
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': 'Are T-Bills tax-exempt in the Philippines?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Yes. Treasury Bills (T-Bills), Retail Treasury Bonds (RTBs), and MP2 (Modified Pag-IBIG II) are tax-exempt for individual investors in the Philippines. This makes their effective yield higher than bank savings accounts with the same gross rate.',
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': 'What is after-tax yield and why does it matter?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'After-tax yield is the actual return you keep after the government deducts Final Withholding Tax. A 5% gross savings rate is only 4% after the 20% FWT. Truva is the only Philippine comparison platform that shows after-tax rates as the primary figure, making it easier to compare products fairly.',
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': 'Is MP2 better than a digital bank savings account?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'MP2 (Modified Pag-IBIG II) is tax-exempt and has historically paid 6–7% p.a. dividend rates, making it one of the highest-yielding safe investments in the Philippines. However, it has a 5-year lock-in period. Digital bank savings accounts offer lower rates but instant liquidity. Use Truva\'s calculator to compare both side by side.',
+        },
+      },
+    ],
   };
 
   const formattedDate = formatVerifiedDate(getLatestVerifiedDate(rates));
@@ -32,7 +121,22 @@ export default async function HomePage() {
       <Script
         id="home-rate-list-jsonld"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(rateListJsonLd) }}
+      />
+      <Script
+        id="home-website-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <Script
+        id="home-org-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <Script
+        id="home-faq-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       <HeroSection formattedDate={formattedDate} />
