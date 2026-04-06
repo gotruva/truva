@@ -280,7 +280,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             {step === 6 && (
               <div>
                 <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">Do you want to stick to PDIC-insured banks only?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">PDIC insures bank deposits up to ₱500,000 per depositor, per bank.</p>
+                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">PDIC insures bank deposits up to ₱1,000,000 per depositor, per bank.</p>
                 <div className="space-y-2.5">
                   {([
                     { id: 'insured-only', label: 'PDIC-insured only', sub: 'Show only bank products with PDIC coverage' },

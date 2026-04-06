@@ -76,7 +76,7 @@ function buildReasons(product: TopProduct, answers: QuickMatchAnswers): string[]
 
   // --- Insurance match ---
   if (product.pdic) {
-    reasons.push('PDIC-insured up to ₱500,000 per depositor');
+    reasons.push('PDIC-insured up to ₱1,000,000 per depositor');
   } else if (product.insurer === 'Bureau of Treasury') {
     reasons.push('Backed by the Philippine Bureau of Treasury — sovereign guarantee');
   } else if (product.insurer === 'Pag-IBIG Fund') {
