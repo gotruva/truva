@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { Resend } from 'resend';
+import { Sequenzy } from 'sequenzy';
 
 const emailSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -50,15 +50,14 @@ export async function POST(req: NextRequest) {
       console.warn('Supabase not fully configured yet.', e);
     }
 
-    // 2. Transmit Welcome Email via Resend if Key exists
-    if (process.env.RESEND_API_KEY) {
+    // 2. Transmit Welcome Email via Sequenzy if Key exists
+    if (process.env.SEQUENZY_API_KEY) {
        try {
-           console.log('Sending email to:', email);
-           console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-           const resend = new Resend(process.env.RESEND_API_KEY);
-           await resend.emails.send({
-             from: 'Truva <onboarding@resend.dev>', // Replace with your verified domain
+           console.log('Sending welcome email to:', email);
+           const sequenzy = new Sequenzy({ apiKey: process.env.SEQUENZY_API_KEY });
+           await sequenzy.transactional.send({
              to: email,
+             from: 'Truva <noreply@truva.ph>',
              subject: 'Welcome to Truva — The PH Savings Pulse',
              html: `<!DOCTYPE html>
 <html lang="en">
@@ -132,13 +131,13 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`,
            });
-           console.log('Email sent successfully to:', email);
+           console.log('Welcome email sent successfully to:', email);
        } catch (emailErr) {
-           console.error('Resend email error:', emailErr);
+           console.error('Sequenzy email error:', emailErr);
            // Do not throw; we want UI to show success assuming they meant to signup
        }
     } else {
-       console.log('RESEND_API_KEY not found in environment');
+       console.warn('SEQUENZY_API_KEY not found in environment');
     }
     
     return NextResponse.json({ success: true, message: 'Subscribed successfully! Watch your inbox.' });

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { Resend } from 'resend';
+import { Sequenzy } from 'sequenzy';
 
 const feedbackSchema = z.object({
   type: z.enum(['Bug', 'Feature Request', 'Other']),
@@ -51,11 +51,11 @@ export async function POST(req: NextRequest) {
       console.warn('Supabase not fully configured yet.', e);
     }
 
-    if (process.env.RESEND_API_KEY && process.env.FOUNDER_EMAIL) {
+    if (process.env.SEQUENZY_API_KEY && process.env.FOUNDER_EMAIL) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
-          from: 'Truva <onboarding@resend.dev>',
+        const sequenzy = new Sequenzy({ apiKey: process.env.SEQUENZY_API_KEY });
+        await sequenzy.transactional.send({
+          from: 'Truva <noreply@truva.ph>',
           to: process.env.FOUNDER_EMAIL,
           subject: `[Truva Feedback] ${type}`,
           html: `
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
           `,
         });
       } catch (emailErr) {
-        console.error('Resend feedback notification error:', emailErr);
+        console.error('Sequenzy feedback notification error:', emailErr);
       }
     }
 
