@@ -49,8 +49,8 @@ export function FeedbackModal({ onClose }: FeedbackModalProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, message: message.trim(), email: email.trim() }),
       });
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || 'Something went wrong.');
       }
       setStatus('success');

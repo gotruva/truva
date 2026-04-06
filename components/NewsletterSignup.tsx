@@ -22,7 +22,7 @@ export function NewsletterSignup() {
         body: JSON.stringify({ email }),
       });
       
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       
       if (res.ok) {
         setStatus('success');
