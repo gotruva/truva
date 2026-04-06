@@ -58,9 +58,9 @@ export async function POST(req: NextRequest) {
            const sequenzy = new Sequenzy({ apiKey: process.env.SEQUENZY_API_KEY });
            const result = await sequenzy.transactional.send({
              to: email,
-             from: 'Truva <noreply@truva.ph>',
+             from: 'noreply@truva.ph',
              subject: 'Welcome to Truva — The PH Savings Pulse',
-             html: `<!DOCTYPE html>
+             body: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
