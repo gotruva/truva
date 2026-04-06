@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getLiveRates } from '@/lib/rates';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -34,5 +36,7 @@ export async function GET(
     console.error('Affiliate click unexpected error:', err);
   }
 
-  return NextResponse.redirect(product.affiliateUrl);
+  const response = NextResponse.redirect(product.affiliateUrl);
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  return response;
 }
