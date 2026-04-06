@@ -53,6 +53,8 @@ export async function POST(req: NextRequest) {
     // 2. Transmit Welcome Email via Resend if Key exists
     if (process.env.RESEND_API_KEY) {
        try {
+           console.log('Sending email to:', email);
+           console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
            const resend = new Resend(process.env.RESEND_API_KEY);
            await resend.emails.send({
              from: 'Truva <onboarding@resend.dev>', // Replace with your verified domain
@@ -130,10 +132,13 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`,
            });
+           console.log('Email sent successfully to:', email);
        } catch (emailErr) {
            console.error('Resend email error:', emailErr);
            // Do not throw; we want UI to show success assuming they meant to signup
        }
+    } else {
+       console.log('RESEND_API_KEY not found in environment');
     }
     
     return NextResponse.json({ success: true, message: 'Subscribed successfully! Watch your inbox.' });
