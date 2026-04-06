@@ -33,7 +33,9 @@ export function AffiliateButton({ amount, url }: AffiliateButtonProps) {
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-[200px] text-center bg-brand-textPrimary text-white shadow-md border-none p-2 rounded-md">
           <p className="text-xs">
-            We earn ₱{amount} if you open this account. This doesn&apos;t affect the rates we show.
+            {amount > 0
+              ? `We earn ₱${amount} if you open this account. This doesn't affect the rates we show.`
+              : "No referral fee — we're not paid by this bank. Rate shown is unbiased."}
           </p>
         </TooltipContent>
       </Tooltip>

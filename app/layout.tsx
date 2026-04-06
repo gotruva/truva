@@ -41,7 +41,7 @@ export default async function RootLayout({
             <div className="max-w-3xl mx-auto flex flex-col gap-3">
               <p>{verificationCopy}</p>
               <p className="font-semibold text-brand-textPrimary dark:text-gray-200">
-                We earn a referral fee if you open an account through our links. This does not change the rates we show or how we compare them.
+                Links go directly to each institution&apos;s website. Truva does not currently earn referral fees — all rate comparisons are unbiased. We may earn commissions in the future, which will always be disclosed.
               </p>
               <p className="mt-6">
                 &copy; {new Date().getFullYear()} Truva. All rights reserved.
