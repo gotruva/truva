@@ -4,7 +4,9 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
+import { Analytics } from '@vercel/analytics/react';
 import { Navbar } from '@/components/Navbar';
+import { PartnerCTA } from '@/components/PartnerCTA';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
@@ -43,13 +45,17 @@ export default async function RootLayout({
               <p className="font-semibold text-brand-textPrimary dark:text-gray-200">
                 Links go directly to each institution&apos;s website. Truva does not currently earn referral fees — all rate comparisons are unbiased. We may earn commissions in the future, which will always be disclosed.
               </p>
-              <p className="mt-6">
+
+              <PartnerCTA />
+
+              <p className="mt-4">
                 &copy; {new Date().getFullYear()} Truva. All rights reserved.
               </p>
             </div>
           </footer>
         </ThemeProvider>
         <GoogleAnalytics />
+        <Analytics />
       </body>
     </html>
   );
