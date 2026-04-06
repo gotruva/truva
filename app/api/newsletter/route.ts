@@ -54,8 +54,9 @@ export async function POST(req: NextRequest) {
     if (process.env.SEQUENZY_API_KEY) {
        try {
            console.log('Sending welcome email to:', email);
+           console.log('SEQUENZY_API_KEY exists:', !!process.env.SEQUENZY_API_KEY);
            const sequenzy = new Sequenzy({ apiKey: process.env.SEQUENZY_API_KEY });
-           await sequenzy.transactional.send({
+           const result = await sequenzy.transactional.send({
              to: email,
              from: 'Truva <noreply@truva.ph>',
              subject: 'Welcome to Truva — The PH Savings Pulse',
@@ -131,9 +132,9 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`,
            });
-           console.log('Welcome email sent successfully to:', email);
-       } catch (emailErr) {
-           console.error('Sequenzy email error:', emailErr);
+           console.log('Welcome email sent successfully to:', email, 'Result:', result);
+       } catch (emailErr: any) {
+           console.error('Sequenzy email error:', emailErr?.message || emailErr);
            // Do not throw; we want UI to show success assuming they meant to signup
        }
     } else {
