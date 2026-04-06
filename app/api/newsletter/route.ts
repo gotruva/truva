@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { Sequenzy } from 'sequenzy';
 
 const emailSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -50,17 +49,10 @@ export async function POST(req: NextRequest) {
       console.warn('Supabase not fully configured yet.', e);
     }
 
-    // 2. Transmit Welcome Email via Sequenzy if Key exists
+    // 2. Transmit Welcome Email via Sequenzy REST API if Key exists
     if (process.env.SEQUENZY_API_KEY) {
        try {
-           console.log('Sending welcome email to:', email);
-           console.log('SEQUENZY_API_KEY exists:', !!process.env.SEQUENZY_API_KEY);
-           const sequenzy = new Sequenzy({ apiKey: process.env.SEQUENZY_API_KEY });
-           const result = await sequenzy.transactional.send({
-             to: email,
-             from: 'noreply@truva.ph',
-             subject: 'Welcome to Truva — The PH Savings Pulse',
-             body: `<!DOCTYPE html>
+           const emailBody = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -130,13 +122,32 @@ export async function POST(req: NextRequest) {
     </tr>
   </table>
 </body>
-</html>`,
+</html>`;
+
+           const response = await fetch('https://api.sequenzy.com/api/v1/transactional/send', {
+             method: 'POST',
+             headers: {
+               'Authorization': `Bearer ${process.env.SEQUENZY_API_KEY}`,
+               'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({
+               to: email,
+               from: 'noreply@truva.ph',
+               subject: 'Welcome to Truva — The PH Savings Pulse',
+               body: emailBody,
+             }),
            });
-           console.log('Welcome email sent successfully to:', email);
-           console.log('Sequenzy result:', JSON.stringify(result));
+
+           const result = await response.json();
+           console.log('Sequenzy response:', result);
+
+           if (!response.ok) {
+             console.error('Sequenzy API error:', result);
+           } else {
+             console.log('Email sent successfully to:', email);
+           }
        } catch (emailErr: any) {
-           console.error('Sequenzy email error - Message:', emailErr?.message);
-           console.error('Sequenzy email error - Full:', JSON.stringify(emailErr));
+           console.error('Email sending error:', emailErr?.message || emailErr);
            // Do not throw; we want UI to show success assuming they meant to signup
        }
     } else {
