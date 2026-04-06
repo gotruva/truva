@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 const NAV_LINKS = [
   { label: 'Compare Rates', href: '/#deposit-rates' },
   { label: 'Calculator', href: '/#calculator' },
-  { label: 'Weekly Updates', href: '/#newsletter' },
 ];
 
 export function Navbar() {
@@ -49,13 +48,6 @@ export function Navbar() {
 
         {/* Right actions */}
         <div className="flex items-center gap-1.5">
-          <Link
-            href="/#newsletter"
-            className="inline-flex items-center justify-center bg-brand-primary hover:bg-brand-primaryDark text-white font-bold px-3 sm:px-4 h-9 rounded-lg shadow-md shadow-brand-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand-primary/30 active:translate-y-0 text-[13px] sm:text-[14px]"
-          >
-            <span>Get Weekly Updates</span>
-          </Link>
-
           <Button
             variant="ghost"
             size="sm"
