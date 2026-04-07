@@ -212,7 +212,7 @@ function ProductRow({ product, amount, months, isBest }: {
               {/* CTA */}
               <div className="flex justify-end pt-1">
                 <div onClick={(e) => e.stopPropagation()}>
-                  <AffiliateButton amount={product.payoutAmount} url={`/go/${product.id}`} />
+                  <AffiliateButton amount={product.payoutAmount} productId={product.id} />
                 </div>
               </div>
             </div>
@@ -383,7 +383,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
       </div>
       <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1">after tax</div>
       <div className="mt-4">
-        <AffiliateButton amount={rate.payoutAmount} url={`/go/${rate.id}`} />
+        <AffiliateButton amount={rate.payoutAmount} productId={rate.id} />
       </div>
     </div>
   );

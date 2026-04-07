@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs -I {} jq \".[] | select\\(.id == \\\\\"{}\\\\\"\\)\" data/rates.json)",
+      "Bash(npm install:*)"
+    ]
+  }
+}

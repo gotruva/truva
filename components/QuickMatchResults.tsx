@@ -282,7 +282,7 @@ function RecommendationCard({
           </div>
         )}
 
-        <AffiliateButton amount={product.payoutAmount} url={product.affiliateUrl} />
+        <AffiliateButton amount={product.payoutAmount} productId={product.id} />
       </div>
     </motion.div>
   );

@@ -537,7 +537,7 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
 
                                   {/* CTA */}
                                   <div className="shrink-0 flex items-center" onClick={(e) => e.stopPropagation()}>
-                                    <AffiliateButton amount={product.payoutAmount} url={product.affiliateUrl} />
+                                    <AffiliateButton amount={product.payoutAmount} productId={product.id} />
                                   </div>
                                 </div>
                               );

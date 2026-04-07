@@ -9,17 +9,17 @@ import {
 
 interface AffiliateButtonProps {
   amount: number;
-  url: string;
+  productId: string;
 }
 
-export function AffiliateButton({ amount, url }: AffiliateButtonProps) {
+export function AffiliateButton({ amount, productId }: AffiliateButtonProps) {
   return (
     <TooltipProvider delay={150}>
       <Tooltip>
         <TooltipTrigger
           render={
             <a 
-              href={url} 
+              href={`/go/${productId}`}
               target="_blank" 
               rel="noopener noreferrer" 
               className={cn(

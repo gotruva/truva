@@ -469,7 +469,7 @@ export function YieldCalculator({ rates, prefill }: YieldCalculatorProps) {
 
                                     {/* Open Account CTA */}
                                     <div className="pt-2 border-t border-brand-border/40 dark:border-white/5">
-                                      <AffiliateButton amount={result.payoutAmount} url={result.affiliateUrl} />
+                                      <AffiliateButton amount={result.payoutAmount} productId={result.id} />
                                     </div>
                                   </div>
                                 </motion.div>
