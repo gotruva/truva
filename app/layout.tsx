@@ -73,9 +73,10 @@ export default async function RootLayout({
       <body className="flex flex-col min-h-screen bg-brand-surface dark:bg-slate-950 overflow-x-hidden transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <Navbar />
-          <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
-            {children}
-          </main>
+        </ThemeProvider>
+        <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
+          {children}
+        </main>
           <footer className="bg-white dark:bg-slate-950 border-t border-brand-border dark:border-white/10 mt-auto pt-12 pb-8 px-4 md:px-8 text-center text-[13px] text-brand-textSecondary dark:text-gray-400 transition-colors duration-300">
             <div className="max-w-3xl mx-auto flex flex-col gap-3">
               <p>{verificationCopy}</p>
@@ -90,7 +91,6 @@ export default async function RootLayout({
               </p>
             </div>
           </footer>
-        </ThemeProvider>
         <GoogleAnalytics />
         <Analytics />
       </body>

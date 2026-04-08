@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase';
+import { hasSupabaseEnv } from '@/lib/env';
 
 const emailSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -12,6 +13,13 @@ const MAX_REQUESTS_PER_WINDOW = 5;
 
 export async function POST(req: NextRequest) {
   try {
+    if (!hasSupabaseEnv()) {
+      return NextResponse.json(
+        { error: 'Newsletter signup is not configured in this local environment yet.' },
+        { status: 503 }
+      );
+    }
+
     const ip = req.headers.get('x-forwarded-for') || 'unknown';
     const now = Date.now();
 

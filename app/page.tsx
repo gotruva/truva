@@ -1,5 +1,4 @@
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
-import Script from 'next/script';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
@@ -115,29 +114,23 @@ export default async function HomePage() {
   };
 
   const formattedDate = formatVerifiedDate(getLatestVerifiedDate(rates));
+  const jsonLdScripts = [
+    { id: 'home-rate-list-jsonld', content: rateListJsonLd },
+    { id: 'home-website-jsonld', content: websiteJsonLd },
+    { id: 'home-org-jsonld', content: organizationJsonLd },
+    { id: 'home-faq-jsonld', content: faqJsonLd },
+  ];
 
   return (
     <>
-      <Script
-        id="home-rate-list-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(rateListJsonLd) }}
-      />
-      <Script
-        id="home-website-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-      />
-      <Script
-        id="home-org-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-      />
-      <Script
-        id="home-faq-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      {jsonLdScripts.map((script) => (
+        <script
+          key={script.id}
+          id={script.id}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(script.content) }}
+        />
+      ))}
 
       <HeroSection formattedDate={formattedDate} />
 

@@ -3,6 +3,14 @@ export type FilterCategory = 'all' | 'banks' | 'govt' | 'uitfs' | 'defi';
 export type LiquidityFilter = 'all' | 'liquid' | 'locked';
 export type PayoutFilter = 'all' | 'monthly' | 'at_maturity';
 
+export interface ComparisonState {
+  amount: number;
+  months: number;
+  liquidityFilter: LiquidityFilter;
+  payoutFilter: PayoutFilter;
+  includePdicOnly: boolean;
+}
+
 /** A single rate tier with balance bounds */
 export interface RateTier {
   minBalance: number;        // ₱0 for first tier
@@ -83,4 +91,10 @@ export interface QuickMatchAnswers {
   lockFlexibility: 'no-lock' | 'maybe' | 'yes-lock';
   payoutPreference: 'no-preference' | 'monthly' | 'at-maturity';
   insurancePreference: 'insured-only' | 'all-banks';
+}
+
+export interface QuickMatchCoreAnswers {
+  purpose: QuickMatchAnswers['purpose'];
+  amount: number;
+  timeline: QuickMatchAnswers['timeline'];
 }

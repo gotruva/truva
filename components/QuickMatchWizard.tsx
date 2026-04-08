@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ArrowRight, Check } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Check, ChevronLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { QuickMatchAnswers } from '@/types';
+import { QuickMatchAnswers, QuickMatchCoreAnswers } from '@/types';
+import { deriveQuickMatchAnswers } from '@/utils/quickMatchMapper';
 
 interface QuickMatchWizardProps {
   onComplete: (answers: QuickMatchAnswers) => void;
@@ -14,44 +15,92 @@ interface QuickMatchWizardProps {
 }
 
 const AMOUNT_PRESETS = [
-  { label: '₱10,000', value: 10000 },
-  { label: '₱50,000', value: 50000 },
-  { label: '₱100,000', value: 100000 },
-  { label: '₱500,000', value: 500000 },
-  { label: '₱1,000,000+', value: 1000000 },
+  { label: 'PHP 10,000', value: 10000 },
+  { label: 'PHP 100,000', value: 100000 },
+  { label: 'PHP 500,000', value: 500000 },
   { label: 'Custom', value: -1 },
 ];
+
+const GOAL_OPTIONS: Array<{
+  id: QuickMatchCoreAnswers['purpose'];
+  label: string;
+  sub: string;
+}> = [
+  {
+    id: 'emergency',
+    label: 'Easy access',
+    sub: 'Best if you may need the money soon.',
+  },
+  {
+    id: 'idle-cash',
+    label: 'Best earnings',
+    sub: 'Best if you want the strongest after-tax return.',
+  },
+  {
+    id: 'monthly-income',
+    label: 'Regular payouts',
+    sub: 'Best if you want interest paid along the way.',
+  },
+];
+
+const TIMELINE_OPTIONS: Array<{
+  id: QuickMatchCoreAnswers['timeline'];
+  label: string;
+  sub: string;
+}> = [
+  {
+    id: 'anytime',
+    label: 'Anytime',
+    sub: 'Show options I can access right away.',
+  },
+  {
+    id: '3-6mo',
+    label: 'In a few months',
+    sub: 'I can wait a bit for a better rate.',
+  },
+  {
+    id: '1yr+',
+    label: 'In a year or more',
+    sub: 'Include longer lock-ins that may pay more.',
+  },
+];
+
+function normalizeInitialPurpose(
+  value: Partial<QuickMatchAnswers>['purpose']
+): QuickMatchCoreAnswers['purpose'] | null {
+  if (!value) return null;
+  if (value === 'short-term' || value === 'long-term') return 'idle-cash';
+  return value;
+}
+
+function normalizeInitialTimeline(
+  value: Partial<QuickMatchAnswers>['timeline']
+): QuickMatchCoreAnswers['timeline'] | null {
+  if (!value) return null;
+  if (value === '3mo' || value === '6-12mo') return '3-6mo';
+  return value;
+}
 
 type Direction = 1 | -1;
 
 export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMatchWizardProps) {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<Direction>(1);
-
-  const [purpose, setPurpose] = useState<QuickMatchAnswers['purpose'] | null>(
-    initialAnswers?.purpose ?? null
+  const [purpose, setPurpose] = useState<QuickMatchCoreAnswers['purpose'] | null>(
+    normalizeInitialPurpose(initialAnswers?.purpose)
   );
   const [amountPreset, setAmountPreset] = useState<number | null>(
-    initialAnswers?.amount ? (
-      AMOUNT_PRESETS.find(p => p.value === initialAnswers.amount) ? initialAnswers.amount : -1
-    ) : null
+    initialAnswers?.amount
+      ? (AMOUNT_PRESETS.find((preset) => preset.value === initialAnswers.amount) ? initialAnswers.amount : -1)
+      : null
   );
   const [customAmount, setCustomAmount] = useState<string>(
-    initialAnswers?.amount && !AMOUNT_PRESETS.find(p => p.value === initialAnswers.amount)
+    initialAnswers?.amount && !AMOUNT_PRESETS.find((preset) => preset.value === initialAnswers.amount)
       ? String(initialAnswers.amount)
       : ''
   );
-  const [timeline, setTimeline] = useState<QuickMatchAnswers['timeline'] | null>(
-    initialAnswers?.timeline ?? null
-  );
-  const [lockFlexibility, setLockFlexibility] = useState<QuickMatchAnswers['lockFlexibility'] | null>(
-    initialAnswers?.lockFlexibility ?? null
-  );
-  const [payoutPreference, setPayoutPreference] = useState<QuickMatchAnswers['payoutPreference'] | null>(
-    initialAnswers?.payoutPreference ?? null
-  );
-  const [insurancePreference, setInsurancePreference] = useState<QuickMatchAnswers['insurancePreference'] | null>(
-    initialAnswers?.insurancePreference ?? null
+  const [timeline, setTimeline] = useState<QuickMatchCoreAnswers['timeline'] | null>(
+    normalizeInitialTimeline(initialAnswers?.timeline)
   );
 
   const customInputRef = useRef<HTMLInputElement>(null);
@@ -70,72 +119,90 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
     purpose !== null,
     amountPreset !== null && (amountPreset !== -1 || resolvedAmount > 0),
     timeline !== null,
-    lockFlexibility !== null,
-    payoutPreference !== null,
-    insurancePreference !== null,
   ];
 
   const goNext = () => {
-    if (step < 6) {
+    if (step < 3) {
       setDirection(1);
-      setStep(s => s + 1);
-    } else {
-      handleComplete();
+      setStep((current) => current + 1);
+      return;
     }
+
+    handleComplete();
   };
 
   const goBack = () => {
     if (step > 1) {
       setDirection(-1);
-      setStep(s => s - 1);
+      setStep((current) => current - 1);
     }
   };
 
   const handleComplete = () => {
-    if (purpose && resolvedAmount > 0 && timeline && lockFlexibility && payoutPreference && insurancePreference) {
-      onComplete({ purpose, amount: resolvedAmount, timeline, lockFlexibility, payoutPreference, insurancePreference });
-    }
-  };
+    if (!purpose || !timeline || resolvedAmount <= 0) return;
 
-  const slideVariants = {
-    enter: (dir: Direction) => ({ x: dir * 40, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: Direction) => ({ x: dir * -40, opacity: 0 }),
+    onComplete(deriveQuickMatchAnswers({
+      purpose,
+      amount: resolvedAmount,
+      timeline,
+    }));
   };
 
   const optionClass = (selected: boolean) =>
-    `w-full min-h-14 px-4 py-3.5 border rounded-xl text-left flex items-center justify-between gap-3 font-medium text-[15px] transition-all duration-150 cursor-pointer ${
+    `w-full min-h-14 rounded-xl border px-4 py-3.5 text-left transition-all duration-150 sm:min-h-16 sm:rounded-2xl sm:py-4 ${
       selected
-        ? 'border-brand-primary bg-brand-primaryLight text-brand-primary dark:border-blue-400/60 dark:bg-blue-500/10 dark:text-blue-300'
-        : 'border-brand-border bg-white dark:bg-slate-800 dark:border-white/10 text-brand-textPrimary dark:text-gray-200 hover:border-brand-primary/40 hover:bg-brand-surface dark:hover:border-blue-400/30 dark:hover:bg-slate-700'
+        ? 'border-brand-primary bg-brand-primaryLight text-brand-primary shadow-[0_8px_24px_rgba(0,82,255,0.08)] dark:border-blue-400/60 dark:bg-blue-500/10 dark:text-blue-300'
+        : 'border-brand-border bg-white text-brand-textPrimary hover:border-brand-primary/35 hover:bg-brand-surface dark:border-white/10 dark:bg-slate-900 dark:text-gray-200 dark:hover:border-blue-400/30 dark:hover:bg-slate-800'
     }`;
 
+  const slideVariants = {
+    enter: (dir: Direction) => ({ x: dir * 36, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: Direction) => ({ x: dir * -36, opacity: 0 }),
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider">
-            Step {step} of 6
-          </span>
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="mb-4 rounded-2xl border border-brand-primary/15 bg-gradient-to-br from-brand-primaryLight via-white to-white p-4 shadow-sm dark:border-blue-500/20 dark:from-blue-950/30 dark:via-slate-900 dark:to-slate-900 sm:mb-6 sm:p-5">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <div>
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-primary dark:border-blue-400/20 dark:bg-slate-800 dark:text-blue-300">
+              <Sparkles className="h-3.5 w-3.5" />
+              3 easy steps
+            </div>
+            <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-gray-100 sm:text-2xl">
+              Find your best rate fast.
+            </h2>
+            <p className="mt-2 max-w-lg text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400">
+              Answer 3 simple questions. We&apos;ll rank the bank options that fit you best.
+            </p>
+          </div>
           <button
             onClick={onSkip}
-            className="text-xs font-medium text-brand-textSecondary dark:text-gray-500 hover:text-brand-primary dark:hover:text-blue-400 transition-colors underline-offset-2 hover:underline"
+            className="inline-flex shrink-0 items-center justify-center rounded-full border border-brand-border bg-white px-3 py-1.5 text-xs font-semibold text-brand-textSecondary transition-colors hover:border-brand-primary/30 hover:text-brand-primary dark:border-white/10 dark:bg-slate-900 dark:text-gray-400 dark:hover:border-blue-400/30 dark:hover:text-blue-400"
           >
-            Compare all banks
+            Skip to all banks
           </button>
         </div>
-        <div className="h-1.5 w-full bg-brand-border dark:bg-white/10 rounded-full overflow-hidden">
+
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
+            Step {step} of 3
+          </span>
+          <span className="hidden text-xs text-brand-textSecondary dark:text-gray-500 sm:inline">
+            Your after-tax match
+          </span>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-brand-border dark:bg-white/10">
           <motion.div
-            className="h-full bg-brand-primary dark:bg-blue-500 rounded-full"
-            animate={{ width: `${(step / 6) * 100}%` }}
+            className="h-full rounded-full bg-brand-primary dark:bg-blue-500"
+            animate={{ width: `${(step / 3) * 100}%` }}
             transition={{ duration: 0.35, ease: 'easeInOut' }}
           />
         </div>
       </div>
 
-      {/* Question card */}
-      <div className="bg-white dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-2xl shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-[24px] border border-brand-border bg-white shadow-[0_16px_50px_rgba(17,24,39,0.06)] dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:rounded-[28px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={step}
@@ -145,153 +212,109 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             animate="center"
             exit="exit"
             transition={{ duration: 0.22, ease: 'easeInOut' }}
-            className="p-6 md:p-8"
+            className="p-5 sm:p-6 md:p-8"
           >
-            {/* Step 1 — Purpose */}
             {step === 1 && (
               <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">What is this money for?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">We&apos;ll match you with options that fit your goal.</p>
+                <h3 className="mb-1 text-xl font-bold text-brand-textPrimary dark:text-gray-100">
+                  What matters most?
+                </h3>
+                <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-400">
+                  Pick the goal that fits this money.
+                </p>
                 <div className="space-y-2.5">
-                  {([
-                    { id: 'emergency', label: 'Emergency fund', sub: 'Keep it safe, access it anytime' },
-                    { id: 'short-term', label: 'Short-term savings', sub: 'Saving up for something specific' },
-                    { id: 'idle-cash', label: 'Growing idle cash', sub: 'Money sitting, make it work harder' },
-                    { id: 'long-term', label: 'Long-term savings', sub: 'Park it and grow it over years' },
-                    { id: 'monthly-income', label: 'Regular interest / monthly income', sub: 'I want interest paid out regularly' },
-                  ] as const).map(opt => (
-                    <button key={opt.id} onClick={() => setPurpose(opt.id)} className={optionClass(purpose === opt.id)}>
-                      <div>
-                        <div>{opt.label}</div>
-                        <div className="text-xs font-normal text-brand-textSecondary dark:text-gray-400 mt-0.5">{opt.sub}</div>
+                  {GOAL_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setPurpose(option.id)}
+                      className={optionClass(purpose === option.id)}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="text-[15px] font-semibold">{option.label}</div>
+                          <div className="mt-1 text-[13px] font-normal leading-relaxed text-brand-textSecondary dark:text-gray-400 sm:text-sm">
+                            {option.sub}
+                          </div>
+                        </div>
+                        {purpose === option.id && <Check className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary dark:text-blue-400" />}
                       </div>
-                      {purpose === opt.id && <Check className="w-5 h-5 shrink-0 text-brand-primary dark:text-blue-400" />}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Step 2 — Amount */}
             {step === 2 && (
               <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">How much are you depositing?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">We&apos;ll calculate your exact after-tax returns.</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-4">
-                  {AMOUNT_PRESETS.map(opt => (
+                <h3 className="mb-1 text-xl font-bold text-brand-textPrimary dark:text-gray-100">
+                  How much will you deposit?
+                </h3>
+                <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-400">
+                  We use your amount to show your real after-tax earnings.
+                </p>
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+                  {AMOUNT_PRESETS.map((preset) => (
                     <button
-                      key={opt.value}
-                      onClick={() => setAmountPreset(opt.value)}
-                      className={optionClass(amountPreset === opt.value)}
+                      key={preset.value}
+                      onClick={() => setAmountPreset(preset.value)}
+                      className={optionClass(amountPreset === preset.value)}
                     >
-                      <span>{opt.label}</span>
-                      {amountPreset === opt.value && <Check className="w-4 h-4 shrink-0 text-brand-primary dark:text-blue-400" />}
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-[15px] font-semibold">{preset.label}</span>
+                        {amountPreset === preset.value && <Check className="h-4 w-4 shrink-0 text-brand-primary dark:text-blue-400" />}
+                      </div>
                     </button>
                   ))}
                 </div>
+
                 {amountPreset === -1 && (
-                  <div className="relative mt-2">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">₱</span>
-                    <Input
-                      ref={customInputRef}
-                      type="text"
-                      placeholder="Enter amount"
-                      value={customAmount}
-                      onChange={e => setCustomAmount(e.target.value.replace(/[^0-9]/g, ''))}
-                      className="pl-8 h-12 text-base font-bold bg-brand-surface dark:bg-slate-950 border-brand-border dark:border-white/20 rounded-xl focus-visible:ring-brand-primary"
-                    />
+                  <div className="mt-4 rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-slate-950">
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
+                      Custom amount
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">
+                        PHP
+                      </span>
+                      <Input
+                        ref={customInputRef}
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="Type your amount"
+                        value={customAmount}
+                        onChange={(event) => setCustomAmount(event.target.value.replace(/[^0-9]/g, ''))}
+                        className="h-12 rounded-xl border-brand-border bg-white pl-16 text-base font-bold focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-900"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Step 3 — Timeline */}
             {step === 3 && (
               <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">When might you need the money?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">This helps us filter options by their lock-in period.</p>
+                <h3 className="mb-1 text-xl font-bold text-brand-textPrimary dark:text-gray-100">
+                  When will you need it?
+                </h3>
+                <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-400">
+                  This helps us avoid lock-ins that are too long.
+                </p>
                 <div className="space-y-2.5">
-                  {([
-                    { id: 'anytime', label: 'Anytime', sub: 'I need to be able to withdraw immediately' },
-                    { id: '3mo', label: 'Within 3 months', sub: 'Short window before I might need it' },
-                    { id: '3-6mo', label: '3–6 months', sub: 'A few months away' },
-                    { id: '6-12mo', label: '6–12 months', sub: 'About half a year to a year' },
-                    { id: '1yr+', label: '1 year or more', sub: 'I won\'t touch this for a long time' },
-                  ] as const).map(opt => (
-                    <button key={opt.id} onClick={() => setTimeline(opt.id)} className={optionClass(timeline === opt.id)}>
-                      <div>
-                        <div>{opt.label}</div>
-                        <div className="text-xs font-normal text-brand-textSecondary dark:text-gray-400 mt-0.5">{opt.sub}</div>
+                  {TIMELINE_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setTimeline(option.id)}
+                      className={optionClass(timeline === option.id)}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="text-[15px] font-semibold">{option.label}</div>
+                          <div className="mt-1 text-[13px] font-normal leading-relaxed text-brand-textSecondary dark:text-gray-400 sm:text-sm">
+                            {option.sub}
+                          </div>
+                        </div>
+                        {timeline === option.id && <Check className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary dark:text-blue-400" />}
                       </div>
-                      {timeline === opt.id && <Check className="w-5 h-5 shrink-0 text-brand-primary dark:text-blue-400" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 4 — Lock flexibility */}
-            {step === 4 && (
-              <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">Can you lock the money for better returns?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">Locking your money in a fixed deposit often means higher rates.</p>
-                <div className="space-y-2.5">
-                  {([
-                    { id: 'no-lock', label: 'No, I need access anytime', sub: 'Show me only liquid accounts' },
-                    { id: 'maybe', label: 'Maybe, if the return is worth it', sub: 'I\'m open to some lock-in' },
-                    { id: 'yes-lock', label: 'Yes, I\'m okay locking it', sub: 'Maximize returns, I won\'t need it soon' },
-                  ] as const).map(opt => (
-                    <button key={opt.id} onClick={() => setLockFlexibility(opt.id)} className={optionClass(lockFlexibility === opt.id)}>
-                      <div>
-                        <div>{opt.label}</div>
-                        <div className="text-xs font-normal text-brand-textSecondary dark:text-gray-400 mt-0.5">{opt.sub}</div>
-                      </div>
-                      {lockFlexibility === opt.id && <Check className="w-5 h-5 shrink-0 text-brand-primary dark:text-blue-400" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 5 — Payout preference */}
-            {step === 5 && (
-              <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">Do you want regular interest payouts?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">Some accounts pay you monthly, others only when you withdraw.</p>
-                <div className="space-y-2.5">
-                  {([
-                    { id: 'no-preference', label: 'No preference', sub: 'Show me the best rates regardless' },
-                    { id: 'monthly', label: 'Monthly payouts', sub: 'I want interest credited every month' },
-                    { id: 'at-maturity', label: 'At maturity is okay', sub: 'I don\'t mind waiting for the full payout' },
-                  ] as const).map(opt => (
-                    <button key={opt.id} onClick={() => setPayoutPreference(opt.id)} className={optionClass(payoutPreference === opt.id)}>
-                      <div>
-                        <div>{opt.label}</div>
-                        <div className="text-xs font-normal text-brand-textSecondary dark:text-gray-400 mt-0.5">{opt.sub}</div>
-                      </div>
-                      {payoutPreference === opt.id && <Check className="w-5 h-5 shrink-0 text-brand-primary dark:text-blue-400" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 6 — Insurance preference */}
-            {step === 6 && (
-              <div>
-                <h3 className="text-xl font-bold text-brand-textPrimary dark:text-gray-100 mb-1">Do you want to stick to PDIC-insured banks only?</h3>
-                <p className="text-sm text-brand-textSecondary dark:text-gray-400 mb-5">PDIC insures bank deposits up to ₱1,000,000 per depositor, per bank.</p>
-                <div className="space-y-2.5">
-                  {([
-                    { id: 'insured-only', label: 'PDIC-insured only', sub: 'Show only bank products with PDIC coverage' },
-                    { id: 'all-banks', label: 'Show all bank options', sub: 'Compare all public bank savings and time deposit rates' },
-                  ] as const).map(opt => (
-                    <button key={opt.id} onClick={() => setInsurancePreference(opt.id)} className={optionClass(insurancePreference === opt.id)}>
-                      <div>
-                        <div>{opt.label}</div>
-                        <div className="text-xs font-normal text-brand-textSecondary dark:text-gray-400 mt-0.5">{opt.sub}</div>
-                      </div>
-                      {insurancePreference === opt.id && <Check className="w-5 h-5 shrink-0 text-brand-primary dark:text-blue-400" />}
                     </button>
                   ))}
                 </div>
@@ -300,27 +323,28 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation footer */}
-        <div className="px-6 pb-6 md:px-8 md:pb-8 flex gap-3">
+        <div className="flex flex-col-reverse gap-3 border-t border-brand-border bg-[#FBFCFF] px-5 py-4 dark:border-white/10 dark:bg-slate-950/70 sm:flex-row sm:px-6 sm:py-5 md:px-8">
           {step > 1 && (
             <Button
               variant="outline"
               onClick={goBack}
-              className="h-12 gap-1 border-brand-border dark:border-white/10 dark:text-gray-300"
+              className="min-h-[52px] gap-2 rounded-xl border-brand-border px-5 text-base font-semibold dark:border-white/10 dark:bg-slate-900 dark:text-gray-300 sm:min-h-[48px] sm:px-4 sm:text-sm"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="h-4 w-4" />
               Back
             </Button>
           )}
           <Button
             onClick={goNext}
             disabled={!canProceed[step - 1]}
-            className="flex-1 h-12 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold gap-2 disabled:opacity-50"
+            className="min-h-[52px] flex-1 gap-2 rounded-xl bg-brand-primary px-5 text-base font-semibold text-white shadow-sm hover:bg-brand-primaryDark disabled:opacity-50 sm:min-h-[48px] sm:text-sm"
           >
-            {step < 6 ? (
-              <>Next <ArrowRight className="w-4 h-4" /></>
+            {step < 3 ? (
+              <>
+                Next <ArrowRight className="h-4 w-4" />
+              </>
             ) : (
-              'Find my best rate'
+              'Show my best matches'
             )}
           </Button>
         </div>

@@ -12,7 +12,7 @@ const TRUST_POINTS = [
   {
     icon: Calculator,
     title: 'After-tax comparisons',
-    description: 'See what you could really earn, not just the advertised rate.',
+    description: 'Cut through advertised rates and see what you\'ll really earn after tax.',
   },
   {
     icon: ShieldCheck,

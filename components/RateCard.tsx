@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { formatRate, formatPHP } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
+import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
 
 function formatLockIn(days: number): string {
   if (days === 0) return 'Withdraw Anytime';
@@ -49,7 +50,7 @@ function getPeriodicPayout(amount: number, effectiveRate: number, freq: string):
 function getPayoutPeriodLabel(freq: string): string {
   switch (freq) {
     case 'daily': return 'day';
-    case 'monthly': return 'mo';
+    case 'monthly': return 'month';
     case 'quarterly': return 'quarter';
     case 'annually': return 'yr';
     default: return '';
@@ -189,6 +190,14 @@ function ProductRow({ product, amount, months, isBest }: {
                 </p>
               )}
 
+              {amount > 0 && (
+                <CalculationBreakdownDetails
+                  amount={amount}
+                  months={months}
+                  product={product}
+                />
+              )}
+
               {/* Payout Schedule */}
               <div>
                 <h4 className="text-[10px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-1">Interest Payout</h4>
@@ -203,7 +212,7 @@ function ProductRow({ product, amount, months, isBest }: {
                     </span>
                   ) : amount > 0 ? (
                     <span className="font-semibold text-positive tabular-nums">
-                      +{formatPHP(product.projectedReturn)} after {months}mo
+                      +{formatPHP(product.projectedReturn)} after {months} month{months !== 1 ? 's' : ''}
                     </span>
                   ) : null}
                 </div>
@@ -318,7 +327,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
             {amount > 0 && (
               <div className="text-right">
                 <div className="text-[15px] font-bold text-positive tabular-nums">+{formatPHP(bestReturn)}</div>
-                <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">estimated over {months} mo</div>
+                <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">estimated over {months} month{months !== 1 ? 's' : ''}</div>
               </div>
             )}
           </div>

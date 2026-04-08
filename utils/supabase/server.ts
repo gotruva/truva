@@ -1,7 +1,12 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { hasSupabaseEnv } from '@/lib/env'
 
 export async function createClient() {
+  if (!hasSupabaseEnv()) {
+    throw new Error('Supabase is not configured for this environment. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to enable server-side Supabase features.')
+  }
+
   const cookieStore = await cookies()
 
   return createServerClient(

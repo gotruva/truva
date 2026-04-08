@@ -1,5 +1,5 @@
 import { getPublicRates } from '@/lib/rates';
-import { YieldCalculator } from '@/components/YieldCalculator';
+import { CalculatorPageClient } from '@/components/CalculatorPageClient';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default async function CalculatorPage() {
             </p>
         </div>
         
-        <YieldCalculator rates={rates} />
+        <CalculatorPageClient rates={rates} />
       </div>
     </div>
   );

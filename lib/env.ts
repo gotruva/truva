@@ -18,3 +18,7 @@ export const env = {
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
 };
+
+export function hasSupabaseEnv() {
+  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+}

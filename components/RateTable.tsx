@@ -1,6 +1,20 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  AlertCircle,
+  AlertTriangle,
+  Building2,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  ChevronsUpDown,
+  Lock,
+  ShieldCheck,
+  Trophy,
+  Wallet,
+} from 'lucide-react';
 import { RateProduct } from '@/types';
 import { AffiliateButton } from './AffiliateButton';
 import { Badge } from '@/components/ui/badge';
@@ -11,20 +25,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { AlertCircle, ShieldCheck, ChevronDown, AlertTriangle, Calendar, Lock, Building2, Wallet, Trophy, ChevronUp, ChevronsUpDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { computeEffectiveRate, computeReturn, formatRate, formatPHP } from '@/utils/yieldEngine';
+import { computeEffectiveRate, computeReturn, formatPHP, formatRate } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
-
-/* ─── Helpers ─── */
+import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
 
 function formatLockIn(days: number): string {
   if (days === 0) return 'Withdraw Anytime';
+
   const months = Math.round(days / 30.4375);
   if (months < 12) return `${months} month${months !== 1 ? 's' : ''}`;
+
   const years = months / 12;
   if (years % 1 === 0) return `${years} year${years !== 1 ? 's' : ''}`;
+
   return `${years.toFixed(1)} years`;
 }
 
@@ -36,56 +50,92 @@ function formatLockLabel(days: number, verbose = false): string {
 
 function formatPayoutFrequency(freq: RateProduct['payoutFrequency']): string {
   switch (freq) {
-    case 'daily': return 'Daily';
-    case 'monthly': return 'Monthly';
-    case 'quarterly': return 'Quarterly';
-    case 'annually': return 'Annually';
-    case 'at_maturity': return 'At Maturity';
+    case 'daily':
+      return 'Daily';
+    case 'monthly':
+      return 'Monthly';
+    case 'quarterly':
+      return 'Quarterly';
+    case 'annually':
+      return 'Annually';
+    case 'at_maturity':
+      return 'At Maturity';
+    default:
+      return freq;
   }
 }
 
 function InsurerBadge({ insurer }: { insurer: string }) {
   if (insurer === 'PDIC') {
     return (
-      <span className="inline-flex items-center text-[11px] font-semibold text-positive uppercase tracking-wide">
-        <ShieldCheck className="w-3 h-3 mr-0.5" /> PDIC
+      <span className="inline-flex items-center text-[11px] font-semibold uppercase tracking-wide text-positive">
+        <ShieldCheck className="mr-0.5 h-3 w-3" /> PDIC
       </span>
     );
   }
+
   if (insurer === 'Bureau of Treasury' || insurer === 'Pag-IBIG Fund') {
     const label = insurer === 'Bureau of Treasury' ? 'BTr' : 'Pag-IBIG';
     return (
-      <span className="inline-flex items-center text-[11px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
-        <Building2 className="w-3 h-3 mr-0.5" /> {label}
+      <span className="inline-flex items-center text-[11px] font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+        <Building2 className="mr-0.5 h-3 w-3" /> {label}
       </span>
     );
   }
+
   return (
-    <span className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">Not Insured</span>
+    <span className="text-[11px] font-medium text-brand-textSecondary dark:text-gray-500">Not Insured</span>
   );
 }
 
 function LockBadge({ days, verbose = false }: { days: number; verbose?: boolean }) {
   if (days === 0) {
-    return <span className="text-[13px] text-brand-textSecondary dark:text-gray-400 font-medium">Withdraw Anytime</span>;
+    return <span className="text-[13px] font-medium text-brand-textSecondary dark:text-gray-400">Withdraw Anytime</span>;
   }
+
   return (
-    <Badge variant="outline" className="text-[11px] font-bold text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 py-0">
-      <Lock className="w-3 h-3 mr-0.5" /> {formatLockLabel(days, verbose)}
+    <Badge
+      variant="outline"
+      className="border-amber-500/30 bg-amber-50 py-0 text-[11px] font-bold text-amber-700 dark:bg-amber-950/20 dark:text-amber-400"
+    >
+      <Lock className="mr-0.5 h-3 w-3" /> {formatLockLabel(days, verbose)}
     </Badge>
   );
 }
 
 function RankBadge({ rank }: { rank: number }) {
-  if (rank === 1) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-yellow-400 to-amber-500 shadow-sm"><Trophy className="w-3.5 h-3.5" /></span>;
-  if (rank === 2) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-gray-300 to-gray-400 shadow-sm">2</span>;
-  if (rank === 3) return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-amber-600 to-amber-700 shadow-sm">3</span>;
-  return <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-brand-textSecondary dark:text-gray-500 bg-gray-100 dark:bg-slate-800">{rank}</span>;
+  if (rank === 1) {
+    return (
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 text-[11px] font-bold text-white shadow-sm">
+        <Trophy className="h-3.5 w-3.5" />
+      </span>
+    );
+  }
+
+  if (rank === 2) {
+    return (
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gray-300 to-gray-400 text-[11px] font-bold text-white shadow-sm">
+        2
+      </span>
+    );
+  }
+
+  if (rank === 3) {
+    return (
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-600 to-amber-700 text-[11px] font-bold text-white shadow-sm">
+        3
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[11px] font-bold text-brand-textSecondary dark:bg-slate-800 dark:text-gray-500">
+      {rank}
+    </span>
+  );
 }
 
 type SortCol = 'provider' | 'rate' | 'effective' | 'return' | null;
-
-/* ─── Types ─── */
 
 interface BankGroup {
   provider: string;
@@ -97,48 +147,62 @@ interface BankGroup {
   insurer: string;
 }
 
-/* ─── Component ─── */
+interface RateTableProps {
+  rates: RateProduct[];
+  amount: number;
+  months: number;
+  onAmountChange: (amount: number) => void;
+  onMonthsChange: (months: number) => void;
+  recommendedIds?: string[];
+}
 
-export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]; recommendedIds?: string[] }) {
+export function RateTable({
+  rates,
+  amount,
+  months,
+  onAmountChange,
+  onMonthsChange,
+  recommendedIds = [],
+}: RateTableProps) {
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
-  const [tableAmount, setTableAmount] = useState<string>('100000');
-  const [tableMonths, setTableMonths] = useState<number>(12);
   const [sortCol, setSortCol] = useState<SortCol>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
-  const numAmount = parseFloat(tableAmount.replace(/,/g, '')) || 0;
+  const numAmount = amount || 0;
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/[^0-9]/g, '');
-    setTableAmount(val);
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    onAmountChange(value ? parseInt(value, 10) : 0);
   };
 
-  const MONTH_OPTIONS = [
-    { label: '3 Mo', value: 3 },
-    { label: '6 Mo', value: 6 },
+  const monthOptions = [
+    { label: '3 Months', value: 3 },
+    { label: '6 Months', value: 6 },
     { label: '1 Year', value: 12 },
     { label: '2 Years', value: 24 },
   ];
 
   function handleSort(col: SortCol) {
     if (sortCol === col) {
-      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortCol(col);
-      setSortDir(col === 'provider' ? 'asc' : 'desc');
+      setSortDir((current) => current === 'asc' ? 'desc' : 'asc');
+      return;
     }
+
+    setSortCol(col);
+    setSortDir(col === 'provider' ? 'asc' : 'desc');
   }
 
   function SortIcon({ col }: { col: SortCol }) {
-    if (sortCol !== col) return <ChevronsUpDown className="w-3.5 h-3.5 opacity-40" />;
+    if (sortCol !== col) return <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />;
+
     return sortDir === 'asc'
-      ? <ChevronUp className="w-3.5 h-3.5 text-brand-primary" />
-      : <ChevronDown className="w-3.5 h-3.5 text-brand-primary" />;
+      ? <ChevronUp className="h-3.5 w-3.5 text-brand-primary" />
+      : <ChevronDown className="h-3.5 w-3.5 text-brand-primary" />;
   }
 
-  // Group products by provider and find best product per bank
   const bankGroups: BankGroup[] = useMemo(() => {
     const groupMap = new Map<string, RateProduct[]>();
+
     for (const rate of rates) {
       const existing = groupMap.get(rate.provider) || [];
       existing.push(rate);
@@ -147,14 +211,13 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
 
     const groups: BankGroup[] = [];
     for (const [provider, products] of groupMap) {
-      const enriched = products.map(p => {
-        const effectiveRate = computeEffectiveRate(numAmount, p);
-        const projectedReturn = computeReturn(numAmount, p, tableMonths);
-        return { ...p, effectiveRate, projectedReturn };
+      const enriched = products.map((product) => {
+        const effectiveRate = computeEffectiveRate(numAmount, product);
+        const projectedReturn = computeReturn(numAmount, product, months);
+        return { ...product, effectiveRate, projectedReturn };
       });
 
-      // Sort products within group: highest effective rate first
-      enriched.sort((a, b) => b.effectiveRate - a.effectiveRate);
+      enriched.sort((left, right) => right.effectiveRate - left.effectiveRate);
 
       const best = enriched[0];
       groups.push({
@@ -168,70 +231,67 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
       });
     }
 
-    // Default sort: best effective rate descending
-    groups.sort((a, b) => b.bestEffectiveRate - a.bestEffectiveRate);
+    groups.sort((left, right) => right.bestEffectiveRate - left.bestEffectiveRate);
 
-    // Apply user sort
     if (sortCol === 'provider') {
-      groups.sort((a, b) => sortDir === 'asc'
-        ? a.provider.localeCompare(b.provider)
-        : b.provider.localeCompare(a.provider));
+      groups.sort((left, right) => sortDir === 'asc'
+        ? left.provider.localeCompare(right.provider)
+        : right.provider.localeCompare(left.provider));
     } else if (sortCol === 'rate') {
-      groups.sort((a, b) => sortDir === 'asc'
-        ? a.bestProduct.headlineRate - b.bestProduct.headlineRate
-        : b.bestProduct.headlineRate - a.bestProduct.headlineRate);
+      groups.sort((left, right) => sortDir === 'asc'
+        ? left.bestProduct.headlineRate - right.bestProduct.headlineRate
+        : right.bestProduct.headlineRate - left.bestProduct.headlineRate);
     } else if (sortCol === 'effective') {
-      groups.sort((a, b) => sortDir === 'asc'
-        ? a.bestEffectiveRate - b.bestEffectiveRate
-        : b.bestEffectiveRate - a.bestEffectiveRate);
+      groups.sort((left, right) => sortDir === 'asc'
+        ? left.bestEffectiveRate - right.bestEffectiveRate
+        : right.bestEffectiveRate - left.bestEffectiveRate);
     } else if (sortCol === 'return') {
-      groups.sort((a, b) => sortDir === 'asc'
-        ? a.bestReturn - b.bestReturn
-        : b.bestReturn - a.bestReturn);
+      groups.sort((left, right) => sortDir === 'asc'
+        ? left.bestReturn - right.bestReturn
+        : right.bestReturn - left.bestReturn);
     }
 
     return groups;
-  }, [rates, numAmount, tableMonths, sortCol, sortDir]);
+  }, [months, numAmount, rates, sortCol, sortDir]);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="hidden md:block rounded-xl border border-brand-border dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm mb-12 transition-colors duration-300 overflow-hidden"
+      className="mb-12 hidden overflow-hidden rounded-xl border border-brand-border bg-white shadow-sm transition-colors duration-300 dark:border-white/10 dark:bg-slate-900 md:block"
     >
-      {/* ─── Amount Input Bar ─── */}
-      <div className="bg-gradient-to-r from-brand-primary/5 via-brand-primaryLight/40 to-brand-primary/5 dark:from-blue-950/40 dark:via-slate-900 dark:to-blue-950/40 border-b border-brand-border dark:border-white/10 px-6 py-5">
-        <div className="flex items-center gap-6 flex-wrap">
-          <div className="flex items-center gap-3 flex-1 min-w-[280px]">
-            <div className="flex items-center gap-2 text-sm font-semibold text-brand-textSecondary dark:text-gray-400 whitespace-nowrap">
-              <Wallet className="w-4 h-4 text-brand-primary" />
+      <div className="border-b border-brand-border bg-gradient-to-r from-brand-primary/5 via-brand-primaryLight/40 to-brand-primary/5 px-6 py-5 dark:border-white/10 dark:from-blue-950/40 dark:via-slate-900 dark:to-blue-950/40">
+        <div className="flex flex-wrap items-center gap-6">
+          <div className="flex min-w-[280px] flex-1 items-center gap-3">
+            <div className="flex items-center gap-2 whitespace-nowrap text-sm font-semibold text-brand-textSecondary dark:text-gray-400">
+              <Wallet className="h-4 w-4 text-brand-primary" />
               Your deposit:
             </div>
             <div className="relative max-w-[220px]">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">₱</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">PHP</span>
               <Input
                 type="text"
                 value={new Intl.NumberFormat('en-US').format(numAmount)}
                 onChange={handleAmountChange}
-                className="pl-7 h-10 text-base font-bold bg-white dark:bg-slate-950 border-brand-border dark:border-white/20 rounded-lg shadow-inner focus-visible:ring-brand-primary"
+                className="h-10 rounded-lg border-brand-border bg-white pl-12 text-base font-bold shadow-inner focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-950"
               />
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400 whitespace-nowrap">Duration:</span>
-            <div className="flex bg-white dark:bg-slate-950 p-1 rounded-lg border border-brand-border dark:border-white/10">
-              {MONTH_OPTIONS.map(opt => (
+            <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400">Duration:</span>
+            <div className="flex rounded-lg border border-brand-border bg-white p-1 dark:border-white/10 dark:bg-slate-950">
+              {monthOptions.map((option) => (
                 <button
-                  key={opt.value}
-                  onClick={() => setTableMonths(opt.value)}
-                  className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
-                    tableMonths === opt.value
+                  key={option.value}
+                  onClick={() => onMonthsChange(option.value)}
+                  className={`rounded-md px-3 py-1.5 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
+                    months === option.value
                       ? 'bg-brand-primary text-white shadow-sm'
-                      : 'text-brand-textSecondary dark:text-gray-500 hover:bg-brand-surface dark:hover:bg-slate-900 hover:text-brand-textPrimary dark:hover:text-gray-300'
+                      : 'text-brand-textSecondary hover:bg-brand-surface hover:text-brand-textPrimary dark:text-gray-500 dark:hover:bg-slate-900 dark:hover:text-gray-300'
                   }`}
                 >
-                  {opt.label}
+                  {option.label}
                 </button>
               ))}
             </div>
@@ -239,76 +299,82 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
         </div>
       </div>
 
-      {/* ─── Table Header ─── */}
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-[#F9FAFB] dark:bg-slate-950 border-b border-brand-border dark:border-white/10 text-[12px] font-semibold text-brand-textSecondary dark:text-gray-400 uppercase tracking-wider transition-colors duration-300">
+      <table className="w-full border-collapse text-left">
+        <thead className="border-b border-brand-border bg-[#F9FAFB] text-[12px] font-semibold uppercase tracking-wider text-brand-textSecondary transition-colors duration-300 dark:border-white/10 dark:bg-slate-950 dark:text-gray-400">
           <tr>
-            <th className="p-4 py-3.5 font-semibold w-12"></th>
+            <th className="w-12 p-4 py-3.5 font-semibold" />
             <th className="p-4 py-3.5 font-semibold">
               <button
                 onClick={() => handleSort('provider')}
-                className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors"
+                className="inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
               >
                 Bank / Provider <SortIcon col="provider" />
               </button>
             </th>
-            <th className="p-4 py-3.5 font-semibold text-right">
+            <th className="p-4 py-3.5 text-right font-semibold">
               <button
                 onClick={() => handleSort('rate')}
-                className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors ml-auto"
+                className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
               >
                 Marketed Rate <SortIcon col="rate" />
               </button>
             </th>
-            <th className="p-4 py-3.5 font-semibold text-right">
+            <th className="p-4 py-3.5 text-right font-semibold">
               <TooltipProvider delay={150}>
                 <Tooltip>
                   <TooltipTrigger
-                    render={
+                    render={(
                       <button
                         onClick={() => handleSort('effective')}
-                        className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors ml-auto"
+                        className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
                       />
-                    }
+                    )}
                   >
                     After Tax Rate
-                    <AlertCircle className="w-3.5 h-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
+                    <AlertCircle className="h-3.5 w-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
                     <SortIcon col="effective" />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[300px] p-3 text-sm leading-relaxed text-left font-normal bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 shadow-lg">
+                  <TooltipContent
+                    side="top"
+                    className="max-w-[300px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
+                  >
                     <p>
-                      The effective after-tax rate you&apos;d actually earn on ₱{numAmount.toLocaleString()} — accounting for balance tiers and 20% withholding tax.
+                      The effective after-tax rate you&apos;d actually earn on PHP {numAmount.toLocaleString()}
+                      {' '}after balance tiers and withholding tax are applied.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </th>
-            <th className="p-4 py-3.5 font-semibold text-right">
+            <th className="p-4 py-3.5 text-right font-semibold">
               <TooltipProvider delay={150}>
                 <Tooltip>
                   <TooltipTrigger
-                    render={
+                    render={(
                       <button
                         onClick={() => handleSort('return')}
-                        className="inline-flex items-center gap-1 hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors ml-auto"
+                        className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
                       />
-                    }
+                    )}
                   >
                     Projected Return
                     <SortIcon col="return" />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[280px] p-3 text-sm leading-relaxed text-left font-normal bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 shadow-lg">
+                  <TooltipContent
+                    side="top"
+                    className="max-w-[280px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
+                  >
                     <p>
-                      How much interest you&apos;d earn on ₱{numAmount.toLocaleString()} over {tableMonths} month{tableMonths > 1 ? 's' : ''}, after 20% tax.
+                      How much interest you&apos;d earn on PHP {numAmount.toLocaleString()} over {months} month{months > 1 ? 's' : ''}, after tax.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </th>
-            <th className="p-4 py-3.5 font-semibold text-center">Deposit Locked</th>
-            <th className="p-4 py-3.5 font-semibold text-center">Interest Paid</th>
-            <th className="p-4 py-3.5 font-semibold text-center">Insured By</th>
-            <th className="p-4 py-3.5 font-semibold w-12"></th>
+            <th className="p-4 py-3.5 text-center font-semibold">Deposit Locked</th>
+            <th className="p-4 py-3.5 text-center font-semibold">Interest Paid</th>
+            <th className="p-4 py-3.5 text-center font-semibold">Insured By</th>
+            <th className="w-12 p-4 py-3.5 font-semibold" />
           </tr>
         </thead>
         <tbody className="divide-y divide-brand-border dark:divide-white/10">
@@ -316,102 +382,93 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
             const isExpanded = expandedProvider === group.provider;
             const best = group.bestProduct;
             const headlineGross = best.headlineRate;
-            const isRecommended = group.products.some(p => recommendedIds.includes(p.id));
+            const isRecommended = group.products.some((product) => recommendedIds.includes(product.id));
 
             return (
               <React.Fragment key={group.provider}>
-                {/* ─── Bank Summary Row ─── */}
                 <tr
                   onClick={() => setExpandedProvider(isExpanded ? null : group.provider)}
-                  className={`h-[72px] transition-colors group cursor-pointer ${
+                  className={`group h-[72px] cursor-pointer transition-colors ${
                     isExpanded
                       ? 'bg-brand-primaryLight/30 dark:bg-blue-950/20'
                       : 'hover:bg-brand-surface dark:hover:bg-slate-800'
                   } ${groupIndex < 3 ? 'border-l-2 border-l-transparent' : ''}`}
-                  style={groupIndex === 0 ? { borderLeftColor: '#FFD700' } : groupIndex === 1 ? { borderLeftColor: '#C0C0C0' } : groupIndex === 2 ? { borderLeftColor: '#CD7F32' } : {}}
+                  style={
+                    groupIndex === 0 ? { borderLeftColor: '#FFD700' }
+                      : groupIndex === 1 ? { borderLeftColor: '#C0C0C0' }
+                        : groupIndex === 2 ? { borderLeftColor: '#CD7F32' }
+                          : {}
+                  }
                 >
-                  {/* Rank */}
                   <td className="pl-4 pr-1">
                     <RankBadge rank={groupIndex + 1} />
                   </td>
 
-                  {/* Bank name + logo */}
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg border border-brand-border dark:border-white/10 bg-white dark:bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-                        <img src={resolveLogoSrc(group.logo)} alt={group.provider} className="w-7 h-7 object-contain" />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white">
+                        <img src={resolveLogoSrc(group.logo)} alt={group.provider} className="h-7 w-7 object-contain" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-brand-textPrimary dark:text-gray-100 text-[15px] leading-tight">{group.provider}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[15px] font-bold leading-tight text-brand-textPrimary dark:text-gray-100">{group.provider}</span>
                           {isRecommended && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-positive/10 text-positive border border-positive/20 whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1 rounded-full border border-positive/20 bg-positive/10 px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-positive">
                               ★ Quick Match
                             </span>
                           )}
                         </div>
-                        <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
+                        <div className="mt-0.5 text-[12px] text-brand-textSecondary dark:text-gray-500">
                           {group.products.length} product{group.products.length > 1 ? 's' : ''} compared
                         </div>
                       </div>
                     </div>
                   </td>
 
-                  {/* Best headline rate */}
                   <td className="p-4 text-right">
                     <div className="text-[15px] font-semibold tabular-nums text-brand-textPrimary dark:text-gray-100">
                       {(headlineGross * 100).toFixed(2)}%
                     </div>
-                    <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
-                      gross
-                    </div>
+                    <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">gross</div>
                   </td>
 
-                  {/* Effective after-tax */}
                   <td className="p-4 text-right">
                     <div className={`text-[18px] font-bold tabular-nums ${groupIndex === 0 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
                       {formatRate(group.bestEffectiveRate)}
                     </div>
-                    <div className="text-[11px] text-positive font-medium mt-0.5">
-                      after tax
-                    </div>
+                    <div className="mt-0.5 text-[11px] font-medium text-positive">after tax</div>
                   </td>
 
-                  {/* Projected return */}
                   <td className="p-4 text-right">
                     {numAmount > 0 ? (
                       <>
                         <div className="text-[15px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
                           +{formatPHP(group.bestReturn)}
                         </div>
-                        <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
-                          in {tableMonths} mo
+                        <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">
+                          in {months} month{months !== 1 ? 's' : ''}
                         </div>
                       </>
                     ) : (
-                      <span className="text-[13px] text-brand-textSecondary dark:text-gray-500">—</span>
+                      <span className="text-[13px] text-brand-textSecondary dark:text-gray-500">-</span>
                     )}
                   </td>
 
-                  {/* Lock-in for best product */}
                   <td className="p-4 text-center">
                     <LockBadge days={best.lockInDays} />
                   </td>
 
-                  {/* Payout frequency */}
                   <td className="p-4 text-center">
                     <div className="flex items-center justify-center gap-1 text-[12px] font-medium text-brand-textSecondary dark:text-gray-400">
-                      <Calendar className="w-3 h-3 shrink-0" />
+                      <Calendar className="h-3 w-3 shrink-0" />
                       {formatPayoutFrequency(best.payoutFrequency)}
                     </div>
                   </td>
 
-                  {/* Insurer */}
                   <td className="p-4 text-center">
                     <InsurerBadge insurer={group.insurer} />
                   </td>
 
-                  {/* Expand chevron */}
                   <td className="pr-4">
                     <button
                       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-all duration-200 ${
@@ -422,12 +479,11 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
                       aria-label={`Expand ${group.provider} products`}
                     >
                       <span>{isExpanded ? 'Hide' : 'More'}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                     </button>
                   </td>
                 </tr>
 
-                {/* ─── Expanded Product Details ─── */}
                 <AnimatePresence>
                   {isExpanded && (
                     <tr>
@@ -439,60 +495,60 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
                           transition={{ duration: 0.25 }}
                           className="overflow-hidden"
                         >
-                          <div className="bg-[#F8FAFB] dark:bg-slate-950/60 border-t border-brand-border/40 dark:border-white/5">
-                            {group.products.map((product, pIndex) => {
-                              const isBest = pIndex === 0;
+                          <div className="border-t border-brand-border/40 bg-[#F8FAFB] dark:border-white/5 dark:bg-slate-950/60">
+                            {group.products.map((product, productIndex) => {
+                              const isBest = productIndex === 0;
                               const tierCount = product.tiers.length;
-                              const hasConditions = product.conditions.length > 0 && product.conditions.some(c => c.type !== 'none');
+                              const hasConditions = product.conditions.length > 0 && product.conditions.some((condition) => condition.type !== 'none');
+
                               return (
                                 <div
                                   key={product.id}
-                                  className={`px-6 py-4 flex items-start gap-4 transition-colors ${
-                                    pIndex < group.products.length - 1 ? 'border-b border-brand-border/30 dark:border-white/5' : ''
+                                  className={`flex items-start gap-4 px-6 py-4 transition-colors ${
+                                    productIndex < group.products.length - 1 ? 'border-b border-brand-border/30 dark:border-white/5' : ''
                                   } ${isBest ? 'bg-positive/5 dark:bg-positive/5' : 'hover:bg-white/60 dark:hover:bg-slate-900/40'}`}
                                 >
-                                  {/* Product info */}
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                      <span className="font-semibold text-[14px] text-brand-textPrimary dark:text-gray-100">
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <span className="text-[14px] font-semibold text-brand-textPrimary dark:text-gray-100">
                                         {product.name}
                                       </span>
                                       {isBest && (
-                                        <Badge className="bg-positive/10 text-positive border-positive/20 text-[10px] font-bold py-0">
-                                          Best for ₱{numAmount.toLocaleString()}
+                                        <Badge className="border-positive/20 bg-positive/10 py-0 text-[10px] font-bold text-positive">
+                                          Best for PHP {numAmount.toLocaleString()}
                                         </Badge>
                                       )}
                                       <LockBadge days={product.lockInDays} verbose />
-                                      <span className="inline-flex items-center gap-1 text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
-                                        <Calendar className="w-3 h-3 shrink-0" />
+                                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-brand-textSecondary dark:text-gray-500">
+                                        <Calendar className="h-3 w-3 shrink-0" />
                                         Interest Paid: {formatPayoutFrequency(product.payoutFrequency)}
                                       </span>
                                     </div>
 
-                                    {/* Tier breakdown */}
                                     {tierCount > 1 && (
                                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-                                        {product.tiers.map((tier, i) => {
+                                        {product.tiers.map((tier, tierIndex) => {
                                           const tierAfterTax = product.taxExempt
                                             ? calcTaxExempt(tier.grossRate)
                                             : calcAfterTaxPhp(tier.grossRate);
-                                          const isLastTier = i === product.tiers.length - 1;
-                                          const isActiveThreshold = product.tierType === 'threshold' &&
-                                            (numAmount >= tier.minBalance && (tier.maxBalance === null || numAmount <= tier.maxBalance || (isLastTier && numAmount >= tier.minBalance)));
+                                          const isLastTier = tierIndex === product.tiers.length - 1;
+                                          const isActiveThreshold = product.tierType === 'threshold'
+                                            && numAmount >= tier.minBalance
+                                            && (tier.maxBalance === null || numAmount <= tier.maxBalance || (isLastTier && numAmount >= tier.minBalance));
 
                                           return (
                                             <span
-                                              key={i}
+                                              key={tierIndex}
                                               className={`text-[12px] tabular-nums ${
                                                 isActiveThreshold
-                                                  ? 'text-positive font-bold'
+                                                  ? 'font-bold text-positive'
                                                   : 'text-brand-textSecondary dark:text-gray-500'
                                               }`}
                                             >
                                               {tier.maxBalance !== null
-                                                ? `₱${tier.minBalance.toLocaleString()}–₱${tier.maxBalance.toLocaleString()}`
-                                                : `₱${tier.minBalance.toLocaleString()}+`
-                                              }: {(tier.grossRate * 100).toFixed(1)}%{' '}
+                                                ? `PHP ${tier.minBalance.toLocaleString()}-PHP ${tier.maxBalance.toLocaleString()}`
+                                                : `PHP ${tier.minBalance.toLocaleString()}+`}
+                                              : {(tier.grossRate * 100).toFixed(1)}%{' '}
                                               <span className="text-[11px]">→ {(tierAfterTax * 100).toFixed(2)}%</span>
                                               {isActiveThreshold && <span className="ml-1 text-[10px]">✓ your tier</span>}
                                             </span>
@@ -501,42 +557,50 @@ export function RateTable({ rates, recommendedIds = [] }: { rates: RateProduct[]
                                       </div>
                                     )}
 
-                                    {/* Conditions */}
                                     {hasConditions && (
-                                      <div className="mt-1.5 flex items-start gap-1.5 rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200/60 dark:border-red-800/30 px-2 py-1">
-                                        <AlertTriangle className="w-3 h-3 text-red-500 shrink-0 mt-0.5" />
-                                        <span className="text-[11px] text-red-700 dark:text-red-400 font-semibold leading-snug">
-                                          Rate requires conditions: {product.conditions.filter(c => c.type !== 'none').map(c => c.description).join('; ')}
+                                      <div className="mt-1.5 flex items-start gap-1.5 rounded-md border border-red-200/60 bg-red-50 px-2 py-1 dark:border-red-800/30 dark:bg-red-950/20">
+                                        <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-red-500" />
+                                        <span className="text-[11px] font-semibold leading-snug text-red-700 dark:text-red-400">
+                                          Rate requires conditions: {product.conditions.filter((condition) => condition.type !== 'none').map((condition) => condition.description).join('; ')}
                                         </span>
                                       </div>
                                     )}
 
-                                    {/* No conditions — clean message */}
                                     {!hasConditions && tierCount <= 1 && (
-                                      <p className="mt-1.5 text-[11px] text-positive font-medium flex items-center gap-1">
-                                        <ShieldCheck className="w-3 h-3" /> No conditions — flat rate on any amount
+                                      <p className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-positive">
+                                        <ShieldCheck className="h-3 w-3" /> No conditions - flat rate on any amount
                                       </p>
                                     )}
+
+                                    {numAmount > 0 && (
+                                      <div className="mt-3 max-w-[520px]">
+                                        <CalculationBreakdownDetails
+                                          amount={numAmount}
+                                          months={months}
+                                          product={product}
+                                        />
+                                      </div>
+                                    )}
                                   </div>
 
-                                  {/* Mini calculator result */}
-                                  <div className="text-right shrink-0 min-w-[160px]">
+                                  <div className="min-w-[160px] shrink-0 text-right">
                                     <div className="text-[16px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
                                       {formatRate(product.effectiveRate)}
-                                      <span className="text-[11px] font-medium text-brand-textSecondary dark:text-gray-500 ml-1">after tax</span>
+                                      <span className="ml-1 text-[11px] font-medium text-brand-textSecondary dark:text-gray-500">
+                                        after tax
+                                      </span>
                                     </div>
                                     {numAmount > 0 && (
-                                      <div className="text-[13px] font-semibold text-positive tabular-nums mt-0.5">
+                                      <div className="mt-0.5 text-[13px] font-semibold tabular-nums text-positive">
                                         +{formatPHP(product.projectedReturn)}
-                                        <span className="text-[11px] font-normal text-brand-textSecondary dark:text-gray-500 ml-1">
-                                          / {tableMonths}mo
+                                        <span className="ml-1 text-[11px] font-normal text-brand-textSecondary dark:text-gray-500">
+                                          / {months} month{months !== 1 ? 's' : ''}
                                         </span>
                                       </div>
                                     )}
                                   </div>
 
-                                  {/* CTA */}
-                                  <div className="shrink-0 flex items-center" onClick={(e) => e.stopPropagation()}>
+                                  <div className="flex shrink-0 items-center" onClick={(e) => e.stopPropagation()}>
                                     <AffiliateButton amount={product.payoutAmount} productId={product.id} />
                                   </div>
                                 </div>

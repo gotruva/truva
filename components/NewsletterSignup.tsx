@@ -1,13 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export function NewsletterSignup() {
+  const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +50,12 @@ export function NewsletterSignup() {
   };
 
   return (
-    <section className="max-w-xl mx-auto py-16 px-4 text-center">
+    <section
+      className="max-w-xl mx-auto py-16 px-4 text-center"
+      data-lpignore="true"
+      data-1p-ignore="true"
+      suppressHydrationWarning
+    >
       <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary dark:text-gray-100 mb-3">
         Be the First to Know
       </h3>
@@ -53,24 +63,44 @@ export function NewsletterSignup() {
         New banks, new features, rate changes — get notified when something on Truva updates. No fluff, just the signal.
       </p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative">
-        <Input
-          type="email"
-          placeholder="Enter your email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={status === 'loading' || status === 'success'}
-          className="h-12 bg-white border-brand-border focus-visible:ring-brand-primary placeholder:text-gray-400"
-        />
-        <Button
-          type="submit"
-          disabled={status === 'loading' || status === 'success'}
-          className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-colors"
+      {mounted ? (
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative"
+          autoComplete="off"
+          data-lpignore="true"
+          data-1p-ignore="true"
+          suppressHydrationWarning
         >
-          {status === 'loading' ? 'Subscribing...' : 'Notify me'}
-        </Button>
-      </form>
+          <Input
+            type="email"
+            placeholder="Enter your email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={status === 'loading' || status === 'success'}
+            autoComplete="off"
+            data-lpignore="true"
+            data-1p-ignore="true"
+            suppressHydrationWarning
+            className="h-12 bg-white border-brand-border focus-visible:ring-brand-primary placeholder:text-gray-400"
+          />
+          <Button
+            type="submit"
+            disabled={status === 'loading' || status === 'success'}
+            data-lpignore="true"
+            data-1p-ignore="true"
+            suppressHydrationWarning
+            className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-colors"
+          >
+            {status === 'loading' ? 'Subscribing...' : 'Notify me'}
+          </Button>
+        </form>
+      ) : (
+        <div className="mx-auto max-w-md rounded-md border border-brand-border/70 bg-white px-4 py-3 text-sm text-brand-textSecondary dark:border-white/10 dark:bg-slate-900 dark:text-gray-400">
+          Loading signup form...
+        </div>
+      )}
 
       {status === 'success' && <p className="text-positive text-sm mt-4 font-medium">{message}</p>}
       {status === 'error' && <p className="text-danger text-sm mt-4 font-medium">{message}</p>}

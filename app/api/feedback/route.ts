@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase';
+import { hasSupabaseEnv } from '@/lib/env';
 
 const feedbackSchema = z.object({
   type: z.enum(['Bug', 'Feature Request', 'Other']),
@@ -14,6 +15,13 @@ const MAX_REQUESTS_PER_WINDOW = 3;
 
 export async function POST(req: NextRequest) {
   try {
+    if (!hasSupabaseEnv()) {
+      return NextResponse.json(
+        { error: 'Feedback is not configured in this local environment yet.' },
+        { status: 503 }
+      );
+    }
+
     const ip = req.headers.get('x-forwarded-for') || 'unknown';
     const now = Date.now();
 
