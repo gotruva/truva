@@ -1,0 +1,37 @@
+
+> truva-app@0.1.0 build
+> next build
+
+▲ Next.js 16.2.1 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.0s
+  Running TypeScript ...
+  Finished TypeScript in 4.9s ...
+  Collecting page data using 11 workers ...
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_URL
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_ANON_KEY
+Missing env var (warning for Phase 1 MVP mode): SUPABASE_SERVICE_ROLE_KEY
+Missing env var (warning for Phase 1 MVP mode): RESEND_API_KEY
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_URL
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_ANON_KEY
+Missing env var (warning for Phase 1 MVP mode): SUPABASE_SERVICE_ROLE_KEY
+Missing env var (warning for Phase 1 MVP mode): RESEND_API_KEY
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_URL
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_ANON_KEY
+Missing env var (warning for Phase 1 MVP mode): SUPABASE_SERVICE_ROLE_KEY
+Missing env var (warning for Phase 1 MVP mode): RESEND_API_KEY
+  Generating static pages using 11 workers (0/23) ...
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_URL
+Missing env var (warning for Phase 1 MVP mode): NEXT_PUBLIC_SUPABASE_ANON_KEY
+Missing env var (warning for Phase 1 MVP mode): SUPABASE_SERVICE_ROLE_KEY
+Missing env var (warning for Phase 1 MVP mode): RESEND_API_KEY
+  Generating static pages using 11 workers (5/23) 
+Error occurred prerendering page "/credit-cards/compare/bpi-amore-cashback-vs-unionbank-rewards-visa". Read more: https://nextjs.org/docs/messages/prerender-error
+TypeError: Cannot read properties of undefined (reading 'map')
+    at k (C:\Users\betoa\Documents\truva\.next\server\chunks\ssr\[root-of-the-server]__06z~u02._.js:1:14324) {
+  digest: '675131412'
+}
+Export encountered an error on /credit-cards/compare/[slug]/page: /credit-cards/compare/bpi-amore-cashback-vs-unionbank-rewards-visa, exiting the build.
+⨯ Next.js build worker exited with code: 1 and signal: null
