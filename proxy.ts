@@ -5,20 +5,23 @@ import { updateSession } from '@/utils/supabase/middleware';
 const PUBLIC_ROUTES = ['/', '/calculator'];
 const PUBLIC_PREFIXES = ['/api/rates', '/api/defi', '/api/newsletter', '/api/feedback', '/api/partner', '/go/', '/_next', '/logos', '/favicon'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
+  const path = req.nextUrl.pathname;
+  const isPublicRoute = PUBLIC_ROUTES.includes(path) || PUBLIC_PREFIXES.some(prefix => path.startsWith(prefix));
+
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
   const { supabaseResponse, user } = await updateSession(req);
 
-  const path = req.nextUrl.pathname;
-  
-  const isPublicRoute = PUBLIC_ROUTES.includes(path) || PUBLIC_PREFIXES.some(prefix => path.startsWith(prefix));
-  
-  if (!user && !isPublicRoute) {
+  if (!user) {
     return NextResponse.redirect(new URL('/', req.url));
   }
-  
+
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };

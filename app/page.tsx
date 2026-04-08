@@ -1,9 +1,10 @@
+import dynamic from 'next/dynamic';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
-import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
 
-const BASE_URL = 'https://truva.ph';
+const BASE_URL = 'https://www.gotruva.com';
+const NewsletterSignup = dynamic(() => import('@/components/NewsletterSignup').then((mod) => mod.NewsletterSignup));
 
 export default async function HomePage() {
   const rates = await getPublicRates();
@@ -75,7 +76,7 @@ export default async function HomePage() {
         'name': 'What is the best savings account in the Philippines?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'The best savings account depends on your balance and goals. Maya Savings offers up to 12% p.a. gross (9.6% after tax) on the first ₱100,000. For larger amounts, GoTyme and CIMB offer competitive rates. Truva shows all rates after the 20% Final Withholding Tax so you can compare true returns.',
+          'text': 'The best savings account depends on your balance and goals. Maya Savings offers up to 12% p.a. gross (9.6% after tax) on the first PHP 100,000. For larger amounts, GoTyme and CIMB offer competitive rates. Truva shows all rates after the 20% Final Withholding Tax so you can compare true returns.',
         },
       },
       {
@@ -107,7 +108,7 @@ export default async function HomePage() {
         'name': 'Is MP2 better than a digital bank savings account?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'MP2 (Modified Pag-IBIG II) is tax-exempt and has historically paid 6–7% p.a. dividend rates, making it one of the highest-yielding safe investments in the Philippines. However, it has a 5-year lock-in period. Digital bank savings accounts offer lower rates but instant liquidity. Use Truva\'s calculator to compare both side by side.',
+          'text': 'MP2 (Modified Pag-IBIG II) is tax-exempt and has historically paid 6-7% p.a. dividend rates, making it one of the highest-yielding safe investments in the Philippines. However, it has a 5-year lock-in period. Digital bank savings accounts offer lower rates but instant liquidity. Use Truva\'s calculator to compare both side by side.',
         },
       },
     ],

@@ -7,12 +7,11 @@ import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { Analytics } from '@vercel/analytics/react';
 import { Navbar } from '@/components/Navbar';
 import { PartnerCTA } from '@/components/PartnerCTA';
-import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
-const BASE_URL = 'https://truva.ph';
+const BASE_URL = 'https://www.gotruva.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -35,14 +34,14 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Truva — Best Savings Rates Philippines',
+        alt: 'Truva - Best Savings Rates Philippines',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Truva | Compare Savings Rates in the Philippines',
-    description: 'See after-tax savings yields from every major Philippine digital bank, T-Bill, and UITF — all in one place.',
+    description: 'See after-tax savings yields from every major Philippine digital bank, T-Bill, and UITF - all in one place.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -58,15 +57,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const formattedDate = formatVerifiedDate(getLatestVerifiedDate(await getPublicRates()));
-  const verificationCopy = formattedDate
-    ? `Rates last checked and verified on ${formattedDate}. Returns shown after 20% Final Withholding Tax unless marked tax-exempt. This is not financial advice.`
-    : 'Rates are checked and verified regularly. Returns shown after 20% Final Withholding Tax unless marked tax-exempt. This is not financial advice.';
+  const verificationCopy = 'Rates are checked and verified regularly. Returns shown after 20% Final Withholding Tax unless marked tax-exempt. This is not financial advice.';
 
   return (
     <html lang="en" suppressHydrationWarning className={cn('font-sans antialiased text-brand-textPrimary', spaceGrotesk.variable, inter.variable)}>

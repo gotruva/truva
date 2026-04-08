@@ -1,8 +1,5 @@
-'use client';
-
 import Link from 'next/link';
 import { ArrowRight, Calculator, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface HeroSectionProps {
   formattedDate?: string;
@@ -28,37 +25,28 @@ const TRUST_POINTS = [
 
 export function HeroSection({ formattedDate }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-brand-primary dark:bg-slate-950 text-white py-20 px-4 md:px-8 transition-colors duration-300">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/20 dark:bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
-      
+    <section className="relative overflow-hidden bg-brand-primary px-4 py-20 text-white transition-colors duration-300 md:px-8 dark:bg-slate-950">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.28),transparent_52%)] opacity-90 dark:bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.18),transparent_52%)]" />
+
       <div className="relative max-w-5xl mx-auto flex flex-col items-center text-center z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-3xl leading-[1.1]">
+        <div>
+          <h1 className="mb-6 max-w-3xl text-4xl font-extrabold leading-[1.1] tracking-tight md:text-6xl">
             Find the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-blue-600">best savings rates</span> in the Philippines
           </h1>
 
           {formattedDate && (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 dark:bg-blue-900/30 border border-white/20 dark:border-blue-700/50 text-sm font-semibold mb-6 backdrop-blur-md">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-semibold backdrop-blur-md dark:border-blue-700/50 dark:bg-blue-900/30">
               <CheckCircle2 className="w-4 h-4 text-blue-300" />
               <span className="text-blue-50">Rates last checked and verified on {formattedDate}</span>
             </div>
           )}
-          
-          <p className="text-lg md:text-xl font-medium mb-10 max-w-2xl text-blue-100/90 dark:text-gray-300">
+
+          <p className="mb-10 max-w-2xl text-lg font-medium text-blue-100/90 dark:text-gray-300 md:text-xl">
             Compare what you could really earn after tax, see important account conditions upfront, and know when rates were last checked and verified.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          className="w-full max-w-3xl"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+        <div className="w-full max-w-3xl">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
             <Link
               href="/#calculator"
@@ -93,7 +81,7 @@ export function HeroSection({ formattedDate }: HeroSectionProps) {
               );
             })}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

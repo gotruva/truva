@@ -1,7 +1,7 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Calculator, Sparkles, X } from 'lucide-react';
 import { ComparisonState, QuickMatchAnswers, RateProduct } from '@/types';
 import {
@@ -10,9 +10,6 @@ import {
   summarizeAnswers,
 } from '@/utils/quickMatchMapper';
 import { QuickMatchWizard } from '@/components/QuickMatchWizard';
-import { QuickMatchResults } from '@/components/QuickMatchResults';
-import { YieldCalculator } from '@/components/YieldCalculator';
-import { RateSection } from '@/components/RateSection';
 
 type TopSection = 'quick-match-wizard' | 'quick-match-results' | 'advanced-compare';
 
@@ -28,6 +25,44 @@ interface PersistedCompareHubState {
 }
 
 const STORAGE_KEY = 'truva.compare-hub-state.v1';
+
+function PanelSkeleton({ rows = 3 }: { rows?: number }) {
+  return (
+    <div className="rounded-[28px] border border-brand-border bg-white p-6 shadow-[0_16px_50px_rgba(17,24,39,0.06)] dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_18px_60px_rgba(0,0,0,0.25)]">
+      <div className="h-6 w-40 rounded-full bg-brand-border/70 dark:bg-white/10" />
+      <div className="mt-4 space-y-3">
+        {Array.from({ length: rows }).map((_, index) => (
+          <div key={index} className="h-16 rounded-2xl bg-brand-surface dark:bg-slate-800" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CompareSectionSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="h-11 rounded-xl bg-white dark:bg-slate-900" />
+      <div className="h-40 rounded-2xl bg-white dark:bg-slate-900" />
+      <div className="h-56 rounded-2xl bg-white dark:bg-slate-900" />
+    </div>
+  );
+}
+
+const DynamicQuickMatchResults = dynamic(
+  () => import('@/components/QuickMatchResults').then((mod) => mod.QuickMatchResults),
+  { loading: () => <PanelSkeleton rows={2} /> }
+);
+
+const DynamicYieldCalculator = dynamic(
+  () => import('@/components/YieldCalculator').then((mod) => mod.YieldCalculator),
+  { loading: () => <PanelSkeleton rows={4} /> }
+);
+
+const DynamicRateSection = dynamic(
+  () => import('@/components/RateSection').then((mod) => mod.RateSection),
+  { loading: () => <CompareSectionSkeleton /> }
+);
 
 const DEFAULT_COMPARISON_STATE: ComparisonState = {
   amount: 100000,
@@ -256,76 +291,54 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
         </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        {topSection === 'quick-match-wizard' && (
-          <motion.div
-            key="wizard"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="mb-10 px-4"
-          >
-            <QuickMatchWizard
-              onComplete={handleWizardComplete}
-              onSkip={handleAdvancedTab}
-              initialAnswers={quickMatchAnswers ?? undefined}
-            />
-          </motion.div>
-        )}
+      {topSection === 'quick-match-wizard' && (
+        <div className="mb-10 px-4">
+          <QuickMatchWizard
+            onComplete={handleWizardComplete}
+            onSkip={handleAdvancedTab}
+            initialAnswers={quickMatchAnswers ?? undefined}
+          />
+        </div>
+      )}
 
-        {topSection === 'quick-match-results' && quickMatchAnswers && (
-          <motion.div
-            key="results"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="mb-10 px-4"
-          >
-            <QuickMatchResults
-              rates={rates}
-              answers={quickMatchAnswers}
-              onSeeFullComparison={handleSeeFullComparison}
-              onAdjustAnswers={handleAdjustAnswers}
-            />
-          </motion.div>
-        )}
+      {topSection === 'quick-match-results' && quickMatchAnswers && (
+        <div className="mb-10 px-4">
+          <DynamicQuickMatchResults
+            rates={rates}
+            answers={quickMatchAnswers}
+            onSeeFullComparison={handleSeeFullComparison}
+            onAdjustAnswers={handleAdjustAnswers}
+          />
+        </div>
+      )}
 
-        {topSection === 'advanced-compare' && (
-          <motion.div
-            key="advanced"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-          >
-            {quickMatchAnswers && (
-              <div className="mx-4 mb-4 flex items-center justify-between gap-3 rounded-xl border border-brand-primary/20 bg-brand-primaryLight px-4 py-2.5 dark:border-blue-500/20 dark:bg-blue-500/10">
-                <div className="min-w-0 text-sm font-medium text-brand-primary dark:text-blue-400">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 shrink-0" />
-                    <span className="truncate">{summarizeAnswers(quickMatchAnswers)}</span>
-                  </div>
+      {topSection === 'advanced-compare' && (
+        <div>
+          {quickMatchAnswers && (
+            <div className="mx-4 mb-4 flex items-center justify-between gap-3 rounded-xl border border-brand-primary/20 bg-brand-primaryLight px-4 py-2.5 dark:border-blue-500/20 dark:bg-blue-500/10">
+              <div className="min-w-0 text-sm font-medium text-brand-primary dark:text-blue-400">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{summarizeAnswers(quickMatchAnswers)}</span>
                 </div>
-                <button
-                  onClick={handleClearPrefill}
-                  className="shrink-0 text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-500 dark:hover:text-gray-300"
-                  aria-label="Clear prefill"
-                >
-                  <X className="h-4 w-4" />
-                </button>
               </div>
-            )}
+              <button
+                onClick={handleClearPrefill}
+                className="shrink-0 text-brand-textSecondary transition-colors hover:text-brand-textPrimary dark:text-gray-500 dark:hover:text-gray-300"
+                aria-label="Clear prefill"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
-            <YieldCalculator
-              rates={rates}
-              comparisonState={comparisonState}
-              onComparisonStateChange={handleComparisonStateChange}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <DynamicYieldCalculator
+            rates={rates}
+            comparisonState={comparisonState}
+            onComparisonStateChange={handleComparisonStateChange}
+          />
+        </div>
+      )}
 
       <div id="deposit-rates" className="mt-4 scroll-mt-28 px-4">
         <div className="mb-8 max-w-3xl">
@@ -337,7 +350,7 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
             </p>
           )}
         </div>
-        <RateSection
+        <DynamicRateSection
           rates={rates}
           comparisonState={comparisonState}
           onComparisonStateChange={handleComparisonStateChange}

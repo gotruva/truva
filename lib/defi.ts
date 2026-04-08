@@ -3,7 +3,7 @@ import { DefiRate } from '@/types';
 export async function fetchAaveBaseUSDC(): Promise<DefiRate | null> {
   try {
     const res = await fetch('https://yields.llama.fi/pools', {
-      next: { revalidate: 300 },
+      cache: 'no-store',
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) {

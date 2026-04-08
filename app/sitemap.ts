@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://truva.ph';
+const BASE_URL = 'https://www.gotruva.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

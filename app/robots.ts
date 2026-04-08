@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/optimizer', '/tracker'],
       },
     ],
-    sitemap: 'https://truva.ph/sitemap.xml',
+    sitemap: 'https://www.gotruva.com/sitemap.xml',
   };
 }

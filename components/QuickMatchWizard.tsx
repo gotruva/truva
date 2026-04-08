@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, ChevronLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,11 +80,8 @@ function normalizeInitialTimeline(
   return value;
 }
 
-type Direction = 1 | -1;
-
 export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMatchWizardProps) {
   const [step, setStep] = useState(1);
-  const [direction, setDirection] = useState<Direction>(1);
   const [purpose, setPurpose] = useState<QuickMatchCoreAnswers['purpose'] | null>(
     normalizeInitialPurpose(initialAnswers?.purpose)
   );
@@ -123,7 +119,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
 
   const goNext = () => {
     if (step < 3) {
-      setDirection(1);
       setStep((current) => current + 1);
       return;
     }
@@ -133,7 +128,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
 
   const goBack = () => {
     if (step > 1) {
-      setDirection(-1);
       setStep((current) => current - 1);
     }
   };
@@ -154,12 +148,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
         ? 'border-brand-primary bg-brand-primaryLight text-brand-primary shadow-[0_8px_24px_rgba(0,82,255,0.08)] dark:border-blue-400/60 dark:bg-blue-500/10 dark:text-blue-300'
         : 'border-brand-border bg-white text-brand-textPrimary hover:border-brand-primary/35 hover:bg-brand-surface dark:border-white/10 dark:bg-slate-900 dark:text-gray-200 dark:hover:border-blue-400/30 dark:hover:bg-slate-800'
     }`;
-
-  const slideVariants = {
-    enter: (dir: Direction) => ({ x: dir * 36, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: Direction) => ({ x: dir * -36, opacity: 0 }),
-  };
 
   return (
     <div className="mx-auto w-full max-w-3xl">
@@ -194,26 +182,15 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
           </span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-brand-border dark:bg-white/10">
-          <motion.div
-            className="h-full rounded-full bg-brand-primary dark:bg-blue-500"
-            animate={{ width: `${(step / 3) * 100}%` }}
-            transition={{ duration: 0.35, ease: 'easeInOut' }}
+          <div
+            className="h-full rounded-full bg-brand-primary transition-[width] duration-300 ease-in-out dark:bg-blue-500"
+            style={{ width: `${(step / 3) * 100}%` }}
           />
         </div>
       </div>
 
       <div className="overflow-hidden rounded-[24px] border border-brand-border bg-white shadow-[0_16px_50px_rgba(17,24,39,0.06)] dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:rounded-[28px]">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={step}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.22, ease: 'easeInOut' }}
-            className="p-5 sm:p-6 md:p-8"
-          >
+        <div className="p-5 sm:p-6 md:p-8">
             {step === 1 && (
               <div>
                 <h3 className="mb-1 text-xl font-bold text-brand-textPrimary dark:text-gray-100">
@@ -320,8 +297,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                 </div>
               </div>
             )}
-          </motion.div>
-        </AnimatePresence>
+        </div>
 
         <div className="flex flex-col-reverse gap-3 border-t border-brand-border bg-[#FBFCFF] px-5 py-4 dark:border-white/10 dark:bg-slate-950/70 sm:flex-row sm:px-6 sm:py-5 md:px-8">
           {step > 1 && (

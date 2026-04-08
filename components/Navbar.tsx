@@ -1,17 +1,20 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, MessageSquare, X, Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { FeedbackModal } from '@/components/FeedbackModal';
 import { Button } from '@/components/ui/button';
 
 const NAV_LINKS = [
   { label: 'Compare Rates', href: '/#deposit-rates' },
   { label: 'Calculator', href: '/#calculator' },
 ];
+
+const FeedbackModal = dynamic(
+  () => import('@/components/FeedbackModal').then((mod) => mod.FeedbackModal)
+);
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -79,46 +82,38 @@ export function Navbar() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.18 }}
-            className="absolute left-4 right-4 top-[76px] z-50 rounded-2xl border border-brand-border bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 lg:hidden"
-          >
-            <nav className="flex flex-col gap-2">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-            <div className="mt-4 border-t border-brand-border pt-4 dark:border-white/10">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsFeedbackOpen(true);
-                }}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
+      {isMobileMenuOpen && (
+        <div className="absolute left-4 right-4 top-[76px] z-50 rounded-2xl border border-brand-border bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 lg:hidden">
+          <nav className="flex flex-col gap-2">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
               >
-                <MessageSquare className="h-4 w-4" />
-                Send feedback
-              </button>
-            </div>
-          </motion.div>
-        )}
+                {link.label}
+              </a>
+            ))}
+          </nav>
+          <div className="mt-4 border-t border-brand-border pt-4 dark:border-white/10">
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsFeedbackOpen(true);
+              }}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Send feedback
+            </button>
+          </div>
+        </div>
+      )}
 
-        {isFeedbackOpen && (
-          <FeedbackModal onClose={() => setIsFeedbackOpen(false)} />
-        )}
-      </AnimatePresence>
+      {isFeedbackOpen && (
+        <FeedbackModal onClose={() => setIsFeedbackOpen(false)} />
+      )}
     </header>
   );
 }
