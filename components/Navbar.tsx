@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, MessageSquare, X, Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -30,10 +31,23 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full backdrop-blur-2xl bg-white/80 dark:bg-slate-950/80 border-b border-brand-border/60 dark:border-white/5 h-[76px] flex items-center px-4 md:px-8 shrink-0 transition-colors duration-300 shadow-sm dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <span className="text-[28px] font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-indigo-500 dark:from-blue-400 dark:to-indigo-400 group-hover:opacity-80 transition-opacity">
-            Truva
-          </span>
+        <Link href="/" className="flex items-center shrink-0 hover:opacity-80 transition-opacity">
+          <Image
+            src="/truva-logo-blue.png"
+            alt="Truva"
+            width={134}
+            height={36}
+            priority
+            className="block h-8 w-auto dark:hidden"
+          />
+          <Image
+            src="/truva-logo-white.png"
+            alt="Truva"
+            width={134}
+            height={36}
+            priority
+            className="hidden h-8 w-auto dark:block"
+          />
         </Link>
 
         {/* Nav links */}

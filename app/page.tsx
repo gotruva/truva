@@ -49,7 +49,7 @@ export default async function HomePage() {
     '@type': 'Organization',
     'name': 'Truva',
     'url': BASE_URL,
-    'logo': `${BASE_URL}/logos/truva-logo.png`,
+    'logo': `${BASE_URL}/truva-logo-blue.png`,
     'description': 'Truva is the Philippines\' leading after-tax savings rate comparison platform.',
     'contactPoint': {
       '@type': 'ContactPoint',
