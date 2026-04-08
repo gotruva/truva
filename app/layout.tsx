@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { Analytics } from '@vercel/analytics/react';
 import { Navbar } from '@/components/Navbar';
-import { PartnerCTA } from '@/components/PartnerCTA';
+import { Footer } from '@/components/Footer';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -62,8 +62,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const verificationCopy = 'Rates are checked and verified regularly. Returns shown after 20% Final Withholding Tax unless marked tax-exempt. This is not financial advice.';
-
   return (
     <html lang="en" suppressHydrationWarning className={cn('font-sans antialiased text-brand-textPrimary', spaceGrotesk.variable, inter.variable)}>
       <body className="flex flex-col min-h-screen bg-brand-surface dark:bg-slate-950 overflow-x-hidden transition-colors duration-300">
@@ -73,20 +71,7 @@ export default function RootLayout({
         <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
           {children}
         </main>
-          <footer className="bg-white dark:bg-slate-950 border-t border-brand-border dark:border-white/10 mt-auto pt-12 pb-8 px-4 md:px-8 text-center text-[13px] text-brand-textSecondary dark:text-gray-400 transition-colors duration-300">
-            <div className="max-w-3xl mx-auto flex flex-col gap-3">
-              <p>{verificationCopy}</p>
-              <p className="font-semibold text-brand-textPrimary dark:text-gray-200">
-                Links go directly to each institution&apos;s website. Truva does not currently earn referral fees — all rate comparisons are unbiased. We may earn commissions in the future, which will always be disclosed.
-              </p>
-
-              <PartnerCTA />
-
-              <p className="mt-4">
-                &copy; {new Date().getFullYear()} Truva. All rights reserved.
-              </p>
-            </div>
-          </footer>
+        <Footer />
         <GoogleAnalytics />
         <Analytics />
       </body>
