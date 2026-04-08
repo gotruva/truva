@@ -9,6 +9,7 @@ Truva is a financial product comparison platform built for the Philippines. It i
 - Unit Investment Trust Funds (UITFs)
 - Decentralized Finance (DeFi) yield products (Aave)
 - Time deposits from Philippine banks
+- Credit Cards — Reviews, comparisons, and "Best For" editorial verdicts for Philippine cards
 
 ## Key Facts (Updated Regularly)
 - All gross interest rates are converted to after-tax rates: grossRate × 0.80 for standard products

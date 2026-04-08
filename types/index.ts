@@ -1,5 +1,5 @@
 export type RiskLevel = 'Low' | 'Medium' | 'DeFi';
-export type FilterCategory = 'all' | 'banks' | 'govt' | 'uitfs' | 'defi';
+export type FilterCategory = 'all' | 'banks' | 'govt' | 'uitfs' | 'defi' | 'credit-cards';
 export type LiquidityFilter = 'all' | 'liquid' | 'locked';
 export type PayoutFilter = 'all' | 'monthly' | 'at_maturity';
 
@@ -97,4 +97,38 @@ export interface QuickMatchCoreAnswers {
   purpose: QuickMatchAnswers['purpose'];
   amount: number;
   timeline: QuickMatchAnswers['timeline'];
+}
+
+// ─── Credit Cards ───
+
+export interface CreditCardProduct {
+  id: string;
+  name: string;
+  provider: string; // The bank
+  logo: string; // path to logo
+  category: 'credit-cards';
+  
+  annualFee: number;
+  annualFeeWaiverCondition: string | null;
+  monthlyInterestRate: number; // e.g. 0.03 for 3%
+  rewardType: 'cashback' | 'miles' | 'points' | 'none';
+  minimumMonthlyIncome: number;
+  
+  welcomePromo: string | null;
+  perks: string[]; // e.g. ['Lounge access', 'Free travel insurance']
+  
+  // --- SEO & Editorial ---
+  bestFor: string;
+  pros: string[];
+  cons: string[];
+  faqs: { question: string, answer: string }[];
+  eligibilitySummary: string;
+  editorVerdict: string;
+  
+  // --- SPONSORED / AFFILIATE ---
+  isSponsored: boolean;
+  sponsoredDisclosure?: string;
+  
+  affiliateUrl: string;
+  palagoScore: number;
 }
