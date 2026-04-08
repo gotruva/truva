@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
 
-const PUBLIC_ROUTES = ['/', '/calculator'];
-const PUBLIC_PREFIXES = ['/api/rates', '/api/defi', '/api/newsletter', '/api/feedback', '/api/partner', '/go/', '/_next', '/logos', '/favicon'];
+const PUBLIC_ROUTES = ['/', '/calculator', '/terms'];
+const PUBLIC_PREFIXES = ['/api/rates', '/api/defi', '/api/newsletter', '/api/feedback', '/api/partner', '/go/', '/_next', '/logos', '/favicon', '/credit-cards'];
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
