@@ -11,7 +11,7 @@ import { Footer } from '@/components/Footer';
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
-const BASE_URL = 'https://www.gotruva.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gotruva.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

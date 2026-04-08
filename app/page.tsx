@@ -3,7 +3,7 @@ import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
 
-const BASE_URL = 'https://www.gotruva.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gotruva.com';
 const NewsletterSignup = dynamic(() => import('@/components/NewsletterSignup').then((mod) => mod.NewsletterSignup));
 
 export default async function HomePage() {
