@@ -5,8 +5,15 @@ import path from 'path';
 
 async function getStaticRates(): Promise<RateProduct[]> {
   const filePath = path.join(process.cwd(), 'data', 'rates.json');
-  const fileContents = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(fileContents) as RateProduct[];
+  try {
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const parsed = JSON.parse(fileContents);
+    if (!Array.isArray(parsed)) throw new Error('rates.json must be an array');
+    return parsed as RateProduct[];
+  } catch (err) {
+    console.error('Failed to load rates data:', err);
+    return [];
+  }
 }
 
 export function getPublicRatesFromList(rates: RateProduct[]): RateProduct[] {

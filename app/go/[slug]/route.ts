@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLiveRates } from '@/lib/rates';
 import { createClient } from '@supabase/supabase-js';
+import { getClientIp } from '@/lib/apiSecurity';
 
 export const dynamic = 'force-dynamic';
+
+// Simple in-memory dedup: track (ip+slug) -> last click timestamp
+// Prevents trivial click fraud from a single IP hammering the same product.
+const recentClicks = new Map<string, number>();
+const CLICK_DEDUP_WINDOW_MS = 60 * 1000; // 1 click per IP per product per minute
+
+function isDuplicateClick(ip: string, slug: string): boolean {
+  const key = `${ip}:${slug}`;
+  const last = recentClicks.get(key);
+  const now = Date.now();
+  if (last && now - last < CLICK_DEDUP_WINDOW_MS) return true;
+  recentClicks.set(key, now);
+  return false;
+}
 
 export async function GET(
   req: NextRequest,
@@ -23,44 +38,41 @@ export async function GET(
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  // Log the click using service role key — bypasses RLS, never blocks redirect
+  // Log the click — skip duplicates to reduce fraud noise in metrics
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
-    const missingEnv = [
-      !supabaseUrl ? 'NEXT_PUBLIC_SUPABASE_URL' : null,
-      !serviceRoleKey ? 'SUPABASE_SERVICE_ROLE_KEY' : null,
-    ].filter(Boolean);
-    console.error('Affiliate click logging skipped due to missing env', {
-      slug,
-      missingEnv,
-    });
+    console.error('Affiliate click logging skipped: missing env vars', { slug });
   } else {
-    try {
-      const supabase = createClient(supabaseUrl, serviceRoleKey);
-      const { error: dbError } = await supabase.from('affiliate_clicks').insert({
-        product_id: product.id,
-        provider: product.provider,
-        category: product.category,
-        referrer: req.headers.get('referer') ?? null,
-      });
-      if (dbError) {
-        console.error('Affiliate click insert failed', {
+    const ip = getClientIp(req);
+    const duplicate = isDuplicateClick(ip, slug);
+
+    if (duplicate) {
+      console.info('Affiliate click deduped (same IP+product within 1m)', { slug, ip });
+    } else {
+      try {
+        const supabase = createClient(supabaseUrl, serviceRoleKey);
+        const { error: dbError } = await supabase.from('affiliate_clicks').insert({
+          product_id: product.id,
+          provider: product.provider,
+          category: product.category,
+          referrer: req.headers.get('referer') ?? null,
+        });
+        if (dbError) {
+          console.error('Affiliate click insert failed', {
+            slug,
+            productId: product.id,
+            code: dbError.code,
+            message: dbError.message,
+          });
+        }
+      } catch (err) {
+        console.error('Affiliate click unexpected error', {
           slug,
-          productId: product.id,
-          code: dbError.code,
-          message: dbError.message,
-          details: dbError.details,
-          hint: dbError.hint,
+          error: err instanceof Error ? err.message : String(err),
         });
       }
-    } catch (err) {
-      console.error('Affiliate click unexpected error', {
-        slug,
-        productId: product.id,
-        error: err instanceof Error ? err.message : String(err),
-      });
     }
   }
 
