@@ -13,6 +13,20 @@ const NAV_LINKS = [
   { label: 'Calculator', href: '/#calculator' },
 ];
 
+function ViberIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M11.4 2C6.48 2 2.6 5.578 2.6 10.037c0 2.546 1.12 4.791 2.912 6.349l.012 3.228 3.088-1.72c.875.24 1.808.37 2.788.37 4.92 0 8.8-3.578 8.8-7.985C20.2 5.578 16.32 2 11.4 2zm4.72 10.95c-.32.352-.76.575-1.33.697-.28.061-.573.071-.854-.062-.64-.305-1.265-.636-1.89-.958-.394-.203-.765-.434-1.099-.718a11.34 11.34 0 01-1.777-2.135 5.83 5.83 0 01-.667-1.451c-.197-.72.06-1.318.492-1.778.193-.203.434-.255.697-.184.123.032.218.116.298.225.34.462.66.934.917 1.448.149.295.116.596-.1.86-.09.11-.19.215-.285.322-.087.097-.096.198-.041.313.44.923 1.1 1.633 2.053 2.044.115.05.216.034.31-.055.113-.107.218-.218.327-.326.24-.238.52-.285.806-.14.518.262 1.03.537 1.538.816.224.123.256.283.183.51z" />
+    </svg>
+  );
+}
+
 const FeedbackModal = dynamic(
   () => import('@/components/FeedbackModal').then((mod) => mod.FeedbackModal)
 );
@@ -65,6 +79,16 @@ export function Navbar() {
 
         {/* Right actions */}
         <div className="flex items-center gap-1.5">
+          <a
+            href="https://invite.viber.com/?g2=AQAVVY5OHy%2FfvlZdu7vUh%2FIkJ5fqL16B58XFTULkk1mS4%2BUU9O8ZAwYKbEqW4TCX"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-[#7360f2] transition-colors hover:bg-[#7360f2]/10 dark:text-[#9b8af7] dark:hover:bg-[#7360f2]/15"
+          >
+            <ViberIcon className="w-4 h-4" />
+            <span className="hidden sm:inline">Join Viber</span>
+          </a>
+
           <Button
             variant="ghost"
             size="sm"
@@ -111,6 +135,16 @@ export function Navbar() {
             ))}
           </nav>
           <div className="mt-4 border-t border-brand-border pt-4 dark:border-white/10">
+            <a
+              href="https://invite.viber.com/?g2=AQAVVY5OHy%2FfvlZdu7vUh%2FIkJ5fqL16B58XFTULkk1mS4%2BUU9O8ZAwYKbEqW4TCX"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-[#7360f2] transition-colors hover:bg-[#7360f2]/10 dark:text-[#9b8af7] dark:hover:bg-[#7360f2]/15"
+            >
+              <ViberIcon className="h-4 w-4" />
+              Join our Viber group
+            </a>
             <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
