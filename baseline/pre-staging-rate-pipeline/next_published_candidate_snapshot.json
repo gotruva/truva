@@ -1,0 +1,1701 @@
+{
+  "snapshotChannel": "staging",
+  "generatedAt": "2026-04-10T05:03:02.761Z",
+  "productCount": 43,
+  "providerCount": 18,
+  "payload": [
+    {
+      "id": "maya-savings",
+      "name": "Maya Savings",
+      "provider": "Maya Bank",
+      "logo": "/logos/maya.svg",
+      "category": "banks",
+      "headlineRate": 0.12,
+      "baseRate": {
+        "grossRate": 0.025,
+        "afterTaxRate": 0.02
+      },
+      "tierType": "blended",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 100000,
+          "grossRate": 0.12,
+          "afterTaxRate": 0.096
+        },
+        {
+          "minBalance": 100000,
+          "maxBalance": null,
+          "grossRate": 0.025,
+          "afterTaxRate": 0.02
+        }
+      ],
+      "conditions": [
+        {
+          "type": "spending",
+          "description": "10% requires ₱35,000/month total spend via QR, debit card, online checkout, load, bills, stocks, or funds. Extra +2% (to reach 12%) requires any spend via Maya Easy Credit. Boosted rate applies only on first ₱100,000.",
+          "expiresAt": null,
+          "requiredMonthlySpend": 35000
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maya.ph/",
+      "referralCode": "MAYA123",
+      "payoutAmount": 100,
+      "palagoScore": 3
+    },
+    {
+      "id": "maya-td-3mo",
+      "name": "Maya Time Deposit Plus 3-Month",
+      "provider": "Maya Bank",
+      "logo": "/logos/maya.svg",
+      "category": "banks",
+      "headlineRate": 0.05,
+      "baseRate": {
+        "grossRate": 0.05,
+        "afterTaxRate": 0.04
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 1000000,
+          "grossRate": 0.05,
+          "afterTaxRate": 0.04
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Maximum ₱1,000,000 per TD Plus account. Up to 5 Time Deposit Plus accounts allowed.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 91,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maya.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "maya-td-6mo",
+      "name": "Maya Time Deposit Plus 6-Month",
+      "provider": "Maya Bank",
+      "logo": "/logos/maya.svg",
+      "category": "banks",
+      "headlineRate": 0.06,
+      "baseRate": {
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 1000000,
+          "grossRate": 0.06,
+          "afterTaxRate": 0.048
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Maximum ₱1,000,000 per TD Plus account. Up to 5 Time Deposit Plus accounts allowed.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 182,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maya.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "maya-td-12mo",
+      "name": "Maya Time Deposit Plus 12-Month",
+      "provider": "Maya Bank",
+      "logo": "/logos/maya.svg",
+      "category": "banks",
+      "headlineRate": 0.055,
+      "baseRate": {
+        "grossRate": 0.055,
+        "afterTaxRate": 0.044
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 1000000,
+          "grossRate": 0.055,
+          "afterTaxRate": 0.044
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Maximum ₱1,000,000 per TD Plus account. Up to 5 Time Deposit Plus accounts allowed.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 365,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maya.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "maya-personal-goals",
+      "name": "Maya Personal Goals",
+      "provider": "Maya Bank",
+      "logo": "/logos/maya.svg",
+      "category": "banks",
+      "headlineRate": 0.08,
+      "baseRate": {
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      },
+      "tierType": "blended",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 20000,
+          "grossRate": 0.04,
+          "afterTaxRate": 0.032
+        },
+        {
+          "minBalance": 20000,
+          "maxBalance": 40000,
+          "grossRate": 0.045,
+          "afterTaxRate": 0.036
+        },
+        {
+          "minBalance": 40000,
+          "maxBalance": 60000,
+          "grossRate": 0.05,
+          "afterTaxRate": 0.04
+        },
+        {
+          "minBalance": 60000,
+          "maxBalance": 80000,
+          "grossRate": 0.065,
+          "afterTaxRate": 0.052
+        },
+        {
+          "minBalance": 80000,
+          "maxBalance": 100000,
+          "grossRate": 0.08,
+          "afterTaxRate": 0.064
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Stepped rate — each balance band earns its own rate (not applied to whole balance). Effective blended yield is ~5.6% p.a. on a full ₱100,000. No interest earned above ₱100,000 per goal. Up to 5 Personal Goal accounts allowed.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maya.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-account",
+      "name": "Tonik Account",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.01,
+      "baseRate": {
+        "grossRate": 0.01,
+        "afterTaxRate": 0.008
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.01,
+          "afterTaxRate": 0.008
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-savings",
+      "name": "Tonik Solo Stash",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.04,
+      "baseRate": {
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.04,
+          "afterTaxRate": 0.032
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "TONIK456",
+      "payoutAmount": 60,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-group-stash",
+      "name": "Tonik Group Stash",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.045,
+      "baseRate": {
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.04,
+          "afterTaxRate": 0.032
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Earns 4.00% p.a. as owner. Rate increases to 4.50% p.a. when owner + at least 2 participants join the stash.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-td-6mo",
+      "name": "Tonik Time Deposit 6-Month",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.06,
+      "baseRate": {
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.06,
+          "afterTaxRate": 0.048
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 182,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-td-9mo",
+      "name": "Tonik Time Deposit 9-Month",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.07,
+      "baseRate": {
+        "grossRate": 0.07,
+        "afterTaxRate": 0.056
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.07,
+          "afterTaxRate": 0.056
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 273,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-td-12mo",
+      "name": "Tonik Time Deposit 12-Month",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.08,
+      "baseRate": {
+        "grossRate": 0.08,
+        "afterTaxRate": 0.064
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.08,
+          "afterTaxRate": 0.064
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 365,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-td-18mo",
+      "name": "Tonik Time Deposit 18-Month",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.06,
+      "baseRate": {
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.06,
+          "afterTaxRate": 0.048
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 548,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "tonik-td-24mo",
+      "name": "Tonik Time Deposit 24-Month",
+      "provider": "Tonik Digital Bank",
+      "logo": "/logos/tonik.svg",
+      "category": "banks",
+      "headlineRate": 0.06,
+      "baseRate": {
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.06,
+          "afterTaxRate": 0.048
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 730,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://tonikbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "uno-ready",
+      "name": "#UNOready",
+      "provider": "UNO Digital Bank",
+      "logo": "/logos/uno.svg",
+      "category": "banks",
+      "headlineRate": 0.035,
+      "baseRate": {
+        "grossRate": 0.03,
+        "afterTaxRate": 0.024
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 4999,
+          "grossRate": 0.03,
+          "afterTaxRate": 0.024
+        },
+        {
+          "minBalance": 5000,
+          "maxBalance": 4999999,
+          "grossRate": 0.035,
+          "afterTaxRate": 0.028
+        },
+        {
+          "minBalance": 5000000,
+          "maxBalance": null,
+          "grossRate": 0.01,
+          "afterTaxRate": 0.008
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "3.00% p.a. for balances below ₱5,000. 3.50% p.a. for ₱5,000–₱4,999,999. 1.00% p.a. for ₱5,000,000+. Interest credited daily.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.uno.bank/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "uno-td-365",
+      "name": "#UNOearn",
+      "provider": "UNO Digital Bank",
+      "logo": "/logos/uno.svg",
+      "category": "banks",
+      "headlineRate": 0.0525,
+      "baseRate": {
+        "grossRate": 0.0525,
+        "afterTaxRate": 0.042
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0525,
+          "afterTaxRate": 0.042
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "12 or 24-month terms. Monthly interest paid out to your #UNOready account.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 365,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.uno.bank/",
+      "referralCode": "UNO789",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "gotyme-savings",
+      "name": "GoSave",
+      "provider": "GoTyme Bank",
+      "logo": "/logos/gotyme.svg",
+      "category": "banks",
+      "headlineRate": 0.03,
+      "baseRate": {
+        "grossRate": 0.03,
+        "afterTaxRate": 0.024
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.03,
+          "afterTaxRate": 0.024
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.gotyme.com.ph/",
+      "referralCode": "GOTYME001",
+      "payoutAmount": 50,
+      "palagoScore": 3
+    },
+    {
+      "id": "cimb-gsave",
+      "name": "GSave",
+      "provider": "CIMB / GCash",
+      "logo": "/logos/cimb.svg",
+      "category": "banks",
+      "headlineRate": 0.026,
+      "baseRate": {
+        "grossRate": 0.026,
+        "afterTaxRate": 0.0208
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.026,
+          "afterTaxRate": 0.0208
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Interest paid out monthly.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.gcash.com/",
+      "referralCode": "CIMB002",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "cimb-maxsave-3mo",
+      "name": "CIMB MaxSave 3-Month",
+      "provider": "CIMB Bank Philippines",
+      "logo": "/logos/cimb.svg",
+      "category": "banks",
+      "headlineRate": 0.0425,
+      "baseRate": {
+        "grossRate": 0.0425,
+        "afterTaxRate": 0.034
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0425,
+          "afterTaxRate": 0.034
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "CIMBPrime and CIMB Biz account holders earn 4.75% p.a. for this term.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 91,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.cimbbank.com.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "cimb-maxsave-6mo",
+      "name": "CIMB MaxSave 6-Month",
+      "provider": "CIMB Bank Philippines",
+      "logo": "/logos/cimb.svg",
+      "category": "banks",
+      "headlineRate": 0.0425,
+      "baseRate": {
+        "grossRate": 0.0425,
+        "afterTaxRate": 0.034
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0425,
+          "afterTaxRate": 0.034
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "CIMBPrime and CIMB Biz account holders earn 5.00% p.a. for this term.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 182,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.cimbbank.com.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "cimb-maxsave-12mo",
+      "name": "CIMB MaxSave 12-Month",
+      "provider": "CIMB Bank Philippines",
+      "logo": "/logos/cimb.svg",
+      "category": "banks",
+      "headlineRate": 0.04,
+      "baseRate": {
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.04,
+          "afterTaxRate": 0.032
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "CIMBPrime and CIMB Biz account holders earn 4.25% p.a. for this term.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 365,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.cimbbank.com.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "cimb-maxsave-24mo",
+      "name": "CIMB MaxSave 24-Month",
+      "provider": "CIMB Bank Philippines",
+      "logo": "/logos/cimb.svg",
+      "category": "banks",
+      "headlineRate": 0.0375,
+      "baseRate": {
+        "grossRate": 0.0375,
+        "afterTaxRate": 0.03
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0375,
+          "afterTaxRate": 0.03
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "CIMBPrime and CIMB Biz account holders earn 4.00% p.a. for this term.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 730,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.cimbbank.com.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "maribank-savings",
+      "name": "MariBank Savings",
+      "provider": "MariBank",
+      "logo": "/logos/maribank.svg",
+      "category": "banks",
+      "headlineRate": 0.0375,
+      "baseRate": {
+        "grossRate": 0.0325,
+        "afterTaxRate": 0.026
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 1000000,
+          "grossRate": 0.0325,
+          "afterTaxRate": 0.026
+        },
+        {
+          "minBalance": 1000000,
+          "maxBalance": null,
+          "grossRate": 0.0375,
+          "afterTaxRate": 0.03
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maribank.ph/",
+      "referralCode": "MARI003",
+      "payoutAmount": 50,
+      "palagoScore": 3
+    },
+    {
+      "id": "maribank-td-3mo",
+      "name": "MariBank Time Deposit 3-Month",
+      "provider": "MariBank",
+      "logo": "/logos/maribank.svg",
+      "category": "banks",
+      "headlineRate": 0.0375,
+      "baseRate": {
+        "grossRate": 0.0375,
+        "afterTaxRate": 0.03
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 1000000,
+          "grossRate": 0.0375,
+          "afterTaxRate": 0.03
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Maximum ₱1,000,000.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 91,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.maribank.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "uniondigital-savings",
+      "name": "UnionDigital Savings",
+      "provider": "UnionDigital Bank",
+      "logo": "/logos/uniondigital.svg",
+      "category": "banks",
+      "headlineRate": 0.0325,
+      "baseRate": {
+        "grossRate": 0.03,
+        "afterTaxRate": 0.024
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 5000000,
+          "grossRate": 0.03,
+          "afterTaxRate": 0.024
+        },
+        {
+          "minBalance": 5000000,
+          "maxBalance": null,
+          "grossRate": 0.0325,
+          "afterTaxRate": 0.026
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.uniondigitalbank.io/",
+      "referralCode": "UD004",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "uniondigital-td",
+      "name": "UD Time Deposit",
+      "provider": "UnionDigital Bank",
+      "logo": "/logos/uniondigital.svg",
+      "category": "banks",
+      "headlineRate": 0.0315,
+      "baseRate": {
+        "grossRate": 0.0315,
+        "afterTaxRate": 0.0252
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 1000,
+          "maxBalance": null,
+          "grossRate": 0.0315,
+          "afterTaxRate": 0.0252
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Term options: 30–59 days (3.15%), 60–89 days (3.10%), 90–119 days (3.00%), 120–179 days (2.75%), 180–364 days (2.65%), 1 year (2.50%). Minimum ₱1,000. Headline shown is the 30–59 day rate.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 30,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.uniondigitalbank.io/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "salmon-td-6mo",
+      "name": "Salmon Bank Time Deposit 6-Month",
+      "provider": "Salmon Bank",
+      "logo": "/logos/salmon.svg",
+      "category": "banks",
+      "headlineRate": 0.06,
+      "baseRate": {
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 50000,
+          "maxBalance": null,
+          "grossRate": 0.06,
+          "afterTaxRate": 0.048
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Minimum ₱50,000. Monthly interest payout. 6% p.a. applies to all balance tiers for the 6-month term. BSP-licensed rural bank, PDIC insured.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 182,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://salmon.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "salmon-td-12mo",
+      "name": "Salmon Bank Time Deposit 12-Month",
+      "provider": "Salmon Bank",
+      "logo": "/logos/salmon.svg",
+      "category": "banks",
+      "headlineRate": 0.08,
+      "baseRate": {
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 50000,
+          "maxBalance": 499999,
+          "grossRate": 0.06,
+          "afterTaxRate": 0.048
+        },
+        {
+          "minBalance": 500000,
+          "maxBalance": 999999,
+          "grossRate": 0.065,
+          "afterTaxRate": 0.052
+        },
+        {
+          "minBalance": 1000000,
+          "maxBalance": 50000000,
+          "grossRate": 0.08,
+          "afterTaxRate": 0.064
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Minimum ₱50,000. Monthly interest payout. Rates: ₱50k–₱499k: 6%, ₱500k–₱999k: 6.5%, ₱1M–₱50M: 8%. Same rates apply for 2–5 year terms. BSP-licensed rural bank, PDIC insured.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 365,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://salmon.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "netbank-savings",
+      "name": "Netbank Savings",
+      "provider": "Netbank",
+      "logo": "/logos/netbank.svg",
+      "category": "banks",
+      "headlineRate": 0.0325,
+      "baseRate": {
+        "grossRate": 0.0325,
+        "afterTaxRate": 0.026
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0325,
+          "afterTaxRate": 0.026
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Daily interest crediting and compounding.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://netbank.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "netbank-td-6mo",
+      "name": "Netbank Time Deposit 6-Month",
+      "provider": "Netbank",
+      "logo": "/logos/netbank.svg",
+      "category": "banks",
+      "headlineRate": 0.045,
+      "baseRate": {
+        "grossRate": 0.045,
+        "afterTaxRate": 0.036
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.045,
+          "afterTaxRate": 0.036
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 182,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://netbank.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "netbank-td-12mo",
+      "name": "Netbank Time Deposit 12-Month",
+      "provider": "Netbank",
+      "logo": "/logos/netbank.svg",
+      "category": "banks",
+      "headlineRate": 0.05,
+      "baseRate": {
+        "grossRate": 0.05,
+        "afterTaxRate": 0.04
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.05,
+          "afterTaxRate": 0.04
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 365,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://netbank.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "komo-savings",
+      "name": "Komo Savings",
+      "provider": "Komo by EastWest Bank",
+      "logo": "/logos/komo.svg",
+      "category": "banks",
+      "headlineRate": 0.025,
+      "baseRate": {
+        "grossRate": 0.025,
+        "afterTaxRate": 0.02
+      },
+      "tierType": "blended",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 500000,
+          "grossRate": 0.025,
+          "afterTaxRate": 0.02
+        },
+        {
+          "minBalance": 500001,
+          "maxBalance": 2000000,
+          "grossRate": 0.015,
+          "afterTaxRate": 0.012
+        },
+        {
+          "minBalance": 2000001,
+          "maxBalance": null,
+          "grossRate": 0.01,
+          "afterTaxRate": 0.008
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Stepped rate (each band earns its own rate): first ₱500,000 at 2.5%; next ₱1,500,000 (₱500k–₱2M) at 1.5%; balance beyond ₱2M at 1%.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://komo.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "diskartech-savings",
+      "name": "DiskarTech Savings",
+      "provider": "DiskarTech by RCBC",
+      "logo": "/logos/diskartech.svg",
+      "category": "banks",
+      "headlineRate": 0.04,
+      "baseRate": {
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      },
+      "tierType": "blended",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 50000,
+          "grossRate": 0.04,
+          "afterTaxRate": 0.032
+        },
+        {
+          "minBalance": 50001,
+          "maxBalance": 2000000,
+          "grossRate": 0.01,
+          "afterTaxRate": 0.008
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "4% p.a. on first ₱50,000; 1% p.a. on balance ₱50,000–₱2,000,000. Maximum deposit ₱2,000,000. Full BDA verification required for balances above ₱49,700.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://diskartech.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ownbank-td-15d",
+      "name": "OwnBank Time Deposit 15-Day",
+      "provider": "OwnBank",
+      "logo": "/logos/ownbank.svg",
+      "category": "banks",
+      "headlineRate": 0.04,
+      "baseRate": {
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.04,
+          "afterTaxRate": 0.032
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 15,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ownbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ownbank-td-30d",
+      "name": "OwnBank Time Deposit 30-Day",
+      "provider": "OwnBank",
+      "logo": "/logos/ownbank.svg",
+      "category": "banks",
+      "headlineRate": 0.0415,
+      "baseRate": {
+        "grossRate": 0.0415,
+        "afterTaxRate": 0.0332
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0415,
+          "afterTaxRate": 0.0332
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 30,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ownbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ownbank-td-60d",
+      "name": "OwnBank Time Deposit 60-Day",
+      "provider": "OwnBank",
+      "logo": "/logos/ownbank.svg",
+      "category": "banks",
+      "headlineRate": 0.0435,
+      "baseRate": {
+        "grossRate": 0.0435,
+        "afterTaxRate": 0.0348
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0435,
+          "afterTaxRate": 0.0348
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 60,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ownbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ownbank-td-90d",
+      "name": "OwnBank Time Deposit 90-Day",
+      "provider": "OwnBank",
+      "logo": "/logos/ownbank.svg",
+      "category": "banks",
+      "headlineRate": 0.045,
+      "baseRate": {
+        "grossRate": 0.045,
+        "afterTaxRate": 0.036
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.045,
+          "afterTaxRate": 0.036
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 90,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ownbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ownbank-td-180d",
+      "name": "OwnBank Time Deposit 180-Day",
+      "provider": "OwnBank",
+      "logo": "/logos/ownbank.svg",
+      "category": "banks",
+      "headlineRate": 0.048,
+      "baseRate": {
+        "grossRate": 0.048,
+        "afterTaxRate": 0.0384
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.048,
+          "afterTaxRate": 0.0384
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 180,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ownbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ownbank-td-360d",
+      "name": "OwnBank Time Deposit 360-Day",
+      "provider": "OwnBank",
+      "logo": "/logos/ownbank.svg",
+      "category": "banks",
+      "headlineRate": 0.052,
+      "baseRate": {
+        "grossRate": 0.052,
+        "afterTaxRate": 0.0416
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.052,
+          "afterTaxRate": 0.0416
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "at_maturity",
+      "lockInDays": 360,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ownbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "landbank-iaccess",
+      "name": "iAccess Savings",
+      "provider": "Landbank of the Philippines",
+      "logo": "/logos/landbank.svg",
+      "category": "banks",
+      "headlineRate": 0.0175,
+      "baseRate": {
+        "grossRate": 0.0175,
+        "afterTaxRate": 0.014
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0175,
+          "afterTaxRate": 0.014
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-01",
+      "affiliateUrl": "https://www.landbank.com/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "dbp-savings",
+      "name": "DBP Savings",
+      "provider": "Development Bank of the Philippines",
+      "logo": "/logos/dbp.svg",
+      "category": "banks",
+      "headlineRate": 0.02,
+      "baseRate": {
+        "grossRate": 0.02,
+        "afterTaxRate": 0.016
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.02,
+          "afterTaxRate": 0.016
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-01",
+      "affiliateUrl": "https://www.dbp.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "ofbank-savings",
+      "name": "OFBank Savings",
+      "provider": "Overseas Filipino Bank",
+      "logo": "/logos/ofbank.svg",
+      "category": "banks",
+      "headlineRate": 0.0005,
+      "baseRate": {
+        "grossRate": 0.0005,
+        "afterTaxRate": 0.0004
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0005,
+          "afterTaxRate": 0.0004
+        }
+      ],
+      "conditions": [],
+      "taxExempt": false,
+      "payoutFrequency": "monthly",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.ofbank.com.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "pagibig-mp2",
+      "name": "Pag-IBIG MP2",
+      "provider": "HDMF (Pag-IBIG Fund)",
+      "logo": "/logos/hdmf.svg",
+      "category": "govt",
+      "headlineRate": 0.0703,
+      "baseRate": {
+        "grossRate": 0.0703,
+        "afterTaxRate": 0.0703
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": null,
+          "grossRate": 0.0703,
+          "afterTaxRate": 0.0703
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Requires active Pag-IBIG (HDMF) membership. 5-year mandatory lock-in — not suitable as liquid savings. Dividend rate declared annually; shown rate is 2023 dividend.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": true,
+      "payoutFrequency": "annually",
+      "lockInDays": 1825,
+      "riskLevel": "Low",
+      "pdic": false,
+      "insurer": "Pag-IBIG Fund",
+      "lastVerified": "2026-04-01",
+      "affiliateUrl": "https://www.pagibigfund.gov.ph/MP2.html",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    },
+    {
+      "id": "bpi-banko-savings",
+      "name": "BanKo Savings",
+      "provider": "BanKo (by BPI)",
+      "logo": "/logos/banko.svg",
+      "category": "banks",
+      "headlineRate": 0.05,
+      "baseRate": {
+        "grossRate": 0,
+        "afterTaxRate": 0
+      },
+      "tierType": "threshold",
+      "tiers": [
+        {
+          "minBalance": 0,
+          "maxBalance": 5000,
+          "grossRate": 0,
+          "afterTaxRate": 0
+        },
+        {
+          "minBalance": 5000,
+          "maxBalance": 1000000,
+          "grossRate": 0.05,
+          "afterTaxRate": 0.04
+        },
+        {
+          "minBalance": 1000000,
+          "maxBalance": null,
+          "grossRate": 0.000625,
+          "afterTaxRate": 0.0005
+        }
+      ],
+      "conditions": [
+        {
+          "type": "none",
+          "description": "Must maintain a ₱5,000 daily balance to earn 5% p.a. Balances below ₱5,000 earn no interest. Balances above ₱1M earn only 0.0625% p.a. No maintaining balance or initial deposit requirement.",
+          "expiresAt": null
+        }
+      ],
+      "taxExempt": false,
+      "payoutFrequency": "daily",
+      "lockInDays": 0,
+      "riskLevel": "Low",
+      "pdic": true,
+      "insurer": "PDIC",
+      "lastVerified": "2026-04-03",
+      "affiliateUrl": "https://www.banko.com.ph/",
+      "referralCode": "",
+      "payoutAmount": 0,
+      "palagoScore": 3
+    }
+  ],
+  "sourceProductIds": [
+    "maya-savings",
+    "maya-td-3mo",
+    "maya-td-6mo",
+    "maya-td-12mo",
+    "maya-personal-goals",
+    "tonik-account",
+    "tonik-savings",
+    "tonik-group-stash",
+    "tonik-td-6mo",
+    "tonik-td-9mo",
+    "tonik-td-12mo",
+    "tonik-td-18mo",
+    "tonik-td-24mo",
+    "uno-ready",
+    "uno-td-365",
+    "gotyme-savings",
+    "cimb-gsave",
+    "cimb-maxsave-3mo",
+    "cimb-maxsave-6mo",
+    "cimb-maxsave-12mo",
+    "cimb-maxsave-24mo",
+    "maribank-savings",
+    "maribank-td-3mo",
+    "uniondigital-savings",
+    "uniondigital-td",
+    "salmon-td-6mo",
+    "salmon-td-12mo",
+    "netbank-savings",
+    "netbank-td-6mo",
+    "netbank-td-12mo",
+    "komo-savings",
+    "diskartech-savings",
+    "ownbank-td-15d",
+    "ownbank-td-30d",
+    "ownbank-td-60d",
+    "ownbank-td-90d",
+    "ownbank-td-180d",
+    "ownbank-td-360d",
+    "landbank-iaccess",
+    "dbp-savings",
+    "ofbank-savings",
+    "pagibig-mp2",
+    "bpi-banko-savings"
+  ]
+}

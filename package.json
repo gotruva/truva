@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "baseline:export": "tsx scripts/export-rate-baseline.ts",
+    "rates:seed:staging": "tsx scripts/seed-staging-rates.ts",
+    "rates:crawl": "tsx scripts/crawl-rate-sources.ts",
+    "rates:snapshot:build": "tsx scripts/build-rate-snapshot.ts",
+    "rates:snapshot:promote": "tsx scripts/promote-rate-snapshot.ts",
+    "rates:verify": "tsx scripts/verify-rate-pipeline.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

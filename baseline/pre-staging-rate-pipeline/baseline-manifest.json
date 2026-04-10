@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-04-10T05:03:04.903Z",
+  "gitRef": "ff04c410fb79d3431858457121678e346371968c",
+  "seedProductCount": 50,
+  "seedProviderCount": 22,
+  "seedProviders": [
+    "Aave V3",
+    "BDO Unibank",
+    "BanKo (by BPI)",
+    "Bank of the Philippine Islands",
+    "Bureau of Treasury",
+    "CIMB / GCash",
+    "CIMB Bank Philippines",
+    "Development Bank of the Philippines",
+    "DiskarTech by RCBC",
+    "GoTyme Bank",
+    "HDMF (Pag-IBIG Fund)",
+    "Komo by EastWest Bank",
+    "Landbank of the Philippines",
+    "MariBank",
+    "Maya Bank",
+    "Netbank",
+    "Overseas Filipino Bank",
+    "OwnBank",
+    "Salmon Bank",
+    "Tonik Digital Bank",
+    "UNO Digital Bank",
+    "UnionDigital Bank"
+  ],
+  "publicSeedProductCount": 42,
+  "publishedCandidateProductCount": 43,
+  "publishedCandidateProviderCount": 18,
+  "publishedCandidateProviders": [
+    "BanKo (by BPI)",
+    "CIMB / GCash",
+    "CIMB Bank Philippines",
+    "Development Bank of the Philippines",
+    "DiskarTech by RCBC",
+    "GoTyme Bank",
+    "HDMF (Pag-IBIG Fund)",
+    "Komo by EastWest Bank",
+    "Landbank of the Philippines",
+    "MariBank",
+    "Maya Bank",
+    "Netbank",
+    "Overseas Filipino Bank",
+    "OwnBank",
+    "Salmon Bank",
+    "Tonik Digital Bank",
+    "UNO Digital Bank",
+    "UnionDigital Bank"
+  ],
+  "removedProductIds": [
+    "tbill-91",
+    "tbill-182",
+    "tbill-364",
+    "rtb-27",
+    "bdo-mmf-uitf",
+    "bpi-mmf-uitf",
+    "aave-v3-usdc-base"
+  ],
+  "manualAnnualProductIds": [
+    "pagibig-mp2"
+  ],
+  "maxLastVerified": "2026-04-03",
+  "exportedSupabaseTables": [
+    "credit_cards",
+    "affiliate_clicks",
+    "partner_inquiries"
+  ]
+}

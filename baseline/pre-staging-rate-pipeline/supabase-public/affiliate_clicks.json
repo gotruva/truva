@@ -1,0 +1,929 @@
+[
+  {
+    "id": "fc85a514-d3e7-4ce0-82d7-e69d45466e9a",
+    "created_at": "2026-04-06T13:47:50.756387+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "894d0075-4e4a-4093-b310-0a5e1df51f34",
+    "created_at": "2026-04-06T14:53:34.290481+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "989c526f-a5f7-4b91-a600-17413e424ee2",
+    "created_at": "2026-04-06T14:57:16.808885+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "a6be9871-9577-4047-b04f-a105d20d58cf",
+    "created_at": "2026-04-06T14:57:24.155258+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "25508fe2-986b-41bd-8a34-e5140da36549",
+    "created_at": "2026-04-06T14:59:40.428583+00:00",
+    "product_id": "debug-test",
+    "provider": "Debug",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3adefda6-79af-4869-a9b9-e33cc96e7f10",
+    "created_at": "2026-04-06T15:03:03.584386+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "79a4433b-27a4-4eab-8b5a-67dfbf89f9ab",
+    "created_at": "2026-04-06T15:06:09.730109+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "ec1b5898-e9f6-4e2b-8df2-019f05881816",
+    "created_at": "2026-04-06T15:06:11.971318+00:00",
+    "product_id": "ofbank-savings",
+    "provider": "Overseas Filipino Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "7646d3f7-9a98-47c2-857c-9fdb49500031",
+    "created_at": "2026-04-07T01:52:11.763629+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "a235515c-5b0d-4eaa-aed7-1a15f0432a13",
+    "created_at": "2026-04-07T02:01:21.89387+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "a065a661-4106-4fd2-bc5c-6a731ad0ed97",
+    "created_at": "2026-04-07T02:01:37.960964+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "0d278192-a14d-4c63-9aea-c33c08d31647",
+    "created_at": "2026-04-07T02:01:54.443587+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "369845a0-d206-4ea3-b8d1-be143dd2b03e",
+    "created_at": "2026-04-07T02:02:29.097389+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3421a234-e216-4091-8f72-440c024091ab",
+    "created_at": "2026-04-07T05:58:26.765384+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "e8a39de7-a2b3-4a09-af32-a72c5de9e06d",
+    "created_at": "2026-04-07T08:28:31.754097+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d0a51925-2263-448a-b103-26ec4c51f2de",
+    "created_at": "2026-04-08T02:03:42.152978+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "f9c6fc41-5c2b-4be1-b07b-e5d7d34eda57",
+    "created_at": "2026-04-08T07:47:17.852813+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "ee96bf44-a5c8-4219-bdd8-9bcf2fe60bb3",
+    "created_at": "2026-04-08T12:58:56.473931+00:00",
+    "product_id": "ofbank-savings",
+    "provider": "Overseas Filipino Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "19c3333f-2d17-454a-bed4-a54a932c3def",
+    "created_at": "2026-04-08T13:11:25.161321+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "e5fb09ba-40d9-4c42-92fb-13912e62a289",
+    "created_at": "2026-04-08T13:18:54.294801+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d1ea3168-440c-48fe-909b-93f6dacb8646",
+    "created_at": "2026-04-08T13:21:38.402022+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "c2e1db8d-34c3-4978-a589-8733ab825b5d",
+    "created_at": "2026-04-08T13:44:31.031666+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "8cb847d3-8ddc-45e8-9ba6-3886994c7dde",
+    "created_at": "2026-04-08T13:47:05.658254+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "c968f6be-0742-4c17-b9e5-20df844c597f",
+    "created_at": "2026-04-08T13:49:36.26931+00:00",
+    "product_id": "netbank-savings",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d656a773-2355-4e9d-98e0-f04b0556baf5",
+    "created_at": "2026-04-08T13:55:25.080289+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "845a526b-8f0c-419d-9494-567db06a32d3",
+    "created_at": "2026-04-08T14:01:01.895342+00:00",
+    "product_id": "ownbank-td-180d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "56f262d1-2368-4416-9945-849bca25764f",
+    "created_at": "2026-04-08T14:06:25.255897+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3d5bc23f-63fe-4589-baf6-fb7031c803b7",
+    "created_at": "2026-04-08T14:20:13.646964+00:00",
+    "product_id": "netbank-td-12mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "8c283e77-a6e0-43fb-8e4a-12663a23c651",
+    "created_at": "2026-04-08T14:49:54.464893+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "0db80c2b-22bd-466d-907b-45c766db03e9",
+    "created_at": "2026-04-08T15:01:54.678268+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "a29619a4-7a77-4a0d-abb7-98daed647b9b",
+    "created_at": "2026-04-08T15:02:06.783627+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "199d683c-c2c6-4ec9-95d0-9bca42377790",
+    "created_at": "2026-04-08T15:02:12.220602+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "adb23e37-a1ae-4a8e-86a7-337bb330b00d",
+    "created_at": "2026-04-08T15:02:23.706609+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "afdf52ac-6d7f-4bd9-8b3b-ffe88c8a9664",
+    "created_at": "2026-04-08T15:03:14.543212+00:00",
+    "product_id": "ownbank-td-30d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "488124a5-7b65-4864-9c8a-6895ef065bbb",
+    "created_at": "2026-04-08T15:03:33.699992+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "fd6fd40a-ea3f-4df6-af59-48aea54df040",
+    "created_at": "2026-04-08T15:04:18.395451+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "674c5143-1252-4de5-ace1-1a1c50955cce",
+    "created_at": "2026-04-08T15:04:18.505564+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "5843ff7f-b805-4e45-b63e-533434b3fb2b",
+    "created_at": "2026-04-08T15:04:40.555717+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "0a397724-68db-498b-b69e-50c0ba417137",
+    "created_at": "2026-04-08T15:06:10.828746+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "cd301a51-02ae-413e-a83b-cb2a86a0d501",
+    "created_at": "2026-04-08T15:14:10.562413+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "eee8ec64-fa53-418c-aecc-1cf8cec26b24",
+    "created_at": "2026-04-08T16:30:46.036479+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "2b5797ac-1191-4bbe-ba03-0a9763e4f727",
+    "created_at": "2026-04-08T17:08:47.031427+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d44a17d4-af41-4e33-b8cf-51644687d1ea",
+    "created_at": "2026-04-08T17:21:35.814324+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "ac802b1b-454f-42b6-b35f-ba03f37e3635",
+    "created_at": "2026-04-08T17:43:07.067526+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "452d2d21-784f-4435-b0e0-59837e544c6d",
+    "created_at": "2026-04-08T17:43:38.283463+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "baf5c31d-a6c1-45c6-a03c-af396b5040a6",
+    "created_at": "2026-04-08T20:25:25.833851+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "bbba8112-8012-4059-a870-b48fe1ff440b",
+    "created_at": "2026-04-08T21:03:33.709325+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3b89b741-8867-41c9-bbd8-8cc63a2da1bd",
+    "created_at": "2026-04-08T21:04:16.268574+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "4ce7369d-8bd1-49f4-bde2-c3dff90a7be4",
+    "created_at": "2026-04-08T21:07:23.74366+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "e0adca42-3474-470a-a4b2-d475738b5640",
+    "created_at": "2026-04-08T21:07:48.554463+00:00",
+    "product_id": "netbank-td-6mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3679023e-9840-44b2-afc2-d1ae90f8016b",
+    "created_at": "2026-04-08T21:15:26.666739+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "07f8184b-4a6a-430d-8b27-a03c0eadf046",
+    "created_at": "2026-04-09T00:48:19.089469+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "6bde326a-3ff7-4f22-ab8e-42b25d94638e",
+    "created_at": "2026-04-09T02:30:49.552397+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "a1232187-f80a-40da-b442-5ee553b48faa",
+    "created_at": "2026-04-09T02:36:32.94205+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "9a96eecd-5144-4b39-868a-fef7e2a18e59",
+    "created_at": "2026-04-09T03:44:20.573058+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "a52c755f-55bc-401d-b8c8-704c74443588",
+    "created_at": "2026-04-09T04:12:38.575831+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "cb5c8039-c88c-45c2-bb83-1c3d085c47b2",
+    "created_at": "2026-04-09T05:46:06.422203+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "04267f90-3aad-40a5-a23c-2a59790b4c47",
+    "created_at": "2026-04-09T05:56:19.527086+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "ead2b34f-e5db-429b-9f64-5de5b9dcdf3c",
+    "created_at": "2026-04-09T06:07:32.441055+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "09b2a508-3fe8-441f-8564-6e120c18fe06",
+    "created_at": "2026-04-09T07:35:39.252003+00:00",
+    "product_id": "ownbank-td-15d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "2bd2a7d8-09b7-46fa-b2fc-0875de940a56",
+    "created_at": "2026-04-09T11:48:19.008081+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "8fb63489-b904-4f4d-83a4-5989cfa298d8",
+    "created_at": "2026-04-09T12:01:12.659533+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "9d4da294-86cd-4d1b-ac61-8a8fe637693a",
+    "created_at": "2026-04-09T12:10:47.764214+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "465269f5-c53d-469f-b977-2a1fc7b3e0f5",
+    "created_at": "2026-04-09T12:20:24.077944+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "8824d9c9-735e-4b54-ad37-84c810b58a12",
+    "created_at": "2026-04-09T12:29:32.232084+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "978c5e89-ba1d-4aad-93ff-24f329d00498",
+    "created_at": "2026-04-09T13:05:50.39645+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d2ea275e-dddc-4e8c-8090-bc74cb99d1c6",
+    "created_at": "2026-04-09T13:14:20.923714+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "62cd22e1-e4bb-498e-b93f-660f430f2a2b",
+    "created_at": "2026-04-09T13:24:04.960802+00:00",
+    "product_id": "netbank-td-12mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "50742bc5-f6fd-4b24-b7bd-100eef27c40e",
+    "created_at": "2026-04-09T13:34:37.84524+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "b603e9c1-3138-4725-9d65-a0d39ed4edfa",
+    "created_at": "2026-04-09T13:43:14.004205+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "5945d8a2-d025-4ea8-ac4e-080eeee560c7",
+    "created_at": "2026-04-09T13:55:46.335169+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "b47b59eb-3e54-4d90-a937-d658195fbd83",
+    "created_at": "2026-04-09T14:05:10.756794+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "68b58793-7c01-45ed-9891-5392d0329b93",
+    "created_at": "2026-04-09T16:23:11.828048+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "8cf01ab0-04d7-4391-9697-17e4b113cded",
+    "created_at": "2026-04-09T16:33:56.138722+00:00",
+    "product_id": "ownbank-td-30d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "059cce0d-79fe-460d-bfa1-60ea9ee6f486",
+    "created_at": "2026-04-09T16:43:36.667515+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "cc8b03d7-f667-450f-8608-4e9c36fac7d0",
+    "created_at": "2026-04-09T16:52:46.401511+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "e1e32a93-6194-4306-be10-197056ee098f",
+    "created_at": "2026-04-09T16:59:50.006998+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "c620ad6e-827a-42d4-a40d-e661ff0ac6ac",
+    "created_at": "2026-04-09T17:14:50.450171+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "340df10b-a5a8-4cd9-be8d-7952c3ade14c",
+    "created_at": "2026-04-09T18:40:44.096378+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d0f7570a-eccf-4f3f-b24b-e9cc7ef54c05",
+    "created_at": "2026-04-09T18:52:58.925212+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d8e859c1-30df-447f-bdae-2e252d327449",
+    "created_at": "2026-04-09T19:02:24.650688+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "6301e96f-e151-4cca-bb9a-4819e1de3435",
+    "created_at": "2026-04-09T19:21:51.33156+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "6006c242-18fb-4652-b928-746ac572a40f",
+    "created_at": "2026-04-09T19:32:33.227201+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "bcae50f5-17bf-472b-87a1-08f124b6bc21",
+    "created_at": "2026-04-09T19:42:26.958294+00:00",
+    "product_id": "netbank-savings",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "8b19bfad-1456-408f-bc2d-eda89382c5fb",
+    "created_at": "2026-04-09T19:50:16.506023+00:00",
+    "product_id": "netbank-td-6mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "ce7e7f65-8eef-43d3-b7ff-2a568a317b70",
+    "created_at": "2026-04-09T20:01:48.038603+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "7b4bb7b8-8ba0-4b71-9944-6a66b7c7f309",
+    "created_at": "2026-04-09T20:04:33.500711+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "f4abcde7-aa81-43f9-abf0-b4e426eb5861",
+    "created_at": "2026-04-09T20:12:40.842141+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "2d5414a9-7f7f-49bc-a2f9-a1a46ce650d9",
+    "created_at": "2026-04-09T22:25:05.786736+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "ecec8253-fcd8-451b-a9a8-653341f0857a",
+    "created_at": "2026-04-09T22:35:19.809335+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "1d701025-056d-4cc4-b25c-076efa45ac55",
+    "created_at": "2026-04-09T22:46:56.360945+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "12368d88-4326-4a64-b1e5-35b155e97343",
+    "created_at": "2026-04-09T22:55:17.000332+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "520dde71-6286-4092-aa7b-2a978da44158",
+    "created_at": "2026-04-09T23:04:55.983034+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "dd8b4073-4097-4f69-8ff5-d1fae55bbce0",
+    "created_at": "2026-04-09T23:15:42.967028+00:00",
+    "product_id": "ownbank-td-15d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "904b5d58-2425-48ee-b30d-fa601825fbcb",
+    "created_at": "2026-04-10T00:40:08.761499+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "13c10921-16b6-4561-b5c0-a1f42ea074b4",
+    "created_at": "2026-04-10T00:48:36.043285+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "764afb43-273a-4a06-bafb-19a03cef4d6d",
+    "created_at": "2026-04-10T01:00:22.306317+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "748f19b0-15b4-4e4f-a38c-3ed7e8fdc30c",
+    "created_at": "2026-04-10T01:09:25.134039+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "68eb3718-2bdd-4508-a032-524270afcd6c",
+    "created_at": "2026-04-10T01:21:03.767216+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "614be82d-abbd-4cd4-89fe-9dd834c2f1af",
+    "created_at": "2026-04-10T01:30:20.254173+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "cc470982-92ac-40a7-b115-a68213296da4",
+    "created_at": "2026-04-10T04:14:22.880547+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "93d2781e-3ec6-4a6b-94e5-f8918856c336",
+    "created_at": "2026-04-10T04:25:00.532864+00:00",
+    "product_id": "ownbank-td-180d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "0c2de1f3-5dc0-43c2-8d41-46297bb62147",
+    "created_at": "2026-04-10T04:34:26.407879+00:00",
+    "product_id": "ofbank-savings",
+    "provider": "Overseas Filipino Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  }
+]

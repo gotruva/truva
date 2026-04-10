@@ -1,19 +1,63 @@
-import { RateProduct } from '@/types';
-import { fetchAaveBaseUSDC } from './defi';
 import fs from 'fs';
 import path from 'path';
 
-async function getStaticRates(): Promise<RateProduct[]> {
+import type { RateProduct } from '@/types';
+import type { RateSnapshotChannel } from '@/types/rate-pipeline';
+
+import { createSupabaseAdminClient } from './supabase-admin';
+import { fetchAaveBaseUSDC } from './defi';
+
+function getLocalRates(): RateProduct[] {
   const filePath = path.join(process.cwd(), 'data', 'rates.json');
+
   try {
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const parsed = JSON.parse(fileContents);
     if (!Array.isArray(parsed)) throw new Error('rates.json must be an array');
     return parsed as RateProduct[];
-  } catch (err) {
-    console.error('Failed to load rates data:', err);
+  } catch (error) {
+    console.error('Failed to load rates data:', error);
     return [];
   }
+}
+
+function resolveSnapshotChannel(): RateSnapshotChannel | null {
+  const configured = process.env.TRUVA_RATES_SNAPSHOT_CHANNEL;
+  if (configured === 'staging' || configured === 'production') {
+    return configured;
+  }
+
+  if (process.env.VERCEL_ENV === 'preview') return 'staging';
+  if (process.env.VERCEL_ENV === 'production') return 'production';
+
+  return null;
+}
+
+async function getPublishedSnapshotRates(channel: RateSnapshotChannel): Promise<RateProduct[] | null> {
+  const client = createSupabaseAdminClient('public');
+  if (!client) return null;
+
+  const { data, error } = await client.rpc('get_latest_rate_snapshot', {
+    requested_channel: channel,
+  });
+
+  if (error) {
+    console.warn(`Failed to load ${channel} rate snapshot from Supabase: ${error.message}`);
+    return null;
+  }
+
+  const snapshot = Array.isArray(data) ? data[0] : data;
+  return Array.isArray(snapshot?.payload) ? (snapshot.payload as RateProduct[]) : null;
+}
+
+async function getRatesCatalog(): Promise<RateProduct[]> {
+  const channel = resolveSnapshotChannel();
+  if (!channel) {
+    return getLocalRates();
+  }
+
+  const snapshotRates = await getPublishedSnapshotRates(channel);
+  return snapshotRates?.length ? snapshotRates : getLocalRates();
 }
 
 export function getPublicRatesFromList(rates: RateProduct[]): RateProduct[] {
@@ -21,7 +65,7 @@ export function getPublicRatesFromList(rates: RateProduct[]): RateProduct[] {
 }
 
 export async function getPublicRates(): Promise<RateProduct[]> {
-  return getPublicRatesFromList(await getStaticRates());
+  return getPublicRatesFromList(await getRatesCatalog());
 }
 
 export function getLatestVerifiedDate(rates: RateProduct[]): string {
@@ -39,21 +83,22 @@ export function formatVerifiedDate(value: string): string {
 }
 
 export async function getLiveRates(): Promise<RateProduct[]> {
-  const staticRates = await getStaticRates();
+  const baseRates = await getRatesCatalog();
   const defiRate = await fetchAaveBaseUSDC();
-  
-  return staticRates.map((r) => {
-    if (r.id === 'aave-v3-usdc-base' && defiRate) {
+
+  return baseRates.map((rate) => {
+    if (rate.id === 'aave-v3-usdc-base' && defiRate) {
       const liveGross = defiRate.apy / 100;
-      return { 
-        ...r, 
+      return {
+        ...rate,
         headlineRate: liveGross,
         baseRate: { grossRate: liveGross, afterTaxRate: liveGross },
         tiers: [
-          { minBalance: 0, maxBalance: null, grossRate: liveGross, afterTaxRate: liveGross }
+          { minBalance: 0, maxBalance: null, grossRate: liveGross, afterTaxRate: liveGross },
         ],
       };
     }
-    return r;
+
+    return rate;
   });
 }

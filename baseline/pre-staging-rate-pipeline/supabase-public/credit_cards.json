@@ -1,0 +1,50 @@
+[
+  {
+    "id": "unionbank-rewards-visa",
+    "name": "Rewards Visa",
+    "provider": "UnionBank",
+    "logo": "/logos/unionbank.svg",
+    "category": "credit-cards",
+    "annual_fee": 2500,
+    "annual_fee_waiver_condition": "No annual fee for life with NAFFL promo",
+    "monthly_interest_rate": 0.03,
+    "reward_type": "points",
+    "minimum_monthly_income": 15000,
+    "welcome_promo": "No Annual Fee for Life (NAFFL) Promo",
+    "perks": [
+      "3X points on shopping and dining",
+      "No annual fee for life under NAFFL promo",
+      "Accepted on the global Visa network"
+    ],
+    "best_for": "Everyday shoppers and diners who want flexible rewards",
+    "pros": [
+      "No annual fee for life under NAFFL promo",
+      "3X points on shopping and dining",
+      "Points redeemable for cash credits, miles, or merchandise",
+      "Available on the Visa network for wide acceptance"
+    ],
+    "cons": [
+      "Points redemption catalog can be complex to navigate",
+      "3% monthly interest rate if you carry a balance",
+      "Limited travel-specific perks compared to premium cards"
+    ],
+    "faqs": [
+      {
+        "answer": "Yes. Under the NAFFL promo, your annual fee is permanently waived as long as you maintain the card in good standing. If you cancel and reapply later, the waiver may not apply.",
+        "question": "Is the no annual fee for life permanent?"
+      },
+      {
+        "answer": "Points can be redeemed via the UnionBank online portal or app for cash credits, airline miles, or items from their rewards catalog. Minimum redemption thresholds apply.",
+        "question": "How do I redeem my reward points?"
+      }
+    ],
+    "eligibility_summary": "Open to Filipino citizens and resident foreigners aged 21–65 with a minimum gross monthly income of ₱15,000. A valid government-issued ID and proof of income are required. Existing UnionBank account holders may have a faster approval process.",
+    "editor_verdict": "One of the easiest value-adds in Philippine credit cards — the NAFFL promo removes the biggest psychological barrier to holding a card, and the 3X points on dining and shopping is genuinely useful.",
+    "is_sponsored": false,
+    "sponsored_disclosure": null,
+    "affiliate_url": "",
+    "palago_score": 3,
+    "scraped_at": "2026-04-08T13:28:20.58+00:00",
+    "updated_at": "2026-04-08T13:28:29.192569+00:00"
+  }
+]
