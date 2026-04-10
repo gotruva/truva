@@ -267,11 +267,11 @@ $$;
 
 create or replace function public.build_rate_snapshot(requested_channel text, snapshot_notes text default null)
 returns table (
-  snapshot_id uuid,
-  snapshot_channel text,
-  product_count integer,
-  provider_count integer,
-  generated_at timestamptz
+  out_snapshot_id uuid,
+  out_snapshot_channel text,
+  out_product_count integer,
+  out_provider_count integer,
+  out_generated_at timestamptz
 )
 language plpgsql
 security definer
@@ -327,22 +327,22 @@ begin
       generated_at
   )
   select
-    inserted.id,
-    inserted.snapshot_channel,
-    inserted.product_count,
-    inserted.provider_count,
-    inserted.generated_at
+    inserted.id as out_snapshot_id,
+    inserted.snapshot_channel as out_snapshot_channel,
+    inserted.product_count as out_product_count,
+    inserted.provider_count as out_provider_count,
+    inserted.generated_at as out_generated_at
   from inserted;
 end;
 $$;
 
 create or replace function public.promote_rate_snapshot()
 returns table (
-  snapshot_id uuid,
-  snapshot_channel text,
-  product_count integer,
-  provider_count integer,
-  generated_at timestamptz
+  out_snapshot_id uuid,
+  out_snapshot_channel text,
+  out_product_count integer,
+  out_provider_count integer,
+  out_generated_at timestamptz
 )
 language plpgsql
 security definer
@@ -386,13 +386,25 @@ begin
     now()
   )
   returning
-    id,
-    snapshot_channel,
-    product_count,
-    provider_count,
-    generated_at;
+    id as out_snapshot_id,
+    snapshot_channel as out_snapshot_channel,
+    product_count as out_product_count,
+    provider_count as out_provider_count,
+    generated_at as out_generated_at;
 end;
 $$;
+
+grant usage on schema staging to service_role;
+grant all privileges on all tables in schema staging to service_role;
+grant all privileges on all sequences in schema staging to service_role;
+grant all privileges on all functions in schema staging to service_role;
+
+alter default privileges in schema staging
+  grant all on tables to service_role;
+alter default privileges in schema staging
+  grant all on sequences to service_role;
+alter default privileges in schema staging
+  grant all on functions to service_role;
 
 grant execute on function public.get_latest_rate_snapshot(text) to anon, authenticated, service_role;
 grant execute on function public.build_rate_snapshot(text, text) to service_role;

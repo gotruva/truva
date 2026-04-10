@@ -20,7 +20,7 @@ async function main() {
   }
 
   console.log(
-    `Promoted to ${snapshot.snapshot_channel} snapshot ${snapshot.snapshot_id} with ${snapshot.product_count} products across ${snapshot.provider_count} providers.`,
+    `Promoted to ${snapshot.out_snapshot_channel} snapshot ${snapshot.out_snapshot_id} with ${snapshot.out_product_count} products across ${snapshot.out_provider_count} providers.`,
   );
 }
 
@@ -28,4 +28,3 @@ main().catch((error) => {
   console.error('Snapshot promotion failed:', error);
   process.exit(1);
 });
-

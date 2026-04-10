@@ -61,7 +61,7 @@ async function getRatesCatalog(): Promise<RateProduct[]> {
 }
 
 export function getPublicRatesFromList(rates: RateProduct[]): RateProduct[] {
-  return rates.filter((rate) => rate.category === 'banks');
+  return rates.filter((rate) => rate.category === 'banks' || rate.id === 'pagibig-mp2');
 }
 
 export async function getPublicRates(): Promise<RateProduct[]> {

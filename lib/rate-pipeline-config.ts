@@ -102,7 +102,8 @@ const PROVIDER_DEFINITIONS: RateProviderDefinition[] = [
     defaultSourceMode: 'automated',
     publishAllowed: true,
     sources: [
-      { kind: 'landing_page', url: 'https://uniondigitalbank.io/', parseStrategy: 'html' },
+      { kind: 'product_page', url: 'https://uniondigitalbank.io/en/products/savings-account', parseStrategy: 'html' },
+      { kind: 'product_page', url: 'https://uniondigitalbank.io/en/products/time-deposit', parseStrategy: 'html' },
     ],
     notes: 'Use a conservative crawl path; public product pages can be sparse.',
   },

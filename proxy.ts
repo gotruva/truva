@@ -7,7 +7,12 @@ const PUBLIC_PREFIXES = ['/api/rates', '/api/defi', '/api/newsletter', '/api/fee
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isPublicRoute = PUBLIC_ROUTES.includes(path) || PUBLIC_PREFIXES.some(prefix => path.startsWith(prefix));
+  const reviewUiEnabled = process.env.TRUVA_ENABLE_STAGING_REVIEW_UI === 'true' || process.env.NODE_ENV === 'development';
+  const isReviewRoute = path === '/admin/rates/review' || path.startsWith('/admin/rates/review/');
+  const isPublicRoute =
+    PUBLIC_ROUTES.includes(path) ||
+    PUBLIC_PREFIXES.some(prefix => path.startsWith(prefix)) ||
+    (reviewUiEnabled && isReviewRoute);
 
   if (isPublicRoute) {
     return NextResponse.next();

@@ -10,6 +10,8 @@
     "baseline:export": "tsx scripts/export-rate-baseline.ts",
     "rates:seed:staging": "tsx scripts/seed-staging-rates.ts",
     "rates:crawl": "tsx scripts/crawl-rate-sources.ts",
+    "rates:extract": "tsx scripts/extract-rate-facts.ts",
+    "rates:review": "tsx scripts/review-rate-changes.ts",
     "rates:snapshot:build": "tsx scripts/build-rate-snapshot.ts",
     "rates:snapshot:promote": "tsx scripts/promote-rate-snapshot.ts",
     "rates:verify": "tsx scripts/verify-rate-pipeline.ts"
