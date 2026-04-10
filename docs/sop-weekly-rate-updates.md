@@ -18,14 +18,31 @@ Truva uses a **Staging-First Pipeline** to ensure accuracy. Rates do not go blin
 
 ## 2. Weekly Step-by-Step SOP
 
-Perform this procedure once every week (e.g. Monday mornings) to ensure all Phase 1 digital bank yields are perfectly accurate.
+Perform this procedure once every week (e.g. Monday mornings) to ensure all 19 products across all banks have verified, up-to-date rates for our customers.
+
+### Banks Covered in Weekly Crawls
+
+**Phase 1 - Automated Digital Banks (7):**
+- Maya Bank, Tonik Digital Bank, UNO Digital Bank, GoTyme Bank, MariBank, UnionDigital Bank, Overseas Filipino Bank
+
+**Phase 2 - Weekly Checked Neobanks & Traditional Banks (7):**
+- 🌾 Salmon Bank (rural bank)
+- 🌾 Netbank (rural bank)  
+- 🌾 OwnBank (rural bank)
+- Komo by EastWest Bank
+- DiskarTech by RCBC
+- Landbank of the Philippines
+- Development Bank of the Philippines
+- BanKo (by BPI)
+- HDMF (Pag-IBIG Fund)
+- CIMB / GCash
 
 ### Step 1: Run the Automated Crawler
-Open the repository in your terminal and run the crawler. This command visits all supported banks automatically.
+Open the repository in your terminal and run the crawler. This command visits all supported banks (both Phase 1 and Phase 2) automatically.
 ```bash
 npm run rates:crawl
 ```
-Wait for the script to finish. It will log "Fetched [URL]" for each bank. Note any `Failed to fetch` errors, as websites may occasionally go down.
+Wait for the script to finish. It will log "Fetched [URL]" for each bank. Note any `Failed to fetch` errors, as websites may occasionally go down. If a Phase 2 bank fails, manually verify their rates on their official website and seed the data manually (see Section 3).
 
 ### Step 2: Run the automated Extractor
 Run the extractor script to process the downloaded HTML files into rate updates.
@@ -34,14 +51,25 @@ npm run rates:extract
 ```
 The console will log exactly which products had `material changes` and which ones had `no material changes detected`.
 
-### Step 3: Approve/Reject in the Internal UI
+### Step 3: Resolve Crawl Failures (if any)
+If any Phase 2 banks (rural banks, Landbank, DBP, etc.) failed to crawl:
+1. Visit the bank's official website manually
+2. Find their current savings rate and time deposit rates
+3. Navigate to `/admin/rates/review` 
+4. Click **Manual Seed** and enter the rates directly
+5. The system will queue them for review just like automated extractions
+
+This ensures your customers always see current rates even if a bank's website is temporarily down.
+
+### Step 4: Approve/Reject in the Internal UI
 1. Navigate to the local admin portal: `http://localhost:3000/admin/rates/review`.
 2. Review the pending items in the queue. You will see a Diff Table showing the `Previous Value` vs `New Value`.
 3. If an extraction was flawed or grabbed the wrong number, hit **Reject** so it doesn't break production. You can then investigate. (If rejected, the production website still safely shows the old rate).
 4. If a rate truly changed and the numbers look accurate, click **Approve** or click **Approve All**.
+5. **Verify all 19 products are reviewed**: Check the count at the top to ensure you've covered all rates from all banks.
 
-### Step 4: Verify Live Updates
-Once approved, refresh the main application table on `http://localhost:3000`. The new rate and newly calculated after-tax yield should be actively displayed.
+### Step 5: Verify Live Updates
+Once approved, refresh the main application table on `http://localhost:3000`. The new rates and newly calculated after-tax yields should be actively displayed across all 19 products and all banks.
 
 ---
 
@@ -64,3 +92,26 @@ Once you verify the bank has a new product:
 3. **Fill the Manual Info**: Populate the `"name"`, `"lockInDays"`, `"tiers"`, and base `"headlineRate"` according to their marketing page.
 4. **Inform the Developer**: The automation parser in `lib/rate-extraction.ts` needs a new Regex rule to automatically extract the new product's rate going forward. Open a ticket with the engineer requesting: *"Please add a parser mapping for the newly added `uno-td-1y`."*
 5. Until the developer adds the parsing rule, the pipeline will simply keep your manually seeded rate as perfectly valid and won't crash!
+
+---
+
+## 4. Special Handling: Rural Banks & Government Financial Institutions
+
+Truva is committed to **inclusivity and fair information for all Filipinos**. Rural banks (Salmon Bank, Netbank, OwnBank), government agencies (Landbank, DBP), and neobanks (DiskarTech, Komo) often offer better rates than large commercial banks but get overlooked.
+
+### Why Rural Banks Matter
+- 🌾 **Salmon Bank**, **Netbank**, and **OwnBank** offer competitive rates to unbanked/underbanked Filipinos
+- They may have less sophisticated websites, so manual verification is sometimes required
+- **Our customers deserve accurate info on ALL options**, not just the famous banks
+
+### Weekly Verification Checklist for Rural Banks
+- [ ] Salmon Bank rates verified (visit salmon.ph)
+- [ ] Netbank rates verified (visit netbank.ph)
+- [ ] OwnBank rates verified (visit ownbank.com)
+- [ ] Landbank rates verified (government institution, visit landbank.com)
+- [ ] DBP rates verified (development bank, visit dbp.ph)
+- [ ] DiskarTech rates verified (visit diskartech.ph)
+- [ ] BanKo rates verified (visit bpi.com.ph/banko)
+- [ ] HDMF Pag-IBIG rates verified (visit pagibigfund.gov.ph)
+
+If any crawl fails for these banks, **immediately verify manually** to ensure customers get accurate information. This is Truva's core mission: transparent, complete after-tax rate comparison for all Filipinos.

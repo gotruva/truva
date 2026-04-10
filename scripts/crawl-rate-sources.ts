@@ -24,7 +24,8 @@ function getArtifactExtension(url: string, contentType: string | null) {
 async function main() {
   const providerFilter = getProviderFilter();
   const definitions = listRateProviderDefinitions().filter((definition) => {
-    if (definition.automationPhase !== 'phase1_digital') return false;
+    // Include both phase1_digital (automated) and phase2_neobanks (weekly checks)
+    if (definition.automationPhase !== 'phase1_digital' && definition.automationPhase !== 'phase2_neobanks') return false;
     if (!providerFilter) return true;
     return definition.institutionSlug === providerFilter || definition.providerDisplayName.toLowerCase() === providerFilter;
   });

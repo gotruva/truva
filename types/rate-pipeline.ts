@@ -37,7 +37,7 @@ export type SourceKind =
 
 export type ParseStrategy = 'html' | 'pdf' | 'playwright';
 
-export type AutomationPhase = 'phase1_digital' | 'manual_seed' | 'inactive';
+export type AutomationPhase = 'phase1_digital' | 'phase2_neobanks' | 'manual_seed' | 'inactive';
 
 export interface RateSourceDefinition {
   kind: SourceKind;
