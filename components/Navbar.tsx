@@ -83,10 +83,10 @@ export function Navbar() {
             href="https://invite.viber.com/?g2=AQAVVY5OHy%2FfvlZdu7vUh%2FIkJ5fqL16B58XFTULkk1mS4%2BUU9O8ZAwYKbEqW4TCX"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-[#7360f2] transition-colors hover:bg-[#7360f2]/10 dark:text-[#9b8af7] dark:hover:bg-[#7360f2]/15"
+            className="hidden sm:flex items-center gap-1.5 text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200"
           >
-            <ViberIcon className="w-4 h-4" />
-            <span className="hidden sm:inline">Join Viber</span>
+            <ViberIcon className="w-5 h-5" />
+            <span className="hidden sm:inline text-[14px] font-semibold">Join our Community</span>
           </a>
 
           <Button
@@ -140,10 +140,10 @@ export function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-[#7360f2] transition-colors hover:bg-[#7360f2]/10 dark:text-[#9b8af7] dark:hover:bg-[#7360f2]/15"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
             >
-              <ViberIcon className="h-4 w-4" />
-              Join our Viber group
+              <ViberIcon className="h-5 w-5" />
+              Join our Community
             </a>
             <button
               onClick={() => {
