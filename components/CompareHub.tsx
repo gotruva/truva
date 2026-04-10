@@ -293,6 +293,15 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
 
       {topSection === 'quick-match-wizard' && (
         <div className="mb-10 px-4">
+          <div className="mx-auto mb-6 max-w-3xl text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-gray-100 sm:text-3xl">
+              Find your best savings rate in the Philippines&nbsp;— in 3&nbsp;taps
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400 sm:text-base">
+              Tell us your goal, your amount, and when you&apos;ll need it — we&apos;ll rank every savings account and time deposit from 19+ Philippine banks by your real after-tax return.
+            </p>
+          </div>
+
           <QuickMatchWizard
             onComplete={handleWizardComplete}
             onSkip={handleAdvancedTab}

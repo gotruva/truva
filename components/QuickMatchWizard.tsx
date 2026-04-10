@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, ChevronLeft, Sparkles } from 'lucide-react';
+import { Check, ChevronLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { QuickMatchAnswers, QuickMatchCoreAnswers } from '@/types';
@@ -117,19 +117,35 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
     timeline !== null,
   ];
 
-  const goNext = () => {
-    if (step < 3) {
-      setStep((current) => current + 1);
-      return;
-    }
-
-    handleComplete();
-  };
-
   const goBack = () => {
     if (step > 1) {
       setStep((current) => current - 1);
     }
+  };
+
+  const handlePurposeSelect = (selectedPurpose: QuickMatchCoreAnswers['purpose']) => {
+    setPurpose(selectedPurpose);
+    // Auto-advance to step 2 after selection
+    setStep(2);
+  };
+
+  const handleAmountSelect = (preset: number) => {
+    setAmountPreset(preset);
+    // Auto-advance to step 3 after selection
+    if (preset !== -1) {
+      setStep(3);
+    }
+  };
+
+  const handleTimelineSelect = (selectedTimeline: QuickMatchCoreAnswers['timeline']) => {
+    setTimeline(selectedTimeline);
+    // Auto-complete on final selection
+    const finalAnswers = deriveQuickMatchAnswers({
+      purpose: purpose!,
+      amount: resolvedAmount,
+      timeline: selectedTimeline,
+    });
+    onComplete(finalAnswers);
   };
 
   const handleComplete = () => {
@@ -203,7 +219,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                   {GOAL_OPTIONS.map((option) => (
                     <button
                       key={option.id}
-                      onClick={() => setPurpose(option.id)}
+                      onClick={() => handlePurposeSelect(option.id)}
                       className={optionClass(purpose === option.id)}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -233,7 +249,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                   {AMOUNT_PRESETS.map((preset) => (
                     <button
                       key={preset.value}
-                      onClick={() => setAmountPreset(preset.value)}
+                      onClick={() => handleAmountSelect(preset.value)}
                       className={optionClass(amountPreset === preset.value)}
                     >
                       <div className="flex items-center justify-between gap-3">
@@ -249,6 +265,9 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
                       Custom amount
                     </label>
+                    <p className="mb-3 text-xs text-brand-textSecondary dark:text-gray-500">
+                      Press Enter to continue
+                    </p>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">
                         PHP
@@ -260,6 +279,11 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                         placeholder="Type your amount"
                         value={customAmount}
                         onChange={(event) => setCustomAmount(event.target.value.replace(/[^0-9]/g, ''))}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' && resolvedAmount > 0) {
+                            setStep(3);
+                          }
+                        }}
                         className="h-12 rounded-xl border-brand-border bg-white pl-16 text-base font-bold focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-900"
                       />
                     </div>
@@ -280,7 +304,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                   {TIMELINE_OPTIONS.map((option) => (
                     <button
                       key={option.id}
-                      onClick={() => setTimeline(option.id)}
+                      onClick={() => handleTimelineSelect(option.id)}
                       className={optionClass(timeline === option.id)}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -299,31 +323,18 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             )}
         </div>
 
-        <div className="flex flex-col-reverse gap-3 border-t border-brand-border bg-[#FBFCFF] px-5 py-4 dark:border-white/10 dark:bg-slate-950/70 sm:flex-row sm:px-6 sm:py-5 md:px-8">
-          {step > 1 && (
+        {step > 1 && (
+          <div className="flex justify-start border-t border-brand-border bg-[#FBFCFF] px-5 py-4 dark:border-white/10 dark:bg-slate-950/70 sm:px-6 sm:py-5 md:px-8">
             <Button
               variant="outline"
               onClick={goBack}
-              className="min-h-[52px] gap-2 rounded-xl border-brand-border px-5 text-base font-semibold dark:border-white/10 dark:bg-slate-900 dark:text-gray-300 sm:min-h-[48px] sm:px-4 sm:text-sm"
+              className="gap-2 rounded-xl border-brand-border px-5 text-base font-semibold dark:border-white/10 dark:bg-slate-900 dark:text-gray-300 sm:px-4 sm:text-sm"
             >
               <ChevronLeft className="h-4 w-4" />
               Back
             </Button>
-          )}
-          <Button
-            onClick={goNext}
-            disabled={!canProceed[step - 1]}
-            className="min-h-[52px] flex-1 gap-2 rounded-xl bg-brand-primary px-5 text-base font-semibold text-white shadow-sm hover:bg-brand-primaryDark disabled:opacity-50 sm:min-h-[48px] sm:text-sm"
-          >
-            {step < 3 ? (
-              <>
-                Next <ArrowRight className="h-4 w-4" />
-              </>
-            ) : (
-              'Show my best matches'
-            )}
-          </Button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
