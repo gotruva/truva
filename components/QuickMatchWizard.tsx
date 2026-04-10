@@ -265,9 +265,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
                       Custom amount
                     </label>
-                    <p className="mb-3 text-xs text-brand-textSecondary dark:text-gray-500">
-                      Press Enter to continue
-                    </p>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">
                         PHP
@@ -287,6 +284,13 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                         className="h-12 rounded-xl border-brand-border bg-white pl-16 text-base font-bold focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-900"
                       />
                     </div>
+                    <button
+                      onClick={() => setStep(3)}
+                      disabled={resolvedAmount <= 0}
+                      className="mt-4 h-12 w-full rounded-xl bg-brand-primary text-sm font-semibold text-white transition-opacity disabled:opacity-40 active:opacity-80"
+                    >
+                      Continue
+                    </button>
                   </div>
                 )}
               </div>
