@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Check, ChevronLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,6 +126,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
 
   const handlePurposeSelect = (selectedPurpose: QuickMatchCoreAnswers['purpose']) => {
     setPurpose(selectedPurpose);
+    sendGAEvent({ event: 'quick_match_step_1_purpose', purpose: selectedPurpose });
     // Auto-advance to step 2 after selection
     setStep(2);
   };
@@ -133,12 +135,14 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
     setAmountPreset(preset);
     // Auto-advance to step 3 after selection
     if (preset !== -1) {
+      sendGAEvent({ event: 'quick_match_step_2_amount', amount: preset });
       setStep(3);
     }
   };
 
   const handleTimelineSelect = (selectedTimeline: QuickMatchCoreAnswers['timeline']) => {
     setTimeline(selectedTimeline);
+    sendGAEvent({ event: 'quick_match_completed', timeline: selectedTimeline, amount: resolvedAmount, purpose: purpose! });
     // Auto-complete on final selection
     const finalAnswers = deriveQuickMatchAnswers({
       purpose: purpose!,
@@ -278,6 +282,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                         onChange={(event) => setCustomAmount(event.target.value.replace(/[^0-9]/g, ''))}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter' && resolvedAmount > 0) {
+                            sendGAEvent({ event: 'quick_match_step_2_amount', amount: resolvedAmount });
                             setStep(3);
                           }
                         }}
@@ -285,7 +290,10 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                       />
                     </div>
                     <button
-                      onClick={() => setStep(3)}
+                      onClick={() => {
+                        sendGAEvent({ event: 'quick_match_step_2_amount', amount: resolvedAmount });
+                        setStep(3);
+                      }}
                       disabled={resolvedAmount <= 0}
                       className="mt-4 h-12 w-full rounded-xl bg-brand-primary text-sm font-semibold text-white transition-opacity disabled:opacity-40 active:opacity-80"
                     >

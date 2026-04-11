@@ -10,6 +10,7 @@ import {
   Lock,
   ShieldCheck,
 } from 'lucide-react';
+import { sendGAEvent } from '@next/third-parties/google';
 import {
   CartesianGrid,
   Line,
@@ -222,6 +223,9 @@ export function YieldCalculator({
                   type="text"
                   value={new Intl.NumberFormat('en-US').format(comparisonState.amount || 0)}
                   onChange={handleAmountChange}
+                  onBlur={() => {
+                    sendGAEvent({ event: 'calculator_amount_updated', value: comparisonState.amount });
+                  }}
                   className="h-14 rounded-xl border-brand-border bg-brand-surface pl-16 text-xl font-bold shadow-inner focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-950"
                 />
               </div>
@@ -235,7 +239,10 @@ export function YieldCalculator({
                 {horizonOptions.map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => onComparisonStateChange({ months: option.value })}
+                    onClick={() => {
+                      onComparisonStateChange({ months: option.value });
+                      sendGAEvent({ event: 'calculator_months_clicked', value: option.value });
+                    }}
                     className={`rounded-lg py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                       comparisonState.months === option.value
                         ? 'border border-brand-border bg-white text-brand-primary shadow-sm dark:border-white/10 dark:bg-slate-800 dark:text-blue-400'
@@ -258,7 +265,10 @@ export function YieldCalculator({
                 </div>
                 <div className="flex w-full rounded-xl border border-brand-border bg-brand-surface p-1.5 dark:border-white/10 dark:bg-slate-950 sm:w-fit">
                   <button
-                    onClick={() => onComparisonStateChange({ liquidityFilter: 'all' })}
+                    onClick={() => {
+                      onComparisonStateChange({ liquidityFilter: 'all' });
+                      sendGAEvent({ event: 'calculator_liquidity_clicked', filter: 'all' });
+                    }}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm sm:flex-none ${
                       comparisonState.liquidityFilter === 'all'
                         ? 'border border-brand-border/50 bg-white text-brand-primary shadow-sm dark:bg-slate-800 dark:text-blue-400'
@@ -268,7 +278,10 @@ export function YieldCalculator({
                     All Options
                   </button>
                   <button
-                    onClick={() => onComparisonStateChange({ liquidityFilter: 'liquid' })}
+                    onClick={() => {
+                      onComparisonStateChange({ liquidityFilter: 'liquid' });
+                      sendGAEvent({ event: 'calculator_liquidity_clicked', filter: 'liquid' });
+                    }}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm sm:flex-none ${
                       comparisonState.liquidityFilter === 'liquid'
                         ? 'border border-brand-border/50 bg-white text-brand-primary shadow-sm dark:bg-slate-800 dark:text-blue-400'
@@ -278,7 +291,10 @@ export function YieldCalculator({
                     Liquid Only
                   </button>
                   <button
-                    onClick={() => onComparisonStateChange({ liquidityFilter: 'locked' })}
+                    onClick={() => {
+                      onComparisonStateChange({ liquidityFilter: 'locked' });
+                      sendGAEvent({ event: 'calculator_liquidity_clicked', filter: 'locked' });
+                    }}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm sm:flex-none ${
                       comparisonState.liquidityFilter === 'locked'
                         ? 'border border-brand-border/50 bg-white text-brand-primary shadow-sm dark:bg-slate-800 dark:text-blue-400'
@@ -433,7 +449,13 @@ export function YieldCalculator({
                       </div>
 
                       <button
-                        onClick={() => setExpandedResultId(expandedResultId === result.id ? null : result.id)}
+                        onClick={() => {
+                          const isExpanding = expandedResultId !== result.id;
+                          setExpandedResultId(isExpanding ? result.id : null);
+                          if (isExpanding) {
+                            sendGAEvent({ event: 'calculator_more_info_clicked', bank: result.provider });
+                          }
+                        }}
                         className="group/detail mt-3 inline-flex items-center gap-1.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1.5 text-[12px] font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white"
                         aria-expanded={expandedResultId === result.id}
                         aria-label={`Click for more info about ${result.provider}`}
