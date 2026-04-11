@@ -353,10 +353,15 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
         <div className="mb-8 max-w-3xl">
           <h2 className="text-2xl font-bold text-brand-textPrimary dark:text-gray-100">Compare bank rates in one place</h2>
           {formattedDate && (
-            <p className="mt-2 flex items-center gap-1.5 text-sm text-brand-textSecondary dark:text-gray-400">
-              <span className="font-semibold text-positive">✓</span>
-              Rates last checked and verified on {formattedDate}
-            </p>
+            <div className="mt-3 flex items-center gap-2.5 rounded-full border border-brand-border bg-white px-3.5 py-1.5 shadow-sm dark:border-white/10 dark:bg-slate-900">
+              <div className="relative flex h-2 w-2">
+                <span className="animate-pulse-status absolute inline-flex h-full w-full rounded-full bg-positive opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-positive"></span>
+              </div>
+              <p className="text-[13px] font-medium text-brand-textPrimary dark:text-gray-200">
+                Rates last checked and verified on <span className="font-bold">{formattedDate}</span>
+              </p>
+            </div>
           )}
         </div>
         <DynamicRateSection

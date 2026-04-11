@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import createMDX from '@next/mdx';
 
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
@@ -30,6 +31,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   productionBrowserSourceMaps: false,
   turbopack: {
     root: __dirname,
@@ -44,4 +46,8 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  // Add markdown plugins here, as desired
+});
+
+export default withMDX(nextConfig);

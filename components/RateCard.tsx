@@ -73,11 +73,11 @@ function ProductRow({ product, amount, months, isBest }: {
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-[13px] text-brand-textPrimary dark:text-gray-100 leading-tight">
+            <span className="font-bold text-[15px] text-brand-textPrimary dark:text-gray-100 leading-tight">
               {product.name}
             </span>
             {isBest && (
-              <Badge className="bg-positive/10 text-positive border-positive/20 text-[9px] font-bold py-0 px-1.5">
+              <Badge className="bg-positive/10 text-positive border-positive/20 text-[10px] font-bold py-0.5 px-2">
                 Best
               </Badge>
             )}
@@ -101,11 +101,11 @@ function ProductRow({ product, amount, months, isBest }: {
           </div>
         </div>
         <div className="text-right shrink-0 pl-3">
-          <div className="text-[16px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
+          <div className="text-[18px] font-extrabold tabular-nums text-brand-textPrimary dark:text-gray-100">
             {formatRate(product.effectiveRate)}
           </div>
           {amount > 0 && (
-            <div className="text-[12px] font-semibold text-positive tabular-nums">
+            <div className="text-[13px] font-bold text-positive tabular-nums">
               +{formatPHP(product.projectedReturn)}
             </div>
           )}
@@ -158,7 +158,7 @@ function ProductRow({ product, amount, months, isBest }: {
                           </span>
                           <span className="tabular-nums">
                             {(tier.grossRate * 100).toFixed(1)}% → {(tierAfterTax * 100).toFixed(2)}%
-                            {isActiveTier && ' ✓'}
+                            {isActiveTier && <span className="ml-1 text-[11px] font-bold">✓ your tier</span>}
                           </span>
                         </div>
                       );
@@ -270,12 +270,12 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
         {/* Rank + Logo */}
         <div className="flex flex-col items-center gap-1.5 shrink-0">
           {rank <= 3 ? (
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
-              rank === 1 ? 'bg-gradient-to-br from-yellow-400 to-amber-500' :
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shadow-md ${
+              rank === 1 ? 'glow-rank-1 bg-gradient-to-br from-yellow-400 via-amber-400 to-amber-500' :
               rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400' :
               'bg-gradient-to-br from-amber-600 to-amber-700'
             }`}>
-              {rank === 1 ? <Trophy className="w-3 h-3" /> : rank}
+              {rank === 1 ? <Trophy className="w-3.5 h-3.5" /> : rank}
             </span>
           ) : (
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-brand-textSecondary bg-gray-100 dark:bg-slate-800">{rank}</span>
@@ -290,14 +290,23 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-brand-textPrimary dark:text-gray-100 text-[16px] leading-tight">{provider}</span>
+                <span className="font-bold text-brand-textPrimary dark:text-gray-100 text-[18px] leading-tight">{provider}</span>
+                {best.category === 'defi' && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[9px] font-bold text-blue-600 dark:text-blue-400">
+                    <div className="relative flex h-1 w-1">
+                      <span className="animate-pulse-status-blue absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+                      <span className="relative inline-flex h-1 w-1 rounded-full bg-blue-500"></span>
+                    </div>
+                    LIVE
+                  </span>
+                )}
                 {isRecommended && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-positive/10 text-positive border border-positive/20 whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-primary/5 text-brand-primary border border-brand-primary/20 whitespace-nowrap">
                     ★ Quick Match
                   </span>
                 )}
               </div>
-              <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 mt-0.5">
+              <div className="text-[13px] font-medium text-brand-textSecondary dark:text-gray-500 mt-0.5">
                 {products.length} product{products.length > 1 ? 's' : ''} compared · <InsurerLabel insurer={insurer} />
               </div>
             </div>
@@ -317,17 +326,17 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
                 Highest listed rate: {(headlineGross * 100).toFixed(2)}% gross
               </div>
-              <div className={`text-[28px] font-bold tabular-nums leading-none tracking-tight ${rank === 1 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
+              <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight ${rank === 1 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
                 {formatRate(bestEffectiveRate)}
               </div>
-              <div className="text-[11px] font-semibold text-brand-textSecondary dark:text-gray-400 mt-0.5">
+              <div className="text-[12px] font-bold text-brand-textSecondary dark:text-gray-400 mt-1">
                 net after tax · {best.lockInDays === 0 ? 'withdraw anytime' : `time locked for ${formatLockIn(best.lockInDays)}`}
               </div>
             </div>
             {amount > 0 && (
               <div className="text-right">
-                <div className="text-[15px] font-bold text-positive tabular-nums">+{formatPHP(bestReturn)}</div>
-                <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">estimated over {months} month{months !== 1 ? 's' : ''}</div>
+                <div className="text-[18px] font-bold text-positive tabular-nums">+{formatPHP(bestReturn)}</div>
+                <div className="text-[12px] font-medium text-brand-textSecondary dark:text-gray-500">estimated over {months} month{months !== 1 ? 's' : ''}</div>
               </div>
             )}
           </div>
@@ -364,9 +373,17 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
 
 /* ─── Helper ─── */
 function InsurerLabel({ insurer }: { insurer: string }) {
-  if (insurer === 'PDIC') return <span className="text-positive font-medium">PDIC Insured</span>;
-  if (insurer === 'Bureau of Treasury') return <span className="text-blue-600 dark:text-blue-400 font-medium">Gov&apos;t Guaranteed</span>;
-  if (insurer === 'Pag-IBIG Fund') return <span className="text-blue-600 dark:text-blue-400 font-medium">Pag-IBIG Guaranteed</span>;
+  if (insurer === 'PDIC') return (
+    <span className="inline-flex items-center gap-1.5 font-bold text-positive">
+      <div className="relative flex h-1.5 w-1.5">
+        <span className="animate-pulse-status absolute inline-flex h-full w-full rounded-full bg-positive opacity-75"></span>
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-positive"></span>
+      </div>
+      PDIC Insured
+    </span>
+  );
+  if (insurer === 'Bureau of Treasury') return <span className="text-blue-600 dark:text-blue-400 font-bold">Gov&apos;t Guaranteed</span>;
+  if (insurer === 'Pag-IBIG Fund') return <span className="text-blue-600 dark:text-blue-400 font-bold">Pag-IBIG Guaranteed</span>;
   return <span>Not Insured</span>;
 }
 
