@@ -470,6 +470,151 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
   },
 ];
 
+const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
+  {
+    slug: 'best-credit-cards-philippines',
+    path: '/credit-cards/rates/best-credit-cards-philippines',
+    title: 'Best credit cards Philippines 2026: cashback, rewards, and real peso math',
+    seoTitle: 'Best credit cards Philippines 2026: rates and real peso math',
+    description:
+      'Compare the top Philippine credit cards by cashback rate, annual fee, and reward value. See which card fits your spending pattern.',
+    subtitle:
+      'A spending-pattern guide for Filipinos choosing between cashback, rewards points, and no-annual-fee cards.',
+    category: 'credit-cards',
+    categoryLabel: 'Credit Cards',
+    section: 'rates',
+    articleType: 'Rate Guide',
+    eyebrow: 'Featured rate guide',
+    publishedAt: '2026-04-13',
+    updatedAt: '2026-04-13',
+    author: 'Beto',
+    authorUrl: '/authors/beto',
+    readingTime: '9 min read',
+    featured: true,
+    keywords: ['best credit cards philippines', 'credit card comparison philippines', 'cashback credit card philippines'],
+    verificationNote: 'Card terms and fee structures are aligned to the latest issuer disclosures.',
+    disclosureNote:
+      'Truva earns a referral fee if you apply through our links. This does not affect our editorial scores.',
+    toc: [
+      { label: 'The quick ranking' },
+      { label: 'Cashback vs rewards points' },
+      { label: 'Annual fee math' },
+      { label: 'Who can get approved' },
+      { label: 'Frequently asked questions' },
+      { label: 'Verdict' },
+    ],
+    faqItems: [
+      {
+        question: 'Is the annual fee worth it?',
+        answer:
+          'It depends on your spending. If you spend ₱50k+ monthly on the card categories that earn cashback, the rewards usually cover the annual fee. Use the calculator to see your math.',
+      },
+      {
+        question: 'What is the best card for everyday use?',
+        answer:
+          'For pure simplicity, no-annual-fee cards with flat rewards points win. For cashback maximization, you need to pick a card that aligns with your top spending categories.',
+      },
+    ],
+    primaryCta: {
+      label: 'Compare all credit cards',
+      href: '/credit-cards',
+      description: 'See the full product list and apply with confidence.',
+    },
+    secondaryCta: {
+      label: 'Read card reviews',
+      href: '/credit-cards/reviews',
+      description: 'Dig deeper into individual card perks and conditions.',
+    },
+    relatedArticles: ['bpi-amore-cashback-review', 'unionbank-rewards-visa-review'],
+  },
+  {
+    slug: 'bpi-amore-cashback-review',
+    path: '/credit-cards/reviews/bpi-amore-cashback-review',
+    title: 'BPI Amore Cashback Card Review (2026): Is 4% grocery cashback worth it?',
+    seoTitle: 'BPI Amore Cashback Card Review 2026: cashback, fees, and who it fits',
+    description:
+      'A practical review of the BPI Amore Cashback Card covering its 4% grocery cashback, annual fee, and who should actually apply.',
+    subtitle:
+      'A spending-pattern review for Filipinos deciding whether a cashback card tied to Ayala Malls is worth the PHP 3,000 annual fee.',
+    category: 'credit-cards',
+    categoryLabel: 'Credit Cards',
+    section: 'reviews',
+    articleType: 'Review',
+    eyebrow: 'Product review',
+    publishedAt: '2026-04-13',
+    updatedAt: '2026-04-13',
+    author: 'Beto',
+    authorUrl: '/authors/beto',
+    readingTime: '6 min read',
+    featured: false,
+    keywords: ['bpi amore cashback review', 'bpi credit card philippines', 'bpi amore cashback card'],
+    verificationNote: 'Card terms reviewed alongside current BPI product disclosures.',
+    disclosureNote:
+      'Truva earns a referral fee if you apply through our links. This does not affect our editorial scores.',
+    toc: [
+      { label: 'Key facts and rates' },
+      { label: 'What we like' },
+      { label: 'What to watch out for' },
+      { label: 'Who can get this card' },
+      { label: 'Verdict' },
+    ],
+    primaryCta: {
+      label: 'Apply for the BPI Amore Cashback Card',
+      href: '/credit-cards',
+      description: 'Ready to apply? Start here.',
+    },
+    secondaryCta: {
+      label: 'Compare all credit cards',
+      href: '/credit-cards',
+      description: 'See how this card stacks up against others.',
+    },
+    relatedArticles: ['best-credit-cards-philippines', 'unionbank-rewards-visa-review'],
+  },
+  {
+    slug: 'unionbank-rewards-visa-review',
+    path: '/credit-cards/reviews/unionbank-rewards-visa-review',
+    title: 'UnionBank Rewards Visa Review (2026): Is no annual fee for life worth it?',
+    seoTitle: 'UnionBank Rewards Visa Review 2026: NAFFL promo, rewards, and who it fits',
+    description:
+      'A practical review of the UnionBank Rewards Visa covering its no-annual-fee-for-life promo, 3X points on dining and shopping, and who should apply.',
+    subtitle:
+      'A spending-pattern review for Filipinos considering a no-annual-fee card with flexible rewards redemption.',
+    category: 'credit-cards',
+    categoryLabel: 'Credit Cards',
+    section: 'reviews',
+    articleType: 'Review',
+    eyebrow: 'Product review',
+    publishedAt: '2026-04-13',
+    updatedAt: '2026-04-13',
+    author: 'Beto',
+    authorUrl: '/authors/beto',
+    readingTime: '6 min read',
+    featured: false,
+    keywords: ['unionbank rewards visa review', 'unionbank credit card philippines', 'unionbank naffl'],
+    verificationNote: 'Card terms reviewed alongside current UnionBank product disclosures.',
+    disclosureNote:
+      'Truva earns a referral fee if you apply through our links. This does not affect our editorial scores.',
+    toc: [
+      { label: 'Key facts and rates' },
+      { label: 'NAFFL promo explained' },
+      { label: 'What to watch out for' },
+      { label: 'Who can get this card' },
+      { label: 'Verdict' },
+    ],
+    primaryCta: {
+      label: 'Apply for the UnionBank Rewards Visa',
+      href: '/credit-cards',
+      description: 'Ready to apply? Start here.',
+    },
+    secondaryCta: {
+      label: 'Compare all credit cards',
+      href: '/credit-cards',
+      description: 'See how this card stacks up against others.',
+    },
+    relatedArticles: ['best-credit-cards-philippines', 'bpi-amore-cashback-review'],
+  },
+];
+
 export function getBankingArticles(section?: EditorialArticle['section']) {
   const articles = section
     ? BANKING_EDITORIAL_ARTICLES.filter((article) => article.section === section)
@@ -513,8 +658,31 @@ export function getGuideArticlesBySlugs(slugs: string[]) {
     .sort(compareArticles);
 }
 
+export function getCreditCardArticles(section?: EditorialArticle['section']) {
+  const articles = section
+    ? CREDIT_CARD_EDITORIAL_ARTICLES.filter((a) => a.section === section)
+    : CREDIT_CARD_EDITORIAL_ARTICLES;
+  return [...articles].sort(compareArticles);
+}
+
+export function getFeaturedCreditCardArticle() {
+  const nonCompareArticles = getCreditCardArticles().filter((a) => a.section !== 'compare');
+  return nonCompareArticles.find((a) => a.featured) ?? nonCompareArticles[0];
+}
+
+export function getCreditCardArticle(slug: string) {
+  return CREDIT_CARD_EDITORIAL_ARTICLES.find((a) => a.slug === slug);
+}
+
+export function getCreditCardArticlesBySlugs(slugs: string[]) {
+  return slugs
+    .map((slug) => getCreditCardArticle(slug))
+    .filter((article): article is EditorialArticle => Boolean(article))
+    .sort(compareArticles);
+}
+
 export function getEditorialArticleBySlug(slug: string) {
-  return getBankingArticle(slug) ?? getGuideArticle(slug);
+  return getBankingArticle(slug) ?? getCreditCardArticle(slug) ?? getGuideArticle(slug);
 }
 
 export function getEditorialArticlesBySlugs(slugs: string[]) {

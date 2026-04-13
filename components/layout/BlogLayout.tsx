@@ -23,6 +23,15 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
     guides: 'Guides',
   };
 
+  const getBrowseCta = (category: EditorialArticle['category']) => {
+    const categoryBrowseMap: Record<EditorialArticle['category'], { label: string; href: string }> = {
+      banking: { label: 'Browse Banking', href: '/banking' },
+      'credit-cards': { label: 'Browse Credit Cards', href: '/credit-cards' },
+      guides: { label: 'Browse Guides', href: '/guides' },
+    };
+    return categoryBrowseMap[category] ?? { label: 'Browse articles', href: '/' };
+  };
+
   const relatedArticles = getEditorialArticlesBySlugs(article.relatedArticles).filter(
     (entry) => entry.slug !== article.slug
   );
@@ -130,10 +139,10 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
                     View methodology
                   </Link>
                   <Link
-                    href="/banking"
+                    href={getBrowseCta(article.category).href}
                     className="inline-flex items-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
                   >
-                    Browse Banking
+                    {getBrowseCta(article.category).label}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>

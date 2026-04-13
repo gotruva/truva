@@ -16,12 +16,6 @@ export const metadata: Metadata = {
   },
 };
 
-const comparisonRoadmap = [
-  'Maya vs GoTyme vs Tonik',
-  'Best no-conditions savings accounts',
-  'Best digital bank for PHP 100K, PHP 250K, and PHP 500K balances',
-];
-
 export default function BankingComparePage() {
   const comparisonBriefs = getBankingArticles('compare');
   const featuredArticle = comparisonBriefs[0];
@@ -80,19 +74,14 @@ export default function BankingComparePage() {
 
           <div className="rounded-[1.75rem] border border-brand-border bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-              Coming next
+              All briefs live
             </p>
             <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Comparison topics already worth structuring
+              {comparisonBriefs.length} comparison briefs ready
             </h2>
-            <ul className="mt-5 space-y-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              {comparisonRoadmap.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-brand-primary" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              All the comparison briefs listed here are published and ready to use. Open the one that matches your question.
+            </p>
           </div>
         </section>
 
