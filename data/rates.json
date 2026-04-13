@@ -28,7 +28,7 @@
     "conditions": [
       {
         "type": "spending",
-        "description": "Base 3.5% applies to the full balance, with bonus interest on up to the first PHP 100,000. The current Maya Savings chart lists 5% at PHP 250 spend, 6% at PHP 1,000 spend, 8% at PHP 25,000 spend, 10% at PHP 35,000 spend, while the page hero and FAQ advertise up to 6% through additional Maya features and balance growth.",
+        "description": "10% requires ₱35,000/month total spend via QR, debit card, online checkout, load, bills, stocks, or funds. Extra +2% (to reach 12%) requires any spend via Maya Easy Credit. Boosted rate applies only on first ₱100,000.",
         "expiresAt": null,
         "requiredMonthlySpend": 35000
       }
