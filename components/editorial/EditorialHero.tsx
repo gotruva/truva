@@ -39,6 +39,7 @@ export function EditorialHero({ article }: EditorialHeroProps) {
 
         <ArticleMetaBar
           author={article.author}
+          authorHref={article.authorUrl}
           publishedAt={article.publishedAt}
           updatedAt={article.updatedAt}
           readingTime={article.readingTime}

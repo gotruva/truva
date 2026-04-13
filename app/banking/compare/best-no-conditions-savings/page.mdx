@@ -1,0 +1,66 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
+
+export const article = getBankingArticle('best-no-conditions-savings');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+If you want the cleanest savings setup, Tonik Solo Stash and GoTyme are the easiest no-conditions choices. BanKo can win on yield, but it still has a balance floor that you need to maintain.
+</SEOBox>
+
+## No-conditions comparison
+
+| Bank | Rate style | Conditions | Notes |
+|---|---|---|---|
+| GoTyme | Flat rate | No monthly missions | Lowest friction option |
+| Tonik Solo Stash | Flat rate | No monthly missions | Slightly higher yield than basic digital-bank rates |
+| BanKo Savings | Higher rate | Balance floor only | Strong yield, but not totally friction-free |
+| CIMB GSave | Lower flat rate | No monthly missions | Simpler, but not a rate leader |
+
+## Who should pick each account
+
+- **GoTyme** if you want the easiest account to keep.
+- **Tonik** if you want no missions and a better flat rate.
+- **BanKo** if you can keep the balance floor and want a stronger yield.
+- **CIMB** if you want a familiar backup savings account and do not need the highest return.
+
+<InArticleCTA
+  kicker="Check the tradeoff"
+  title="Compare the real return on your balance"
+  description="Open the live rate desk before you decide. The cleanest option is not always the highest-yielding option."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## When a conditional bank still wins
+
+If you already have the balance and behavior for BanKo, the higher rate can beat the simpler accounts.
+
+That is the core rule: no-conditions is easier, but not always better.
+
+## Frequently asked questions
+
+### What does no-conditions actually mean?
+
+It means you do not need to hit a monthly spend target or mission checklist to keep the advertised rate.
+
+### Can a bank still have a balance floor and count as no-conditions?
+
+Yes. A balance floor is a product rule, but it is different from a monthly activity requirement.
+
+### Which option is best for beginners?
+
+GoTyme is the simplest place to start if the goal is easy savings management.

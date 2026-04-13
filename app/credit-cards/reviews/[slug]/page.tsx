@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getCreditCards, getCreditCardById } from '@/lib/credit-cards';
-import { Check, X, Sparkles, ChevronLeft, ArrowRight, ShieldAlert } from 'lucide-react';
+import { Check, X, Sparkles, ChevronLeft, ShieldAlert } from 'lucide-react';
 
 export async function generateStaticParams() {
   const cards = await getCreditCards();
@@ -17,6 +17,9 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   return {
     title: `${card.name} Review | Truva`,
     description: card.editorVerdict,
+    alternates: {
+      canonical: `/credit-cards/reviews/${card.id}`,
+    },
   };
 }
 
@@ -40,6 +43,7 @@ export default async function CreditCardReviewPage(props: { params: Promise<{ sl
     publisher: {
       '@type': 'Organization',
       name: 'Truva',
+      url: 'https://www.gotruva.com',
     },
   };
 
@@ -78,12 +82,12 @@ export default async function CreditCardReviewPage(props: { params: Promise<{ sl
             
             {/* Editor's Verdict Header */}
             <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-200 dark:border-white/5 mb-10 relative">
-               <div className="absolute top-0 left-6 -translate-y-1/2 bg-white dark:bg-slate-800 px-4 py-1.5 rounded-full border border-slate-200 dark:border-white/10 text-xs font-bold tracking-widest text-brand-primary uppercase">
-                 Editor's Verdict
-               </div>
-               <p className="text-lg md:text-xl font-medium leading-relaxed mt-2 text-brand-textPrimary dark:text-gray-200">
-                 "{card.editorVerdict}"
-               </p>
+                <div className="absolute top-0 left-6 -translate-y-1/2 bg-white dark:bg-slate-800 px-4 py-1.5 rounded-full border border-slate-200 dark:border-white/10 text-xs font-bold tracking-widest text-brand-primary uppercase">
+                 Editor&apos;s Verdict
+                </div>
+                <p className="text-lg md:text-xl font-medium leading-relaxed mt-2 text-brand-textPrimary dark:text-gray-200">
+                 {`"${card.editorVerdict}"`}
+                </p>
             </div>
 
             {/* Pros / Cons Flex Grid */}
@@ -184,7 +188,7 @@ export default async function CreditCardReviewPage(props: { params: Promise<{ sl
                  rel="nofollow noopener noreferrer"
                  className="inline-flex w-full sm:w-auto justify-center items-center py-4 px-8 rounded-xl bg-brand-primary text-white hover:bg-brand-primary/90 transition-colors font-bold text-lg shadow-lg shadow-brand-primary/20"
                >
-                 Apply securely on {card.provider}'s website <ArrowRight className="w-5 h-5 ml-2" />
+                 Apply securely on {card.provider}&apos;s website <span className="ml-2" aria-hidden="true">→</span>
                </a>
             </div>
 

@@ -7,7 +7,7 @@ import { EditorialHero } from '@/components/editorial/EditorialHero';
 import { InArticleCTA } from '@/components/editorial/InArticleCTA';
 import { RelatedArticles } from '@/components/editorial/RelatedArticles';
 import { StickyTOC } from '@/components/editorial/StickyTOC';
-import { getBankingArticlesBySlugs } from '@/lib/editorial';
+import { getEditorialArticlesBySlugs } from '@/lib/editorial';
 import type { EditorialArticle } from '@/types';
 
 interface BlogLayoutProps {
@@ -15,20 +15,23 @@ interface BlogLayoutProps {
   article: EditorialArticle;
 }
 
-export function BlogLayout({
-  children,
-  article,
-}: BlogLayoutProps) {
-  const relatedArticles =
-    article.category === 'banking'
-      ? getBankingArticlesBySlugs(article.relatedArticles).filter((entry) => entry.slug !== article.slug)
-      : [];
+export function BlogLayout({ children, article }: BlogLayoutProps) {
+  const sectionLabelMap: Record<EditorialArticle['section'], string> = {
+    rates: 'Rates',
+    reviews: 'Reviews',
+    compare: 'Compare',
+    guides: 'Guides',
+  };
+
+  const relatedArticles = getEditorialArticlesBySlugs(article.relatedArticles).filter(
+    (entry) => entry.slug !== article.slug
+  );
 
   const breadcrumbs = [
     { label: article.categoryLabel, href: `/${article.category}` },
     {
-      label: article.articleType === 'Review' ? 'Reviews' : article.section === 'compare' ? 'Compare' : 'Rates',
-      href: `/${article.category}/${article.section}`,
+      label: sectionLabelMap[article.section],
+      href: article.sectionPath ?? `/${article.category}/${article.section}`,
     },
     { label: article.title, href: article.path },
   ];
@@ -40,8 +43,14 @@ export function BlogLayout({
     description: article.description,
     articleSection: article.categoryLabel,
     author: {
-      '@type': 'Organization',
+      '@type': 'Person',
       name: article.author,
+      ...(article.authorUrl ? { url: `${BASE_URL}${article.authorUrl}` } : {}),
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Truva',
+      url: BASE_URL,
     },
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
@@ -93,7 +102,7 @@ export function BlogLayout({
 
             <InArticleCTA
               title="Turn the insight into a practical next step"
-              description="Use one of Truva's utility surfaces next so this article becomes a decision, not just a tab you close."
+              description="Use one of Truva utility surfaces next so this article becomes a decision, not just a tab you close."
               primaryCta={article.primaryCta}
               secondaryCta={article.secondaryCta}
             />
@@ -108,7 +117,8 @@ export function BlogLayout({
                     Clear, current, and connected to action
                   </h2>
                   <p className="max-w-2xl text-base leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                    {article.disclosureNote ?? 'We review product conditions regularly and connect each article to the tool or comparison page that helps you act on it.'}
+                    {article.disclosureNote ??
+                      'We review product conditions regularly and connect each article to the tool or comparison page that helps you act on it.'}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -130,7 +140,7 @@ export function BlogLayout({
               </div>
             </section>
 
-            <RelatedArticles title="More Banking intelligence" articles={relatedArticles} />
+            <RelatedArticles title="More Truva reading" articles={relatedArticles} />
           </div>
 
           <aside className="hidden xl:block">

@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: 'Banking reviews and product deep dives',
   description:
     'Read practical Banking reviews from Truva before you pick a savings account or trust a promotional rate.',
+  alternates: {
+    canonical: '/banking/reviews',
+  },
 };
 
 export default function BankingReviewsPage() {

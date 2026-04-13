@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'Credit card reviews in the Philippines',
   description:
     'Browse Truva credit card reviews for cashback, rewards, and travel cards with practical verdicts and fee context.',
+  alternates: {
+    canonical: '/credit-cards/reviews',
+  },
 };
 
 export default async function CreditCardReviewsPage() {

@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getCreditCards, getCreditCardById } from '@/lib/credit-cards';
-import { Check, X, ChevronLeft, ArrowRight, Minus } from 'lucide-react';
-import Image from 'next/image';
+import { Check, X, ChevronLeft } from 'lucide-react';
 
 // To generate a reasonable number of static pages, we'll generate combinations
 export async function generateStaticParams() {
@@ -40,6 +39,9 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   return {
     title: `${card1.name} vs ${card2.name} | Truva Compare`,
     description: `Side-by-side comparison of ${card1.name} and ${card2.name}. Compare annual fees, interest rates, rewards, and eligibility requirements.`,
+    alternates: {
+      canonical: `/credit-cards/compare/${slug}`,
+    },
   };
 }
 
@@ -77,6 +79,7 @@ export default async function CreditCardComparePage(props: { params: Promise<{ s
     publisher: {
       '@type': 'Organization',
       name: 'Truva',
+      url: 'https://www.gotruva.com',
     },
   };
 
@@ -119,7 +122,7 @@ export default async function CreditCardComparePage(props: { params: Promise<{ s
                  <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2 leading-tight">{card1.name}</h2>
                  <span className="text-brand-textSecondary text-xs md:text-sm mb-4 md:mb-6">{card1.provider}</span>
                  <p className="text-xs md:text-sm font-medium mb-6 md:mb-8 text-brand-textPrimary dark:text-gray-300 max-w-sm">
-                   "{card1.editorVerdict}"
+                   {`"${card1.editorVerdict}"`}
                  </p>
                  <a 
                    href={card1.affiliateUrl || '#'} 
@@ -136,7 +139,7 @@ export default async function CreditCardComparePage(props: { params: Promise<{ s
                  <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2 leading-tight">{card2.name}</h2>
                  <span className="text-brand-textSecondary text-xs md:text-sm mb-4 md:mb-6">{card2.provider}</span>
                  <p className="text-xs md:text-sm font-medium mb-6 md:mb-8 text-brand-textPrimary dark:text-gray-300 max-w-sm">
-                   "{card2.editorVerdict}"
+                   {`"${card2.editorVerdict}"`}
                  </p>
                  <a 
                    href={card2.affiliateUrl || '#'} 

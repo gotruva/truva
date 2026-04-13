@@ -7,6 +7,9 @@ import { Check, ChevronRight, ShieldCheck, Sparkles } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Best Credit Cards in the Philippines (2026 Comparison)',
   description: 'Compare the best Philippine credit cards for cashback, rewards, and travel. Expert reviews, hidden fees exposed, and clear "Best For" recommendations.',
+  alternates: {
+    canonical: '/credit-cards',
+  },
 };
 
 export default async function CreditCardsHub() {

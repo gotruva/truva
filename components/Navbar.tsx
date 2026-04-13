@@ -16,6 +16,12 @@ const NAV_LINKS = [
 
 const ARTICLE_LINKS = [
   {
+    label: 'Editorial Index',
+    description: 'Start here for the full article map across Truva.',
+    href: '/articles',
+    icon: BookOpenText,
+  },
+  {
     label: 'Banking Articles',
     description: 'Reviews, rate guides, and banking explainers.',
     href: '/banking',

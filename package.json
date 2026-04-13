@@ -7,7 +7,7 @@
     "dev:admin": "next dev -p 5433",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "baseline:export": "tsx scripts/export-rate-baseline.ts",
     "rates:seed:staging": "tsx scripts/seed-staging-rates.ts",
     "rates:crawl": "tsx scripts/crawl-rate-sources.ts",

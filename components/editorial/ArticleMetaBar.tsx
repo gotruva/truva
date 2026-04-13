@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { CalendarDays, Clock3, ShieldCheck, Sparkles, UserRound } from 'lucide-react';
 
 interface ArticleMetaBarProps {
   author: string;
+  authorHref?: string;
   publishedAt: string;
   updatedAt: string;
   readingTime: string;
@@ -18,16 +20,25 @@ function formatDate(dateString: string) {
 
 export function ArticleMetaBar({
   author,
+  authorHref,
   publishedAt,
   updatedAt,
   readingTime,
   verificationNote,
 }: ArticleMetaBarProps) {
+  const authorNode = authorHref ? (
+    <Link href={authorHref} className="font-semibold text-brand-textPrimary hover:text-brand-primary dark:text-gray-100">
+      {author}
+    </Link>
+  ) : (
+    <span className="font-semibold text-brand-textPrimary dark:text-gray-100">{author}</span>
+  );
+
   return (
     <div className="flex flex-wrap items-center gap-2.5 text-sm text-brand-textSecondary dark:text-gray-300">
       <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3.5 py-2 shadow-sm ring-1 ring-brand-border/80 backdrop-blur dark:bg-white/10 dark:ring-white/10">
         <UserRound className="h-4 w-4 text-brand-primary" />
-        {author}
+        {authorNode}
       </span>
       <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3.5 py-2 shadow-sm ring-1 ring-brand-border/80 backdrop-blur dark:bg-white/10 dark:ring-white/10">
         <CalendarDays className="h-4 w-4 text-brand-primary" />

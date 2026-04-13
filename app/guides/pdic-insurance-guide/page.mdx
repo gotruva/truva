@@ -1,0 +1,85 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getGuideArticle } from '@/lib/editorial';
+
+export const article = getGuideArticle('pdic-insurance-guide');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+PDIC insures deposit accounts up to PHP 1,000,000 per bank per depositor. That protection covers ordinary savings and time deposits, but not investment products like UITFs.
+</SEOBox>
+
+When you choose a bank, you are not just choosing a rate. You are choosing how protected the balance is if something goes wrong.
+
+## What PDIC covers
+
+- Savings accounts
+- Time deposits
+- Checking accounts and similar deposit products
+
+## What PDIC does not cover
+
+- UITFs
+- Mutual funds
+- Other investment products that are not deposits
+
+## Why the PHP 1,000,000 limit matters
+
+If you keep PHP 500,000 in one bank, that balance is within the limit.
+If you keep PHP 1,500,000 in one bank, the part above PHP 1,000,000 is outside the insured limit.
+
+That is why large savers should split balances across banks instead of assuming one account can hold everything safely.
+
+### Simple split example
+
+| Bank | Balance | PDIC covered? |
+|---|---|---|
+| Bank A | PHP 1,000,000 | Yes |
+| Bank B | PHP 1,000,000 | Yes |
+| Bank C | PHP 500,000 | Yes |
+
+Three banks can give you PHP 2,500,000 of insured deposits. One bank cannot.
+
+<InArticleCTA
+  kicker="Move from safety to action"
+  title="See which accounts are worth keeping after the coverage limit"
+  description="Use the live rate desk to decide where your money should sit once you know how much is insured."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## How to think about the limit
+
+The PDIC limit does not mean you should move every peso into one bank just because it is insured.
+
+It means you should make the rate decision and the insurance decision together.
+
+## Frequently asked questions
+
+### Does PDIC cover joint accounts?
+
+The deposit is insured according to the applicable depositor rules. If you use joint ownership, check how the account is titled before you assume the coverage outcome.
+
+### Is a digital bank less safe than a traditional bank?
+
+Not automatically. The important question is whether the institution is deposit-taking and PDIC-covered, not whether it has branches.
+
+### What is the simplest large-balance rule?
+
+Keep each bank balance at or below PHP 1,000,000 if you want the cleanest PDIC coverage boundary.
+
+## Conclusion
+
+PDIC is a safety ceiling, not a rate strategy. Once you know the limit, you can decide whether to keep one bank for convenience or split across banks for full coverage.

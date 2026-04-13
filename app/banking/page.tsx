@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: 'Banking in the Philippines: compare rates, use tools, read guides',
   description:
     'Use Truva to compare live rates, calculate returns, and read practical Banking analysis built for Philippine savers.',
+  alternates: {
+    canonical: '/banking',
+  },
 };
 
 const utilityCards = [
