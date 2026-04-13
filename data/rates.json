@@ -15,8 +15,8 @@
       {
         "minBalance": 0,
         "maxBalance": 100000,
-        "grossRate": 0.06,
-        "afterTaxRate": 0.048
+        "grossRate": 0.12,
+        "afterTaxRate": 0.096
       },
       {
         "minBalance": 100000,
