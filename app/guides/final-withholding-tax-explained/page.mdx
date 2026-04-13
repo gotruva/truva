@@ -1,0 +1,93 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getGuideArticle } from '@/lib/editorial';
+
+export const article = getGuideArticle('final-withholding-tax-explained');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+The 20% Final Withholding Tax is the amount your bank keeps from the interest you earn on ordinary peso deposits and similar products. A 5% gross rate is really 4% after tax.
+</SEOBox>
+
+Most people compare the headline rate and stop there. That is the wrong number to optimize for in the Philippines.
+
+The number you keep matters more than the number the bank advertises.
+
+## What the 20% Final Withholding Tax is
+
+The tax is withheld before the interest reaches your account. You do not file a separate payment for most savings products. The bank handles the withholding and credits you the net amount.
+
+### Practical examples
+
+| Gross rate | Gross earnings on PHP 100,000 | After-tax earnings |
+|---|---|---|
+| 3.0% | PHP 3,000 | PHP 2,400 |
+| 4.0% | PHP 4,000 | PHP 3,200 |
+| 5.0% | PHP 5,000 | PHP 4,000 |
+| 12.0% | PHP 12,000 | PHP 9,600 |
+
+That 20% haircut is exactly why Truva shows after-tax math first.
+
+## Which products are taxed
+
+- Ordinary peso savings accounts
+- Time deposits
+- Most bank deposits that earn interest
+
+## Which products are exempt or treated differently
+
+- T-Bills for individual investors
+- MP2
+- Other tax-exempt government products
+
+<InArticleCTA
+  kicker="Turn this into a decision"
+  title="See how the tax changes your actual return"
+  description="Use the live comparison desk and the calculator so the tax rule becomes a number for your own balance."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## After-tax examples that matter
+
+If you keep PHP 250,000 in a bank account that advertises 5%, the gross annual interest is PHP 12,500. After the 20% withholding tax, you keep PHP 10,000.
+
+If you keep the same PHP 250,000 in a product that earns 4%, the gross annual interest is PHP 10,000. After tax, you keep PHP 8,000.
+
+The difference is not academic. It is money you either keep or lose.
+
+## When the tax changes the answer
+
+If two products have similar headline rates, the after-tax comparison should decide the winner.
+
+If one product is tax-exempt and another is not, the tax-exempt option can win even at a lower headline rate.
+
+## Frequently asked questions
+
+### Is the tax applied every month?
+
+Yes, the withholding happens when the interest is credited according to the product rules.
+
+### Do I need to calculate it myself?
+
+No. The bank handles the withholding. But you should still use after-tax math when you compare products.
+
+### Why does Truva lead with after-tax instead of gross rate?
+
+Because gross rate is marketing. After-tax return is what you actually keep.
+
+## Conclusion
+
+The right comparison is not 5% versus 4%. It is 4% after tax versus the net return on the other product. That is the number that decides where your money should sit.

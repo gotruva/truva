@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Calculator, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Calculator, CheckCircle2, Sparkles } from 'lucide-react';
 import { SectionHub } from '@/components/layout/SectionHub';
 import { ArticleCard } from '@/components/editorial/ArticleCard';
 import { FeaturedArticleCard } from '@/components/editorial/FeaturedArticleCard';
@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: 'Digital Bank Interest Rates Philippines 2026',
   description:
     'Compare the highest digital bank savings rates in the Philippines and use Banking guides that help you interpret the fine print.',
+  alternates: {
+    canonical: '/banking/rates',
+  },
 };
 
 const utilityActions = [

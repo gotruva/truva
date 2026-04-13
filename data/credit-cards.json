@@ -48,7 +48,7 @@
     "id": "unionbank-rewards-visa",
     "name": "Rewards Visa",
     "provider": "UnionBank",
-    "logo": "/logos/unionbank.svg",
+    "logo": "/logos/uniondigital.svg",
     "category": "credit-cards",
     "annualFee": 2500,
     "annualFeeWaiverCondition": "No annual fee for life with NAFFL promo",

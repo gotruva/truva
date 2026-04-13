@@ -11,11 +11,15 @@ export const metadata: Metadata = {
   title: 'Banking reviews and product deep dives',
   description:
     'Read practical Banking reviews from Truva before you pick a savings account or trust a promotional rate.',
+  alternates: {
+    canonical: '/banking/reviews',
+  },
 };
 
 export default function BankingReviewsPage() {
   const reviewArticles = getBankingArticles('reviews');
   const featuredArticle = reviewArticles[0] ?? getFeaturedBankingArticle();
+  const gridArticles = reviewArticles.filter((a) => a.slug !== featuredArticle?.slug);
   const itemListJsonLd = buildItemListSchema(reviewArticles, BASE_URL);
 
   return (
@@ -64,11 +68,13 @@ export default function BankingReviewsPage() {
           </div>
         </section>
 
-        <section className="grid gap-5 md:grid-cols-2">
-          {reviewArticles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
-          ))}
-        </section>
+        {gridArticles.length > 0 && (
+          <section className="grid gap-5 md:grid-cols-2">
+            {gridArticles.map((article) => (
+              <ArticleCard key={article.slug} article={article} />
+            ))}
+          </section>
+        )}
 
         <section className="rounded-[1.75rem] border border-brand-border bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
           <div className="flex items-start gap-3">

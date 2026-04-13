@@ -1,0 +1,70 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getGuideArticle } from '@/lib/editorial';
+
+export const article = getGuideArticle('how-time-deposits-t-bills-uitfs-work');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+Time deposits are locked bank deposits, T-Bills are government securities, and UITFs are pooled investments. They solve different problems, so the best choice depends on liquidity, tax treatment, and risk.
+</SEOBox>
+
+If you only compare headline yield, you can easily pick the wrong product.
+
+## Quick comparison
+
+| Product | Liquidity | Tax treatment | Main risk | Best for |
+|---|---|---|---|---|
+| Time deposit | Low | Taxed like bank interest | Lock-in penalty | Money you do not need right away |
+| T-Bill | Medium | Tax-exempt for individual investors | Market and reinvestment risk | Short-term parking with government backing |
+| UITF | Medium to low | Depends on fund structure | Market risk | Investors who want diversification |
+
+## When each product makes sense
+
+- Pick a time deposit if you want a predictable bank product and can accept the lock-in.
+- Pick a T-Bill if you want a government-backed instrument and better tax treatment than ordinary bank interest.
+- Pick a UITF if you want a managed investment product and understand that the return can move.
+
+<InArticleCTA
+  kicker="Compare before you commit"
+  title="Use the calculator before you lock money away"
+  description="The right choice is not the one with the flashiest headline. It is the one that fits your timeline and behavior."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## The practical rule
+
+If you need the money soon, liquidity matters more than headline rate.
+
+If you can wait, the tax treatment and risk profile should decide between a bank deposit, a government security, and an investment fund.
+
+## Frequently asked questions
+
+### Are T-Bills safer than UITFs?
+
+T-Bills are government securities, so they sit in a different risk bucket from UITFs, which are investment products.
+
+### Are time deposits tax-exempt?
+
+No. Standard bank time deposits are taxed like other peso interest-bearing deposits.
+
+### Can I use all three?
+
+Yes. Many savers keep liquid cash in a bank account, park medium-term cash in a T-Bill, and only use UITFs for money they do not need immediately.
+
+## Conclusion
+
+Do not force these products into one ranking. Match the product to the job, then use the rate comparison to decide the best version of that job.

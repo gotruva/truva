@@ -164,11 +164,13 @@ export interface EditorialArticle {
   publishedAt: string;
   updatedAt: string;
   author: string;
+  authorUrl?: string;
   readingTime: string;
   featured: boolean;
   keywords?: string[];
   verificationNote?: string;
   disclosureNote?: string;
+  sectionPath?: string;
   toc: ArticleTocItem[];
   faqItems?: EditorialFaqItem[];
   primaryCta: EditorialCta;

@@ -20,9 +20,6 @@ export const metadata: Metadata = {
     template: '%s | Truva',
   },
   description: 'Compare savings and time deposit rates from Philippine banks. See after-tax returns, important account conditions, and the latest verified rates in one place.',
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     siteName: 'Truva',
