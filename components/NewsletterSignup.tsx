@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -33,6 +34,7 @@ export function NewsletterSignup() {
         setStatus('success');
         setMessage(data.message || 'Subscribed successfully!');
         setEmail('');
+        sendGAEvent({ event: 'newsletter_signup_success' });
       } else {
         setStatus('error');
         

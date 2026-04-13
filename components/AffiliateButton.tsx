@@ -1,5 +1,6 @@
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { sendGAEvent } from '@next/third-parties/google';
 import {
   Tooltip,
   TooltipContent,
@@ -22,6 +23,9 @@ export function AffiliateButton({ amount, productId }: AffiliateButtonProps) {
               href={`/go/${productId}`}
               target="_blank" 
               rel="noopener noreferrer" 
+              onClick={() => {
+                sendGAEvent({ event: 'affiliate_link_clicked', product: productId });
+              }}
               className={cn(
                 buttonVariants(),
                 "w-full md:w-auto min-w-[140px] rounded-[6px] text-[14px] font-semibold bg-brand-primary hover:bg-brand-primaryDark text-white transition-colors border-none" 

@@ -24,7 +24,7 @@ const config = {
           primaryDark:  '#0039B3',
           primaryLight: '#EBF0FF',
           textPrimary:  '#0A0B0D',
-          textSecondary:'#5B616E',
+          textSecondary:'#374151',
           bg:           '#FFFFFF',
           surface:      '#F8F9FB',
           border:       '#E4E7EC',

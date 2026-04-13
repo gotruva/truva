@@ -68,8 +68,12 @@ function formatPayoutFrequency(freq: RateProduct['payoutFrequency']): string {
 function InsurerBadge({ insurer }: { insurer: string }) {
   if (insurer === 'PDIC') {
     return (
-      <span className="inline-flex items-center text-[11px] font-semibold uppercase tracking-wide text-positive">
-        <ShieldCheck className="mr-0.5 h-3 w-3" /> PDIC
+      <span className="glow-pdic inline-flex items-center rounded-full border border-positive/20 bg-positive/5 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-positive">
+        <div className="mr-1.5 relative flex h-1.5 w-1.5">
+          <span className="animate-pulse-status absolute inline-flex h-full w-full rounded-full bg-positive opacity-75"></span>
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-positive"></span>
+        </div>
+        PDIC
       </span>
     );
   }
@@ -106,8 +110,8 @@ function LockBadge({ days, verbose = false }: { days: number; verbose?: boolean 
 function RankBadge({ rank }: { rank: number }) {
   if (rank === 1) {
     return (
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 text-[11px] font-bold text-white shadow-sm">
-        <Trophy className="h-3.5 w-3.5" />
+      <span className="glow-rank-1 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 via-amber-400 to-amber-500 text-[12px] font-bold text-white shadow-md ring-2 ring-white/50">
+        <Trophy className="h-4 w-4" />
       </span>
     );
   }
@@ -411,14 +415,23 @@ export function RateTable({
                       </div>
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-[15px] font-bold leading-tight text-brand-textPrimary dark:text-gray-100">{group.provider}</span>
+                          <span className="text-[16px] font-bold leading-tight text-brand-textPrimary dark:text-gray-100">{group.provider}</span>
+                          {group.products[0].category === 'defi' && (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-600 dark:text-blue-400">
+                              <div className="relative flex h-1.5 w-1.5">
+                                <span className="animate-pulse-status-blue absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+                                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                              </div>
+                              LIVE
+                            </span>
+                          )}
                           {isRecommended && (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-positive/20 bg-positive/10 px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-positive">
+                            <span className="inline-flex items-center gap-1 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-brand-primary">
                               ★ Quick Match
                             </span>
                           )}
                         </div>
-                        <div className="mt-0.5 text-[12px] text-brand-textSecondary dark:text-gray-500">
+                        <div className="mt-0.5 text-[13px] font-medium text-brand-textSecondary dark:text-gray-500">
                           {group.products.length} product{group.products.length > 1 ? 's' : ''} compared
                         </div>
                       </div>
@@ -442,10 +455,10 @@ export function RateTable({
                   <td className="p-4 text-right">
                     {numAmount > 0 ? (
                       <>
-                        <div className="text-[15px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
+                        <div className="text-[16px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
                           +{formatPHP(group.bestReturn)}
                         </div>
-                        <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">
+                        <div className="mt-0.5 text-[12px] font-medium text-brand-textSecondary dark:text-gray-500">
                           in {months} month{months !== 1 ? 's' : ''}
                         </div>
                       </>
@@ -514,7 +527,7 @@ export function RateTable({
                                         {product.name}
                                       </span>
                                       {isBest && (
-                                        <Badge className="border-positive/20 bg-positive/10 py-0 text-[10px] font-bold text-positive">
+                                        <Badge className="border-positive/20 bg-positive/10 py-1 px-2 text-[11px] font-bold text-positive shadow-none">
                                           Best for PHP {numAmount.toLocaleString()}
                                         </Badge>
                                       )}

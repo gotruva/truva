@@ -10,6 +10,7 @@ import {
   Lock,
   ShieldCheck,
 } from 'lucide-react';
+import { sendGAEvent } from '@next/third-parties/google';
 import {
   CartesianGrid,
   Line,
@@ -202,12 +203,12 @@ export function YieldCalculator({
 
       <div className="relative z-10 flex w-full flex-col gap-12 px-4 lg:flex-row lg:px-0">
         <div className="flex w-full flex-col justify-center lg:w-[45%]">
-          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-brand-primary/10 bg-brand-primaryLight/60 px-3 py-1 text-sm font-semibold text-brand-primary dark:bg-brand-primary/20 dark:text-blue-400">
+          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-brand-primary/20 bg-brand-primaryLight/60 px-3.5 py-1.5 text-[13px] font-bold text-brand-primary shadow-[0_0_15px_rgba(0,82,255,0.15)] dark:bg-brand-primary/20 dark:text-blue-300">
             <Calculator className="h-4 w-4" />
             Savings Calculator
           </div>
 
-          <h2 className="mb-8 text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-gray-100">
+          <h2 className="text-gradient-premium mb-8 text-3xl font-extrabold tracking-tight sm:text-4xl">
             See how much <br className="hidden lg:block" />you could earn.
           </h2>
 
@@ -222,6 +223,9 @@ export function YieldCalculator({
                   type="text"
                   value={new Intl.NumberFormat('en-US').format(comparisonState.amount || 0)}
                   onChange={handleAmountChange}
+                  onBlur={() => {
+                    sendGAEvent({ event: 'calculator_amount_updated', value: comparisonState.amount });
+                  }}
                   className="h-14 rounded-xl border-brand-border bg-brand-surface pl-16 text-xl font-bold shadow-inner focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-950"
                 />
               </div>
@@ -235,7 +239,10 @@ export function YieldCalculator({
                 {horizonOptions.map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => onComparisonStateChange({ months: option.value })}
+                    onClick={() => {
+                      onComparisonStateChange({ months: option.value });
+                      sendGAEvent({ event: 'calculator_months_clicked', value: option.value });
+                    }}
                     className={`rounded-lg py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                       comparisonState.months === option.value
                         ? 'border border-brand-border bg-white text-brand-primary shadow-sm dark:border-white/10 dark:bg-slate-800 dark:text-blue-400'
@@ -258,7 +265,10 @@ export function YieldCalculator({
                 </div>
                 <div className="flex w-full rounded-xl border border-brand-border bg-brand-surface p-1.5 dark:border-white/10 dark:bg-slate-950 sm:w-fit">
                   <button
-                    onClick={() => onComparisonStateChange({ liquidityFilter: 'all' })}
+                    onClick={() => {
+                      onComparisonStateChange({ liquidityFilter: 'all' });
+                      sendGAEvent({ event: 'calculator_liquidity_clicked', filter: 'all' });
+                    }}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm sm:flex-none ${
                       comparisonState.liquidityFilter === 'all'
                         ? 'border border-brand-border/50 bg-white text-brand-primary shadow-sm dark:bg-slate-800 dark:text-blue-400'
@@ -268,7 +278,10 @@ export function YieldCalculator({
                     All Options
                   </button>
                   <button
-                    onClick={() => onComparisonStateChange({ liquidityFilter: 'liquid' })}
+                    onClick={() => {
+                      onComparisonStateChange({ liquidityFilter: 'liquid' });
+                      sendGAEvent({ event: 'calculator_liquidity_clicked', filter: 'liquid' });
+                    }}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm sm:flex-none ${
                       comparisonState.liquidityFilter === 'liquid'
                         ? 'border border-brand-border/50 bg-white text-brand-primary shadow-sm dark:bg-slate-800 dark:text-blue-400'
@@ -278,7 +291,10 @@ export function YieldCalculator({
                     Liquid Only
                   </button>
                   <button
-                    onClick={() => onComparisonStateChange({ liquidityFilter: 'locked' })}
+                    onClick={() => {
+                      onComparisonStateChange({ liquidityFilter: 'locked' });
+                      sendGAEvent({ event: 'calculator_liquidity_clicked', filter: 'locked' });
+                    }}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm sm:flex-none ${
                       comparisonState.liquidityFilter === 'locked'
                         ? 'border border-brand-border/50 bg-white text-brand-primary shadow-sm dark:bg-slate-800 dark:text-blue-400'
@@ -296,8 +312,8 @@ export function YieldCalculator({
         <div className="flex w-full flex-col justify-center lg:w-[55%]">
           <div className="flex h-full flex-col rounded-2xl border border-brand-border bg-[#F8F9FB] p-6 dark:border-white/10 dark:bg-slate-950 lg:p-8">
             <div className="mb-4 flex flex-col gap-3 border-b border-brand-border/60 pb-4 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
-                Estimated Earnings
+              <span className="text-[13px] font-bold uppercase tracking-widest text-brand-textSecondary dark:text-gray-400">
+                Estimated After-Tax Earnings
               </span>
             </div>
 
@@ -390,20 +406,20 @@ export function YieldCalculator({
                           }`}>
                             {index + 1}
                           </span>
-                          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white">
-                            <img src={resolveLogoSrc(result.logo)} alt={result.provider} className="h-6 w-6 object-contain" />
+                          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white">
+                            <img src={resolveLogoSrc(result.logo)} alt={result.provider} className="h-7 w-7 object-contain" />
                           </div>
-                          <span className="text-[15px] font-semibold text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
-                          <span className="ml-1 text-[13px] font-medium text-brand-textSecondary dark:text-gray-400">{result.name}</span>
+                          <span className="text-[16px] font-bold text-brand-textPrimary dark:text-gray-100">{result.provider}</span>
+                          <span className="ml-1 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400">{result.name}</span>
                           {badgeElement}
                           {conditionBadge}
                           {lockBadge}
                         </div>
                         <div className="text-right">
-                          <span className="font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
+                          <span className="text-[16px] font-extrabold tabular-nums text-brand-textPrimary dark:text-gray-100">
                             +{formatPHP(result.projectedReturn)}
                           </span>
-                          <span className="ml-2 text-[12px] font-medium text-brand-textSecondary dark:text-gray-500">
+                          <span className="ml-2 text-[14px] font-bold text-brand-textSecondary dark:text-gray-500">
                             {formatRate(result.effectiveRate)}
                           </span>
                         </div>
@@ -433,14 +449,20 @@ export function YieldCalculator({
                       </div>
 
                       <button
-                        onClick={() => setExpandedResultId(expandedResultId === result.id ? null : result.id)}
-                        className="group/detail mt-3 inline-flex items-center gap-1.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1.5 text-[12px] font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white"
+                        onClick={() => {
+                          const isExpanding = expandedResultId !== result.id;
+                          setExpandedResultId(isExpanding ? result.id : null);
+                          if (isExpanding) {
+                            sendGAEvent({ event: 'calculator_more_info_clicked', bank: result.provider });
+                          }
+                        }}
+                        className="group/detail mt-3 inline-flex items-center gap-1.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-4 py-2 text-[13px] font-bold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white"
                         aria-expanded={expandedResultId === result.id}
                         aria-label={`Click for more info about ${result.provider}`}
                       >
-                        <Info className="h-3.5 w-3.5" />
+                        <Info className="h-4 w-4" />
                         <span>Click for more info</span>
-                        <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${expandedResultId === result.id ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${expandedResultId === result.id ? 'rotate-180' : ''}`} />
                       </button>
 
                       <AnimatePresence>
@@ -457,17 +479,17 @@ export function YieldCalculator({
                                 <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
                                   Rate Tiers (After Tax)
                                 </h4>
-                                <div className="space-y-1">
+                                <div className="space-y-1.5">
                                   {result.tiers.map((tier, tierIndex) => (
-                                    <div key={tierIndex} className="flex items-center justify-between text-[13px]">
-                                      <span className="text-brand-textSecondary dark:text-gray-400">
+                                    <div key={tierIndex} className="flex items-center justify-between text-[14px]">
+                                      <span className="font-medium text-brand-textSecondary dark:text-gray-400">
                                         {tier.maxBalance !== null
                                           ? `₱${tier.minBalance.toLocaleString()} - ₱${tier.maxBalance.toLocaleString()}`
                                           : `₱${tier.minBalance.toLocaleString()}+`}
                                       </span>
-                                      <span className="font-semibold tabular-nums text-brand-textPrimary dark:text-gray-200">
+                                      <span className="font-bold tabular-nums text-brand-textPrimary dark:text-gray-200">
                                         {formatRate(tier.afterTaxRate)}
-                                        <span className="ml-1 font-normal text-brand-textSecondary dark:text-gray-500">
+                                        <span className="ml-1.5 font-normal text-brand-textSecondary dark:text-gray-500">
                                           ({formatRate(tier.grossRate)} gross)
                                         </span>
                                       </span>

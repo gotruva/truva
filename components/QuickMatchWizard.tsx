@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Check, ChevronLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,6 +126,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
 
   const handlePurposeSelect = (selectedPurpose: QuickMatchCoreAnswers['purpose']) => {
     setPurpose(selectedPurpose);
+    sendGAEvent({ event: 'quick_match_step_1_purpose', purpose: selectedPurpose });
     // Auto-advance to step 2 after selection
     setStep(2);
   };
@@ -133,12 +135,14 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
     setAmountPreset(preset);
     // Auto-advance to step 3 after selection
     if (preset !== -1) {
+      sendGAEvent({ event: 'quick_match_step_2_amount', amount: preset });
       setStep(3);
     }
   };
 
   const handleTimelineSelect = (selectedTimeline: QuickMatchCoreAnswers['timeline']) => {
     setTimeline(selectedTimeline);
+    sendGAEvent({ event: 'quick_match_completed', timeline: selectedTimeline, amount: resolvedAmount, purpose: purpose! });
     // Auto-complete on final selection
     const finalAnswers = deriveQuickMatchAnswers({
       purpose: purpose!,
@@ -265,9 +269,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
                       Custom amount
                     </label>
-                    <p className="mb-3 text-xs text-brand-textSecondary dark:text-gray-500">
-                      Press Enter to continue
-                    </p>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold text-brand-textSecondary dark:text-gray-400">
                         PHP
@@ -281,12 +282,23 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                         onChange={(event) => setCustomAmount(event.target.value.replace(/[^0-9]/g, ''))}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter' && resolvedAmount > 0) {
+                            sendGAEvent({ event: 'quick_match_step_2_amount', amount: resolvedAmount });
                             setStep(3);
                           }
                         }}
                         className="h-12 rounded-xl border-brand-border bg-white pl-16 text-base font-bold focus-visible:ring-brand-primary dark:border-white/20 dark:bg-slate-900"
                       />
                     </div>
+                    <button
+                      onClick={() => {
+                        sendGAEvent({ event: 'quick_match_step_2_amount', amount: resolvedAmount });
+                        setStep(3);
+                      }}
+                      disabled={resolvedAmount <= 0}
+                      className="mt-4 h-12 w-full rounded-xl bg-brand-primary text-sm font-semibold text-white transition-opacity disabled:opacity-40 active:opacity-80"
+                    >
+                      Continue
+                    </button>
                   </div>
                 )}
               </div>
