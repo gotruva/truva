@@ -3,7 +3,7 @@ import { Space_Grotesk, Inter } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { GoogleAnalytics } from '@/components/GoogleAnalytics';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -67,12 +67,14 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen bg-brand-surface dark:bg-slate-950 overflow-x-hidden transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <Navbar />
+          <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
+            {children}
+          </main>
+          <Footer />
         </ThemeProvider>
-        <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
-          {children}
-        </main>
-        <Footer />
-        <GoogleAnalytics />
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
         <Analytics />
       </body>
     </html>

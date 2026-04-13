@@ -54,6 +54,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Crawl dynamic content
   addMDXRoutes('app/banking/reviews', 'banking/reviews');
+  addMDXRoutes('app/banking/rates', 'banking/rates');
+  addMDXRoutes('app/banking/compare', 'banking/compare');
+  addMDXRoutes('app/credit-cards/reviews', 'credit-cards/reviews');
+  addMDXRoutes('app/credit-cards/compare', 'credit-cards/compare');
   addMDXRoutes('app/guides', 'guides');
 
   // Handle Credit Cards from JSON (existing logic preserved)

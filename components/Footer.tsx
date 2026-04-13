@@ -35,7 +35,16 @@ export function Footer() {
 
           <PartnerCTA />
 
-          <div className="flex justify-center gap-4 mt-2">
+          <div className="flex flex-wrap justify-center gap-4 mt-2">
+            <Link href="/banking" className="hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors">
+              Banking
+            </Link>
+            <Link href="/banking/reviews" className="hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors">
+              Reviews
+            </Link>
+            <Link href="/methodology" className="hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors">
+              Methodology
+            </Link>
             <Link href="/terms" className="hover:text-brand-textPrimary dark:hover:text-gray-200 transition-colors">
               Terms & Conditions
             </Link>

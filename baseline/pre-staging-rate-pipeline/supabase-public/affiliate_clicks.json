@@ -925,5 +925,2003 @@
     "category": "banks",
     "referrer": null,
     "user_id": null
+  },
+  {
+    "id": "b2e27d94-231e-4dc4-839f-1d65515dcd63",
+    "created_at": "2026-04-10T07:00:34.844922+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d839e401-4863-4bce-b17d-684dd0cc08f1",
+    "created_at": "2026-04-10T09:38:57.486843+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "e8ab795c-5967-433e-a9ba-978dd0f092e1",
+    "created_at": "2026-04-10T09:53:42.939258+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "e8b59004-9e7c-45bb-98b1-11f1f7c9334d",
+    "created_at": "2026-04-10T10:09:49.825526+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "0b1ab031-6f5c-424e-ba79-78c8d5765e76",
+    "created_at": "2026-04-10T11:34:03.150018+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e3bc796a-333b-4cb4-8fea-bf3f92fcf78f",
+    "created_at": "2026-04-10T11:34:07.676506+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "8ccd0f45-0f54-4145-b626-1c1cd04db707",
+    "created_at": "2026-04-10T11:34:10.745359+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "72994505-24ef-4d21-84f0-b5e53d389423",
+    "created_at": "2026-04-10T11:34:14.806171+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "f6fb09e7-3b9f-4a84-bb7f-4457b12c9bb4",
+    "created_at": "2026-04-10T11:34:23.36881+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "497ed283-871d-4493-915a-7053f33977a7",
+    "created_at": "2026-04-10T11:34:26.483886+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "8f6ddf63-7a22-4855-9363-033f23e10520",
+    "created_at": "2026-04-10T11:34:29.204193+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6245e285-a9c8-4e50-ab3a-9561e94f3a7d",
+    "created_at": "2026-04-10T11:34:31.531302+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "08a5d43c-8a16-473d-9686-094da5332743",
+    "created_at": "2026-04-10T11:34:33.942965+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b73728b7-ca66-4b12-a758-32bccc58443d",
+    "created_at": "2026-04-10T11:34:38.655481+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0c310b59-d69a-4bbd-ba00-5937d04f407f",
+    "created_at": "2026-04-10T11:34:40.364103+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e3e961e6-7e75-453b-bb6c-9fea74be0200",
+    "created_at": "2026-04-10T11:34:42.559666+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "5ccd52c4-519a-4435-a1d1-f0859a1f092a",
+    "created_at": "2026-04-10T11:34:44.288342+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "16376476-a3b5-428e-9800-8733a3b46812",
+    "created_at": "2026-04-10T11:34:46.503116+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "944742f0-b8cf-45ee-ab39-60638569eae3",
+    "created_at": "2026-04-10T11:34:52.869991+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "18716212-507d-40cd-b28d-35e0b1334b28",
+    "created_at": "2026-04-10T11:34:55.665156+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "fb14b0e9-6351-4881-9266-1ee26f334648",
+    "created_at": "2026-04-10T11:35:00.222588+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a0389368-6b92-42b5-b033-96fcc434eac1",
+    "created_at": "2026-04-10T11:35:02.866174+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b6a28435-42a7-4a5d-bc8c-6ad9bca37236",
+    "created_at": "2026-04-10T11:35:09.428247+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "f0e6b92d-3a77-4274-baa9-1779c34d0c93",
+    "created_at": "2026-04-10T11:35:12.465789+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "794baac9-ee74-4240-b690-b1cbd3c6e85e",
+    "created_at": "2026-04-10T11:35:16.716975+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0a7cb497-219d-4b02-bcb5-c68ad86bd6bf",
+    "created_at": "2026-04-10T11:35:18.896119+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "50422130-51da-4267-825e-a3f073f4c8ba",
+    "created_at": "2026-04-10T11:35:22.291321+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "8e7b0b3b-e643-428a-9a9b-ec64f824309d",
+    "created_at": "2026-04-10T11:35:24.430767+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "67fa64d4-00a6-4ac9-86c8-75da8eeb8bf4",
+    "created_at": "2026-04-10T11:35:29.621182+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "76224fec-cfdd-4192-9c9b-9125fca878bc",
+    "created_at": "2026-04-10T11:35:33.48448+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "72f58511-79ef-46aa-9974-ad2bbc7bfa5f",
+    "created_at": "2026-04-10T11:35:35.133148+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "8c0d6b26-3740-4d2b-b7ea-e818f2521f8c",
+    "created_at": "2026-04-10T11:35:37.048078+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "262a7ec4-125e-4fec-bc1c-b9e5753645ac",
+    "created_at": "2026-04-10T11:35:39.303982+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "5b1efc33-5345-406a-af6c-2feb2dcb63a1",
+    "created_at": "2026-04-10T11:35:43.179435+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "adc160e1-7cfc-453c-8655-d9ea04ed19d3",
+    "created_at": "2026-04-10T11:35:45.358781+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "8aca7dfc-1b1a-48ad-a917-eddab268621b",
+    "created_at": "2026-04-10T11:35:48.642846+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d4240acb-ed5d-4375-8d04-a01f4e35354a",
+    "created_at": "2026-04-10T11:35:50.850376+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9bfbc23b-fa01-4628-9d5c-e46ccdfaa33a",
+    "created_at": "2026-04-10T11:35:53.012901+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "13b6b69d-a4bb-4c9d-8c35-9d1177d4d315",
+    "created_at": "2026-04-10T11:35:54.877075+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "16f72404-2640-411d-9478-50f6f26c5359",
+    "created_at": "2026-04-10T11:35:57.036792+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "607ed9c2-ed77-449b-8777-0c6d098bd5a7",
+    "created_at": "2026-04-10T12:48:54.684068+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "d24e4eea-10c2-47d3-9034-cedb2f4c01bb",
+    "created_at": "2026-04-10T16:18:06.563041+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "11720ffd-3c2a-4697-98e1-3c39f8b8f6e3",
+    "created_at": "2026-04-10T18:32:31.200742+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "cd14f97d-07fd-41ad-b3eb-0978e8f7fc89",
+    "created_at": "2026-04-11T02:13:24.354564+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "4e83b081-afdf-4854-ba9c-8336fd7e01db",
+    "created_at": "2026-04-11T04:22:31.201947+00:00",
+    "product_id": "ownbank-td-15d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/ownbank-td-15d/",
+    "user_id": null
+  },
+  {
+    "id": "2b4db6e0-6a3a-4f7a-ae13-c36bda316d25",
+    "created_at": "2026-04-11T04:22:32.759417+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/tonik-td-24mo/",
+    "user_id": null
+  },
+  {
+    "id": "013f0118-3f6a-4c95-8b5d-3b9877971fa4",
+    "created_at": "2026-04-11T04:22:35.026814+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "dfd23d7b-46b6-4663-9c30-5ca11eb32b94",
+    "created_at": "2026-04-11T04:22:38.936266+00:00",
+    "product_id": "netbank-savings",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/netbank-savings/",
+    "user_id": null
+  },
+  {
+    "id": "5f91eab0-57db-4526-88e2-e36e46a80248",
+    "created_at": "2026-04-11T04:22:40.259002+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "381fef58-60f7-4caf-a540-e341045e593f",
+    "created_at": "2026-04-11T04:22:44.987323+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e8c6afe0-6a55-48c3-b11b-63997fe61ae9",
+    "created_at": "2026-04-11T04:22:46.506385+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/uniondigital-td/",
+    "user_id": null
+  },
+  {
+    "id": "f4b74e0d-fad9-45d9-85fa-bb00a9535873",
+    "created_at": "2026-04-11T04:22:48.022785+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0e063d91-f12d-4ba1-a629-1de2eb85d9b4",
+    "created_at": "2026-04-11T04:22:53.371416+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/tonik-group-stash/",
+    "user_id": null
+  },
+  {
+    "id": "d1b74700-85c3-40b7-82be-0aa8bb800d49",
+    "created_at": "2026-04-11T04:22:54.727832+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/bpi-banko-savings/",
+    "user_id": null
+  },
+  {
+    "id": "10e8b5a8-6a0a-415d-90a3-72dec9151a74",
+    "created_at": "2026-04-11T04:22:56.065033+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/maya-personal-goals/",
+    "user_id": null
+  },
+  {
+    "id": "6be4c8cd-c1d4-48ab-a34b-4878a43980db",
+    "created_at": "2026-04-11T04:22:57.515698+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/cimb-maxsave-3mo/",
+    "user_id": null
+  },
+  {
+    "id": "d61c77d3-a91d-43b8-9031-0cd8be694b07",
+    "created_at": "2026-04-11T04:22:59.104767+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/cimb-maxsave-6mo/",
+    "user_id": null
+  },
+  {
+    "id": "1b6de168-71ea-4974-9343-715dbf5c189b",
+    "created_at": "2026-04-11T04:23:02.843068+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/landbank-iaccess/",
+    "user_id": null
+  },
+  {
+    "id": "efa93851-3164-4781-837a-99f0cfd34873",
+    "created_at": "2026-04-11T04:23:04.787934+00:00",
+    "product_id": "ownbank-td-180d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/ownbank-td-180d/",
+    "user_id": null
+  },
+  {
+    "id": "f5d78381-8d59-4814-9c17-359d8389b40f",
+    "created_at": "2026-04-11T04:23:05.9087+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/ownbank-td-360d/",
+    "user_id": null
+  },
+  {
+    "id": "411fffc3-6244-4ba2-ad37-17cba764e7f0",
+    "created_at": "2026-04-11T04:23:07.065533+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "76c4b3a2-b38a-4aec-942b-19eca32fafaf",
+    "created_at": "2026-04-11T04:23:08.149683+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "93983463-4bd6-49ee-91a4-0397fd700ee2",
+    "created_at": "2026-04-11T04:23:10.992994+00:00",
+    "product_id": "ofbank-savings",
+    "provider": "Overseas Filipino Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/ofbank-savings/",
+    "user_id": null
+  },
+  {
+    "id": "81483e99-6415-4404-83c7-ab3b1ec6a14f",
+    "created_at": "2026-04-11T04:23:12.155298+00:00",
+    "product_id": "netbank-td-12mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/netbank-td-12mo/",
+    "user_id": null
+  },
+  {
+    "id": "1a39df69-3bf3-467a-9c49-89dc17487479",
+    "created_at": "2026-04-11T04:23:13.244448+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/maribank-td-3mo/",
+    "user_id": null
+  },
+  {
+    "id": "aeee2cfb-eabc-4f87-8eb8-03e778d28d16",
+    "created_at": "2026-04-11T04:23:14.342544+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "31c0343c-6b78-4a20-81d5-6b31cdea823c",
+    "created_at": "2026-04-11T04:23:15.354931+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "fa9081a2-bdc0-4e63-bcb6-d4556e0cab11",
+    "created_at": "2026-04-11T04:23:16.517095+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/gotyme-savings/",
+    "user_id": null
+  },
+  {
+    "id": "5daed67a-3200-4ed8-b340-8c5a05228285",
+    "created_at": "2026-04-11T04:23:19.290086+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "36881c86-965e-4aaf-9a9e-7805f730e177",
+    "created_at": "2026-04-11T04:23:20.733707+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": "https://www.gotruva.com/go/pagibig-mp2/",
+    "user_id": null
+  },
+  {
+    "id": "cc25001f-7424-4a0d-9962-5775c5ba6a05",
+    "created_at": "2026-04-11T04:23:21.865506+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "98f6989e-447d-404d-b1cb-e0e65312a1b0",
+    "created_at": "2026-04-11T04:23:22.989777+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "50a7ba35-58da-4886-bfa3-e4b587862ac0",
+    "created_at": "2026-04-11T04:23:24.059651+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "ca4ee5cb-fd20-4f7c-83e7-e05aee431b02",
+    "created_at": "2026-04-11T04:23:27.779149+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "5035284b-ae63-48b2-b8d3-37f0e5b48820",
+    "created_at": "2026-04-11T04:23:28.921367+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "24b2a9e6-5a42-4e3b-b0f5-cd42675eb58b",
+    "created_at": "2026-04-11T04:23:29.93187+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "96c3e6c5-2190-4daf-8cf7-ce0e5d0afe77",
+    "created_at": "2026-04-11T04:23:31.044877+00:00",
+    "product_id": "netbank-td-6mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "74690a14-535f-4ef6-b2a8-457aa0c94e62",
+    "created_at": "2026-04-11T04:23:32.096536+00:00",
+    "product_id": "ownbank-td-30d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1639dbab-498f-48e7-b890-67506b2d3dd3",
+    "created_at": "2026-04-11T04:23:33.196827+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/diskartech-savings/",
+    "user_id": null
+  },
+  {
+    "id": "cecb847f-d68a-4929-91ae-7cf2e83f258f",
+    "created_at": "2026-04-11T04:23:35.199638+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6fb5a1d1-d153-416a-96a3-1f8d189247cf",
+    "created_at": "2026-04-11T04:23:36.307886+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0784ec54-7d67-43f0-bc50-44bd8926573d",
+    "created_at": "2026-04-11T04:23:37.334818+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "5e08e7e9-21ec-4e6b-97db-98fc3a840dcf",
+    "created_at": "2026-04-11T04:23:38.410884+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9ea94423-f4f8-49ea-98c3-65cd8b174496",
+    "created_at": "2026-04-11T04:23:39.462778+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "ba267017-ce23-4c77-aa11-c49e6636e360",
+    "created_at": "2026-04-11T04:23:48.592696+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/uniondigital-savings/",
+    "user_id": null
+  },
+  {
+    "id": "cd4d4fc2-48c6-424e-aad3-e28c16fc8d47",
+    "created_at": "2026-04-11T04:23:51.326922+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e2395d6d-8540-4528-9149-0bc3dc8f0bb6",
+    "created_at": "2026-04-11T04:23:52.568717+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "610a4b97-0e46-40f7-ad68-66c1a623c187",
+    "created_at": "2026-04-11T04:23:57.74043+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/tonik-td-12mo/",
+    "user_id": null
+  },
+  {
+    "id": "c066dca1-abf1-496d-8623-65b01ca58fbb",
+    "created_at": "2026-04-11T04:24:01.405552+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/go/maya-td-3mo/",
+    "user_id": null
+  },
+  {
+    "id": "3681113f-890a-410f-967e-1e03545e9f2e",
+    "created_at": "2026-04-11T05:16:37.245706+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "7ea2a3ae-b4d5-428d-b530-45b61b50ab9b",
+    "created_at": "2026-04-11T06:25:15.265396+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "cd28a111-355c-42eb-856b-ac1e7c3049a8",
+    "created_at": "2026-04-11T06:53:12.493525+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b578817f-78cb-4131-a2a7-2a4d09d6bca7",
+    "created_at": "2026-04-11T06:53:22.955371+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "c8ea746c-0671-4cbb-9f22-0430baa150d3",
+    "created_at": "2026-04-11T06:53:25.696132+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e284e810-4ea1-42ee-9280-ac9617974504",
+    "created_at": "2026-04-11T06:53:30.105005+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "fb0b212b-4695-4441-9215-b8d80ed793b5",
+    "created_at": "2026-04-11T06:53:36.028899+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "62d47492-ebef-48fb-bde9-7a14d56581de",
+    "created_at": "2026-04-11T06:53:39.123407+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "faf051de-58a6-4778-bcc8-7d288bd2e702",
+    "created_at": "2026-04-11T06:53:42.4903+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e0924cb4-5bd5-4967-949b-870c08b26fe2",
+    "created_at": "2026-04-11T06:53:45.821262+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1f6f1370-c528-433f-ba5d-0f676ebad319",
+    "created_at": "2026-04-11T06:53:47.900941+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1ebd307a-f339-4fc7-8a49-6bcef7920f61",
+    "created_at": "2026-04-11T06:53:50.975505+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1f8c50bc-e15e-4660-880c-b7a20aa9f414",
+    "created_at": "2026-04-11T06:53:52.625846+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "f70a8b1a-bc47-44f7-b9f2-1f46eb253456",
+    "created_at": "2026-04-11T06:53:54.84606+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9f228e0a-86b1-4d1b-ad84-0ab24883cb5c",
+    "created_at": "2026-04-11T06:53:56.891355+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "63f279c0-8720-41c6-be78-7d6174798347",
+    "created_at": "2026-04-11T06:53:59.243557+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7498af4c-e42a-44a8-a51b-9191c3a40445",
+    "created_at": "2026-04-11T06:54:04.631292+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3084fe18-ca94-4449-99fd-1f968979fedc",
+    "created_at": "2026-04-11T06:54:07.074424+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "64a04e5c-a1ef-49d6-949a-03fe8f586a6c",
+    "created_at": "2026-04-11T06:54:13.203716+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7f441a43-b267-493a-aef3-3af81fb377bd",
+    "created_at": "2026-04-11T06:54:15.949937+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d3ef767c-e32d-4df0-a370-defcc2a1ce46",
+    "created_at": "2026-04-11T06:54:19.50266+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "55fc0bf9-cf6b-4e55-a4e1-d088a355c3b4",
+    "created_at": "2026-04-11T06:54:23.679339+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "52c66fb6-ca94-4c07-a9fb-d0aed2066957",
+    "created_at": "2026-04-11T06:54:29.253073+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "790f44e9-5527-4a5a-9b07-9a0de21b414a",
+    "created_at": "2026-04-11T06:54:31.877307+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "03b5ec16-a1a9-414c-97a3-110958e1c94e",
+    "created_at": "2026-04-11T06:54:38.991982+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1fc88ffd-1e0e-43f4-ae66-3e51b0d0fea3",
+    "created_at": "2026-04-11T06:54:41.106656+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9b6a60af-d90c-47eb-b659-077f963c6143",
+    "created_at": "2026-04-11T06:54:44.632929+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "57183738-c221-4c32-9ec6-d3e9b1f1e48f",
+    "created_at": "2026-04-11T06:54:46.729855+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "98ecad62-0e41-4ffe-92f0-c4672f1f9eb3",
+    "created_at": "2026-04-11T06:54:49.135974+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "990e9d75-b8b5-4f06-b0ae-1752cdc4345c",
+    "created_at": "2026-04-11T06:54:51.181203+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "07815c65-037e-4dde-85a9-ff47915ca7fa",
+    "created_at": "2026-04-11T06:54:53.352823+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7f4057f2-6ccb-4649-a8bc-cb02732a7599",
+    "created_at": "2026-04-11T06:54:55.107864+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "911eda85-e6d2-4e32-8497-5083bf9d1fa7",
+    "created_at": "2026-04-11T06:54:57.30263+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1e2a5c94-bb87-46dc-8c66-504c9b5fdc31",
+    "created_at": "2026-04-11T06:54:59.730937+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3ddd3cea-91d6-4336-95b9-a14e39f38daf",
+    "created_at": "2026-04-11T06:55:02.102882+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b79eca10-486e-422d-a03c-73b994b42a2d",
+    "created_at": "2026-04-11T06:55:03.964588+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "cf96ee08-42e1-4e5a-ac1a-874e1f4d356c",
+    "created_at": "2026-04-11T08:16:21.939707+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3e3448e2-0560-44f9-a0aa-3e7541cad01b",
+    "created_at": "2026-04-11T09:01:37.626652+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "c576f0cb-502a-41ef-a254-c7ef31b19bfc",
+    "created_at": "2026-04-11T12:09:52.333391+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "50777297-383e-4fe2-bfdf-cda8e4c8fea0",
+    "created_at": "2026-04-11T17:15:40.334132+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "44ec91c4-866d-467d-bec9-99d525a733d1",
+    "created_at": "2026-04-12T08:33:48.252819+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3843c02d-6feb-4d84-a4e2-501bdae5e490",
+    "created_at": "2026-04-12T14:35:53.394443+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "733eb9de-7ff0-4ed9-9ee1-710bdf1dd147",
+    "created_at": "2026-04-12T14:37:04.810147+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "4ce436c2-08e5-4d28-907b-1da1ab06aaef",
+    "created_at": "2026-04-12T18:51:08.081396+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "de81d04b-dd07-42f6-a12e-6053667f14f3",
+    "created_at": "2026-04-12T18:51:12.024866+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "dfe0312b-71c3-4f89-997e-a810f502031d",
+    "created_at": "2026-04-12T18:51:14.626294+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "dff6a68d-41ca-4849-a999-c16860a4e6d1",
+    "created_at": "2026-04-12T18:51:18.274256+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0b08c091-8f34-4454-affb-5f5d68d6e078",
+    "created_at": "2026-04-12T18:51:21.815842+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e751d8ee-0ba8-4d02-b06a-db5ba93617f6",
+    "created_at": "2026-04-12T18:51:23.998216+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "cb0418e1-ecee-4c79-bd27-cde593af93b1",
+    "created_at": "2026-04-12T18:51:26.904721+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "23132f0a-c2a8-46bb-987f-8453c8deb797",
+    "created_at": "2026-04-12T18:51:28.492816+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "e5cb53ab-a1ad-45ca-ace5-91ce59a7c080",
+    "created_at": "2026-04-12T18:51:30.33542+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6cc55298-205d-4851-9753-0b7d3dac50b0",
+    "created_at": "2026-04-12T18:51:32.942329+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1d4569e5-2783-4dd8-8b49-7b329e577170",
+    "created_at": "2026-04-12T18:51:34.3551+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a79a667f-0821-4d01-ba77-9ad217978ec7",
+    "created_at": "2026-04-12T18:51:36.403014+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "90ad87b3-ac1f-4069-b2aa-9cf3729e1bb1",
+    "created_at": "2026-04-12T18:51:38.006222+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3c8a991f-7878-46ed-a5b4-cca5cb4fb11b",
+    "created_at": "2026-04-12T18:51:39.967294+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "2d5ace4b-0f8c-45e0-8af3-a7c8ef903b3b",
+    "created_at": "2026-04-12T18:51:42.57392+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "64dcf035-cd3b-4283-8d77-711c53cd1dcd",
+    "created_at": "2026-04-12T18:51:44.420317+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "591de1ee-c168-4e95-8915-dde54208a220",
+    "created_at": "2026-04-12T18:51:48.045244+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "c4cc5837-8424-4081-9eba-c7088e00552a",
+    "created_at": "2026-04-12T18:51:50.015637+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "809f320d-c5c1-4753-9ad9-08e528025a76",
+    "created_at": "2026-04-12T18:51:52.570393+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0651509a-b93b-4a9d-b28d-bf79ed152b52",
+    "created_at": "2026-04-12T18:51:54.487998+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "2db8afd6-e6eb-4ed3-84b0-f88c26dc66bc",
+    "created_at": "2026-04-12T18:51:57.964734+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "8283d011-116a-4191-a585-2f891c36e1b8",
+    "created_at": "2026-04-12T18:51:59.81803+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b382cb92-eded-49a6-b564-8fdf53c5fa69",
+    "created_at": "2026-04-12T18:52:02.508996+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "4781ed47-e240-452a-aa55-e5b38a4c1b6b",
+    "created_at": "2026-04-12T18:52:04.465753+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "154f24ea-85ac-48a7-938d-210844d104aa",
+    "created_at": "2026-04-12T18:52:07.566387+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "06e79b08-79f8-492d-a569-b8d766bef649",
+    "created_at": "2026-04-12T18:52:09.612344+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d1f6012f-e47d-46c9-8cc1-ff31bff96881",
+    "created_at": "2026-04-12T18:52:11.066739+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1b369acb-f6f8-4725-a0b6-f3def52fd004",
+    "created_at": "2026-04-12T18:52:13.031049+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a7dc7aed-c8bc-4f58-8d1b-64b2db9962cd",
+    "created_at": "2026-04-12T18:52:15.10756+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6143b5ab-bc1e-485a-b7e7-091e6f9d6dbc",
+    "created_at": "2026-04-12T18:52:16.767845+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "60f97aed-f56a-42a9-a142-2d7adef9cea9",
+    "created_at": "2026-04-12T18:52:18.751115+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a8286104-1847-4ea2-b4a0-a5a2f78a72db",
+    "created_at": "2026-04-12T18:52:21.341339+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "beddd6a1-59bf-4de5-b1d5-486ebf22eed2",
+    "created_at": "2026-04-12T18:52:23.217943+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1f3db93a-9ab5-4c3d-9262-6686009794d2",
+    "created_at": "2026-04-12T18:52:24.933654+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7fa33927-7d01-4d74-a8a3-2b3b6a5774c8",
+    "created_at": "2026-04-12T18:52:26.834242+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "276c2280-839c-4e18-b472-7741e3f5cfb9",
+    "created_at": "2026-04-12T18:52:28.52081+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a7b259d4-0f07-4263-8164-d4b77ecf7041",
+    "created_at": "2026-04-12T18:52:30.462702+00:00",
+    "product_id": "ownbank-td-30d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "380db030-c3fc-45ae-ae42-a88c6ddd4ea2",
+    "created_at": "2026-04-12T18:52:32.178603+00:00",
+    "product_id": "netbank-savings",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6358073e-99b4-4591-82aa-768a6a6f05df",
+    "created_at": "2026-04-12T18:52:34.374804+00:00",
+    "product_id": "ownbank-td-180d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "0aec25fb-8b16-4cde-8daf-0aba2a70978c",
+    "created_at": "2026-04-12T18:52:36.043336+00:00",
+    "product_id": "netbank-td-12mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "71f18b89-59fb-4bdf-8a5a-52105e38aa53",
+    "created_at": "2026-04-12T18:52:37.709534+00:00",
+    "product_id": "ownbank-td-15d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "59c1b1f2-6232-4ded-82ea-a98fad76d29d",
+    "created_at": "2026-04-12T18:52:39.39531+00:00",
+    "product_id": "netbank-td-6mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "009334cf-43ea-44a2-b4d9-8bf3113fe537",
+    "created_at": "2026-04-12T18:52:41.078244+00:00",
+    "product_id": "ofbank-savings",
+    "provider": "Overseas Filipino Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "14c4eb0f-ea8e-4d2f-80e4-441de89ac3e0",
+    "created_at": "2026-04-12T23:52:37.545632+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "9b01cf3d-d468-4a8a-9cd4-30345fbd50e8",
+    "created_at": "2026-04-13T02:38:49.243775+00:00",
+    "product_id": "uno-td-365",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d5b0f644-cfb6-488d-a013-c545324f7c27",
+    "created_at": "2026-04-13T02:38:54.275716+00:00",
+    "product_id": "bpi-banko-savings",
+    "provider": "BanKo (by BPI)",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d89f7410-046a-47f9-94aa-9ab43ce6356d",
+    "created_at": "2026-04-13T02:38:56.495707+00:00",
+    "product_id": "uno-ready",
+    "provider": "UNO Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "359314a4-f477-431d-ad5a-37e6999a7dac",
+    "created_at": "2026-04-13T02:38:59.48944+00:00",
+    "product_id": "cimb-gsave",
+    "provider": "CIMB / GCash",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9af87f4f-a5cd-4ca6-9194-ed7521dc0e46",
+    "created_at": "2026-04-13T02:39:01.409765+00:00",
+    "product_id": "uniondigital-td",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3803a73e-db29-44c7-b221-e30d7f738f12",
+    "created_at": "2026-04-13T02:39:03.362114+00:00",
+    "product_id": "cimb-maxsave-12mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "153175e9-8aa1-45e5-8287-7cc58e9e2ff9",
+    "created_at": "2026-04-13T02:39:06.193584+00:00",
+    "product_id": "uniondigital-savings",
+    "provider": "UnionDigital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "f142c456-17b7-45ae-b746-d9bc964feec7",
+    "created_at": "2026-04-13T02:39:07.531182+00:00",
+    "product_id": "cimb-maxsave-24mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "10198e5b-2c89-4b6e-826d-3ef73643fd3c",
+    "created_at": "2026-04-13T02:39:08.695047+00:00",
+    "product_id": "tonik-td-9mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "4969ad8f-18f5-45ba-8294-0fab5ca84e42",
+    "created_at": "2026-04-13T02:39:09.79695+00:00",
+    "product_id": "cimb-maxsave-3mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "5eef2cd4-9089-4b22-b7f6-53d9d26837a0",
+    "created_at": "2026-04-13T02:39:10.9741+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "75e1ec07-cc0a-474a-9db2-53323602dde9",
+    "created_at": "2026-04-13T02:39:12.126209+00:00",
+    "product_id": "cimb-maxsave-6mo",
+    "provider": "CIMB Bank Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a3c7118b-a72f-495f-90c4-fe9e07599e22",
+    "created_at": "2026-04-13T02:39:13.267995+00:00",
+    "product_id": "tonik-td-24mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "bd85a5fc-5d41-4bd3-acbf-e26532df2466",
+    "created_at": "2026-04-13T02:39:14.415514+00:00",
+    "product_id": "dbp-savings",
+    "provider": "Development Bank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "5fb92be7-1958-4b92-9eb6-32b8a6c5b8e4",
+    "created_at": "2026-04-13T02:39:17.866724+00:00",
+    "product_id": "tonik-td-18mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d19a47a9-1f38-4e2b-a016-ab0f5ac8fbe9",
+    "created_at": "2026-04-13T02:39:18.957514+00:00",
+    "product_id": "diskartech-savings",
+    "provider": "DiskarTech by RCBC",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7383fae1-bfd1-4512-9c55-af742bc10230",
+    "created_at": "2026-04-13T02:39:20.891417+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "04996519-cb0a-42cd-9056-2755a91c020f",
+    "created_at": "2026-04-13T02:39:22.129326+00:00",
+    "product_id": "gotyme-savings",
+    "provider": "GoTyme Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6067de7d-abca-4490-8dd7-5cee85dd5c4e",
+    "created_at": "2026-04-13T02:39:24.501908+00:00",
+    "product_id": "tonik-savings",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "4352a406-a87b-4eba-80ce-4f5f22b745e0",
+    "created_at": "2026-04-13T02:39:25.618752+00:00",
+    "product_id": "komo-savings",
+    "provider": "Komo by EastWest Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9f668f9b-53d7-48a9-a759-945e053b8968",
+    "created_at": "2026-04-13T02:39:28.313732+00:00",
+    "product_id": "tonik-group-stash",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "ac16ac5e-897f-4b3a-b21f-943a24b48b08",
+    "created_at": "2026-04-13T02:39:29.434588+00:00",
+    "product_id": "landbank-iaccess",
+    "provider": "Landbank of the Philippines",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "1596b0dc-c2d6-4961-a075-977ebb73fa95",
+    "created_at": "2026-04-13T02:39:30.868699+00:00",
+    "product_id": "tonik-account",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "64b8675c-849d-4c5a-b8cf-c6565f4bcab3",
+    "created_at": "2026-04-13T02:39:31.947558+00:00",
+    "product_id": "maribank-savings",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7366ef92-83cc-4922-bfd8-b328e7d8b44e",
+    "created_at": "2026-04-13T02:39:33.920468+00:00",
+    "product_id": "salmon-td-6mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "661dc0c0-6794-4ed4-aac8-750be220b36d",
+    "created_at": "2026-04-13T02:39:35.939078+00:00",
+    "product_id": "maribank-td-3mo",
+    "provider": "MariBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3c2edd06-230b-47de-910b-44abbe6e900e",
+    "created_at": "2026-04-13T02:39:37.129369+00:00",
+    "product_id": "salmon-td-12mo",
+    "provider": "Salmon Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "fcdfa782-3309-4f1d-909c-7cdfa4740563",
+    "created_at": "2026-04-13T02:39:38.44866+00:00",
+    "product_id": "maya-personal-goals",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "87d9832a-829d-465d-b9e7-040dcc03ad0e",
+    "created_at": "2026-04-13T02:39:39.757143+00:00",
+    "product_id": "pagibig-mp2",
+    "provider": "HDMF (Pag-IBIG Fund)",
+    "category": "govt",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "494298ea-bd74-4338-99a4-0c425f25d0f9",
+    "created_at": "2026-04-13T02:39:42.048596+00:00",
+    "product_id": "maya-savings",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "2e930e32-663b-4ac6-b2c7-0926044c2c4d",
+    "created_at": "2026-04-13T02:39:43.752302+00:00",
+    "product_id": "ownbank-td-90d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "f49953aa-01fb-4421-9a8e-d2ab098a97d7",
+    "created_at": "2026-04-13T02:39:45.880925+00:00",
+    "product_id": "maya-td-12mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "a31dc982-87e7-45fa-8799-253796e08e7b",
+    "created_at": "2026-04-13T02:39:47.215691+00:00",
+    "product_id": "ownbank-td-60d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "6d8a8276-7a3f-44f5-bfa5-a73aa5da7550",
+    "created_at": "2026-04-13T02:39:49.089769+00:00",
+    "product_id": "maya-td-3mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3a7c2fe4-b488-4d12-9cb9-9a2521da58cb",
+    "created_at": "2026-04-13T02:39:50.450099+00:00",
+    "product_id": "ownbank-td-360d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "d77beb86-8c24-49f6-a0b7-bbdfd4f76b55",
+    "created_at": "2026-04-13T02:39:52.164977+00:00",
+    "product_id": "maya-td-6mo",
+    "provider": "Maya Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "63c69d46-d4ca-43b8-8b15-39d803ea72e1",
+    "created_at": "2026-04-13T02:39:53.897962+00:00",
+    "product_id": "ownbank-td-30d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "7cd3c1aa-9206-4758-9bee-02f43ed7cdbd",
+    "created_at": "2026-04-13T02:39:55.884257+00:00",
+    "product_id": "netbank-savings",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "32b899b1-42ed-4f7f-87ff-b2696b85e8af",
+    "created_at": "2026-04-13T02:39:57.989742+00:00",
+    "product_id": "ownbank-td-180d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "f747ed09-8ffe-426f-8747-d1a0f2d40593",
+    "created_at": "2026-04-13T02:39:59.701216+00:00",
+    "product_id": "netbank-td-12mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "9d9d9736-0b80-48f1-addb-f82723d320ce",
+    "created_at": "2026-04-13T02:40:00.855282+00:00",
+    "product_id": "ownbank-td-15d",
+    "provider": "OwnBank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b89ae371-8517-48f0-a411-d3d3830f4b78",
+    "created_at": "2026-04-13T02:40:02.621781+00:00",
+    "product_id": "netbank-td-6mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "b13c0166-0fc1-4597-bf6e-b86bf544668b",
+    "created_at": "2026-04-13T02:40:03.758166+00:00",
+    "product_id": "ofbank-savings",
+    "provider": "Overseas Filipino Bank",
+    "category": "banks",
+    "referrer": "https://www.gotruva.com/",
+    "user_id": null
+  },
+  {
+    "id": "3e358f14-a411-45a8-917f-29546073036f",
+    "created_at": "2026-04-13T06:28:21.459466+00:00",
+    "product_id": "tonik-td-12mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "3b4f2357-a17a-4d2f-b315-de8daa2b843f",
+    "created_at": "2026-04-13T06:36:23.40305+00:00",
+    "product_id": "netbank-td-12mo",
+    "provider": "Netbank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
+  },
+  {
+    "id": "7a48e83e-5e19-4ffb-9e98-5464cad0776c",
+    "created_at": "2026-04-13T08:10:19.43152+00:00",
+    "product_id": "tonik-td-6mo",
+    "provider": "Tonik Digital Bank",
+    "category": "banks",
+    "referrer": null,
+    "user_id": null
   }
 ]
