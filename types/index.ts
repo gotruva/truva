@@ -132,3 +132,46 @@ export interface CreditCardProduct {
   affiliateUrl: string;
   palagoScore: number;
 }
+
+export interface EditorialCta {
+  label: string;
+  href: string;
+  description?: string;
+}
+
+export interface ArticleTocItem {
+  label: string;
+  depth?: 2 | 3;
+}
+
+export interface EditorialFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface EditorialArticle {
+  slug: string;
+  path: string;
+  title: string;
+  seoTitle?: string;
+  description: string;
+  subtitle: string;
+  category: 'banking' | 'credit-cards' | 'guides';
+  categoryLabel: string;
+  section: 'rates' | 'reviews' | 'compare' | 'guides';
+  articleType: 'Rate Guide' | 'Review' | 'Comparison' | 'Explainer';
+  eyebrow: string;
+  publishedAt: string;
+  updatedAt: string;
+  author: string;
+  readingTime: string;
+  featured: boolean;
+  keywords?: string[];
+  verificationNote?: string;
+  disclosureNote?: string;
+  toc: ArticleTocItem[];
+  faqItems?: EditorialFaqItem[];
+  primaryCta: EditorialCta;
+  secondaryCta?: EditorialCta;
+  relatedArticles: string[];
+}
