@@ -37,18 +37,33 @@ export function ArticleCard({
 }: ArticleCardProps) {
   const Icon = getArticleIcon(article.articleType);
   const isCompact = variant === 'compact';
+  const bannerStyle = article.bannerUrl
+    ? {
+        backgroundImage: `url('${article.bannerUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }
+    : {};
 
   return (
     <Link
       href={article.path}
       className={cn(
-        'group relative overflow-hidden rounded-[1.75rem] border border-brand-border/80 bg-white p-5 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.3)] transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary/30 hover:shadow-[0_24px_65px_-30px_rgba(0,82,255,0.32)] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-brand-primary/40',
-        isCompact ? 'h-full' : 'h-full min-h-[18rem]',
+        'group relative overflow-hidden rounded-[1.75rem] border border-brand-border/80 bg-white shadow-[0_18px_45px_-32px_rgba(15,23,42,0.3)] transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary/30 hover:shadow-[0_24px_65px_-30px_rgba(0,82,255,0.32)] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-brand-primary/40',
+        isCompact ? 'h-full flex flex-col' : 'h-full min-h-[18rem] flex flex-col',
         className
       )}
     >
+      {article.bannerUrl && (
+        <div
+          className="relative h-40 sm:h-48 rounded-t-[1.75rem] flex-shrink-0"
+          style={bannerStyle}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50" />
+        </div>
+      )}
       <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="flex h-full flex-col gap-4">
+      <div className={cn('flex h-full flex-col gap-4', article.bannerUrl ? 'p-5' : 'p-5')}
         <div className="flex items-start justify-between gap-3">
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
             <Icon className="h-5 w-5" />
