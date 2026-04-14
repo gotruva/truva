@@ -12,7 +12,7 @@ export function EditorialHero({ article }: EditorialHeroProps) {
     <section className="relative overflow-hidden rounded-[2rem] border border-brand-border/70 bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.16),_transparent_36%),linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(235,240,255,0.94))] shadow-[0_28px_90px_-48px_rgba(0,82,255,0.55)] dark:border-white/10 dark:bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.28),_transparent_34%),linear-gradient(140deg,_rgba(15,23,42,0.95),_rgba(2,6,23,0.98))] sm:rounded-[2rem]">
       {article.bannerUrl && (
         <div
-          className="h-56 w-full bg-cover bg-center sm:h-64"
+          className="h-48 w-full bg-cover bg-center sm:h-40"
           style={{
             backgroundImage: `url('${article.bannerUrl}')`,
           }}
