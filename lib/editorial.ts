@@ -93,6 +93,96 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     ],
   },
   {
+    slug: 'digital-bank-interest-rates-philippines-2026',
+    path: '/banking/rates/digital-bank-interest-rates-philippines-2026',
+    title: 'Digital bank interest rates Philippines 2026: updated weekly with after-tax math',
+    seoTitle: 'Digital bank interest rates Philippines 2026 | Truva',
+    description:
+      'Maya 12% (9.6% after tax). Tonik 8%. GoTyme 3%. Full digital bank interest rate table for Philippines 2026, updated every week. See what your balance earns.',
+    subtitle:
+      'A weekly-updated rate snapshot with real peso math for PHP 100K, PHP 250K, and PHP 500K balances, and a plain explanation of the 20% tax every saver needs to know.',
+    category: 'banking',
+    categoryLabel: 'Banking',
+    section: 'rates',
+    articleType: 'Rate Guide',
+    eyebrow: 'Rate guide',
+    publishedAt: '2026-04-14',
+    updatedAt: '2026-04-14',
+    author: 'Beto',
+    authorUrl: '/authors/beto',
+    readingTime: '8 min read',
+    featured: false,
+    keywords: [
+      'digital bank interest rates Philippines 2026',
+      'digital bank rates',
+      'highest interest digital bank Philippines',
+      'after-tax savings rate Philippines',
+    ],
+    verificationNote: 'Rates verified April 14, 2026 on gotruva.com.',
+    disclosureNote:
+      'After-tax rates shown use the 20% Final Withholding Tax mandated under Philippine law. Rates subject to change; table updated weekly.',
+    sectionPath: '/banking/rates',
+    toc: [
+      { label: 'Digital bank interest rates Philippines 2026: full table' },
+      { label: 'What you actually earn: peso math for PHP 100K, PHP 250K, and PHP 500K' },
+      { label: 'Withdraw anytime vs time locked: which suits you?' },
+      { label: 'Why the after-tax number is smaller: the 20% FWT explained' },
+      { label: 'Digital bank rate changes in early 2026: what you need to know' },
+      { label: 'PDIC insurance: your money is protected up to PHP 1,000,000' },
+      { label: 'Frequently asked questions' },
+      { label: 'Which digital bank interest rate is right for you in 2026?' },
+    ],
+    faqItems: [
+      {
+        question: 'Which digital bank pays the highest interest right now?',
+        answer:
+          'Maya pays 12% (9.6% after tax), the highest available anytime-access rate in the Philippines as of April 2026. For locked savings, Tonik pays 8% on a 1-year time deposit.',
+      },
+      {
+        question: 'Is 12% interest real or is there a catch?',
+        answer:
+          'The rate is real on the first PHP 100,000. After the 20% government tax, you take home 9.6%. On PHP 250,000, that is PHP 24,000 per year in your account.',
+      },
+      {
+        question: 'Are digital banks safe? Will the government protect my money if a bank closes?',
+        answer:
+          'Yes. All BSP-licensed digital banks are covered by PDIC up to PHP 1,000,000 per bank. If a bank closes, PDIC processes your claim and returns your money up to that limit.',
+      },
+      {
+        question: 'Why do digital banks pay more than traditional banks like BPI and BDO?',
+        answer:
+          'Lower overhead. Digital banks have no physical branches, fewer staff, lower rent. They pass those savings to depositors as higher interest rates.',
+      },
+      {
+        question: 'Do I pay taxes on digital bank interest?',
+        answer:
+          'Yes. The 20% Final Withholding Tax (FWT) is automatically deducted before interest hits your account. The after-tax rates in the table above are what you actually receive.',
+      },
+      {
+        question: 'How often do rates change?',
+        answer:
+          'Typically 2 to 4 times per year. Maya and GoTyme cut base rates in January 2026. This table is updated weekly.',
+      },
+    ],
+    primaryCta: {
+      label: 'Compare live banking rates',
+      href: '/#deposit-rates',
+      description: 'Jump straight to the Truva comparison table for current live rates.',
+    },
+    secondaryCta: {
+      label: 'Use the savings calculator',
+      href: '/calculator',
+      description: 'Model what your balance earns after tax before you move money.',
+    },
+    relatedArticles: [
+      'best-digital-bank-philippines',
+      'maya-savings-review',
+      'maya-vs-gotyme-vs-tonik',
+      'pdic-insurance-guide',
+      'final-withholding-tax-explained',
+    ],
+  },
+  {
     slug: 'maya-savings-review',
     path: '/banking/reviews/maya-savings-review',
     title: 'Maya Savings Review (2026): Is it still the best digital bank?',
