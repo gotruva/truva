@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Calculator, CheckCircle2, Sparkles } from 'lucide-react';
+import { BankingRateDesk } from '@/components/banking/BankingRateDesk';
 import { SectionHub } from '@/components/layout/SectionHub';
 import { ArticleCard } from '@/components/editorial/ArticleCard';
 import { FeaturedArticleCard } from '@/components/editorial/FeaturedArticleCard';
 import { BASE_URL } from '@/lib/constants';
 import { buildItemListSchema, getBankingArticles, getBankingArticlesBySlugs, getFeaturedBankingArticle } from '@/lib/editorial';
+import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 
 export const metadata: Metadata = {
   title: 'Digital Bank Interest Rates Philippines 2026',
@@ -29,7 +31,9 @@ const utilityActions = [
   },
 ];
 
-export default function BankingRatesHub() {
+export default async function BankingRatesHub() {
+  const rates = (await getPublicRates()).filter((rate) => rate.category === 'banks');
+  const formattedVerifiedDate = formatVerifiedDate(getLatestVerifiedDate(rates));
   const featuredArticle = getFeaturedBankingArticle();
   const rateArticles = getBankingArticles('rates');
   const reviewArticles = getBankingArticles('reviews');
@@ -54,6 +58,8 @@ export default function BankingRatesHub() {
           { label: 'Banking', href: '/banking' },
           { label: 'Rates', href: '/banking/rates' },
         ]}
+        containerClassName="max-w-7xl"
+        titleClassName="not-italic"
       >
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
           <div className="rounded-[2rem] border border-brand-primary/15 bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.14),_transparent_38%),linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(235,240,255,0.88))] p-6 shadow-[0_28px_80px_-52px_rgba(0,82,255,0.48)] dark:border-brand-primary/20 dark:bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.24),_transparent_34%),linear-gradient(140deg,_rgba(15,23,42,0.95),_rgba(2,6,23,0.98))] sm:p-7">
@@ -98,11 +104,18 @@ export default function BankingRatesHub() {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
-                  href={featuredArticle?.path ?? '/banking'}
+                  href="#rate-desk"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
                 >
-                  Read the featured guide
+                  Open the rate desk
                   <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href={featuredArticle?.path ?? '/banking'}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-white px-5 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/20 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
+                >
+                  Read the featured guide
+                  <ArrowRight className="h-4 w-4 text-brand-primary" />
                 </Link>
                 <Link
                   href="/calculator"
@@ -116,6 +129,34 @@ export default function BankingRatesHub() {
           </div>
 
           {featuredArticle && <FeaturedArticleCard article={featuredArticle} />}
+        </section>
+
+        <section id="rate-desk" className="scroll-mt-28 space-y-4">
+          <div className="max-w-3xl space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
+              Rate desk
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+              Compare digital bank rates (after tax)
+            </h2>
+            <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              Start here for the real numbers. Expand each bank to see tiers, lock-ins, and conditions.
+            </p>
+
+            {formattedVerifiedDate && (
+              <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-brand-border bg-white px-3.5 py-1.5 text-xs font-semibold text-brand-textSecondary shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-gray-300 sm:px-4 sm:py-2 sm:text-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-pulse-status absolute inline-flex h-full w-full rounded-full bg-positive opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-positive"></span>
+                </span>
+                Rates verified on <span className="font-bold text-brand-textPrimary dark:text-white">{formattedVerifiedDate}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-[1.75rem] border border-brand-border bg-brand-surface p-3 shadow-[0_18px_55px_-40px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-slate-950 sm:rounded-[2rem] sm:p-6">
+            <BankingRateDesk rates={rates} />
+          </div>
         </section>
 
         <section className="grid gap-5 md:grid-cols-2">

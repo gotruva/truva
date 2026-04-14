@@ -6,9 +6,10 @@
 
 ## What we're building
 
-Truva is the NerdWallet of the Philippines — a financial comparison platform that shows **after-tax savings yields**. Every competitor shows gross rates. We show after-tax. That's the moat.
+Truva is the world's best **all-in-one Financial and Lifestyle comparison app**. We consolidate siloed data across banking, investments (Stocks/Crypto/PERA), loans (Car, Student, SME), and health (HMOs, Insurance, Travel) into a single optimization platform, including all **BSP & SEC financial initiatives**.
 
-**Revenue model:** Affiliate fees per account/card/loan opened. Free to users, always.
+**Core Differentiator:** After-tax yield engineering. Every competitor shows gross; we show reality.
+**Revenue model:** Affiliate fees per account/card/loan/policy opened. Free to users, always.
 
 ---
 
@@ -34,7 +35,7 @@ Truva is the NerdWallet of the Philippines — a financial comparison platform t
 | 4 | Year 2+ | Investing (stocks, UITFs expanded) | Phase 3 complete |
 | 5 | Year 3+ | Insurance | Full team + IC broker license + capital |
 
-**Phase 2+ is locked.** Do not add credit card, loan, or insurance features unless the founder explicitly unlocks the phase.
+**Phase 2+ is locked.** Do not build credit card, loan, or insurance UI features ahead of schedule unless instructed.
 
 ---
 

@@ -51,7 +51,7 @@ export default function BankingReviewsPage() {
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <Link
-                href="/#deposit-rates"
+                href="/banking/rates#rate-desk"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20"
               >
                 Compare live rates
