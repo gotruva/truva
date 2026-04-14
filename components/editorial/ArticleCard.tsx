@@ -63,7 +63,7 @@ export function ArticleCard({
         </div>
       )}
       <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      <div className={cn('flex h-full flex-col gap-4', article.bannerUrl ? 'p-5' : 'p-5')}
+      <div className={cn('flex h-full flex-col gap-4', article.bannerUrl ? 'p-5' : 'p-5')}>
         <div className="flex items-start justify-between gap-3">
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
             <Icon className="h-5 w-5" />
