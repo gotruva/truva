@@ -12,7 +12,7 @@ export function EditorialHero({ article }: EditorialHeroProps) {
     <section className="relative flex flex-col overflow-hidden rounded-[2rem] border border-brand-border/70 shadow-[0_28px_90px_-48px_rgba(0,82,255,0.55)] dark:border-white/10 sm:rounded-[2rem]">
       {article.bannerUrl && (
         <div
-          className="h-64 w-full flex-shrink-0 bg-cover bg-center sm:h-80"
+          className="h-48 w-full flex-shrink-0 bg-cover bg-center sm:h-80"
           style={{
             backgroundImage: `url('${article.bannerUrl}')`,
           }}
