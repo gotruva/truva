@@ -161,6 +161,7 @@ export interface EditorialArticle {
   section: 'rates' | 'reviews' | 'compare' | 'guides';
   articleType: 'Rate Guide' | 'Review' | 'Comparison' | 'Explainer';
   eyebrow: string;
+  bannerUrl?: string;
   bannerFocus?: string;
   publishedAt: string;
   updatedAt: string;

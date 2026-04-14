@@ -32,6 +32,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     section: 'rates',
     articleType: 'Rate Guide',
     eyebrow: 'Featured rate guide',
+    bannerUrl: '/images/banners/best-digital-bank-philippines.png',
     publishedAt: '2026-04-13',
     updatedAt: '2026-04-13',
     author: 'Beto',
