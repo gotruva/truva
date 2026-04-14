@@ -18,9 +18,7 @@ export function FeaturedArticleCard({ article }: FeaturedArticleCardProps) {
           style={{
             backgroundImage: `url('${article.bannerUrl}')`,
           }}
-        >
-          <div className="inset-0 h-full w-full bg-gradient-to-b from-black/40 to-black/60" />
-        </div>
+        />
       )}
       <div className="absolute -right-10 top-6 h-36 w-36 rounded-full bg-cyan-300/30 blur-3xl" />
       <div className="relative flex h-full flex-col gap-4 p-5 sm:p-7">
