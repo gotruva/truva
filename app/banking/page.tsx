@@ -49,6 +49,7 @@ export default async function BankingHub() {
     .filter((article) => article.slug !== featuredArticle?.slug)
     .slice(0, 2);
   const reviewArticles = getBankingArticles('reviews').slice(0, 2);
+  const compareArticles = getBankingArticles('compare').slice(0, 2);
   const explainers = getGuideArticles().slice(0, 2);
 
   const editorialForSchema = [
@@ -247,7 +248,7 @@ export default async function BankingHub() {
             </p>
           </div>
 
-          <div className="grid gap-5 xl:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2">
             <EditorialLane
               title="Best-rate roundups"
               description="Use these when you want the current shortlist, the balance math, and the fastest route to the right bank for your amount."
@@ -256,6 +257,13 @@ export default async function BankingHub() {
               articles={[featuredArticle, ...rateRoundups].filter(
                 (article): article is EditorialArticle => Boolean(article)
               )}
+            />
+            <EditorialLane
+              title="Bank comparisons"
+              description="Use these when you have two banks in mind and want the side-by-side peso math before you decide."
+              href="/banking/compare"
+              ctaLabel="Browse comparisons"
+              articles={compareArticles}
             />
             <EditorialLane
               title="Bank reviews"
