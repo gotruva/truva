@@ -7,11 +7,12 @@ import { useTheme } from 'next-themes';
 import { BookOpenText, ChevronDown, CreditCard, GraduationCap, Landmark, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
 
 const NAV_LINKS = [
-  { label: 'Compare Rates', href: '/#deposit-rates' },
-  { label: 'Banking', href: '/banking' },
+  { label: 'Compare Rates', href: '/banking/rates#rate-desk' },
   { label: 'Calculator', href: '/calculator' },
+  { label: 'Methodology', href: '/methodology' },
 ];
 
 const ARTICLE_LINKS = [
@@ -24,7 +25,7 @@ const ARTICLE_LINKS = [
   {
     label: 'Banking Articles',
     description: 'Reviews, rate guides, and banking explainers.',
-    href: '/banking',
+    href: '/banking/rates',
     icon: Landmark,
   },
   {
@@ -64,8 +65,11 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isArticlesOpen, setIsArticlesOpen] = useState(false);
+  const [isMobileProductsOpen, setIsMobileProductsOpen] = useState(false);
   const [isMobileArticlesOpen, setIsMobileArticlesOpen] = useState(false);
+  const productsCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const articlesCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -74,11 +78,31 @@ export function Navbar() {
 
   useEffect(() => {
     return () => {
+      if (productsCloseTimeoutRef.current) {
+        clearTimeout(productsCloseTimeoutRef.current);
+      }
       if (articlesCloseTimeoutRef.current) {
         clearTimeout(articlesCloseTimeoutRef.current);
       }
     };
   }, []);
+
+  const openProductsMenu = () => {
+    if (productsCloseTimeoutRef.current) {
+      clearTimeout(productsCloseTimeoutRef.current);
+    }
+    setIsProductsOpen(true);
+  };
+
+  const closeProductsMenu = () => {
+    if (productsCloseTimeoutRef.current) {
+      clearTimeout(productsCloseTimeoutRef.current);
+    }
+
+    productsCloseTimeoutRef.current = setTimeout(() => {
+      setIsProductsOpen(false);
+    }, 140);
+  };
 
   const openArticlesMenu = () => {
     if (articlesCloseTimeoutRef.current) {
@@ -99,6 +123,7 @@ export function Navbar() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    setIsMobileProductsOpen(false);
     setIsMobileArticlesOpen(false);
   };
 
@@ -176,6 +201,58 @@ export function Navbar() {
               {link.label}
             </a>
           ))}
+
+          <div
+            className="relative -mb-3 pb-3"
+            onMouseEnter={openProductsMenu}
+            onMouseLeave={closeProductsMenu}
+          >
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary transition-colors hover:bg-gray-100 hover:text-brand-textPrimary dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-gray-100"
+              aria-expanded={isProductsOpen}
+              aria-haspopup="true"
+              onFocus={openProductsMenu}
+            >
+              Products
+              <ChevronDown className={`h-4 w-4 transition-transform ${isProductsOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isProductsOpen && (
+              <div
+                className="absolute left-0 top-full z-50 w-[24rem] overflow-hidden rounded-[1.5rem] border border-brand-border bg-white/95 p-2 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95"
+                onMouseEnter={openProductsMenu}
+                onMouseLeave={closeProductsMenu}
+              >
+                <div className="space-y-1">
+                  {PRODUCT_NAVIGATION_ITEMS.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={item.href ?? '#'}
+                      className="group flex items-start gap-3 rounded-[1.15rem] px-3 py-3 transition-colors hover:bg-brand-surface dark:hover:bg-white/5"
+                    >
+                      <div className="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
+                        <item.icon className="h-4.5 w-4.5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-semibold text-brand-textPrimary transition-colors group-hover:text-brand-primary dark:text-gray-100">
+                            {item.title}
+                          </p>
+                          <span className="rounded-full bg-brand-surface px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-brand-textSecondary dark:bg-white/[0.08] dark:text-gray-300">
+                            {item.status === 'live' ? 'Live' : item.status === 'preview' ? 'Preview' : 'Soon'}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
+                          {item.description}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           <div
             className="relative -mb-3 pb-3"
@@ -290,6 +367,50 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
+
+              <div className="rounded-xl border border-brand-border/70 bg-brand-surface/50 dark:border-white/10 dark:bg-white/[0.03]">
+                <button
+                  type="button"
+                  onClick={() => setIsMobileProductsOpen((open) => !open)}
+                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
+                  aria-expanded={isMobileProductsOpen}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    Products
+                  </span>
+                  <ChevronDown className={`h-4 w-4 text-brand-textSecondary transition-transform dark:text-gray-400 ${isMobileProductsOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isMobileProductsOpen && (
+                  <div className="space-y-1 px-2 pb-2">
+                    {PRODUCT_NAVIGATION_ITEMS.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={item.href ?? '#'}
+                        onClick={closeMobileMenu}
+                        className="flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white dark:hover:bg-slate-800"
+                      >
+                        <div className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
+                          <item.icon className="h-4 w-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-brand-textPrimary dark:text-gray-100">
+                              {item.title}
+                            </p>
+                            <span className="rounded-full bg-brand-surface px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-textSecondary dark:bg-white/[0.08] dark:text-gray-300">
+                              {item.status === 'live' ? 'Live' : item.status === 'preview' ? 'Preview' : 'Soon'}
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
+                            {item.description}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <div className="rounded-xl border border-brand-border/70 bg-brand-surface/50 dark:border-white/10 dark:bg-white/[0.03]">
                 <button

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
 
-const PUBLIC_ROUTES = ['/', '/calculator', '/terms', '/banking'];
+const PUBLIC_ROUTES = ['/', '/calculator', '/terms', '/methodology'];
 const PUBLIC_PREFIXES = [
   '/api/rates',
   '/api/defi',
@@ -13,10 +13,13 @@ const PUBLIC_PREFIXES = [
   '/_next',
   '/logos',
   '/favicon',
+  '/articles',
+  '/authors',
+  '/banking',
   '/credit-cards',
-  '/banking/rates',
-  '/banking/reviews',
-  '/banking/compare',
+  '/guides',
+  '/loans',
+  '/methodology',
 ];
 
 export async function proxy(req: NextRequest) {

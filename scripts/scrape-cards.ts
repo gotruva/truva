@@ -184,7 +184,7 @@ type CreditCard = {
   isSponsored: boolean;
   sponsoredDisclosure?: string;
   affiliateUrl: string;
-  palagoScore: number;
+  trueValueScore: number;
 };
 
 // ---------------------------------------------------------------------------
@@ -290,7 +290,7 @@ async function main() {
           editorVerdict: str(card.editorVerdict) || '',
           isSponsored: false,
           affiliateUrl: '',
-          palagoScore: 3,
+          trueValueScore: 3,
         };
         cardMap.set(mapped.id, mapped);
         console.log(`    · ${mapped.name}`);
@@ -460,7 +460,7 @@ async function syncToSupabase(cards: CreditCard[], providersToClear?: string[]) 
     is_sponsored: c.isSponsored,
     sponsored_disclosure: c.sponsoredDisclosure ?? null,
     affiliate_url: c.affiliateUrl,
-    palago_score: c.palagoScore,
+    true_value_score: c.trueValueScore,
     scraped_at: new Date().toISOString(),
   }));
 

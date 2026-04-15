@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Calendar, Lock, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { Badge } from '@/components/ui/badge';
 import type { BankPick } from '@/lib/banking';
 import { cn } from '@/lib/utils';
@@ -138,6 +139,10 @@ export function BankPickCard({
             over {months} month{months !== 1 ? 's' : ''}
           </p>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <TrueValueScoreBadge compact />
       </div>
 
       <div className="mt-5 space-y-2 text-sm text-brand-textSecondary dark:text-gray-300">

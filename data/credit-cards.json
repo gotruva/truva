@@ -41,8 +41,8 @@
       }
     ],
     "isSponsored": false,
-    "affiliateUrl": "",
-    "palagoScore": 3
+    "affiliateUrl": "https://www.bpi.com.ph/personal/cards/credit-cards",
+    "trueValueScore": 3
   },
   {
     "id": "unionbank-rewards-visa",
@@ -86,7 +86,7 @@
       }
     ],
     "isSponsored": false,
-    "affiliateUrl": "",
-    "palagoScore": 3
+    "affiliateUrl": "https://www.unionbankph.com/personal/cards/credit-cards",
+    "trueValueScore": 3
   }
 ]

@@ -180,8 +180,8 @@ function buildFactsFromRate(
         return { factKey, value: rate.referralCode, ...base, isMaterial: false };
       case 'payout_amount':
         return { factKey, value: rate.payoutAmount, ...base, isMaterial: false };
-      case 'palago_score':
-        return { factKey, value: rate.palagoScore, ...base, isMaterial: false };
+      case 'true_value_score':
+        return { factKey, value: rate.trueValueScore, ...base, isMaterial: false };
       default:
         throw new Error(`Unsupported fact key ${factKey}`);
     }
@@ -202,7 +202,7 @@ function buildFactsFromRate(
     'affiliate_url',
     'referral_code',
     'payout_amount',
-    'palago_score',
+    'true_value_score',
   ];
 
   return [...baseFactKeys.map(fallbackFact), ...extras];
@@ -1090,3 +1090,4 @@ export function formatRateDiffSummary(product: RateProduct, diffs: RateMaterialD
   const fields = diffs.map((diff) => diff.field).join(', ');
   return `${product.provider} ${product.name}: detected ${diffs.length} material change(s) in ${fields}.`;
 }
+

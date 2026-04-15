@@ -8,7 +8,7 @@ import { BASE_URL } from '@/lib/constants';
 import { buildItemListSchema, getFeaturedGuideArticle, getGuideArticles, getGuideArticlesBySlugs } from '@/lib/editorial';
 
 export const metadata: Metadata = {
-  title: 'Philippine Financial Guides and Learning | Truva',
+  title: 'Philippine Financial Guides and Learning',
   description:
     'Understand the mechanics of Philippine finance. Guides on final withholding tax, PDIC insurance, time deposits, T-Bills, and more.',
   alternates: {

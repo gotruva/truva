@@ -3,7 +3,7 @@ import { ArticleCard } from '@/components/editorial/ArticleCard';
 import { getBankingArticles, getGuideArticles } from '@/lib/editorial';
 
 export const metadata: Metadata = {
-  title: 'Beto - Founder of Truva',
+  title: 'Beto - Founder',
   description: 'Meet the solo builder behind Truva, the Philippines\' dedicated after-tax personal finance platform.',
   alternates: {
     canonical: '/authors/beto',

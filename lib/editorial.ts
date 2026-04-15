@@ -564,7 +564,7 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
 const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
   {
     slug: 'best-credit-cards-philippines',
-    path: '/credit-cards/rates/best-credit-cards-philippines',
+    path: '/credit-cards#top-picks',
     title: 'Best credit cards Philippines 2026: cashback, rewards, and real peso math',
     seoTitle: 'Best credit cards Philippines 2026: rates and real peso math',
     description:
@@ -585,7 +585,7 @@ const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
     keywords: ['best credit cards philippines', 'credit card comparison philippines', 'cashback credit card philippines'],
     verificationNote: 'Card terms and fee structures are aligned to the latest issuer disclosures.',
     disclosureNote:
-      'Truva earns a referral fee if you apply through our links. This does not affect our editorial scores.',
+      'Truva earns a referral fee if you apply through our links. This does not affect our editorial recommendations.',
     toc: [
       { label: 'The quick ranking' },
       { label: 'Cashback vs rewards points' },
@@ -620,7 +620,7 @@ const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
   },
   {
     slug: 'bpi-amore-cashback-review',
-    path: '/credit-cards/reviews/bpi-amore-cashback-review',
+    path: '/credit-cards/reviews/bpi-amore-cashback',
     title: 'BPI Amore Cashback Card Review (2026): Is 4% grocery cashback worth it?',
     seoTitle: 'BPI Amore Cashback Card Review 2026: cashback, fees, and who it fits',
     description:
@@ -641,7 +641,7 @@ const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
     keywords: ['bpi amore cashback review', 'bpi credit card philippines', 'bpi amore cashback card'],
     verificationNote: 'Card terms reviewed alongside current BPI product disclosures.',
     disclosureNote:
-      'Truva earns a referral fee if you apply through our links. This does not affect our editorial scores.',
+      'Truva earns a referral fee if you apply through our links. This does not affect our editorial recommendations.',
     toc: [
       { label: 'Key facts and rates' },
       { label: 'What we like' },
@@ -663,7 +663,7 @@ const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
   },
   {
     slug: 'unionbank-rewards-visa-review',
-    path: '/credit-cards/reviews/unionbank-rewards-visa-review',
+    path: '/credit-cards/reviews/unionbank-rewards-visa',
     title: 'UnionBank Rewards Visa Review (2026): Is no annual fee for life worth it?',
     seoTitle: 'UnionBank Rewards Visa Review 2026: NAFFL promo, rewards, and who it fits',
     description:
@@ -684,7 +684,7 @@ const CREDIT_CARD_EDITORIAL_ARTICLES: EditorialArticle[] = [
     keywords: ['unionbank rewards visa review', 'unionbank credit card philippines', 'unionbank naffl'],
     verificationNote: 'Card terms reviewed alongside current UnionBank product disclosures.',
     disclosureNote:
-      'Truva earns a referral fee if you apply through our links. This does not affect our editorial scores.',
+      'Truva earns a referral fee if you apply through our links. This does not affect our editorial recommendations.',
     toc: [
       { label: 'Key facts and rates' },
       { label: 'NAFFL promo explained' },

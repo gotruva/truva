@@ -32,6 +32,16 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
     return categoryBrowseMap[category] ?? { label: 'Browse articles', href: '/' };
   };
 
+  const getMethodologyCta = (category: EditorialArticle['category']) => {
+    const categoryMethodologyMap: Record<EditorialArticle['category'], { label: string; href: string }> = {
+      banking: { label: 'View banking methodology', href: '/methodology/banking' },
+      'credit-cards': { label: 'View card methodology', href: '/methodology/credit-cards' },
+      guides: { label: 'View trust hub', href: '/methodology' },
+    };
+
+    return categoryMethodologyMap[category] ?? { label: 'View methodology', href: '/methodology' };
+  };
+
   const relatedArticles = getEditorialArticlesBySlugs(article.relatedArticles).filter(
     (entry) => entry.slug !== article.slug
   );
@@ -127,16 +137,16 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
                   </h2>
                   <p className="max-w-2xl text-base leading-relaxed text-brand-textSecondary dark:text-gray-300">
                     {article.disclosureNote ??
-                      'We review product conditions regularly and connect each article to the tool or comparison page that helps you act on it.'}
+                      'We review product conditions regularly, connect each article to an actionable next step, and publish the trust and methodology pages that govern how those decisions are framed.'}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Link
-                    href="/methodology"
+                    href={getMethodologyCta(article.category).href}
                     className="inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/20 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
                   >
                     <ShieldCheck className="h-4 w-4 text-brand-primary" />
-                    View methodology
+                    {getMethodologyCta(article.category).label}
                   </Link>
                   <Link
                     href={getBrowseCta(article.category).href}

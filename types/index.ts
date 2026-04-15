@@ -65,7 +65,7 @@ export interface RateProduct {
   affiliateUrl: string;
   referralCode: string;
   payoutAmount: number;             // in PHP
-  palagoScore: number;              // 1–5 (placeholder = 3 until Week 7)
+  trueValueScore: number;              // 1–5 (placeholder = 3 until Week 7)
 }
 
 export interface AffiliateLink {
@@ -136,7 +136,7 @@ export interface CreditCardProduct {
   sponsoredDisclosure?: string;
   
   affiliateUrl: string;
-  palagoScore: number;
+  trueValueScore: number;
 }
 
 export interface EditorialCta {
@@ -185,3 +185,4 @@ export interface EditorialArticle {
   secondaryCta?: EditorialCta;
   relatedArticles: string[];
 }
+

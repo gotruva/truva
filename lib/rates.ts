@@ -6,6 +6,7 @@ import type { RateSnapshotChannel } from '@/types/rate-pipeline';
 
 import { createSupabaseAdminClient } from './supabase-admin';
 import { fetchAaveBaseUSDC } from './defi';
+import { normalizeRateProduct } from './score';
 
 function getLocalRates(): RateProduct[] {
   const filePath = path.join(process.cwd(), 'data', 'rates.json');
@@ -14,7 +15,7 @@ function getLocalRates(): RateProduct[] {
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const parsed = JSON.parse(fileContents);
     if (!Array.isArray(parsed)) throw new Error('rates.json must be an array');
-    return parsed as RateProduct[];
+    return parsed.map(normalizeRateProduct);
   } catch (error) {
     console.error('Failed to load rates data:', error);
     return [];
@@ -47,7 +48,7 @@ async function getPublishedSnapshotRates(channel: RateSnapshotChannel): Promise<
   }
 
   const snapshot = Array.isArray(data) ? data[0] : data;
-  return Array.isArray(snapshot?.payload) ? (snapshot.payload as RateProduct[]) : null;
+  return Array.isArray(snapshot?.payload) ? snapshot.payload.map(normalizeRateProduct) : null;
 }
 
 async function getRatesCatalog(): Promise<RateProduct[]> {

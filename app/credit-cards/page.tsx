@@ -1,47 +1,106 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Check, ChevronRight, CreditCard, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react';
-import { SectionHub } from '@/components/layout/SectionHub';
-import { FeaturedArticleCard } from '@/components/editorial/FeaturedArticleCard';
-import { ArticleCard } from '@/components/editorial/ArticleCard';
-import { getCreditCards } from '@/lib/credit-cards';
-import { getCreditCardArticles, getFeaturedCreditCardArticle, buildItemListSchema } from '@/lib/editorial';
+import {
+  ArrowRight,
+  BadgeDollarSign,
+  CreditCard,
+  FileSearch,
+  Plane,
+  ShieldCheck,
+  Sparkles,
+  WalletCards,
+  type LucideIcon,
+} from 'lucide-react';
+import { ProductHubTemplate } from '@/components/layout/ProductHubTemplate';
+import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { BASE_URL } from '@/lib/constants';
+import { getCreditCards } from '@/lib/credit-cards';
+import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
 import type { CreditCardProduct } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Best Credit Cards in the Philippines (2026 Comparison)',
-  description: 'Compare the best Philippine credit cards for cashback, rewards, and travel. Expert reviews, hidden fees exposed, and clear "Best For" recommendations.',
+  description:
+    'Compare Philippine credit cards by cashback, rewards, annual-fee logic, and review coverage before you apply.',
   alternates: {
     canonical: '/credit-cards',
   },
 };
 
+type SegmentDefinition = {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  card: CreditCardProduct | null;
+  fallback: string;
+};
+
 export default async function CreditCardsHub() {
   const cards = await getCreditCards();
-  const creditCardArticles = getCreditCardArticles();
-  const featuredCreditCardArticle = getFeaturedCreditCardArticle();
-  const supportingArticles = creditCardArticles.filter((a) => a.slug !== featuredCreditCardArticle?.slug);
+  const cashbackCard = cards.find((card) => card.rewardType === 'cashback') ?? cards[0] ?? null;
+  const rewardsCard = cards.find((card) => card.rewardType === 'points') ?? cards[0] ?? null;
+  const noAnnualFeeCard =
+    cards.find((card) =>
+      normalizeCopy(card.annualFeeWaiverCondition ?? '').toLowerCase().includes('no annual fee')
+    ) ?? rewardsCard;
 
   const itemListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    'itemListElement': cards.map((card, index) => ({
+    itemListElement: cards.map((card, index) => ({
       '@type': 'ListItem',
-      'position': index + 1,
-      'item': {
+      position: index + 1,
+      item: {
         '@type': 'FinancialProduct',
-        'name': card.name,
-        'brand': {
+        name: card.name,
+        brand: {
           '@type': 'Brand',
-          'name': card.provider,
+          name: card.provider,
         },
+        url: `${BASE_URL}/credit-cards/reviews/${card.id}`,
       },
     })),
   };
 
-  const editorialItemListJsonLd = buildItemListSchema(creditCardArticles, BASE_URL);
+  const segmentCards: SegmentDefinition[] = [
+    {
+      title: 'Best cashback',
+      description:
+        'For spenders who want value to show up in statement credits, not a complicated redemption catalog.',
+      icon: BadgeDollarSign,
+      card: cashbackCard,
+      fallback:
+        'Cashback leaders should balance headline earn rates against fee drag, category caps, and how easy the rewards are to actually claim.',
+    },
+    {
+      title: 'Best rewards',
+      description:
+        'For readers who want flexible points and are willing to optimize around transfer or redemption rules.',
+      icon: WalletCards,
+      card: rewardsCard,
+      fallback:
+        'Rewards cards earn their place only if the points map cleanly to cash, miles, or useful transfers without hidden redemption friction.',
+    },
+    {
+      title: 'Best travel',
+      description:
+        'For readers who care about lounge access, miles conversion, and the real cost of premium perks.',
+      icon: Plane,
+      card: null,
+      fallback:
+        'Travel ranking is coming after Truva publishes a methodology for lounge value, miles transfer quality, foreign-transaction friction, and premium-fee tradeoffs.',
+    },
+    {
+      title: 'Best low or no annual fee',
+      description:
+        'For first-card decisions where fee drag matters more than a flashy rewards banner.',
+      icon: ShieldCheck,
+      card: noAnnualFeeCard,
+      fallback:
+        'Fee-light picks should still clear the bar on reward usability and waiver realism instead of winning only because the sticker price looks low.',
+    },
+  ];
 
   return (
     <>
@@ -49,131 +108,462 @@ export default async function CreditCardsHub() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(editorialItemListJsonLd) }}
-      />
 
-      <SectionHub
+      <ProductHubTemplate
         title="Credit Cards"
-        description="Compare the top Philippine credit cards by cashback, rewards, and annual fee — then apply with confidence."
+        description="A cleaner card-comparison landing page: start with the use case, keep fee logic visible, and surface trust signals before any apply button."
         breadcrumbItems={[{ label: 'Credit Cards', href: '/credit-cards' }]}
+        activeProductId="credit-cards"
+        productNavigationItems={PRODUCT_NAVIGATION_ITEMS}
+        sectionLinks={[
+          { id: 'overview', label: 'Overview' },
+          { id: 'start-here', label: 'Start here' },
+          { id: 'top-picks', label: 'Top picks' },
+          { id: 'cards', label: 'All cards' },
+          { id: 'editorial', label: 'Editorial' },
+          { id: 'methodology', label: 'Methodology' },
+        ]}
+        hero={{
+          eyebrow: 'Credit card desk',
+          icon: CreditCard,
+          title:
+            'Choose the card by job-to-be-done first, not by whichever issuer buys the loudest placement.',
+          directAnswer:
+            "Truva's credit-card landing page leads with the tradeoffs that actually change the decision: annual-fee economics, waiver realism, reward usefulness, promo treatment, and the difference between a good card and a good card for you.",
+          marketFact: {
+            label: 'Market truth',
+            value:
+              'A strong welcome promo can still be a weak card if the annual-fee math breaks in year two.',
+            description:
+              'The right comparison surface needs to normalize fee waivers, promo windows, and reward friction before a card deserves a recommendation.',
+          },
+          actions: [
+            { href: '#top-picks', label: 'See best-for segments', icon: ArrowRight },
+            {
+              href: '/credit-cards/reviews',
+              label: 'Browse card reviews',
+              icon: FileSearch,
+              variant: 'secondary',
+            },
+          ],
+        }}
+        featuredSlot={<CreditCardMethodCard />}
+        trustBar={{
+          eyebrow: 'Trust bar',
+          title:
+            'Card pages should explain the fee math and the disclosure rules before they ask for a click-through.',
+          description:
+            'The strongest credit-card comparison experiences keep methodology, compensation, and promo caveats visible near the first recommendation surface.',
+          items: [
+            {
+              title: 'Fee normalization',
+              description:
+                'Cards are compared with annual-fee drag and waiver realism in view, not just with the sign-up promo headline.',
+              icon: BadgeDollarSign,
+            },
+            {
+              title: 'Promo treatment',
+              description:
+                "Limited-time promos can support context, but they should not overwrite the card's long-term usefulness.",
+              icon: Sparkles,
+            },
+            {
+              title: 'Affiliate disclosure',
+              description:
+                'Partner relationships can affect where advertisements appear, but not the editorial opinion or future score weighting.',
+              icon: ShieldCheck,
+              href: '/methodology/editorial-integrity',
+              linkLabel: 'Read editorial integrity',
+            },
+            {
+              title: 'Card methodology',
+              description:
+                'The upcoming True Value Score will use fee economics, reward usefulness, redemption friction, and approval fit.',
+              icon: FileSearch,
+              href: '/methodology/credit-cards',
+              linkLabel: 'Open card methodology',
+            },
+          ],
+        }}
+        quickStart={{
+          eyebrow: 'Start here',
+          title: 'Pick the entry point that matches the decision you are making',
+          description:
+            'Some readers need a quick shortlist. Others need to inspect waiver rules or disclosure logic before they trust the shortlist at all.',
+          links: [
+            {
+              title: 'Compare by use case',
+              description:
+                'Start with the segment cards for cashback, rewards, travel, and low-fee decisions.',
+              href: '#top-picks',
+              icon: CreditCard,
+              eyebrow: 'Compare',
+              ctaLabel: 'Jump to top picks',
+            },
+            {
+              title: 'Audit the full lineup',
+              description:
+                'Move below the fold when you want the full card list with provider, fee, perks, and review routes.',
+              href: '#cards',
+              icon: WalletCards,
+              eyebrow: 'Catalog',
+              ctaLabel: 'Browse all cards',
+            },
+            {
+              title: 'Read the methodology',
+              description:
+                'See how Truva will treat fees, promos, and partner relationships before scores go live.',
+              href: '/methodology/credit-cards',
+              icon: FileSearch,
+              eyebrow: 'Trust',
+              ctaLabel: 'Open methodology',
+            },
+          ],
+        }}
+        methodologyCta={{
+          eyebrow: 'Methodology and transparency',
+          title:
+            'True Value Score stays inactive until the card methodology is detailed enough to challenge.',
+          description:
+            'The category pages explain what will count in future scoring, how sponsored placements are labeled, and why partners cannot buy favorable reviews.',
+          primaryAction: {
+            href: '/methodology/credit-cards',
+            label: 'Open card methodology',
+            icon: FileSearch,
+          },
+          secondaryAction: {
+            href: '/methodology/editorial-integrity',
+            label: 'Read editorial integrity',
+            icon: ShieldCheck,
+            variant: 'secondary',
+          },
+        }}
+        containerClassName="max-w-7xl"
       >
-        {/* Section 1: Hero intro card + Featured article */}
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-          <div className="relative overflow-hidden rounded-[2rem] border border-brand-primary/15 bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.14),_transparent_38%),linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(235,240,255,0.88))] p-6 shadow-[0_28px_80px_-52px_rgba(0,82,255,0.48)] dark:border-brand-primary/20 dark:bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.24),_transparent_34%),linear-gradient(140deg,_rgba(15,23,42,0.95),_rgba(2,6,23,0.98))] sm:p-7">
-            <div className="space-y-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-brand-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary dark:border-brand-primary/20 dark:bg-brand-primary/15">
-                <CreditCard className="h-4 w-4" />
-                Credit card hub
-              </div>
-              <div className="space-y-3">
-                <h2 className="text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
-                  Start with the comparison. Open the review when you need the fine print.
-                </h2>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link
-                  href="#cards"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20"
-                >
-                  Explore all cards
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/credit-cards/reviews"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-white px-5 py-3 text-sm font-semibold text-brand-textPrimary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
-                >
-                  <TrendingUp className="h-4 w-4 text-brand-primary" />
-                  Read card reviews
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {featuredCreditCardArticle && <FeaturedArticleCard article={featuredCreditCardArticle} />}
-        </section>
-
-        {/* Section 2: Card listings */}
-        <section id="cards" className="space-y-8">
+        <section id="top-picks" className="space-y-5 scroll-mt-32">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-              Compare all cards
+              Best-for segments
             </p>
-            <h2 className="text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Top Philippine credit cards
+            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+              Start with the card job, then inspect the product
             </h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              This is the structure strong comparison sites use because it matches reader intent. Users usually start with "best cashback" or "best no-fee," not with an issuer alphabet.
+            </p>
           </div>
-          <div className="space-y-8">
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            {segmentCards.map((segment) => (
+              <SegmentCard key={segment.title} segment={segment} />
+            ))}
+          </div>
+        </section>
+
+        <section id="cards" className="space-y-5 scroll-mt-32">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
+              Full lineup
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+              Every live card, with the decision inputs kept visible
+            </h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              The long list moves lower on the page, but it still shows the core economics: annual fee, waiver logic, reward type, and the path into a fuller review.
+            </p>
+          </div>
+
+          <div className="grid gap-5 xl:grid-cols-2">
             {cards.map((card) => (
               <CardOverviewItem key={card.id} card={card} />
             ))}
           </div>
         </section>
 
-        {/* Section 3: Editorial articles */}
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="space-y-5">
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-                Editorial layer
-              </p>
-              <h2 className="text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-                Credit card articles
-              </h2>
-            </div>
-            <div className="grid gap-5 md:grid-cols-2">
-              {supportingArticles.map((article) => (
-                <ArticleCard key={article.slug} article={article} variant="compact" />
-              ))}
-            </div>
+        <section id="editorial" className="space-y-5 scroll-mt-32">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
+              Editorial by task
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+              Content should help the next question, not just add more volume
+            </h2>
           </div>
 
-          <div className="rounded-[1.75rem] border border-brand-border bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-              Our approach
-            </p>
-            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Honest comparisons, no rank-stuffing
-            </h2>
-            <ul className="mt-5 space-y-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              {[
-                'Card comparisons are based on publicly disclosed terms, not internal affiliate relationships.',
-                'We expose hidden fees and conditions that banks hide in the fine print.',
-                'Built to stay simple as more banking and card content gets added.',
-              ].map((point) => (
-                <li key={point} className="flex items-start gap-3">
-                  <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
-                  <span>{point}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="grid gap-5 lg:grid-cols-3">
+            <DecisionSupportCard
+              title="Choosing your first card"
+              description="Start with the review collection when you need plain-language verdicts and fewer issuer claims."
+              href="/credit-cards/reviews"
+              ctaLabel="Browse reviews"
+            />
+            <DecisionSupportCard
+              title="Understanding fee math and promos"
+              description="Read how Truva will normalize annual fees, fee waivers, reward value, and promo windows before a future ranking goes live."
+              href="/methodology/credit-cards"
+              ctaLabel="Open card methodology"
+            />
+            <DecisionSupportCard
+              title="Knowing what is editorial and what is ads"
+              description="See how partner-supported content is labeled and what compensation can change on Truva versus what it cannot touch."
+              href="/methodology/editorial-integrity"
+              ctaLabel="Read editorial integrity"
+            />
           </div>
         </section>
-      </SectionHub>
+      </ProductHubTemplate>
     </>
+  );
+}
+
+function CreditCardMethodCard() {
+  return (
+    <div className="rounded-[1.8rem] border border-brand-border bg-white p-6 shadow-[0_22px_70px_-48px_rgba(15,23,42,0.28)] dark:border-white/10 dark:bg-white/[0.04] sm:p-7">
+      <div className="space-y-5">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
+            What matters before you apply
+          </p>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+            A better card landing page keeps the economic traps in the hero, not hidden below the fold.
+          </h2>
+        </div>
+
+        <div className="space-y-3 rounded-[1.35rem] border border-brand-border bg-brand-surface/70 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+          <MethodRow
+            title="Annual fee economics"
+            description={'A card is not "best" if the fee eats the value after the welcome promo fades.'}
+          />
+          <MethodRow
+            title="Reward usefulness"
+            description="Points only matter if redemption is clear, attainable, and worth the effort."
+          />
+          <MethodRow
+            title="Disclosure discipline"
+            description="Sponsored placements need visible labels and a trust page readers can inspect."
+          />
+        </div>
+
+        <TrueValueScoreBadge />
+
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/methodology/credit-cards"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
+          >
+            Open methodology
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/methodology/editorial-integrity"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-5 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
+          >
+            Read trust policy
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MethodRow({ title, description }: { title: string; description: string }) {
+  return (
+    <div>
+      <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-brand-textPrimary dark:text-white">
+        {title}
+      </h3>
+      <p className="mt-1 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+        {description}
+      </p>
+    </div>
+  );
+}
+
+function SegmentCard({ segment }: { segment: SegmentDefinition }) {
+  const Icon = segment.icon;
+
+  return (
+    <div className="rounded-[1.75rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
+            <Icon className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
+              Top pick
+            </p>
+            <h3 className="mt-1 text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+              {segment.title}
+            </h3>
+          </div>
+        </div>
+
+        <TrueValueScoreBadge compact />
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+        {segment.description}
+      </p>
+
+      {segment.card ? (
+        <>
+          <div className="mt-5 rounded-[1.35rem] border border-brand-border bg-brand-surface/80 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+            <p className="text-lg font-bold tracking-tight text-brand-textPrimary dark:text-white">
+              {segment.card.name}
+            </p>
+            <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">
+              {segment.card.provider}
+            </p>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <MetricBlock
+                label="Annual fee"
+                value={
+                  segment.card.annualFee === 0
+                    ? 'PHP 0'
+                    : formatPhpAmount(segment.card.annualFee)
+                }
+                detail={normalizeCopy(segment.card.annualFeeWaiverCondition ?? 'Check issuer waiver rules')}
+              />
+              <MetricBlock
+                label="Reward type"
+                value={formatRewardType(segment.card.rewardType)}
+                detail={`Best for ${cleanBestFor(segment.card.bestFor)}`}
+              />
+            </div>
+
+            <p className="mt-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              {normalizeCopy(segment.card.editorVerdict)}
+            </p>
+          </div>
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href={`/credit-cards/reviews/${segment.card.id}`}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
+            >
+              Read review
+            </Link>
+            <a
+              href={segment.card.affiliateUrl || '#'}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
+            >
+              Apply on issuer site
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mt-5 rounded-[1.35rem] border border-dashed border-brand-primary/30 bg-brand-primary/5 p-4 dark:border-brand-primary/25 dark:bg-brand-primary/10">
+            <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              {segment.fallback}
+            </p>
+          </div>
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/methodology/credit-cards"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
+            >
+              View methodology
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/methodology/editorial-integrity"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
+            >
+              Read trust policy
+            </Link>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function MetricBlock({
+  label,
+  value,
+  detail,
+}: {
+  label: string;
+  value: string;
+  detail: string;
+}) {
+  return (
+    <div className="rounded-[1rem] border border-brand-border bg-white p-3 dark:border-white/10 dark:bg-slate-950/40">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-primary">
+        {label}
+      </p>
+      <p className="mt-1 text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">
+        {value}
+      </p>
+      <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
+        {detail}
+      </p>
+    </div>
+  );
+}
+
+function DecisionSupportCard({
+  title,
+  description,
+  href,
+  ctaLabel,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  ctaLabel: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group rounded-[1.75rem] border border-brand-border bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-brand-primary/25 dark:border-white/10 dark:bg-white/[0.04]"
+    >
+      <p className="text-xl font-bold tracking-tight text-brand-textPrimary transition-colors group-hover:text-brand-primary dark:text-white">
+        {title}
+      </p>
+      <p className="mt-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+        {description}
+      </p>
+      <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-primary">
+        {ctaLabel}
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </span>
+    </Link>
   );
 }
 
 function CardOverviewItem({ card }: { card: CreditCardProduct }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] border shadow-sm transition-all hover:shadow-md ${card.isSponsored ? 'border-amber-400 dark:border-amber-500/50' : 'border-brand-border dark:border-white/10'}`}
+      className={`relative overflow-hidden rounded-[1.9rem] border bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-white/[0.03] ${
+        card.isSponsored
+          ? 'border-amber-400 dark:border-amber-500/50'
+          : 'border-brand-border dark:border-white/10'
+      }`}
     >
-      {card.isSponsored && (
+      {card.isSponsored ? (
         <div className="flex w-full items-center justify-between border-b border-amber-400/20 bg-amber-400/10 px-6 py-2 text-xs font-semibold text-amber-700 dark:text-amber-400">
           <span className="flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5" /> Sponsored Placement
+            <Sparkles className="h-3.5 w-3.5" />
+            Sponsored placement
           </span>
-          {card.sponsoredDisclosure && <span className="hidden font-normal opacity-80 sm:block">{card.sponsoredDisclosure}</span>}
+          <span className="hidden font-normal opacity-80 sm:block">
+            {normalizeCopy(card.sponsoredDisclosure ?? 'Partner-supported card listing')}
+          </span>
         </div>
-      )}
+      ) : null}
 
       <div className="flex flex-col gap-8 p-6 sm:flex-row sm:p-8">
-        {/* Left Col: Logo & Badge */}
         <div className="flex w-full flex-col items-center text-center sm:w-1/3 sm:items-start sm:text-left">
-          {card.logo ? (
-            <div className="relative mb-4 w-full overflow-hidden rounded-xl border border-brand-border bg-white p-6 shadow-inner dark:border-white/5 dark:bg-white/5">
+          <div className="relative mb-4 aspect-[1.58] w-full overflow-hidden rounded-[1.25rem] border border-brand-border bg-white p-6 shadow-inner dark:border-white/5 dark:bg-white/5">
+            {card.logo ? (
               <Image
                 src={card.logo}
                 alt={`${card.provider} logo`}
@@ -181,46 +571,68 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
                 className="object-contain p-4"
                 sizes="(max-width: 640px) 100vw, 33vw"
               />
-            </div>
-          ) : (
-            <div className="mb-4 flex w-full items-center justify-center rounded-xl border border-brand-border bg-slate-100 shadow-inner dark:border-white/5 dark:bg-slate-800" style={{ aspectRatio: '1.58' }}>
-              <span className="text-sm font-medium tracking-widest text-slate-400">{card.provider.toUpperCase()}</span>
-            </div>
-          )}
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="text-sm font-medium tracking-widest text-slate-400">
+                  {card.provider.toUpperCase()}
+                </span>
+              </div>
+            )}
+          </div>
 
-          {card.bestFor && (
+          {card.bestFor ? (
             <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-brand-primary/10 px-3 py-1.5 text-xs font-medium text-brand-primary">
               <ShieldCheck className="h-3.5 w-3.5" />
-              Best for {card.bestFor.toLowerCase().includes('best for') ? card.bestFor.replace(/^Best for /i, '') : card.bestFor}
+              Best for {cleanBestFor(card.bestFor)}
             </div>
-          )}
+          ) : null}
+
+          <TrueValueScoreBadge compact className="justify-center sm:justify-start" />
         </div>
 
-        {/* Right Col: Details */}
         <div className="flex w-full flex-col sm:w-2/3">
-          <h2 className="mb-1 text-2xl font-bold">{card.name}</h2>
-          <p className="mb-6 text-sm text-brand-textSecondary">{card.provider}</p>
+          <h2 className="mb-1 text-2xl font-bold text-brand-textPrimary dark:text-white">
+            {card.name}
+          </h2>
+          <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-300">
+            {card.provider}
+          </p>
 
-          {/* Data Grid */}
-          <div className="mb-6 grid grid-cols-2 gap-4 rounded-xl border border-brand-border bg-slate-50 p-4 dark:border-white/5 dark:bg-slate-900/50">
+          <div className="mb-6 grid grid-cols-2 gap-4 rounded-[1.25rem] border border-brand-border bg-slate-50 p-4 dark:border-white/5 dark:bg-slate-900/50">
             <div>
-              <p className="mb-1 text-xs font-medium uppercase tracking-wider text-brand-textSecondary">Annual Fee</p>
-              <p className="text-lg font-semibold">
-                {card.annualFee === 0 ? 'Free' : `₱${card.annualFee.toLocaleString()}`}
+              <p className="mb-1 text-xs font-medium uppercase tracking-wider text-brand-textSecondary">
+                Annual fee
               </p>
-              {card.annualFeeWaiverCondition && <p className="mt-0.5 truncate text-xs text-brand-textSecondary">{card.annualFeeWaiverCondition}</p>}
+              <p className="text-lg font-semibold tabular-nums text-brand-textPrimary dark:text-white">
+                {card.annualFee === 0 ? 'Free' : formatPhpAmount(card.annualFee)}
+              </p>
+              {card.annualFeeWaiverCondition ? (
+                <p className="mt-0.5 text-xs text-brand-textSecondary dark:text-gray-400">
+                  {normalizeCopy(card.annualFeeWaiverCondition)}
+                </p>
+              ) : null}
             </div>
             <div>
-              <p className="mb-1 text-xs font-medium uppercase tracking-wider text-brand-textSecondary">Interest Rate</p>
-              <p className="text-lg font-semibold text-brand-success">{card.monthlyInterestRate * 100}% / mo</p>
+              <p className="mb-1 text-xs font-medium uppercase tracking-wider text-brand-textSecondary">
+                Reward type
+              </p>
+              <p className="text-lg font-semibold text-brand-success">
+                {formatRewardType(card.rewardType)}
+              </p>
+              <p className="mt-0.5 text-xs text-brand-textSecondary dark:text-gray-400">
+                {formatMonthlyRate(card.monthlyInterestRate)}
+              </p>
             </div>
           </div>
 
           <ul className="mb-8 flex-1 space-y-2">
-            {card.perks.slice(0, 3).map((perk, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-brand-textSecondary">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-success" />
-                <span>{perk}</span>
+            {card.perks.slice(0, 3).map((perk) => (
+              <li
+                key={`${card.id}-${perk}`}
+                className="flex items-start gap-2 text-sm text-brand-textSecondary dark:text-gray-300"
+              >
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-success" />
+                <span>{normalizeCopy(perk)}</span>
               </li>
             ))}
           </ul>
@@ -230,7 +642,7 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
               href={`/credit-cards/reviews/${card.id}`}
               className="flex flex-1 items-center justify-center rounded-xl bg-brand-primary/10 px-4 py-3 font-medium text-brand-primary transition-colors hover:bg-brand-primary/20"
             >
-              Read Review
+              Read review
             </Link>
             <a
               href={card.affiliateUrl || '#'}
@@ -238,11 +650,57 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
               rel="nofollow noopener noreferrer"
               className="flex flex-1 items-center justify-center rounded-xl bg-brand-primary px-4 py-3 font-medium text-white shadow-sm shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
             >
-              Apply Now <ChevronRight className="ml-1 h-4 w-4" />
+              Apply now
+              <ArrowRight className="ml-1 h-4 w-4" />
             </a>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function cleanBestFor(value: string) {
+  const normalized = normalizeCopy(value);
+  return normalized.toLowerCase().includes('best for')
+    ? normalized.replace(/^Best for /i, '')
+    : normalized;
+}
+
+function formatRewardType(rewardType: CreditCardProduct['rewardType']) {
+  switch (rewardType) {
+    case 'cashback':
+      return 'Cashback';
+    case 'miles':
+      return 'Miles';
+    case 'points':
+      return 'Points';
+    default:
+      return 'None';
+  }
+}
+
+function formatMonthlyRate(rate: number) {
+  return `${(rate * 100).toFixed(1)}% / mo`;
+}
+
+function formatPhpAmount(amount: number) {
+  return new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function normalizeCopy(value: string) {
+  return [
+    ['â‚±', 'PHP '],
+    ['â€“', '-'],
+    ['â€”', '-'],
+    ['â€˜', "'"],
+    ['â€™', "'"],
+    ['â€œ', '"'],
+    ['â€\u009d', '"'],
+    ['âœ“', 'Check'],
+  ].reduce((output, [before, after]) => output.split(before).join(after), value);
 }

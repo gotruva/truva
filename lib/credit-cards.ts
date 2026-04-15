@@ -1,6 +1,7 @@
 import { CreditCardProduct } from '@/types';
 import fs from 'fs';
 import path from 'path';
+import { normalizeCreditCardProduct } from './score';
 
 export async function getCreditCards(): Promise<CreditCardProduct[]> {
   try {
@@ -8,7 +9,7 @@ export async function getCreditCards(): Promise<CreditCardProduct[]> {
     if (!fs.existsSync(filePath)) return [];
     
     const fileContents = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(fileContents) as CreditCardProduct[];
+    return (JSON.parse(fileContents) as CreditCardProduct[]).map(normalizeCreditCardProduct);
   } catch (e) {
     console.error("Failed to parse credit cards:", e);
     return [];
