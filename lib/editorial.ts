@@ -106,6 +106,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     section: 'rates',
     articleType: 'Rate Guide',
     eyebrow: 'Rate guide',
+    bannerUrl: '/images/banners/Digital-Bank-Interest-Rates-Philippines-2026.png',
     publishedAt: '2026-04-14',
     updatedAt: '2026-04-14',
     author: 'Beto',

@@ -292,7 +292,7 @@ function EditorialLane({
   articles: EditorialArticle[];
 }) {
   return (
-    <section className="rounded-[1.75rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+    <section className="overflow-hidden rounded-[1.75rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
       <div className="space-y-3">
         <h3 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
           {title}

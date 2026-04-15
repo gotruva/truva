@@ -1,5 +1,6 @@
 import type { EditorialArticle } from '@/types';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface FeaturedArticleCardProps {
@@ -13,12 +14,16 @@ export function FeaturedArticleCard({ article }: FeaturedArticleCardProps) {
       className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-brand-primary/20 bg-[radial-gradient(circle_at_top_right,_rgba(45,212,191,0.18),_transparent_32%),linear-gradient(135deg,_rgba(0,82,255,0.96),_rgba(4,25,70,0.98))] text-white shadow-[0_28px_80px_-36px_rgba(0,82,255,0.72)] transition-transform duration-300 hover:-translate-y-1 sm:rounded-[2rem]"
     >
       {article.bannerUrl && (
-        <div
-          className="h-48 w-full flex-shrink-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${article.bannerUrl}')`,
-          }}
-        />
+        <div className="relative aspect-[16/6] w-full flex-shrink-0 overflow-hidden bg-[#eef3ff] dark:bg-[#0d1b38]">
+          <Image
+            src={article.bannerUrl}
+            alt={article.title}
+            fill
+            className="object-contain object-center"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px"
+            priority
+          />
+        </div>
       )}
       <div className="absolute -right-10 top-6 h-36 w-36 rounded-full bg-cyan-300/30 blur-3xl" />
       <div className="relative flex h-full flex-col gap-4 p-5 sm:p-7">

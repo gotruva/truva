@@ -1,5 +1,6 @@
 import type { EditorialArticle } from '@/types';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArticleMetaBar } from '@/components/editorial/ArticleMetaBar';
 
@@ -11,12 +12,16 @@ export function EditorialHero({ article }: EditorialHeroProps) {
   return (
     <section className="relative flex flex-col overflow-hidden rounded-[2rem] border border-brand-border/70 shadow-[0_28px_90px_-48px_rgba(0,82,255,0.55)] dark:border-white/10 sm:rounded-[2rem]">
       {article.bannerUrl && (
-        <div
-          className="h-48 w-full flex-shrink-0 bg-cover bg-center sm:h-80"
-          style={{
-            backgroundImage: `url('${article.bannerUrl}')`,
-          }}
-        />
+        <div className="relative aspect-[16/6] w-full flex-shrink-0 overflow-hidden bg-[#eef3ff] dark:bg-[#0d1b38] sm:aspect-[16/5]">
+          <Image
+            src={article.bannerUrl}
+            alt={article.title}
+            fill
+            className="object-contain object-center"
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1152px"
+            priority
+          />
+        </div>
       )}
       <div className="relative flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.16),_transparent_36%),linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(235,240,255,0.94))] p-6 dark:bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.28),_transparent_34%),linear-gradient(140deg,_rgba(15,23,42,0.95),_rgba(2,6,23,0.98))] sm:p-8 lg:p-10">
         <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[linear-gradient(120deg,transparent,rgba(0,82,255,0.06),transparent)] lg:block" />
