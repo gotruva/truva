@@ -283,6 +283,80 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     relatedArticles: ['best-digital-bank-philippines', 'maya-savings-review', 'final-withholding-tax-explained'],
   },
   {
+    slug: 'maya-vs-gotyme-philippines',
+    path: '/banking/compare/maya-vs-gotyme-philippines',
+    bannerUrl: '/images/banners/maya-vs-gotyme-philippines.png',
+    title: 'Maya vs GoTyme Philippines 2026: which digital bank should you choose?',
+    seoTitle: 'Maya vs GoTyme Philippines 2026: Which Pays More?',
+    description:
+      'Comparing Maya and GoTyme Philippines in 2026? At ₱250,000 saved, Maya earns ₱10,200 more per year after tax. See full tables, boost guide, and the dual-bank strategy.',
+    subtitle: 'A peso-math comparison of Maya and GoTyme for 2026, with real after-tax earnings at three balance levels and a scenario guide for every saver type.',
+    category: 'banking',
+    categoryLabel: 'Banking',
+    section: 'compare',
+    sectionPath: '/banking/compare',
+    articleType: 'Comparison',
+    eyebrow: 'Bank comparison',
+    publishedAt: '2026-04-15',
+    updatedAt: '2026-04-15',
+    author: 'Beto',
+    authorUrl: '/authors/beto',
+    readingTime: '10 min read',
+    featured: false,
+    keywords: ['Maya vs GoTyme Philippines', 'Maya vs GoTyme Philippines 2026', 'which digital bank Philippines'],
+    verificationNote: 'Rates verified April 15, 2026. Maya base rate is 3.5% (April 2026 promo); GoTyme Go Save is 3.0%.',
+    disclosureNote:
+      'After-tax figures use the 20% Final Withholding Tax mandated under Philippine law. Rates subject to change.',
+    toc: [
+      { label: 'Maya vs GoTyme at a glance' },
+      { label: 'The real peso math: what you actually earn after tax' },
+      { label: "How Maya's savings rate actually works" },
+      { label: 'How GoTyme Go Save actually works' },
+      { label: 'Which bank fits your situation' },
+      { label: 'Should you use both? Most savvy users do.' },
+      { label: 'Frequently asked questions' },
+      { label: 'The bottom line' },
+    ],
+    faqItems: [
+      {
+        question: 'Is Maya or GoTyme better for savings in the Philippines?',
+        answer:
+          "Maya earns more if you regularly use it for spending (bills, load, QR). Even the minimum ₱250/month spend unlocks 5%, more than GoTyme's 3%. If you want zero conditions and multiple named accounts, GoTyme is the cleaner choice.",
+      },
+      {
+        question: 'Can I open both a Maya and GoTyme account?',
+        answer:
+          'Yes. Both require only a valid ID and a selfie. Neither has a minimum deposit. Many Filipinos use Maya for day-to-day transactions and GoTyme for passive savings goals.',
+      },
+      {
+        question: "What do I need to do to get Maya's boosted interest?",
+        answer:
+          'Spend ₱250 or more per month on bills, load, stocks, funds, or payments to unlock the first boost tier (5%). Higher tiers require more spending. The boost applies only to your first ₱100,000.',
+      },
+      {
+        question: 'Does GoTyme have a cap on the 3% rate?',
+        answer:
+          "No. GoTyme's 3.0% applies to your full balance with no upper limit. You can have up to 5 separate Go Save accounts, each earning the full 3.0%.",
+      },
+      {
+        question: 'Are Maya and GoTyme PDIC insured?',
+        answer:
+          'Yes. Both are BSP-licensed digital banks. Maya is PDIC-insured up to ₱500,000 per depositor. GoTyme is PDIC-insured up to ₱1,000,000 per depositor.',
+      },
+    ],
+    primaryCta: {
+      label: 'Compare live banking rates',
+      href: '/#deposit-rates',
+      description: 'See current Maya and GoTyme rates on the Truva comparison table.',
+    },
+    secondaryCta: {
+      label: 'Use the savings calculator',
+      href: '/calculator',
+      description: 'Model what your balance earns after tax before you move money.',
+    },
+    relatedArticles: ['maya-savings-review', 'best-digital-bank-philippines', 'digital-bank-interest-rates-philippines-2026', 'pdic-insurance-guide'],
+  },
+  {
     slug: 'best-no-conditions-savings',
     path: '/banking/compare/best-no-conditions-savings',
     title: 'Best no-conditions savings accounts in the Philippines 2026',
