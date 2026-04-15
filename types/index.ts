@@ -27,6 +27,11 @@ export interface RateCondition {
   requiredMonthlySpend?: number;    // e.g. 500 for Maya
 }
 
+export interface ProductLimit {
+  maxDepositPerProduct?: number;    // e.g. 250000 for ₱250k max per time deposit
+  maxProductsPerUser?: number;      // e.g. 5 for max 5 time deposits per user
+}
+
 export interface RateProduct {
   id: string;
   name: string;
@@ -54,6 +59,7 @@ export interface RateProduct {
   pdic: boolean;
   insurer: string;                  // e.g. "PDIC", "Bureau of Treasury", "Pag-IBIG Fund", "Not Insured"
   lastVerified: string;             // ISO date — when we last confirmed these rates
+  limits?: ProductLimit;             // max deposit per product, max products per user, etc.
 
   // --- Affiliate / monetization ---
   affiliateUrl: string;

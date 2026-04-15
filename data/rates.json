@@ -358,6 +358,10 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -391,6 +395,10 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -424,6 +432,10 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -457,6 +469,10 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -490,6 +506,10 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,

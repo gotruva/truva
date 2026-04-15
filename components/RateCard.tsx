@@ -98,6 +98,11 @@ function ProductRow({ product, amount, months, isBest }: {
                 <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Rate has requirements
               </span>
             )}
+            {product.limits?.maxDepositPerProduct && (
+              <Badge variant="outline" className="text-[10px] font-bold text-blue-700 dark:text-blue-400 border-blue-400/30 bg-blue-50 dark:bg-blue-950/20 py-0">
+                Max ₱{product.limits.maxDepositPerProduct.toLocaleString()} per Time Deposit
+              </Badge>
+            )}
           </div>
         </div>
         <div className="text-right shrink-0 pl-3">
