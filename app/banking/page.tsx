@@ -146,7 +146,7 @@ export default async function BankingHub() {
         }}
         quickStart={{
           eyebrow: 'Start here',
-          title: 'Three fast ways into the decision',
+          title: 'Four fast ways into the decision',
           description:
             'The landing page should help both users who want the answer now and users who want to audit the logic before they move cash.',
           links: [
@@ -158,6 +158,15 @@ export default async function BankingHub() {
               icon: GitCompareArrows,
               eyebrow: 'Compare',
               ctaLabel: 'Open rate desk',
+            },
+            {
+              title: 'Read a comparison brief',
+              description:
+                'See side-by-side peso math for the most common bank matchups: Maya vs GoTyme, Maya vs Tonik, and more.',
+              href: '/banking/compare',
+              icon: SearchCheck,
+              eyebrow: 'Head-to-head',
+              ctaLabel: 'Browse comparisons',
             },
             {
               title: 'Run the savings math',
