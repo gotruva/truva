@@ -304,7 +304,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     readingTime: '10 min read',
     featured: false,
     keywords: ['Maya vs GoTyme Philippines', 'Maya vs GoTyme Philippines 2026', 'which digital bank Philippines'],
-    verificationNote: 'Rates verified April 15, 2026. Maya base rate is 3.5% (April 2026 promo); GoTyme Go Save is 3.0%.',
+    verificationNote: 'Rates verified April 15, 2026. Maya base rate is 3.5% (April 2026 promo); GoTyme Go Save is 3.0%. Both banks are PDIC-insured up to ₱1,000,000 per depositor.',
     disclosureNote:
       'After-tax figures use the 20% Final Withholding Tax mandated under Philippine law. Rates subject to change.',
     toc: [
@@ -341,7 +341,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       {
         question: 'Are Maya and GoTyme PDIC insured?',
         answer:
-          'Yes. Both are BSP-licensed digital banks. Maya is PDIC-insured up to ₱500,000 per depositor. GoTyme is PDIC-insured up to ₱1,000,000 per depositor.',
+          'Yes. Both are BSP-licensed digital banks. Both Maya and GoTyme are PDIC-insured up to ₱1,000,000 per depositor.',
       },
     ],
     primaryCta: {
