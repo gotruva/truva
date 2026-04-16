@@ -71,15 +71,15 @@ async function main() {
 
   const { data: funds, error: fundsError } = await client
     .from('money_market_funds')
-    .select('id, slug, name, provider')
+    .select('id, slug, name, provider, currency, benchmark_key')
     .eq('is_active', true)
-    .eq('currency', 'PHP')
+    .in('currency', ['PHP', 'USD'])
     .eq('fund_type', 'UITF')
     .eq('navpu_source', 'uitf_com_ph')
-    .returns<MmfFundRow[]>();
+    .returns<(MmfFundRow & { currency: string, benchmark_key: string })[]>();
 
   assert(!fundsError, `Failed to load MMF automation targets: ${fundsError?.message}`);
-  assert(funds && funds.length > 0, 'Expected at least one active PHP UITF automation target.');
+  assert(funds && funds.length > 0, 'Expected at least one active UITF automation target.');
 
   const fundIds = funds.map((fund) => fund.id);
   const { data: rows, error: ratesError } = await client
@@ -128,35 +128,51 @@ async function main() {
     );
   } else if (manualFunds.length > 0) {
     console.warn(
-      `Warning: ${manualFunds.length} PHP UITF rows are not scraper-sourced yet. Run with --require-scraper after n8n is live.`,
+      `Warning: ${manualFunds.length} UITF rows are not scraper-sourced yet. Run with --require-scraper after n8n is live.`,
     );
   }
 
-  const { data: benchmarks, error: benchmarkError } = await client
+  // Load benchmarks
+  const { data: benchmarksData, error: benchmarkError } = await client
     .from('benchmark_rates')
-    .select('date, rate')
-    .eq('key', 'BTR_91D')
+    .select('key, date, rate')
+    .in('key', ['BTR_91D', 'US_TBILL_90D'])
     .lte('date', checkDate)
-    .order('date', { ascending: false })
-    .limit(1);
+    .order('date', { ascending: false });
 
-  assert(!benchmarkError, `Failed to load BTR_91D benchmark: ${benchmarkError?.message}`);
-  assert(benchmarks && benchmarks.length > 0, `Missing BTR_91D benchmark on or before ${checkDate}.`);
+  assert(!benchmarkError, `Failed to load benchmarks: ${benchmarkError?.message}`);
+  
+  const benchmarks = benchmarksData || [];
+  const btr = benchmarks.find((b) => b.key === 'BTR_91D');
+  const usd = benchmarks.find((b) => b.key === 'US_TBILL_90D');
+  
+  if (funds.some(f => f.benchmark_key === 'BTR_91D')) {
+    assert(btr, `Missing BTR_91D benchmark on or before ${checkDate}.`);
+  }
+  if (funds.some(f => f.benchmark_key === 'US_TBILL_90D')) {
+    assert(usd, `Missing US_TBILL_90D benchmark on or before ${checkDate}.`);
+  }
 
-  const afterTaxBenchmarkRate = benchmarks[0].rate * 0.8;
   const incorrectBenchmarkDeltaFunds = funds.filter((fund) => {
     const row = rowByFundId.get(fund.id);
     if (!row || row.net_yield === null || row.vs_benchmark === null) return true;
-    return !isCloseTo(row.vs_benchmark, row.net_yield - afterTaxBenchmarkRate);
+    
+    const benchmark = fund.benchmark_key === 'BTR_91D' ? btr : usd;
+    if (!benchmark) return true;
+    
+    // Remember: BTR is fully taxable so we *0.8. USD might follow different tax structures, but typically BTR is 0.8
+    const taxAdjustedRate = fund.benchmark_key === 'BTR_91D' ? benchmark.rate * 0.8 : benchmark.rate;
+    return !isCloseTo(row.vs_benchmark, row.net_yield - taxAdjustedRate);
   });
+  
   assert.equal(
     incorrectBenchmarkDeltaFunds.length,
     0,
-    `Benchmark delta should compare net yield against the after-tax BTR_91D rate. Check: ${formatFundList(incorrectBenchmarkDeltaFunds)}`,
+    `Benchmark delta should compare net yield against the correct tax-adjusted benchmark rate. Check: ${formatFundList(incorrectBenchmarkDeltaFunds)}`,
   );
 
   console.log(
-    `MMF automation verification passed for ${checkDate}: ${funds.length} PHP UITF targets, BTR_91D ${(benchmarks[0].rate * 100).toFixed(2)}% raw / ${(afterTaxBenchmarkRate * 100).toFixed(2)}% after tax from ${benchmarks[0].date}.`,
+    `MMF automation verification passed for ${checkDate}: ${funds.length} targets verified.`,
   );
 }
 
