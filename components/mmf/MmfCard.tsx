@@ -8,6 +8,7 @@ import {
   redemptionLabel,
 } from '@/lib/mmf';
 import { MmfCtaButton } from './MmfCtaButton';
+import { MMF_HELP_TEXT, MmfInfoLabel } from './MmfInfoLabel';
 
 export function MmfCard({
   fund,
@@ -42,9 +43,11 @@ export function MmfCard({
       </div>
 
       <div className="mb-4 rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/50 p-4 dark:border-brand-primary/20 dark:bg-brand-primary/10">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-          Net yield
-        </p>
+        <MmfInfoLabel
+          label="Net yield"
+          description={MMF_HELP_TEXT.netYield}
+          className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary"
+        />
         <div className="mt-2 flex items-end justify-between gap-3">
           <p className="text-3xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
             {formatMmfPercent(fund.net_yield)}
@@ -71,13 +74,21 @@ export function MmfCard({
           </p>
         </div>
         <div>
-          <p className="text-brand-textSecondary/55 dark:text-white/35">Cash access</p>
+          <MmfInfoLabel
+            label="Cash access"
+            description={MMF_HELP_TEXT.cashAccess}
+            className="text-brand-textSecondary/55 dark:text-white/35"
+          />
           <p className="mt-1 font-semibold text-brand-textPrimary dark:text-white">
             {redemptionLabel(fund.redemption_days)}
           </p>
         </div>
         <div>
-          <p className="text-brand-textSecondary/55 dark:text-white/35">vs benchmark</p>
+          <MmfInfoLabel
+            label="vs T-Bill"
+            description={MMF_HELP_TEXT.vsTbill}
+            className="text-brand-textSecondary/55 dark:text-white/35"
+          />
           <p className={`mt-1 font-semibold tabular-nums ${deltaColor}`}>
             {benchmarkDelta === null || benchmarkDelta === undefined
               ? '-'
@@ -88,6 +99,16 @@ export function MmfCard({
           <p className="text-brand-textSecondary/55 dark:text-white/35">Gross yield</p>
           <p className="mt-1 font-semibold tabular-nums text-brand-textPrimary dark:text-white">
             {formatMmfPercent(fund.gross_yield_1y)}
+          </p>
+        </div>
+        <div>
+          <MmfInfoLabel
+            label="Trust fee"
+            description={MMF_HELP_TEXT.trustFee}
+            className="text-brand-textSecondary/55 dark:text-white/35"
+          />
+          <p className="mt-1 font-semibold tabular-nums text-brand-textPrimary dark:text-white">
+            {formatMmfPercent(fund.trust_fee_pct)}/yr
           </p>
         </div>
       </div>

@@ -209,6 +209,7 @@ set search_path = public
 as $$
 declare
   latest_benchmark_rate numeric(7,4);
+  tax_adjusted_benchmark_rate numeric(7,4);
   updated_count integer;
 begin
   select br.rate
@@ -223,10 +224,16 @@ begin
     raise exception 'No benchmark rate found for key % on or before %', requested_key, requested_date;
   end if;
 
+  tax_adjusted_benchmark_rate :=
+    case
+      when requested_key = 'BTR_91D' then latest_benchmark_rate * 0.80
+      else latest_benchmark_rate
+    end;
+
   update public.mmf_daily_rates r
   set
     benchmark_rate = latest_benchmark_rate,
-    vs_benchmark = r.net_yield - latest_benchmark_rate
+    vs_benchmark = r.net_yield - tax_adjusted_benchmark_rate
   from public.money_market_funds f
   where r.fund_id = f.id
     and f.benchmark_key = requested_key

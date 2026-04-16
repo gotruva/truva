@@ -95,8 +95,10 @@ Yield math:
 gross_yield_1y = source 1Y return / 100
 after_tax_yield = gross_yield_1y * 0.80
 net_yield = after_tax_yield - trust_fee_pct
-vs_benchmark = net_yield - latest BTR_91D benchmark rate
+vs_benchmark = net_yield - (latest BTR_91D benchmark rate * 0.80)
 ```
+
+`trust_fee_pct` is stored as a decimal value. For example, 0.0050 means 0.50%. `benchmark_rates.rate` keeps the raw BTr auction rate, while `vs_benchmark` compares against the after-tax T-Bill benchmark so the public `vs T-Bill` column is tax-comparable.
 
 Writes:
 

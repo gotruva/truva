@@ -6,6 +6,7 @@ import {
   redemptionLabel,
 } from '@/lib/mmf';
 import { MmfCtaButton } from './MmfCtaButton';
+import { MMF_HELP_TEXT, MmfInfoLabel } from './MmfInfoLabel';
 
 export function MmfTable({
   funds,
@@ -20,13 +21,37 @@ export function MmfTable({
         <thead>
           <tr className="border-b border-brand-border bg-brand-surface/60 text-xs text-brand-textSecondary/70 dark:border-white/10 dark:bg-white/[0.03] dark:text-white/45">
             <th className="px-4 py-3 text-left font-semibold">Fund</th>
-            <th className="px-4 py-3 text-right font-semibold text-brand-primary">Net yield</th>
+            <th className="px-4 py-3 text-right font-semibold text-brand-primary">
+              <MmfInfoLabel
+                label="Net yield"
+                description={MMF_HELP_TEXT.netYield}
+                align="right"
+              />
+            </th>
             <th className="px-4 py-3 text-right font-semibold">Estimated yearly earnings</th>
             <th className="px-4 py-3 text-right font-semibold">Minimum</th>
-            <th className="px-4 py-3 text-right font-semibold">Cash access</th>
-            <th className="px-4 py-3 text-right font-semibold">vs benchmark</th>
+            <th className="px-4 py-3 text-right font-semibold">
+              <MmfInfoLabel
+                label="Cash access"
+                description={MMF_HELP_TEXT.cashAccess}
+                align="right"
+              />
+            </th>
+            <th className="px-4 py-3 text-right font-semibold">
+              <MmfInfoLabel
+                label="vs T-Bill"
+                description={MMF_HELP_TEXT.vsTbill}
+                align="right"
+              />
+            </th>
             <th className="px-4 py-3 text-right font-semibold">Gross</th>
-            <th className="px-4 py-3 text-right font-semibold">Trust fee</th>
+            <th className="px-4 py-3 text-right font-semibold">
+              <MmfInfoLabel
+                label="Trust fee"
+                description={MMF_HELP_TEXT.trustFee}
+                align="right"
+              />
+            </th>
             <th className="px-4 py-3" />
           </tr>
         </thead>

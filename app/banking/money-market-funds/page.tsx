@@ -112,7 +112,7 @@ export default async function MoneyMarketFundsPage() {
             {benchmark ? formatMmfPercent(benchmark.rate) : '-'}
           </p>
           <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-            BTr benchmark date: {formatPhtDate(benchmark?.date)}
+            Raw BTr rate date: {formatPhtDate(benchmark?.date)}
           </p>
         </div>
 

@@ -47,6 +47,10 @@ function formatFundList(funds: MmfFundRow[]) {
   return funds.map((fund) => `${fund.provider} - ${fund.name}`).join('; ');
 }
 
+function isCloseTo(left: number, right: number) {
+  return Math.abs(left - right) < 0.000001;
+}
+
 async function main() {
   const client = createSupabaseAdminClient('public');
   if (!client) {
@@ -139,8 +143,20 @@ async function main() {
   assert(!benchmarkError, `Failed to load BTR_91D benchmark: ${benchmarkError?.message}`);
   assert(benchmarks && benchmarks.length > 0, `Missing BTR_91D benchmark on or before ${checkDate}.`);
 
+  const afterTaxBenchmarkRate = benchmarks[0].rate * 0.8;
+  const incorrectBenchmarkDeltaFunds = funds.filter((fund) => {
+    const row = rowByFundId.get(fund.id);
+    if (!row || row.net_yield === null || row.vs_benchmark === null) return true;
+    return !isCloseTo(row.vs_benchmark, row.net_yield - afterTaxBenchmarkRate);
+  });
+  assert.equal(
+    incorrectBenchmarkDeltaFunds.length,
+    0,
+    `Benchmark delta should compare net yield against the after-tax BTR_91D rate. Check: ${formatFundList(incorrectBenchmarkDeltaFunds)}`,
+  );
+
   console.log(
-    `MMF automation verification passed for ${checkDate}: ${funds.length} PHP UITF targets, BTR_91D ${(benchmarks[0].rate * 100).toFixed(2)}% from ${benchmarks[0].date}.`,
+    `MMF automation verification passed for ${checkDate}: ${funds.length} PHP UITF targets, BTR_91D ${(benchmarks[0].rate * 100).toFixed(2)}% raw / ${(afterTaxBenchmarkRate * 100).toFixed(2)}% after tax from ${benchmarks[0].date}.`,
   );
 }
 

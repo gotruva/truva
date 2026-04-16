@@ -585,7 +585,7 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
     title: 'How time deposits, T-Bills, and UITFs work in the Philippines',
     seoTitle: 'Time deposits vs T-Bills vs UITFs: which works best?',
     description:
-      'Learn the tradeoffs between locked bank deposits, tax-exempt government securities, and pooled investment funds.',
+      'Learn the tradeoffs between locked bank deposits, government securities, and pooled investment funds.',
     subtitle: 'A comparison of liquidity, tax treatment, and risk for savers deciding where to park cash.',
     category: 'guides',
     categoryLabel: 'Guides',
