@@ -1,94 +1,89 @@
-import { MoneyMarketFund } from '@/types'
-import { MmfCtaButton } from './MmfCtaButton'
+import { MoneyMarketFund } from '@/types';
+import {
+  formatEstimatedAnnualEarnings,
+  formatMmfMoney,
+  formatMmfPercent,
+  redemptionLabel,
+} from '@/lib/mmf';
+import { MmfCtaButton } from './MmfCtaButton';
 
-function formatPct(val: number | null | undefined) {
-  if (val === null || val === undefined) return '—'
-  return (val * 100).toFixed(2) + '%'
-}
-
-function formatMoney(val: number, currency: string) {
-  if (currency === 'USD') return `$${val.toLocaleString()}`
-  return `₱${val.toLocaleString()}`
-}
-
-export function MmfTable({ funds }: { funds: MoneyMarketFund[] }) {
+export function MmfTable({
+  funds,
+  amount,
+}: {
+  funds: MoneyMarketFund[];
+  amount: number;
+}) {
   return (
-    <div className="overflow-x-auto rounded-[1.4rem] border border-brand-border dark:border-white/10">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto rounded-[1.4rem] border border-brand-border bg-white dark:border-white/10 dark:bg-white/[0.03]">
+      <table className="w-full min-w-[920px] text-sm">
         <thead>
-          <tr className="border-b border-brand-border dark:border-white/10 text-brand-textSecondary/60 dark:text-white/40 text-xs">
-            <th className="text-left py-3 px-4 font-medium">Fund</th>
-            <th className="text-right py-3 px-4 font-medium">Gross</th>
-            <th className="text-right py-3 px-4 font-medium">After Tax</th>
-            <th className="text-right py-3 px-4 font-medium text-brand-primary">
-              Net Yield ★
-            </th>
-            <th className="text-right py-3 px-4 font-medium">vs Benchmark</th>
-            <th className="text-right py-3 px-4 font-medium">Trust Fee</th>
-            <th className="text-right py-3 px-4 font-medium">Min. Inv.</th>
-            <th className="text-right py-3 px-4 font-medium">Redeem</th>
-            <th className="text-right py-3 px-4 font-medium">PDIC</th>
-            <th className="py-3 px-4" />
+          <tr className="border-b border-brand-border bg-brand-surface/60 text-xs text-brand-textSecondary/70 dark:border-white/10 dark:bg-white/[0.03] dark:text-white/45">
+            <th className="px-4 py-3 text-left font-semibold">Fund</th>
+            <th className="px-4 py-3 text-right font-semibold text-brand-primary">Net yield</th>
+            <th className="px-4 py-3 text-right font-semibold">Estimated yearly earnings</th>
+            <th className="px-4 py-3 text-right font-semibold">Minimum</th>
+            <th className="px-4 py-3 text-right font-semibold">Cash access</th>
+            <th className="px-4 py-3 text-right font-semibold">vs benchmark</th>
+            <th className="px-4 py-3 text-right font-semibold">Gross</th>
+            <th className="px-4 py-3 text-right font-semibold">Trust fee</th>
+            <th className="px-4 py-3" />
           </tr>
         </thead>
         <tbody>
           {funds.map((fund) => {
-            const deltaPositive = (fund.vs_benchmark ?? 0) >= 0
+            const deltaPositive = (fund.vs_benchmark ?? 0) >= 0;
             const deltaColor =
-              fund.vs_benchmark === null
+              fund.vs_benchmark === null || fund.vs_benchmark === undefined
                 ? 'text-brand-textSecondary/40 dark:text-white/30'
                 : deltaPositive
-                ? 'text-positive'
-                : 'text-danger'
+                  ? 'text-positive'
+                  : 'text-danger';
 
             return (
               <tr
                 key={fund.id}
-                className="border-b border-brand-border/50 dark:border-white/[0.06] hover:bg-brand-surface dark:hover:bg-white/[0.03] transition-colors"
+                className="border-b border-brand-border/50 transition-colors last:border-b-0 hover:bg-brand-surface/70 dark:border-white/[0.06] dark:hover:bg-white/[0.04]"
               >
-                <td className="py-3.5 px-4">
-                  <p className="text-brand-textPrimary dark:text-white font-medium">
+                <td className="px-4 py-4">
+                  <p className="font-semibold leading-snug text-brand-textPrimary dark:text-white">
                     {fund.name}
                   </p>
-                  <p className="text-brand-textSecondary/50 dark:text-white/40 text-xs mt-0.5">
-                    {fund.provider} · {fund.fund_type}
+                  <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+                    {fund.provider} | {fund.fund_type}
                   </p>
                 </td>
-                <td className="py-3.5 px-4 text-right text-brand-textSecondary/70 dark:text-white/50 tabular-nums">
-                  {formatPct(fund.gross_yield_1y)}
-                </td>
-                <td className="py-3.5 px-4 text-right text-brand-textSecondary dark:text-white/70 tabular-nums">
-                  {formatPct(fund.after_tax_yield)}
-                </td>
-                <td className="py-3.5 px-4 text-right font-semibold text-brand-textPrimary dark:text-white tabular-nums">
-                  {formatPct(fund.net_yield)}
-                </td>
-                <td className={`py-3.5 px-4 text-right font-medium tabular-nums ${deltaColor}`}>
-                  {fund.vs_benchmark === null
-                    ? '—'
-                    : `${deltaPositive ? '+' : ''}${formatPct(fund.vs_benchmark)}`}
-                </td>
-                <td className="py-3.5 px-4 text-right text-brand-textSecondary/70 dark:text-white/50 tabular-nums">
-                  {formatPct(fund.trust_fee_pct)}/yr
-                </td>
-                <td className="py-3.5 px-4 text-right text-brand-textSecondary/70 dark:text-white/50 tabular-nums">
-                  {formatMoney(fund.min_initial, fund.currency)}
-                </td>
-                <td className="py-3.5 px-4 text-right text-brand-textSecondary/70 dark:text-white/50">
-                  {fund.redemption_days === 0 ? 'Same day' : `T+${fund.redemption_days}`}
-                </td>
-                <td className="py-3.5 px-4 text-right">
-                  <span
-                    className={`text-xs font-medium ${
-                      fund.pdic_insured
-                        ? 'text-positive'
-                        : 'text-brand-textSecondary/30 dark:text-white/25'
-                    }`}
-                  >
-                    {fund.pdic_insured ? '✓' : '✗'}
+                <td className="px-4 py-4 text-right">
+                  <span className="text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">
+                    {formatMmfPercent(fund.net_yield)}
                   </span>
                 </td>
-                <td className="py-3.5 px-4">
+                <td className="px-4 py-4 text-right">
+                  <p className="font-semibold tabular-nums text-brand-textPrimary dark:text-white">
+                    {formatEstimatedAnnualEarnings(fund, amount)}
+                  </p>
+                  <p className="mt-1 text-xs text-brand-textSecondary/45 dark:text-white/30">
+                    on {formatMmfMoney(amount, fund.currency)}
+                  </p>
+                </td>
+                <td className="px-4 py-4 text-right tabular-nums text-brand-textSecondary dark:text-white/70">
+                  {formatMmfMoney(fund.min_initial, fund.currency)}
+                </td>
+                <td className="px-4 py-4 text-right text-brand-textSecondary dark:text-white/70">
+                  {redemptionLabel(fund.redemption_days)}
+                </td>
+                <td className={`px-4 py-4 text-right font-semibold tabular-nums ${deltaColor}`}>
+                  {fund.vs_benchmark === null || fund.vs_benchmark === undefined
+                    ? '-'
+                    : `${deltaPositive ? '+' : ''}${formatMmfPercent(fund.vs_benchmark)}`}
+                </td>
+                <td className="px-4 py-4 text-right tabular-nums text-brand-textSecondary/70 dark:text-white/50">
+                  {formatMmfPercent(fund.gross_yield_1y)}
+                </td>
+                <td className="px-4 py-4 text-right tabular-nums text-brand-textSecondary/70 dark:text-white/50">
+                  {formatMmfPercent(fund.trust_fee_pct)}/yr
+                </td>
+                <td className="px-4 py-4">
                   <MmfCtaButton
                     url={fund.fund_page_url}
                     provider={fund.provider}
@@ -96,10 +91,10 @@ export function MmfTable({ funds }: { funds: MoneyMarketFund[] }) {
                   />
                 </td>
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
     </div>
-  )
+  );
 }

@@ -1,123 +1,111 @@
-'use client'
+'use client';
 
-import { MoneyMarketFund } from '@/types'
-import { MmfCtaButton } from './MmfCtaButton'
+import { MoneyMarketFund } from '@/types';
+import {
+  formatEstimatedAnnualEarnings,
+  formatMmfMoney,
+  formatMmfPercent,
+  redemptionLabel,
+} from '@/lib/mmf';
+import { MmfCtaButton } from './MmfCtaButton';
 
-function formatPct(val: number | null | undefined) {
-  if (val === null || val === undefined) return '—'
-  return (val * 100).toFixed(2) + '%'
-}
-
-function formatMoney(val: number, currency: string) {
-  if (currency === 'USD') return `$${val.toLocaleString()}`
-  return `₱${val.toLocaleString()}`
-}
-
-export function MmfCard({ fund }: { fund: MoneyMarketFund }) {
-  const benchmarkDelta = fund.vs_benchmark
+export function MmfCard({
+  fund,
+  amount,
+}: {
+  fund: MoneyMarketFund;
+  amount: number;
+}) {
+  const benchmarkDelta = fund.vs_benchmark;
+  const deltaPositive = (benchmarkDelta ?? 0) >= 0;
   const deltaColor =
-    benchmarkDelta === null
+    benchmarkDelta === null || benchmarkDelta === undefined
       ? 'text-brand-textSecondary/50'
-      : benchmarkDelta >= 0
-      ? 'text-positive'
-      : 'text-danger'
-  const deltaSign = benchmarkDelta !== null && benchmarkDelta >= 0 ? '+' : ''
+      : deltaPositive
+        ? 'text-positive'
+        : 'text-danger';
 
   return (
-    <div className="bg-white dark:bg-white/[0.04] border border-brand-border dark:border-white/10 rounded-[1.4rem] p-4">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1 min-w-0 pr-2">
-          <p className="text-brand-textPrimary dark:text-white font-medium text-sm leading-tight">
+    <div className="rounded-[1.4rem] border border-brand-border bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold leading-tight text-brand-textPrimary dark:text-white">
             {fund.name}
           </p>
-          <p className="text-brand-textSecondary/60 dark:text-white/40 text-xs mt-0.5">
-            {fund.provider}
+          <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+            {fund.provider} | {fund.fund_type}
           </p>
         </div>
-        <span className="shrink-0 text-xs bg-brand-surface dark:bg-white/10 text-brand-textSecondary dark:text-white/60 px-2 py-0.5 rounded-full">
-          {fund.fund_type}
+        <span className="shrink-0 rounded-full bg-brand-surface px-2 py-0.5 text-xs font-medium text-brand-textSecondary dark:bg-white/10 dark:text-white/60">
+          {fund.currency}
         </span>
       </div>
 
-      {/* Yield trio — hero numbers */}
-      <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className="bg-brand-surface dark:bg-white/[0.04] rounded-xl p-2.5 text-center">
-          <p className="text-brand-textSecondary/60 dark:text-white/40 text-xs mb-1">Gross</p>
-          <p className="text-brand-textPrimary dark:text-white font-semibold text-sm tabular-nums">
-            {formatPct(fund.gross_yield_1y)}
+      <div className="mb-4 rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/50 p-4 dark:border-brand-primary/20 dark:bg-brand-primary/10">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
+          Net yield
+        </p>
+        <div className="mt-2 flex items-end justify-between gap-3">
+          <p className="text-3xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
+            {formatMmfPercent(fund.net_yield)}
+          </p>
+          <div className="text-right">
+            <p className="text-xs text-brand-textSecondary/60 dark:text-white/45">
+              Est. yearly
+            </p>
+            <p className="font-semibold tabular-nums text-brand-textPrimary dark:text-white">
+              {formatEstimatedAnnualEarnings(fund, amount)}
+            </p>
+          </div>
+        </div>
+        <p className="mt-2 text-xs text-brand-textSecondary/55 dark:text-white/35">
+          Based on {formatMmfMoney(amount, fund.currency)}
+        </p>
+      </div>
+
+      <div className="mb-4 grid grid-cols-2 gap-3 text-xs">
+        <div>
+          <p className="text-brand-textSecondary/55 dark:text-white/35">Minimum</p>
+          <p className="mt-1 font-semibold tabular-nums text-brand-textPrimary dark:text-white">
+            {formatMmfMoney(fund.min_initial, fund.currency)}
           </p>
         </div>
-        <div className="bg-brand-surface dark:bg-white/[0.04] rounded-xl p-2.5 text-center">
-          <p className="text-brand-textSecondary/60 dark:text-white/40 text-xs mb-1">After Tax</p>
-          <p className="text-brand-textPrimary dark:text-white font-semibold text-sm tabular-nums">
-            {formatPct(fund.after_tax_yield)}
+        <div>
+          <p className="text-brand-textSecondary/55 dark:text-white/35">Cash access</p>
+          <p className="mt-1 font-semibold text-brand-textPrimary dark:text-white">
+            {redemptionLabel(fund.redemption_days)}
           </p>
         </div>
-        <div className="bg-brand-primaryLight dark:bg-brand-primary/10 border border-brand-primary/20 dark:border-brand-primary/30 rounded-xl p-2.5 text-center">
-          <p className="text-brand-primary text-xs mb-1 font-medium">Net Yield ★</p>
-          <p className="text-brand-textPrimary dark:text-white font-bold text-sm tabular-nums">
-            {formatPct(fund.net_yield)}
+        <div>
+          <p className="text-brand-textSecondary/55 dark:text-white/35">vs benchmark</p>
+          <p className={`mt-1 font-semibold tabular-nums ${deltaColor}`}>
+            {benchmarkDelta === null || benchmarkDelta === undefined
+              ? '-'
+              : `${deltaPositive ? '+' : ''}${formatMmfPercent(benchmarkDelta)}`}
+          </p>
+        </div>
+        <div>
+          <p className="text-brand-textSecondary/55 dark:text-white/35">Gross yield</p>
+          <p className="mt-1 font-semibold tabular-nums text-brand-textPrimary dark:text-white">
+            {formatMmfPercent(fund.gross_yield_1y)}
           </p>
         </div>
       </div>
 
-      {/* vs Benchmark */}
-      {fund.vs_benchmark !== null && (
-        <div className="flex items-center gap-1.5 mb-3 text-xs">
-          <span className="text-brand-textSecondary/60 dark:text-white/40">
-            vs {fund.benchmark_label ?? 'Benchmark'}:
-          </span>
-          <span className={`font-semibold ${deltaColor}`}>
-            {deltaSign}{formatPct(fund.vs_benchmark)}
-          </span>
-        </div>
-      )}
-
-      {/* Details grid */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs mb-4">
-        <div className="flex justify-between">
-          <span className="text-brand-textSecondary/60 dark:text-white/40">Min. investment</span>
-          <span className="text-brand-textSecondary dark:text-white/70 tabular-nums">
-            {formatMoney(fund.min_initial, fund.currency)}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-brand-textSecondary/60 dark:text-white/40">Trust fee</span>
-          <span className="text-brand-textSecondary dark:text-white/70 tabular-nums">
-            {formatPct(fund.trust_fee_pct)}/yr
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-brand-textSecondary/60 dark:text-white/40">Redemption</span>
-          <span className="text-brand-textSecondary dark:text-white/70">
-            {fund.redemption_days === 0 ? 'Same day' : `T+${fund.redemption_days}`}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-brand-textSecondary/60 dark:text-white/40">PDIC insured</span>
-          <span className={fund.pdic_insured ? 'text-positive font-medium' : 'text-brand-textSecondary/40 dark:text-white/30'}>
-            {fund.pdic_insured ? 'Yes' : 'No'}
-          </span>
-        </div>
-      </div>
-
-      {/* Early redemption warning */}
       {fund.early_redemption_fee && (
-        <p className="text-xs text-warning bg-warning/5 border border-warning/10 rounded-lg px-3 py-2 mb-3">
-          ⚠ {fund.early_redemption_fee}
+        <p className="mb-3 rounded-lg border border-warning/10 bg-warning/5 px-3 py-2 text-xs text-warning">
+          Early redemption: {fund.early_redemption_fee}
         </p>
       )}
 
-      {/* Access channels */}
       {fund.access_channels?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {fund.access_channels.map((ch) => (
+        <div className="mb-4 flex flex-wrap gap-1.5">
+          {fund.access_channels.map((channel) => (
             <span
-              key={ch}
-              className="text-xs bg-brand-surface dark:bg-white/[0.06] text-brand-textSecondary/70 dark:text-white/50 px-2 py-0.5 rounded-full"
+              key={channel}
+              className="rounded-full bg-brand-surface px-2 py-0.5 text-xs text-brand-textSecondary/70 dark:bg-white/[0.06] dark:text-white/50"
             >
-              {ch}
+              {channel}
             </span>
           ))}
         </div>
@@ -125,5 +113,5 @@ export function MmfCard({ fund }: { fund: MoneyMarketFund }) {
 
       <MmfCtaButton url={fund.fund_page_url} provider={fund.provider} />
     </div>
-  )
+  );
 }

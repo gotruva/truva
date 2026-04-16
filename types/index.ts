@@ -214,6 +214,8 @@ export interface MoneyMarketFund {
   net_yield: number | null;
   benchmark_rate: number | null;
   vs_benchmark: number | null;
+  data_source?: string | null;
+  scraped_at?: string | null;
 }
 
 export interface BenchmarkRate {

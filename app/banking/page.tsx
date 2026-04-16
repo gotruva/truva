@@ -6,6 +6,7 @@ import {
   FileSearch,
   GitCompareArrows,
   Landmark,
+  RefreshCw,
   SearchCheck,
   ShieldCheck,
   WalletCards,
@@ -15,7 +16,18 @@ import { BankPickCard } from '@/components/banking/BankPickCard';
 import { ProductHubTemplate } from '@/components/layout/ProductHubTemplate';
 import { getProductPicksFromRates } from '@/lib/banking';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
+import {
+  formatEstimatedAnnualEarnings,
+  formatMmfMoney,
+  formatMmfPercent,
+  formatPhtDateTime,
+  getLatestCheckedAt,
+  MMF_DEFAULT_AMOUNT,
+  redemptionLabel,
+} from '@/lib/mmf';
 import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
+import { createClient } from '@/utils/supabase/server';
+import type { MoneyMarketFund } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Banking in the Philippines: compare rates, use tools, read guides',
@@ -26,16 +38,98 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = 'force-dynamic';
+
 const BANK_PICK_AMOUNT = 100000;
 const BANK_PICK_MONTHS = 12;
 
+async function getMmfPreviewFunds() {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('mmf_current')
+      .select('*')
+      .eq('currency', 'PHP');
+
+    if (error) {
+      console.error('[banking] Failed to load MMF preview', error);
+      return [];
+    }
+
+    return ((data ?? []) as MoneyMarketFund[])
+      .sort((left, right) => (right.net_yield ?? -1) - (left.net_yield ?? -1))
+      .slice(0, 3);
+  } catch (error) {
+    console.error('[banking] Failed to load MMF preview', error);
+    return [];
+  }
+}
+
+function MmfPreviewCard({ fund }: { fund: MoneyMarketFund }) {
+  return (
+    <article className="min-w-[18rem] snap-start rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-[0_18px_48px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-white/[0.04] md:min-w-0">
+      <div className="flex h-full flex-col gap-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="text-base font-bold leading-tight text-brand-textPrimary dark:text-white">
+              {fund.name}
+            </h3>
+            <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+              {fund.provider}
+            </p>
+          </div>
+          <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-xs font-semibold text-brand-primary">
+            {formatMmfPercent(fund.net_yield)}
+          </span>
+        </div>
+
+        <div className="rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/40 p-4 dark:border-brand-primary/20 dark:bg-brand-primary/10">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
+            Est. yearly earnings
+          </p>
+          <p className="mt-2 text-2xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
+            {formatEstimatedAnnualEarnings(fund, MMF_DEFAULT_AMOUNT)}
+          </p>
+          <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+            on {formatMmfMoney(MMF_DEFAULT_AMOUNT, fund.currency)}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <p className="text-brand-textSecondary/55 dark:text-white/35">Minimum</p>
+            <p className="mt-1 font-semibold text-brand-textPrimary dark:text-white">
+              {formatMmfMoney(fund.min_initial, fund.currency)}
+            </p>
+          </div>
+          <div>
+            <p className="text-brand-textSecondary/55 dark:text-white/35">Cash access</p>
+            <p className="mt-1 font-semibold text-brand-textPrimary dark:text-white">
+              {redemptionLabel(fund.redemption_days)}
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/banking/money-market-funds"
+          className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+        >
+          View in MMF table
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </article>
+  );
+}
+
 export default async function BankingHub() {
   const rates = await getPublicRates();
+  const mmfPreviewFunds = await getMmfPreviewFunds();
   const latestVerifiedDate = getLatestVerifiedDate(rates);
   const formattedVerifiedDate = formatVerifiedDate(latestVerifiedDate);
+  const latestMmfCheckedAt = getLatestCheckedAt(mmfPreviewFunds);
 
   const bankPicks = getProductPicksFromRates(rates, BANK_PICK_AMOUNT, BANK_PICK_MONTHS, ['banks'], 3);
-  const uitfPicks = getProductPicksFromRates(rates, BANK_PICK_AMOUNT, BANK_PICK_MONTHS, ['uitfs'], 3);
 
   // Schema building for just the page itself or top picks can go here, but we removed articles inline
 
@@ -69,6 +163,12 @@ export default async function BankingHub() {
           actions: [
             { href: '/banking/rates#rate-desk', label: 'Compare live rates', icon: GitCompareArrows },
             {
+              href: '/banking/money-market-funds',
+              label: 'Compare money market funds',
+              icon: TrendingUp,
+              variant: 'secondary',
+            },
+            {
               href: '/banking/articles',
               label: 'Read banking articles',
               icon: FileSearch,
@@ -80,7 +180,7 @@ export default async function BankingHub() {
           eyebrow: 'Trust bar',
           title: 'The page tells you how we compare before it asks you to click.',
           description:
-            'Banking pages should surface freshness, tax treatment, editorial independence, and methodology in the first screen, not bury them in the footer.',
+            'Banking pages should surface update timing, tax treatment, editorial independence, and methodology in the first screen, not bury them in the footer.',
           items: [
             {
               title: 'Verified cadence',
@@ -129,13 +229,13 @@ export default async function BankingHub() {
               ctaLabel: 'Open rate desk',
             },
             {
-              title: 'Read a comparison brief',
+              title: 'Compare money market funds',
               description:
-                'See side-by-side peso math for the most common bank matchups: Maya vs GoTyme, Maya vs Tonik, and more.',
-              href: '/banking/articles',
-              icon: SearchCheck,
-              eyebrow: 'Head-to-head',
-              ctaLabel: 'Browse comparisons',
+                'Open the live MMF table for net yield, estimated earnings, minimums, cash access, and update timing.',
+              href: '/banking/money-market-funds',
+              icon: TrendingUp,
+              eyebrow: 'Funds',
+              ctaLabel: 'Compare MMFs',
             },
             {
               title: 'Run the savings math',
@@ -216,7 +316,7 @@ export default async function BankingHub() {
         </section>
 
         {/* Money Market Funds Section */}
-        {uitfPicks.length > 0 && (
+        {mmfPreviewFunds.length > 0 && (
           <section id="money-market-funds" className="space-y-5 scroll-mt-32">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="space-y-2">
@@ -228,28 +328,26 @@ export default async function BankingHub() {
                   Money Market Funds (UITFs)
                 </h2>
                 <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                  Unit Investment Trust Funds that focus on low-risk, short-term fixed-income. These are not insured by PDIC, but they are highly liquid and often tax-advantaged compared to standard savings.
+                  These PHP funds use Truva&apos;s live MMF dataset. Net yield is shown after tax and trust fees, with one update timestamp so you can see how current the comparison is.
+                </p>
+                <p className="inline-flex items-center gap-2 text-xs font-semibold text-brand-textSecondary/70 dark:text-white/45">
+                  <RefreshCw className="h-3.5 w-3.5 text-brand-primary" />
+                  Data last updated: {formatPhtDateTime(latestMmfCheckedAt)}
                 </p>
               </div>
 
               <Link
-                href="/calculator"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-5 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/20 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
+                href="/banking/money-market-funds"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
               >
-                Model UITF returns
-                <Calculator className="h-4 w-4" />
+                Open MMF comparison
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
             <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:snap-none md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
-              {uitfPicks.map((pick) => (
-                <BankPickCard
-                  key={`${pick.provider}-${pick.bestProduct.id}`}
-                  pick={pick}
-                  amount={BANK_PICK_AMOUNT}
-                  months={BANK_PICK_MONTHS}
-                  className="min-w-[18rem] snap-start md:min-w-0"
-                />
+              {mmfPreviewFunds.map((fund) => (
+                <MmfPreviewCard key={fund.id} fund={fund} />
               ))}
             </div>
           </section>
