@@ -108,13 +108,13 @@ export default async function MoneyMarketFundsPage() {
       <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
-            PHP UITF rows
+            Funds tracked
           </p>
           <p className="mt-2 text-2xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
-            {phpUitfFunds.length}
+            {funds.length}
           </p>
           <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-            Live comparison rows
+            {phpFunds.length} PHP · {usdFunds.length} USD
           </p>
         </div>
 
