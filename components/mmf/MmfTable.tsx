@@ -8,6 +8,8 @@ import {
 import { MmfCtaButton } from './MmfCtaButton';
 import { MMF_HELP_TEXT, MmfInfoLabel } from './MmfInfoLabel';
 
+import { ProviderLogo } from './ProviderLogo';
+
 export function MmfTable({
   funds,
   amount,
@@ -71,12 +73,17 @@ export function MmfTable({
                 className="border-b border-brand-border/50 transition-colors last:border-b-0 hover:bg-brand-surface/70 dark:border-white/[0.06] dark:hover:bg-white/[0.04]"
               >
                 <td className="px-4 py-4">
-                  <p className="font-semibold leading-snug text-brand-textPrimary dark:text-white">
-                    {fund.name}
-                  </p>
-                  <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-                    {fund.provider} | {fund.fund_type}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <ProviderLogo provider={fund.provider} className="h-9 w-9" textClassName="text-sm" />
+                    <div>
+                      <p className="font-semibold leading-snug text-brand-textPrimary dark:text-white">
+                        {fund.name}
+                      </p>
+                      <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+                        {fund.provider} | {fund.fund_type}
+                      </p>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-4 text-right">
                   <span className="text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">

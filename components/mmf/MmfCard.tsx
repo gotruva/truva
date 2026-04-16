@@ -10,6 +10,8 @@ import {
 import { MmfCtaButton } from './MmfCtaButton';
 import { MMF_HELP_TEXT, MmfInfoLabel } from './MmfInfoLabel';
 
+import { ProviderLogo } from './ProviderLogo';
+
 export function MmfCard({
   fund,
   amount,
@@ -30,12 +32,17 @@ export function MmfCard({
     <div className="rounded-[1.4rem] border border-brand-border bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold leading-tight text-brand-textPrimary dark:text-white">
-            {fund.name}
-          </p>
-          <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-            {fund.provider} | {fund.fund_type}
-          </p>
+          <div className="flex items-center gap-3">
+            <ProviderLogo provider={fund.provider} className="h-9 w-9 shrink-0" textClassName="text-sm" />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold leading-tight text-brand-textPrimary dark:text-white">
+                {fund.name}
+              </p>
+              <p className="mt-1 truncate text-xs text-brand-textSecondary/60 dark:text-white/40">
+                {fund.provider} | {fund.fund_type}
+              </p>
+            </div>
+          </div>
         </div>
         <span className="shrink-0 rounded-full bg-brand-surface px-2 py-0.5 text-xs font-medium text-brand-textSecondary dark:bg-white/10 dark:text-white/60">
           {fund.currency}
