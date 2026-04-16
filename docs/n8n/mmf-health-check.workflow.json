@@ -1,0 +1,116 @@
+{
+  "name": "Truva MMF - Daily Health Check",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3a7f05df-cfed-4ba2-80a5-f2fa79f87ef5",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 20 * * *"
+            }
+          ]
+        },
+        "timezone": "Asia/Manila"
+      },
+      "id": "a595dd3e-2927-441e-b416-b7eb4eb7a56a",
+      "name": "Daily 8:00 PM PHT",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const supabaseUrl = $env.SUPABASE_URL;\nconst serviceKey = $env.SUPABASE_SERVICE_ROLE_KEY;\nconst chatId = $env.TELEGRAM_CHAT_ID;\nif (!supabaseUrl || !serviceKey) throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in n8n');\nif (!chatId) throw new Error('Missing TELEGRAM_CHAT_ID in n8n');\nfunction phtDate() { const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()); const pick = (type) => parts.find((part) => part.type === type).value; return `${pick('year')}-${pick('month')}-${pick('day')}`; }\nconst today = phtDate();\nconst response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_mmf_health_report`, { method: 'POST', headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ check_date: today }) });\nif (!response.ok) throw new Error(`MMF health RPC failed ${response.status}: ${await response.text()}`);\nconst issues = await response.json();\nlet text;\nif (!issues.length) { text = `Truva MMF health: OK\\nDate: ${today}\\nAll active PHP UITF targets have scraper-sourced rows with yields and BTR_91D benchmark values.`; } else { const lines = issues.slice(0, 20).map((issue) => `- ${issue.provider} - ${issue.name}: ${issue.issue_type} - ${issue.detail}`); const more = issues.length > 20 ? `\\n...and ${issues.length - 20} more issue(s).` : ''; text = `Truva MMF health: ACTION NEEDED\\nDate: ${today}\\nIssues: ${issues.length}\\n${lines.join('\\n')}${more}`; }\nreturn [{ json: { chatId, text, date: today, issue_count: issues.length } }];"
+      },
+      "id": "1fdfc6bb-a2aa-4db7-a9e1-54c9f2d29b1c",
+      "name": "Build Health Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "={{$json.text}}",
+        "additionalFields": {}
+      },
+      "id": "123e71f7-4978-42a5-b28e-9b9eea2f5eb7",
+      "name": "Send Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "__REPLACE_WITH_N8N_TELEGRAM_CREDENTIAL_ID__",
+          "name": "Truva Telegram Bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Health Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily 8:00 PM PHT": {
+      "main": [
+        [
+          {
+            "node": "Build Health Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Health Message": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b1eda734-bab5-4a84-b4db-0d8460b10057",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

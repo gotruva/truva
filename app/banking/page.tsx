@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { BankPickCard } from '@/components/banking/BankPickCard';
 import { ProductHubTemplate } from '@/components/layout/ProductHubTemplate';
-import { BASE_URL } from '@/lib/constants';
 import { getProductPicksFromRates } from '@/lib/banking';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';

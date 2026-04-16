@@ -1,0 +1,202 @@
+{
+  "name": "Truva MMF - BTr 91D Benchmark",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2ef1c563-7548-41e3-92cb-5858459495aa",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 15 * * 1"
+            }
+          ]
+        },
+        "timezone": "Asia/Manila"
+      },
+      "id": "f3b96803-a5a8-4d65-b4e4-62cda9062a6e",
+      "name": "Monday 3:30 PM PHT",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function phtDate() { const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()); const pick = (type) => parts.find((part) => part.type === type).value; return `${pick('year')}-${pick('month')}-${pick('day')}`; }\nconst strip = (value) => String(value || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\\s+/g, ' ').trim();\nconst listingUrl = 'https://www.treasury.gov.ph/?cat=14';\nconst listingResponse = await fetch(listingUrl);\nif (!listingResponse.ok) throw new Error(`BTr listing failed ${listingResponse.status}`);\nconst listingHtml = await listingResponse.text();\nconst links = [...listingHtml.matchAll(/<a[^>]+href=([^ >]+)[^>]*>([\\s\\S]*?)<\\/a>/gi)].map((match) => { const href = String(match[1] || '').split(String.fromCharCode(34)).join('').split(String.fromCharCode(39)).join('').trim(); return { href, text: strip(match[2]) }; });\nconst resultLink = links.find((link) => /treasury bills auction results/i.test(link.text)) || links.find((link) => /treasury bills/i.test(link.text));\nconst postUrl = resultLink ? new URL(resultLink.href, listingUrl).toString() : listingUrl;\nconst postResponse = await fetch(postUrl);\nif (!postResponse.ok) throw new Error(`BTr post failed ${postResponse.status}: ${postUrl}`);\nconst postHtml = await postResponse.text();\nconst text = strip(postHtml);\nconst patterns = [/91(?:-day)?\\s+(?:t\\s*-?\\s*bill|treasury bill)[^0-9]{0,100}(\\d+(?:\\.\\d+)?)/i, /\\b91\\b[^0-9]{0,100}(\\d+(?:\\.\\d+)?)\\s*%/i];\nlet parsed = null;\nfor (const pattern of patterns) { const match = text.match(pattern); if (match) { parsed = Number(match[1]); break; } }\nif (!Number.isFinite(parsed)) throw new Error('Could not parse the 91-day T-Bill rate from the BTr page. Update the parser after checking the source page.');\nconst rate = parsed > 1 ? parsed / 100 : parsed;\nif (rate <= 0 || rate > 0.20) throw new Error(`Parsed BTr rate looks wrong: ${rate}`);\nreturn [{ json: { key: 'BTR_91D', label: '91-day T-Bill (BTr auction)', date: phtDate(), rate: Number(rate.toFixed(6)), source_url: postUrl } }];"
+      },
+      "id": "a22e0770-4e45-4bfd-9080-0b571ee3a106",
+      "name": "Build Benchmark Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SUPABASE_URL}}/rest/v1/benchmark_rates?on_conflict=key,date",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "8c3f40ac-2754-4f4a-9276-e262189c11d6",
+      "name": "Upsert benchmark_rates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const original = $items('Build Benchmark Payload')[0].json;\nreturn [{ json: { requested_key: original.key || 'BTR_91D', requested_date: original.date } }];"
+      },
+      "id": "4bf618fc-d98d-4087-b061-a01f28cf6cc3",
+      "name": "Build Recalculation Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SUPABASE_URL}}/rest/v1/rpc/recalculate_mmf_benchmark",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "fcfc8ef9-824f-4a42-b713-0975fb18ed54",
+      "name": "Recalculate vs_benchmark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Benchmark Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday 3:30 PM PHT": {
+      "main": [
+        [
+          {
+            "node": "Build Benchmark Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Benchmark Payload": {
+      "main": [
+        [
+          {
+            "node": "Upsert benchmark_rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert benchmark_rates": {
+      "main": [
+        [
+          {
+            "node": "Build Recalculation Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Recalculation Payload": {
+      "main": [
+        [
+          {
+            "node": "Recalculate vs_benchmark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "553bf23b-a0c2-4de7-893e-63c48b3cffd9",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

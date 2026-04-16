@@ -16,6 +16,7 @@
     "rates:snapshot:build": "tsx scripts/build-rate-snapshot.ts",
     "rates:snapshot:promote": "tsx scripts/promote-rate-snapshot.ts",
     "rates:verify": "tsx scripts/verify-rate-pipeline.ts",
+    "mmf:verify": "tsx scripts/verify-mmf-automation.ts",
     "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts"
   },
   "dependencies": {
