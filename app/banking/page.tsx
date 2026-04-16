@@ -9,22 +9,14 @@ import {
   SearchCheck,
   ShieldCheck,
   WalletCards,
+  TrendingUp,
 } from 'lucide-react';
-import { ArticleCard } from '@/components/editorial/ArticleCard';
-import { FeaturedArticleCard } from '@/components/editorial/FeaturedArticleCard';
 import { BankPickCard } from '@/components/banking/BankPickCard';
 import { ProductHubTemplate } from '@/components/layout/ProductHubTemplate';
 import { BASE_URL } from '@/lib/constants';
-import { getBankPicksFromRates } from '@/lib/banking';
-import {
-  buildItemListSchema,
-  getBankingArticles,
-  getFeaturedBankingArticle,
-  getGuideArticles,
-} from '@/lib/editorial';
-import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
+import { getProductPicksFromRates } from '@/lib/banking';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
-import type { EditorialArticle } from '@/types';
+import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
 
 export const metadata: Metadata = {
   title: 'Banking in the Philippines: compare rates, use tools, read guides',
@@ -43,34 +35,13 @@ export default async function BankingHub() {
   const latestVerifiedDate = getLatestVerifiedDate(rates);
   const formattedVerifiedDate = formatVerifiedDate(latestVerifiedDate);
 
-  const featuredArticle = getFeaturedBankingArticle();
-  const bankPicks = getBankPicksFromRates(rates, BANK_PICK_AMOUNT, BANK_PICK_MONTHS, 3);
-  const rateRoundups = getBankingArticles('rates')
-    .filter((article) => article.slug !== featuredArticle?.slug)
-    .slice(0, 2);
-  const reviewArticles = getBankingArticles('reviews').slice(0, 2);
-  const compareArticles = getBankingArticles('compare').slice(0, 2);
-  const explainers = getGuideArticles().slice(0, 2);
+  const bankPicks = getProductPicksFromRates(rates, BANK_PICK_AMOUNT, BANK_PICK_MONTHS, ['banks'], 3);
+  const uitfPicks = getProductPicksFromRates(rates, BANK_PICK_AMOUNT, BANK_PICK_MONTHS, ['uitfs'], 3);
 
-  const editorialForSchema = [
-    featuredArticle,
-    ...rateRoundups,
-    ...reviewArticles,
-    ...explainers,
-  ].filter((article): article is EditorialArticle => Boolean(article));
-
-  const itemListJsonLd = buildItemListSchema(
-    Array.from(new Map(editorialForSchema.map((article) => [article.slug, article])).values()),
-    BASE_URL
-  );
+  // Schema building for just the page itself or top picks can go here, but we removed articles inline
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
-      />
-
       <ProductHubTemplate
         title="Banking"
         description="An editorial-first comparison desk for Philippine savers: start with after-tax reality, then go deeper only when the terms deserve it."
@@ -80,8 +51,8 @@ export default async function BankingHub() {
         sectionLinks={[
           { id: 'overview', label: 'Overview' },
           { id: 'start-here', label: 'Start here' },
-          { id: 'top-picks', label: 'Top picks' },
-          { id: 'editorial', label: 'Editorial' },
+          { id: 'digital-banks', label: 'Digital banks' },
+          { id: 'money-market-funds', label: 'Money market funds' },
           { id: 'methodology', label: 'Methodology' },
         ]}
         hero={{
@@ -99,14 +70,13 @@ export default async function BankingHub() {
           actions: [
             { href: '/banking/rates#rate-desk', label: 'Compare live rates', icon: GitCompareArrows },
             {
-              href: featuredArticle?.path ?? '/banking/rates',
-              label: 'Read the flagship guide',
+              href: '/banking/articles',
+              label: 'Read banking articles',
               icon: FileSearch,
               variant: 'secondary',
             },
           ],
         }}
-        featuredSlot={featuredArticle ? <FeaturedArticleCard article={featuredArticle} /> : undefined}
         trustBar={{
           eyebrow: 'Trust bar',
           title: 'The page tells you how we compare before it asks you to click.',
@@ -163,7 +133,7 @@ export default async function BankingHub() {
               title: 'Read a comparison brief',
               description:
                 'See side-by-side peso math for the most common bank matchups: Maya vs GoTyme, Maya vs Tonik, and more.',
-              href: '/banking/compare',
+              href: '/banking/articles',
               icon: SearchCheck,
               eyebrow: 'Head-to-head',
               ctaLabel: 'Browse comparisons',
@@ -207,14 +177,16 @@ export default async function BankingHub() {
         }}
         containerClassName="max-w-6xl"
       >
-        <section id="top-picks" className="space-y-5 scroll-mt-32">
+        {/* Digital Banks Section */}
+        <section id="digital-banks" className="space-y-5 scroll-mt-32">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-                Best banks right now
-              </p>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-semibold text-brand-primary dark:bg-brand-primary/20">
+                <Landmark className="h-3.5 w-3.5" />
+                Best for high-yield savings
+              </span>
               <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-                A fast preview before you open the full comparison desk
+                Digital Bank Savings
               </h2>
               <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
                 These picks use Truva&apos;s current verified snapshot for a PHP {BANK_PICK_AMOUNT.toLocaleString()} balance over{' '}
@@ -226,7 +198,7 @@ export default async function BankingHub() {
               href="/banking/rates#rate-desk"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
             >
-              Open full rate desk
+              Open full digital bank desk
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -244,94 +216,46 @@ export default async function BankingHub() {
           </div>
         </section>
 
-        <section id="editorial" className="space-y-6 scroll-mt-32">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-              Editorial coverage
-            </p>
-            <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-              Content grouped by the task a saver is actually trying to solve
-            </h2>
-            <p className="max-w-3xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              Strong comparison sites do not dump a reverse-chronological feed under the hero. They group content by the decision that sent the reader there in the first place.
-            </p>
-          </div>
+        {/* Money Market Funds Section */}
+        {uitfPicks.length > 0 && (
+          <section id="money-market-funds" className="space-y-5 scroll-mt-32">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-semibold text-brand-primary dark:bg-brand-primary/20">
+                  <TrendingUp className="h-3.5 w-3.5" />
+                  Best for liquid investing
+                </span>
+                <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+                  Money Market Funds (UITFs)
+                </h2>
+                <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+                  Unit Investment Trust Funds that focus on low-risk, short-term fixed-income. These are not insured by PDIC, but they are highly liquid and often tax-advantaged compared to standard savings.
+                </p>
+              </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            <EditorialLane
-              title="Best-rate roundups"
-              description="Use these when you want the current shortlist, the balance math, and the fastest route to the right bank for your amount."
-              href="/banking/rates"
-              ctaLabel="Browse banking rate guides"
-              articles={[featuredArticle, ...rateRoundups].filter(
-                (article): article is EditorialArticle => Boolean(article)
-              )}
-            />
-            <EditorialLane
-              title="Bank comparisons"
-              description="Use these when you have two banks in mind and want the side-by-side peso math before you decide."
-              href="/banking/compare"
-              ctaLabel="Browse comparisons"
-              articles={compareArticles}
-            />
-            <EditorialLane
-              title="Bank reviews"
-              description="Open the review layer when a product looks promising but the promo structure, cash-in conditions, or lock-in details need a closer read."
-              href="/banking/reviews"
-              ctaLabel="Browse reviews"
-              articles={reviewArticles}
-            />
-            <EditorialLane
-              title="Safety, tax, and mechanics"
-              description="These explainers cover the parts most readers skip until they realize the rate table alone is not enough."
-              href="/guides"
-              ctaLabel="Browse guides"
-              articles={explainers}
-            />
-          </div>
-        </section>
+              <Link
+                href="/calculator"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-5 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/20 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
+              >
+                Model UITF returns
+                <Calculator className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:snap-none md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
+              {uitfPicks.map((pick) => (
+                <BankPickCard
+                  key={`${pick.provider}-${pick.bestProduct.id}`}
+                  pick={pick}
+                  amount={BANK_PICK_AMOUNT}
+                  months={BANK_PICK_MONTHS}
+                  className="min-w-[18rem] snap-start md:min-w-0"
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </ProductHubTemplate>
     </>
-  );
-}
-
-function EditorialLane({
-  title,
-  description,
-  href,
-  ctaLabel,
-  articles,
-}: {
-  title: string;
-  description: string;
-  href: string;
-  ctaLabel: string;
-  articles: EditorialArticle[];
-}) {
-  return (
-    <section className="overflow-hidden rounded-[1.75rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
-      <div className="space-y-3">
-        <h3 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-          {title}
-        </h3>
-        <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-          {description}
-        </p>
-      </div>
-
-      <div className="mt-5 space-y-4">
-        {articles.map((article) => (
-          <ArticleCard key={article.slug} article={article} variant="compact" />
-        ))}
-      </div>
-
-      <Link
-        href={href}
-        className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-primary"
-      >
-        {ctaLabel}
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    </section>
   );
 }

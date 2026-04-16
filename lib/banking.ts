@@ -27,13 +27,14 @@ function summarizeRequirements(product: RateProduct): string | null {
   return requirements.map((condition) => condition.description).join(' ');
 }
 
-export function getBankPicksFromRates(
+export function getProductPicksFromRates(
   rates: RateProduct[],
   amount: number,
   months: number,
+  categories: string[] = ['banks'],
   limit = 6
 ): BankPick[] {
-  const bankRates = rates.filter((rate) => rate.category === 'banks');
+  const bankRates = rates.filter((rate) => categories.includes(rate.category));
 
   const groups = new Map<string, RateProduct[]>();
   for (const product of bankRates) {
