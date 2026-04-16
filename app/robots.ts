@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/optimizer', '/tracker'],
+        disallow: ['/api/', '/optimizer', '/tracker', '/go/'],
       },
     ],
     sitemap: 'https://www.gotruva.com/sitemap.xml',
