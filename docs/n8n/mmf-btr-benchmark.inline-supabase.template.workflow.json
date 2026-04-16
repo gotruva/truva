@@ -1,5 +1,5 @@
 {
-  "name": "Truva MMF - BTr 91D Benchmark Direct PDF",
+  "name": "Truva MMF - BTr 91D Benchmark Direct PDF (Inline Supabase Template)",
   "nodes": [
     {
       "parameters": {},
@@ -128,17 +128,17 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.SUPABASE_URL}}/rest/v1/benchmark_rates?on_conflict=key,date",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/benchmark_rates?on_conflict=key,date",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "apikey",
-              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Content-Type",
@@ -179,17 +179,17 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.SUPABASE_URL}}/rest/v1/rpc/recalculate_mmf_benchmark",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/rpc/recalculate_mmf_benchmark",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "apikey",
-              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Content-Type",
@@ -317,7 +317,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "btr-direct-pdf-template",
+  "versionId": "btr-direct-pdf-inline-template",
   "meta": {
     "templateCredsSetupCompleted": false
   },

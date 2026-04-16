@@ -1,5 +1,5 @@
 {
-  "name": "Truva MMF - Daily Health Check",
+  "name": "Truva MMF - Daily Health Check (Inline Supabase Template)",
   "nodes": [
     {
       "parameters": {},
@@ -35,7 +35,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst chatId = $env.TELEGRAM_CHAT_ID;\nif (!chatId || chatId === 'REPLACE_WITH_TELEGRAM_CHAT_ID') throw new Error('Configure TELEGRAM_CHAT_ID before running this workflow');\nreturn [{ json: { check_date: phtDate(), chatId } }];"
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst chatId = 'REPLACE_WITH_TELEGRAM_CHAT_ID';\nif (!chatId || chatId === 'REPLACE_WITH_TELEGRAM_CHAT_ID') throw new Error('Configure TELEGRAM_CHAT_ID before running this workflow');\nreturn [{ json: { check_date: phtDate(), chatId } }];"
       },
       "id": "8d8a3ab8-f024-4487-b9aa-0a6076846456",
       "name": "Build Health Query",
@@ -49,17 +49,17 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.SUPABASE_URL}}/rest/v1/rpc/get_mmf_health_report",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/rpc/get_mmf_health_report",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "apikey",
-              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Content-Type",
@@ -186,7 +186,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "health-no-fetch-template",
+  "versionId": "inline-health-no-fetch-template",
   "meta": {
     "templateCredsSetupCompleted": false
   },

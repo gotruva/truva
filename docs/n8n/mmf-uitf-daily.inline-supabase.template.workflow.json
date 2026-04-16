@@ -1,5 +1,5 @@
 {
-  "name": "Truva MMF - PHP UITF Daily Scrape",
+  "name": "Truva MMF - PHP UITF Daily Scrape (Inline Supabase Template)",
   "nodes": [
     {
       "parameters": {},
@@ -35,17 +35,17 @@
     },
     {
       "parameters": {
-        "url": "={{$env.SUPABASE_URL}}/rest/v1/money_market_funds?select=id,slug,name,provider,trust_fee_pct,uitf_fund_id&is_active=eq.true&currency=eq.PHP&fund_type=eq.UITF&navpu_source=eq.uitf_com_ph",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/money_market_funds?select=id,slug,name,provider,trust_fee_pct,uitf_fund_id&is_active=eq.true&currency=eq.PHP&fund_type=eq.UITF&navpu_source=eq.uitf_com_ph",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "apikey",
-              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Content-Type",
@@ -73,17 +73,17 @@
     },
     {
       "parameters": {
-        "url": "={{$env.SUPABASE_URL}}/rest/v1/benchmark_rates?select=rate,date&key=eq.BTR_91D&order=date.desc&limit=1",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/benchmark_rates?select=rate,date&key=eq.BTR_91D&order=date.desc&limit=1",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "apikey",
-              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Content-Type",
@@ -160,17 +160,17 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.SUPABASE_URL}}/rest/v1/mmf_daily_rates?on_conflict=fund_id,date",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/mmf_daily_rates?on_conflict=fund_id,date",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "apikey",
-              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Content-Type",
@@ -269,7 +269,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "uitf-no-fetch-template",
+  "versionId": "inline-uitf-no-fetch-template",
   "meta": {
     "templateCredsSetupCompleted": false
   },

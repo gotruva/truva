@@ -15,7 +15,9 @@ The public app contract stays unchanged. `/banking/money-market-funds` reads `pu
 | `supabase/migrations/20260416_mmf_automation.sql` | Recreates the live MMF schema, seed fund metadata, `mmf_current` view, RLS policies, and helper RPCs. |
 | `docs/n8n/mmf-uitf-daily.workflow.json` | Workflow 1: daily PHP UITF scrape and daily-rate upsert. |
 | `docs/n8n/mmf-btr-benchmark.workflow.json` | Workflow 3: BTr benchmark scrape, benchmark upsert, and `vs_benchmark` recalculation. |
+| `docs/n8n/mmf-btr-benchmark-manual.workflow.json` | Manual BTr fallback for cases where the BTr site blocks self-hosted n8n with Incapsula/WAF. |
 | `docs/n8n/mmf-health-check.workflow.json` | Workflow 5: daily health report and Telegram alert. |
+| `docs/n8n/*.inline-supabase.template.workflow.json` | Quick-start import templates with Supabase placeholders inside the nodes. Replace placeholders inside n8n, but do not export/commit versions containing live keys. |
 | `scripts/verify-mmf-automation.ts` | Read-only local verification against Supabase. |
 
 ## Credentials
@@ -30,6 +32,16 @@ Required n8n values:
 - `TELEGRAM_CHAT_ID`
 
 The exported workflows use environment-variable expressions for Supabase headers and a Telegram credential placeholder. After import, confirm the Telegram node points at the real credential.
+
+n8n 2.x Code nodes cannot make HTTP requests, so these workflows keep network calls in HTTP Request nodes and use Code nodes only for parsing, matching, and payload shaping.
+
+For quick manual setup, import the `*.inline-supabase.template.workflow.json` variants instead. Replace these placeholders inside n8n before running:
+
+- `https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co`
+- `REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY`
+- `REPLACE_WITH_TELEGRAM_CHAT_ID` for the health-check workflow
+
+Treat any workflow export that contains the real service-role key as secret material. Do not commit it back to the repo.
 
 ## Supabase setup
 
@@ -110,15 +122,18 @@ Schedule: Mondays at 3:30 PM PHT.
 Source:
 
 ```text
-https://www.treasury.gov.ph/?cat=14
+https://www.treasury.gov.ph/wp-content/uploads/YYYY/MM/Treasury-Bills-Auction-Results-on-DD-Month-YYYY.pdf
 ```
 
 Behavior:
 
-- Find the newest post that contains Treasury Bills Auction Results.
-- Parse the 91-day weighted average accepted yield.
-- Upsert `benchmark_rates` with `key = 'BTR_91D'`.
+- Generate candidate official BTr PDF URLs for the latest Monday and the five prior Mondays.
+- Download the first available PDF directly and extract text with n8n's Extract From File node.
+- Parse the 91-day annual average accepted yield.
+- Upsert `benchmark_rates` with `key = 'BTR_91D'` and the current PHT date as the effective benchmark date.
 - Call `recalculate_mmf_benchmark('BTR_91D', today_pht)` after upsert.
+
+The direct-PDF approach avoids the BTr listing page, which can return `Request unsuccessful. Incapsula incident ID` to self-hosted n8n servers. If direct PDF downloads are also blocked, use `mmf-btr-benchmark-manual.workflow.json` or the inline Supabase template variant while moving the fetch to a different free runtime such as the deployed Next/Vercel app.
 
 Manual test:
 
@@ -180,10 +195,10 @@ npm run build
 ## Rollout order
 
 1. Apply the migration in the target Supabase project.
-2. Import `mmf-btr-benchmark.workflow.json`; configure credentials; run manually.
-3. Import `mmf-uitf-daily.workflow.json`; configure credentials; run manually.
+2. Import `mmf-btr-benchmark.workflow.json`; configure credentials; run manually. For quicker local setup, use `mmf-btr-benchmark.inline-supabase.template.workflow.json` and replace the inline placeholders in n8n.
+3. Import `mmf-uitf-daily.workflow.json`; configure credentials; run manually. For quicker local setup, use `mmf-uitf-daily.inline-supabase.template.workflow.json` and replace the inline placeholders in n8n.
 4. Run `npm run mmf:verify -- --require-scraper`.
-5. Import `mmf-health-check.workflow.json`; configure Telegram; run manually.
+5. Import `mmf-health-check.workflow.json`; configure Telegram; run manually. For quicker local setup, use `mmf-health-check.inline-supabase.template.workflow.json`, replace the inline placeholders in n8n, and still point the Telegram node at the real bot credential.
 6. Enable the schedules only after all manual runs pass.
 
 ## Follow-up after MVP

@@ -1,0 +1,170 @@
+{
+  "name": "Truva MMF - Manual BTr 91D Benchmark",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "891180cb-cc2f-4dc2-8d6d-77a16f0da889",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Manual fallback for when BTr blocks n8n scraping with Incapsula.\n// Update these two official source values from the latest BTr Treasury Bills Auction Results PDF before running.\nconst auctionDate = '2026-04-13';\nconst annualRatePercent = 4.750;\nconst sourceUrl = 'https://www.treasury.gov.ph/wp-content/uploads/2026/04/Treasury-Bills-Auction-Results-on-13-April-2026.pdf';\n\nfunction phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst rate = annualRatePercent / 100;\nif (!auctionDate || !/^\\d{4}-\\d{2}-\\d{2}$/.test(auctionDate)) throw new Error('Set auctionDate as YYYY-MM-DD');\nif (!Number.isFinite(rate) || rate <= 0 || rate > 0.20) throw new Error('annualRatePercent looks wrong: ' + annualRatePercent);\nreturn [{ json: { key: 'BTR_91D', label: '91-day T-Bill (BTr auction)', date: phtDate(), rate: Number(rate.toFixed(6)), source_url: sourceUrl } }];"
+      },
+      "id": "f44dfd6e-8525-4880-bb3c-a274068ea7a7",
+      "name": "Build Manual Benchmark Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SUPABASE_URL}}/rest/v1/benchmark_rates?on_conflict=key,date",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "ac7c9b75-4ab0-4268-8542-509280fae19c",
+      "name": "Upsert benchmark_rates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        120,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst original = $items('Build Manual Benchmark Payload')[0].json;\nreturn [{ json: { requested_key: original.key || 'BTR_91D', requested_date: phtDate() } }];"
+      },
+      "id": "639b7da8-4faa-4cf8-8183-64fe4bd0345b",
+      "name": "Build Recalculation Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SUPABASE_URL}}/rest/v1/rpc/recalculate_mmf_benchmark",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "a8f13773-3e39-42d2-97d2-21ac91261dff",
+      "name": "Recalculate vs_benchmark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Manual Benchmark Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Manual Benchmark Payload": {
+      "main": [
+        [
+          {
+            "node": "Upsert benchmark_rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert benchmark_rates": {
+      "main": [
+        [
+          {
+            "node": "Build Recalculation Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Recalculation Payload": {
+      "main": [
+        [
+          {
+            "node": "Recalculate vs_benchmark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "manual-btr-env-template",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
