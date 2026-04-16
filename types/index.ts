@@ -186,3 +186,40 @@ export interface EditorialArticle {
   relatedArticles: string[];
 }
 
+// ─── Money Market Funds ───
+
+export interface MoneyMarketFund {
+  id: string;
+  slug: string;
+  name: string;
+  provider: string;
+  fund_type: 'UITF' | 'Mutual Fund';
+  currency: 'PHP' | 'USD';
+  trust_fee_pct: number | null;
+  min_initial: number;
+  min_additional: number | null;
+  redemption_days: number;
+  holding_period_days: number;
+  early_redemption_fee: string | null;
+  benchmark_label: string | null;
+  benchmark_key: string | null;
+  risk_class: string | null;
+  pdic_insured: boolean;
+  access_channels: string[];
+  fund_page_url: string;
+  rate_date: string | null;
+  navpu: number | null;
+  gross_yield_1y: number | null;
+  after_tax_yield: number | null;
+  net_yield: number | null;
+  benchmark_rate: number | null;
+  vs_benchmark: number | null;
+}
+
+export interface BenchmarkRate {
+  key: string;
+  label: string;
+  date: string;
+  rate: number;
+}
+
