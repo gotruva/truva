@@ -3,11 +3,12 @@
 import { type ChangeEvent, useMemo, useState } from 'react';
 import { Calculator, WalletCards } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { MoneyMarketFund } from '@/types';
+import { BenchmarkRate, MoneyMarketFund } from '@/types';
 import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
+  formatPhtDate,
   MMF_DEFAULT_AMOUNT,
 } from '@/lib/mmf';
 import { MmfTable } from './MmfTable';
@@ -25,12 +26,14 @@ function FundSection({
   funds,
   amount,
   isPrimary = false,
+  benchmark,
 }: {
   title: string;
   description: string;
   funds: MoneyMarketFund[];
   amount: number;
   isPrimary?: boolean;
+  benchmark?: BenchmarkRate | null;
 }) {
   const sortedFunds = useMemo(() => sortFunds(funds), [funds]);
   const topFund = sortedFunds[0];
@@ -65,19 +68,34 @@ function FundSection({
           </p>
         </div>
 
-        {topFund ? (
-          <div className="rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/40 px-4 py-3 text-sm dark:border-brand-primary/20 dark:bg-brand-primary/10">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-              Top net yield
-            </p>
-            <p className="mt-1 font-bold tabular-nums text-brand-textPrimary dark:text-white">
-              {formatMmfPercent(topFund.net_yield)} | {formatEstimatedAnnualEarnings(topFund, amount)}
-            </p>
-            <p className="mt-0.5 text-xs text-brand-textSecondary/60 dark:text-white/40">
-              {topFund.provider}
-            </p>
-          </div>
-        ) : null}
+        <div className="flex flex-wrap gap-3">
+          {topFund ? (
+            <div className="shrink-0 rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/40 px-4 py-3 text-sm dark:border-brand-primary/20 dark:bg-brand-primary/10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
+                Top net yield
+              </p>
+              <p className="mt-1 font-bold tabular-nums text-brand-textPrimary dark:text-white">
+                {formatMmfPercent(topFund.net_yield)} | {formatEstimatedAnnualEarnings(topFund, amount)}
+              </p>
+              <p className="mt-0.5 text-xs text-brand-textSecondary/60 dark:text-white/40">
+                {topFund.provider}
+              </p>
+            </div>
+          ) : null}
+          {benchmark ? (
+            <div className="shrink-0 rounded-2xl border border-brand-border bg-brand-surface px-4 py-3 text-sm dark:border-white/10 dark:bg-white/[0.04]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
+                Benchmark (90-day SOFR)
+              </p>
+              <p className="mt-1 font-bold tabular-nums text-brand-textPrimary dark:text-white">
+                {formatMmfPercent(benchmark.rate)}
+              </p>
+              <p className="mt-0.5 text-xs text-brand-textSecondary/60 dark:text-white/40">
+                US T-Bill proxy · as of {formatPhtDate(benchmark.date)}
+              </p>
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <div className="md:hidden space-y-3">
@@ -102,9 +120,11 @@ function FundSection({
 export function MmfView({
   phpFunds,
   usdFunds,
+  usdBenchmark,
 }: {
   phpFunds: MoneyMarketFund[];
   usdFunds: MoneyMarketFund[];
+  usdBenchmark?: BenchmarkRate | null;
 }) {
   const [amount, setAmount] = useState(MMF_DEFAULT_AMOUNT);
 
@@ -178,6 +198,7 @@ export function MmfView({
         description="Secondary set for dollar liquidity. Estimates use the same typed number as USD."
         funds={usdFunds}
         amount={amount}
+        benchmark={usdBenchmark}
       />
     </div>
   );

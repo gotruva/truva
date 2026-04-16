@@ -28,6 +28,7 @@ import {
 import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
 import { createClient } from '@/utils/supabase/server';
 import type { MoneyMarketFund } from '@/types';
+import { ProviderLogo } from '@/components/mmf/ProviderLogo';
 
 export const metadata: Metadata = {
   title: 'Banking in the Philippines: compare rates, use tools, read guides',
@@ -70,15 +71,18 @@ function MmfPreviewCard({ fund }: { fund: MoneyMarketFund }) {
     <article className="min-w-[18rem] snap-start rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-[0_18px_48px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-white/[0.04] md:min-w-0">
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="text-base font-bold leading-tight text-brand-textPrimary dark:text-white">
-              {fund.name}
-            </h3>
-            <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-              {fund.provider}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            <ProviderLogo provider={fund.provider} className="h-9 w-9 shrink-0" textClassName="text-sm" />
+            <div className="min-w-0">
+              <h3 className="text-base font-bold leading-tight text-brand-textPrimary dark:text-white">
+                {fund.name}
+              </h3>
+              <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+                {fund.provider}
+              </p>
+            </div>
           </div>
-          <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-xs font-semibold text-brand-primary">
+          <span className="shrink-0 rounded-full bg-brand-primary/10 px-2.5 py-1 text-xs font-semibold text-brand-primary">
             {formatMmfPercent(fund.net_yield)}
           </span>
         </div>

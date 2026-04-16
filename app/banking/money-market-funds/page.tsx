@@ -25,17 +25,25 @@ export const metadata = {
 export default async function MoneyMarketFundsPage() {
   let funds: MoneyMarketFund[] = [];
   let benchmark: BenchmarkRate | null = null;
+  let usdBenchmark: BenchmarkRate | null = null;
   let loadError: string | null = null;
 
   try {
     const supabase = await createClient();
 
-    const [fundsResult, benchmarkResult] = await Promise.all([
+    const [fundsResult, benchmarkResult, usdBenchmarkResult] = await Promise.all([
       supabase.from('mmf_current').select('*'),
       supabase
         .from('benchmark_rates')
         .select('*')
         .eq('key', 'BTR_91D')
+        .order('date', { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabase
+        .from('benchmark_rates')
+        .select('*')
+        .eq('key', 'US_TBILL_90D')
         .order('date', { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -52,6 +60,12 @@ export default async function MoneyMarketFundsPage() {
       console.error('[mmf] Failed to load BTR_91D benchmark', benchmarkResult.error);
     } else if (benchmarkResult.data) {
       benchmark = benchmarkResult.data as BenchmarkRate;
+    }
+
+    if (usdBenchmarkResult.error) {
+      console.error('[mmf] Failed to load US_TBILL_90D benchmark', usdBenchmarkResult.error);
+    } else if (usdBenchmarkResult.data) {
+      usdBenchmark = usdBenchmarkResult.data as BenchmarkRate;
     }
   } catch (error) {
     loadError = 'Live money market fund data is temporarily unavailable.';
@@ -91,7 +105,7 @@ export default async function MoneyMarketFundsPage() {
         </div>
       </div>
 
-      <section className="mb-6 grid gap-3 md:grid-cols-3">
+      <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
             PHP UITF rows
@@ -113,6 +127,18 @@ export default async function MoneyMarketFundsPage() {
           </p>
           <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
             Raw BTr rate date: {formatPhtDate(benchmark?.date)}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
+            90-day SOFR (USD)
+          </p>
+          <p className="mt-2 text-2xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
+            {usdBenchmark ? formatMmfPercent(usdBenchmark.rate) : '-'}
+          </p>
+          <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
+            US T-Bill proxy date: {formatPhtDate(usdBenchmark?.date)}
           </p>
         </div>
 
@@ -162,7 +188,7 @@ export default async function MoneyMarketFundsPage() {
         </div>
       ) : null}
 
-      <MmfView phpFunds={phpFunds} usdFunds={usdFunds} />
+      <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} />
 
       <p className="mt-8 border-t border-brand-border pt-6 text-xs leading-relaxed text-brand-textSecondary/55 dark:border-white/10 dark:text-white/35">
         Truva may earn referral fees when you open an account via our links. This does not affect our rankings. Yields are historical and not guaranteed. UITFs and mutual funds are <strong>not PDIC-insured</strong>. Past performance does not guarantee future results.
