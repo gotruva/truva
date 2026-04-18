@@ -51,7 +51,7 @@ function DiffTable({ details }: { details: RateDiffDetail[] }) {
   return (
     <div className="mt-4 overflow-x-auto">
       <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-        Rate Changes (Previous → New)
+        Rate Details
       </p>
       <table className="w-full border-collapse text-sm">
         <thead>
@@ -201,7 +201,7 @@ export default async function RateReviewPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-brand-textPrimary dark:text-slate-100">Staging Rate Review Queue</h1>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Review material rate changes detected by extraction before rebuilding the staging snapshot.
+          Review material rate changes and scraper snapshots before rebuilding the staging snapshot.
         </p>
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           Pending items: {queuedItems.length}
@@ -314,11 +314,20 @@ export default async function RateReviewPage() {
                   <span className="font-medium">Queue ID:</span> {item.reviewQueueId}
                 </p>
                 <p>
-                  <span className="font-medium">Change Event ID:</span> {item.changeEventId}
+                  <span className="font-medium">Item Type:</span>{' '}
+                  {item.entityType === 'product_snapshot' ? 'Scraper Snapshot' : 'Change Event'}
                 </p>
+                <p>
+                  <span className="font-medium">Entity ID:</span> {item.entityId}
+                </p>
+                {item.changeEventId ? (
+                  <p>
+                    <span className="font-medium">Change Event ID:</span> {item.changeEventId}
+                  </p>
+                ) : null}
                 {item.newSnapshotId ? (
                   <p>
-                    <span className="font-medium">New Snapshot ID:</span> {item.newSnapshotId}
+                    <span className="font-medium">Snapshot ID:</span> {item.newSnapshotId}
                   </p>
                 ) : null}
                 {item.summary ? (
@@ -350,7 +359,7 @@ export default async function RateReviewPage() {
                     type="submit"
                     className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
                   >
-                    Approve Change
+                    Approve Item
                   </button>
                 </form>
 
@@ -370,7 +379,7 @@ export default async function RateReviewPage() {
                     type="submit"
                     className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-rose-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-700"
                   >
-                    Reject Change
+                    Reject Item
                   </button>
                 </form>
               </div>
