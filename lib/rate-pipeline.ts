@@ -124,7 +124,7 @@ export function buildSeedFacts(rate: RateProduct): SeedFactDraft[] {
     { factKey: 'affiliate_url', value: rate.affiliateUrl, evidenceText, sourceUrl, confidence: 1, isMaterial: false },
     { factKey: 'referral_code', value: rate.referralCode, evidenceText, sourceUrl, confidence: 1, isMaterial: false },
     { factKey: 'payout_amount', value: rate.payoutAmount, evidenceText, sourceUrl, confidence: 1, isMaterial: false },
-    { factKey: 'palago_score', value: rate.palagoScore, evidenceText, sourceUrl, confidence: 1, isMaterial: false },
+    { factKey: 'true_value_score', value: rate.trueValueScore, evidenceText, sourceUrl, confidence: 1, isMaterial: false },
   ];
 }
 
@@ -135,3 +135,4 @@ export function getSeedRatesPath() {
 export function getSeedCreditCardsPath() {
   return CREDIT_CARDS_PATH;
 }
+

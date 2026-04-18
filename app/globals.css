@@ -12,6 +12,108 @@
   }
 }
 
+/* ─── Blog / MDX article prose ───────────────────────────────────────────── */
+/* Scoped to .prose-truva so it never bleeds into app UI components.          */
+.prose-truva h1,
+.prose-truva h2,
+.prose-truva h3,
+.prose-truva h4 {
+  @apply text-brand-textPrimary dark:text-gray-100 font-bold tracking-tight;
+}
+.prose-truva h1 { @apply text-4xl sm:text-5xl italic mb-8 mt-4 leading-tight; }
+.prose-truva h2 {
+  @apply text-2xl sm:text-3xl mb-6 mt-14 pb-3 border-b border-brand-border dark:border-white/10 scroll-mt-28;
+}
+.prose-truva h3 { @apply text-xl mb-4 mt-10 scroll-mt-28; }
+.prose-truva h4 { @apply text-lg mb-3 mt-8; }
+
+.prose-truva p {
+  @apply text-lg leading-relaxed mb-6 text-brand-textSecondary dark:text-gray-300;
+}
+.prose-truva > p:first-of-type {
+  @apply text-xl leading-relaxed text-brand-textPrimary dark:text-gray-100;
+}
+.prose-truva strong { @apply text-brand-textPrimary dark:text-gray-100 font-semibold; }
+.prose-truva em    { @apply italic; }
+
+.prose-truva ul,
+.prose-truva ol {
+  @apply mb-8 space-y-3;
+}
+.prose-truva ul { @apply pl-0; }
+.prose-truva ul > li {
+  @apply relative pl-6 text-lg leading-relaxed text-brand-textSecondary dark:text-gray-300;
+}
+.prose-truva ul > li::before {
+  content: '';
+  @apply absolute left-0 top-[0.8rem] h-1.5 w-1.5 rounded-full bg-brand-primary;
+}
+.prose-truva ol {
+  @apply list-decimal pl-6;
+}
+.prose-truva ol > li {
+  @apply pl-1 text-lg leading-relaxed text-brand-textSecondary marker:font-semibold marker:text-brand-primary dark:text-gray-300;
+}
+.prose-truva li > p:last-child,
+.prose-truva li > ul:last-child,
+.prose-truva li > ol:last-child {
+  @apply mb-0;
+}
+.prose-truva li > ul,
+.prose-truva li > ol {
+  @apply mt-4;
+}
+
+.prose-truva blockquote {
+  @apply border-l-4 border-brand-primary/40 pl-6 py-2 my-8
+         italic text-brand-textSecondary dark:text-gray-400
+         bg-brand-surface dark:bg-white/[0.02] rounded-r-xl;
+}
+
+.prose-truva section {
+  @apply scroll-mt-28;
+}
+
+.prose-truva table {
+  @apply w-full border-collapse text-left;
+}
+.prose-truva .table-wrap {
+  @apply my-8 overflow-x-auto overscroll-x-contain rounded-[1.5rem] border border-brand-border bg-white/80 shadow-sm dark:border-white/10 dark:bg-white/[0.03];
+}
+.prose-truva thead { @apply bg-brand-surface dark:bg-white/[0.05]; }
+.prose-truva th {
+  @apply whitespace-nowrap px-4 py-3 text-[11px] font-bold uppercase tracking-[0.2em]
+         text-brand-textSecondary border-b border-brand-border dark:border-white/10 sm:px-5 sm:py-4;
+}
+.prose-truva td {
+  @apply px-4 py-3 align-top text-sm text-brand-textPrimary dark:text-gray-200
+         border-b border-brand-border dark:border-white/5 sm:px-5 sm:py-4 sm:text-base;
+}
+.prose-truva tr:last-child td { @apply border-b-0; }
+.prose-truva td p,
+.prose-truva th p {
+  @apply mb-0;
+}
+.prose-truva td ul,
+.prose-truva td ol,
+.prose-truva th ul,
+.prose-truva th ol {
+  @apply my-0;
+}
+
+.prose-truva a:not(.cta-link) {
+  @apply text-brand-primary font-medium hover:underline underline-offset-2;
+}
+
+.prose-truva hr {
+  @apply my-12 border-brand-border dark:border-white/10;
+}
+
+.prose-truva code {
+  @apply font-mono text-sm bg-brand-surface dark:bg-white/10
+         px-1.5 py-0.5 rounded text-brand-textPrimary dark:text-gray-200;
+}
+
 @keyframes pulse-status {
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(18, 183, 106, 0.7); }
   70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(18, 183, 106, 0); }

@@ -1,0 +1,325 @@
+{
+  "name": "Truva MMF - BTr 91D Benchmark Direct PDF (Inline Supabase Template)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2ef1c563-7548-41e3-92cb-5858459495aa",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 15 * * 1"
+            }
+          ]
+        },
+        "timezone": "Asia/Manila"
+      },
+      "id": "f3b96803-a5a8-4d65-b4e4-62cda9062a6e",
+      "name": "Monday 3:30 PM PHT",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -980,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nfunction phtTodayUtcMidnight() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return new Date(Date.UTC(Number(pick('year')), Number(pick('month')) - 1, Number(pick('day'))));\n}\nfunction addDays(date, days) {\n  const next = new Date(date.getTime());\n  next.setUTCDate(next.getUTCDate() + days);\n  return next;\n}\nfunction pdfUrlFor(date) {\n  const year = date.getUTCFullYear();\n  const month = String(date.getUTCMonth() + 1).padStart(2, '0');\n  const day = String(date.getUTCDate()).padStart(2, '0');\n  const monthName = monthNames[date.getUTCMonth()];\n  return 'https://www.treasury.gov.ph/wp-content/uploads/' + year + '/' + month + '/Treasury-Bills-Auction-Results-on-' + day + '-' + monthName + '-' + year + '.pdf';\n}\nconst today = phtTodayUtcMidnight();\nconst daysSinceMonday = (today.getUTCDay() + 6) % 7;\nconst latestMonday = addDays(today, -daysSinceMonday);\nconst candidates = [];\nfor (let i = 0; i < 6; i += 1) {\n  const date = addDays(latestMonday, -7 * i);\n  const year = date.getUTCFullYear();\n  const month = String(date.getUTCMonth() + 1).padStart(2, '0');\n  const day = String(date.getUTCDate()).padStart(2, '0');\n  candidates.push({ json: { auction_date: year + '-' + month + '-' + day, pdf_url: pdfUrlFor(date), candidate_rank: i + 1 } });\n}\nreturn candidates;"
+      },
+      "id": "c8873d09-0e9e-48e8-a768-2f6e8500b17c",
+      "name": "Build PDF Candidates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -650,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.pdf_url}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "application/pdf,*/*;q=0.8"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 45000
+        }
+      },
+      "id": "e40ea7eb-75c4-478a-aa83-7488e522df09",
+      "name": "Fetch BTr PDF Candidates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -330,
+        0
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst success = items.find((item) => item.binary && item.binary.data && !(item.json && item.json.error));\nif (!success) {\n  const attempted = items.map((item) => item.json?.pdf_url || JSON.stringify(item.json || {})).join('; ');\n  throw new Error('Could not download any recent BTr Treasury Bills PDF directly. Attempted: ' + attempted);\n}\nreturn [success];"
+      },
+      "id": "04cd8039-dd80-4304-93ef-fb9acc948ec3",
+      "name": "Filter PDF Success",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -10,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "data",
+        "options": {
+          "joinPages": true
+        }
+      },
+      "id": "d18b8f85-1fcf-430d-bc07-fe3e11a48786",
+      "name": "Extract BTr PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        310,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nfunction asNumber(value) {\n  return Number(String(value || '').replace(/,/g, ''));\n}\nconst source = $items('Filter PDF Success')[0].json;\nconst rawText = $json.text || $json.data || $json.combined_text || Object.values($json).join(' ');\nconst text = String(rawText || '').replace(/\\s+/g, ' ').trim();\nif (!text) throw new Error('BTr PDF text extraction returned no text for ' + source.pdf_url);\nconst sectionMatch = text.match(/91\\s*days[\\s\\S]*?(?=182\\s*days|364\\s*days|THIS IS A COMPUTER GENERATED REPORT|$)/i);\nconst section = sectionMatch ? sectionMatch[0] : text;\nlet parsed = null;\nconst tableMatch = section.match(/Annual\\s+Rate\\s+Average\\s+Low\\s+High\\s+Comp\\.?\\s+Stop[-\\s]?Out\\s+N-C\\s+Awarded\\s+([0-9.,]+)\\s+([0-9.,]+)\\s+([0-9.,]+)\\s+([0-9.,]+)\\s+([0-9.,]+)\\s+([0-9.,]+)/i);\nif (tableMatch) parsed = asNumber(tableMatch[4]);\nif (!Number.isFinite(parsed)) {\n  const numbers = [...section.matchAll(/\\b\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?\\b/g)].map((match) => asNumber(match[0]));\n  const annualRateIndex = numbers.findIndex((value, index) => value > 80 && numbers[index + 1] > 80 && numbers[index + 2] > 80 && numbers[index + 3] > 0 && numbers[index + 3] < 20);\n  if (annualRateIndex !== -1) parsed = numbers[annualRateIndex + 3];\n}\nif (!Number.isFinite(parsed)) throw new Error('Could not parse 91-day annual average rate from extracted BTr PDF text. PDF: ' + source.pdf_url + '. Sample: ' + text.slice(0, 700));\nconst rate = parsed > 1 ? parsed / 100 : parsed;\nif (rate <= 0 || rate > 0.20) throw new Error('Parsed BTr rate looks wrong: ' + rate + ' from ' + source.pdf_url);\nreturn [{ json: { key: 'BTR_91D', label: '91-day T-Bill (BTr auction)', date: phtDate(), rate: Number(rate.toFixed(6)), source_url: source.pdf_url } }];"
+      },
+      "id": "a22e0770-4e45-4bfd-9080-0b571ee3a106",
+      "name": "Build Benchmark Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        630,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/benchmark_rates?on_conflict=key,date",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "8c3f40ac-2754-4f4a-9276-e262189c11d6",
+      "name": "Upsert benchmark_rates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        950,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst original = $items('Build Benchmark Payload')[0].json;\nreturn [{ json: { requested_key: original.key || 'BTR_91D', requested_date: phtDate() } }];"
+      },
+      "id": "4bf618fc-d98d-4087-b061-a01f28cf6cc3",
+      "name": "Build Recalculation Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1270,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/rpc/recalculate_mmf_benchmark",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "fcfc8ef9-824f-4a42-b713-0975fb18ed54",
+      "name": "Recalculate vs_benchmark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1590,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build PDF Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday 3:30 PM PHT": {
+      "main": [
+        [
+          {
+            "node": "Build PDF Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build PDF Candidates": {
+      "main": [
+        [
+          {
+            "node": "Fetch BTr PDF Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch BTr PDF Candidates": {
+      "main": [
+        [
+          {
+            "node": "Filter PDF Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter PDF Success": {
+      "main": [
+        [
+          {
+            "node": "Extract BTr PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract BTr PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Build Benchmark Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Benchmark Payload": {
+      "main": [
+        [
+          {
+            "node": "Upsert benchmark_rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert benchmark_rates": {
+      "main": [
+        [
+          {
+            "node": "Build Recalculation Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Recalculation Payload": {
+      "main": [
+        [
+          {
+            "node": "Recalculate vs_benchmark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "btr-direct-pdf-inline-template",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

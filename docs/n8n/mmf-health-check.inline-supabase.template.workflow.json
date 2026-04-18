@@ -1,0 +1,194 @@
+{
+  "name": "Truva MMF - Daily Health Check (Inline Supabase Template)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3a7f05df-cfed-4ba2-80a5-f2fa79f87ef5",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 20 * * *"
+            }
+          ]
+        },
+        "timezone": "Asia/Manila"
+      },
+      "id": "a595dd3e-2927-441e-b416-b7eb4eb7a56a",
+      "name": "Daily 8:00 PM PHT",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst chatId = 'REPLACE_WITH_TELEGRAM_CHAT_ID';\nif (!chatId || chatId === 'REPLACE_WITH_TELEGRAM_CHAT_ID') throw new Error('Configure TELEGRAM_CHAT_ID before running this workflow');\nreturn [{ json: { check_date: phtDate(), chatId } }];"
+      },
+      "id": "8d8a3ab8-f024-4487-b9aa-0a6076846456",
+      "name": "Build Health Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -430,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/rpc/get_mmf_health_report",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"check_date\": $json.check_date } }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "6e703809-46d8-4264-923f-22a8bf0e670f",
+      "name": "Get Health Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -110,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "function rowsFromInput() {\n  return $input.all().flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return item.json && item.json.slug ? [item.json] : [];\n  });\n}\nconst context = $items('Build Health Query')[0].json;\nconst issues = rowsFromInput();\nlet text;\nif (!issues.length) {\n  text = 'Truva MMF health: OK\\nDate: ' + context.check_date + '\\nAll active PHP UITF targets have scraper-sourced rows with yields and BTR_91D benchmark values.';\n} else {\n  const lines = issues.slice(0, 20).map((issue) => '- ' + issue.provider + ' - ' + issue.name + ': ' + issue.issue_type + ' - ' + issue.detail);\n  const more = issues.length > 20 ? '\\n...and ' + (issues.length - 20) + ' more issue(s).' : '';\n  text = 'Truva MMF health: ACTION NEEDED\\nDate: ' + context.check_date + '\\nIssues: ' + issues.length + '\\n' + lines.join('\\n') + more;\n}\nreturn [{ json: { chatId: context.chatId, text, date: context.check_date, issue_count: issues.length } }];"
+      },
+      "id": "1fdfc6bb-a2aa-4db7-a9e1-54c9f2d29b1c",
+      "name": "Build Health Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        210,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "={{$json.text}}",
+        "additionalFields": {}
+      },
+      "id": "123e71f7-4978-42a5-b28e-9b9eea2f5eb7",
+      "name": "Send Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        530,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "__REPLACE_WITH_N8N_TELEGRAM_CREDENTIAL_ID__",
+          "name": "Truva Telegram Bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Health Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily 8:00 PM PHT": {
+      "main": [
+        [
+          {
+            "node": "Build Health Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Health Query": {
+      "main": [
+        [
+          {
+            "node": "Get Health Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Health Report": {
+      "main": [
+        [
+          {
+            "node": "Build Health Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Health Message": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "inline-health-no-fetch-template",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

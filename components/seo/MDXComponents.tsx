@@ -1,7 +1,33 @@
-import { ReactNode, ComponentPropsWithoutRef } from 'react';
+import { Children, ComponentPropsWithoutRef, ReactNode, isValidElement } from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
+import { slugifyHeading } from '@/lib/editorial';
+
+function extractText(children: ReactNode): string {
+  return Children.toArray(children)
+    .map((child) => {
+      if (typeof child === 'string' || typeof child === 'number') {
+        return String(child);
+      }
+
+      if (isValidElement<{ children?: ReactNode }>(child)) {
+        return extractText(child.props.children);
+      }
+
+      return '';
+    })
+    .join(' ')
+    .trim();
+}
+
+function resolveHeadingId(children: ReactNode, explicitId?: string) {
+  if (explicitId) {
+    return explicitId;
+  }
+
+  const headingText = extractText(children);
+  return headingText ? slugifyHeading(headingText) : undefined;
+}
 
 const CustomLink = ({
   href,
@@ -33,18 +59,30 @@ const CustomLink = ({
 };
 
 export const MDXComponents = {
-  h1: ({ children, ...props }: ComponentPropsWithoutRef<'h1'>) => (
-    <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-8 mt-4 text-brand-textPrimary dark:text-gray-100 italic" {...props}>
+  h1: ({ children, id, ...props }: ComponentPropsWithoutRef<'h1'>) => (
+    <h1
+      id={resolveHeadingId(children, id)}
+      className="scroll-mt-28 text-4xl sm:text-5xl font-bold tracking-tight mb-8 mt-4 text-brand-textPrimary dark:text-gray-100 italic"
+      {...props}
+    >
       {children}
     </h1>
   ),
-  h2: ({ children, ...props }: ComponentPropsWithoutRef<'h2'>) => (
-    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6 mt-12 text-brand-textPrimary dark:text-gray-100 pb-2 border-b border-brand-border dark:border-white/10" {...props}>
+  h2: ({ children, id, ...props }: ComponentPropsWithoutRef<'h2'>) => (
+    <h2
+      id={resolveHeadingId(children, id)}
+      className="scroll-mt-28 text-2xl sm:text-3xl font-bold tracking-tight mb-6 mt-12 text-brand-textPrimary dark:text-gray-100 pb-2 border-b border-brand-border dark:border-white/10"
+      {...props}
+    >
       {children}
     </h2>
   ),
-  h3: ({ children, ...props }: ComponentPropsWithoutRef<'h3'>) => (
-    <h3 className="text-xl font-bold mb-4 mt-8 text-brand-textPrimary dark:text-gray-100" {...props}>
+  h3: ({ children, id, ...props }: ComponentPropsWithoutRef<'h3'>) => (
+    <h3
+      id={resolveHeadingId(children, id)}
+      className="scroll-mt-28 text-xl font-bold mb-4 mt-8 text-brand-textPrimary dark:text-gray-100"
+      {...props}
+    >
       {children}
     </h3>
   ),
@@ -54,15 +92,19 @@ export const MDXComponents = {
     </p>
   ),
   ul: ({ children, ...props }: ComponentPropsWithoutRef<'ul'>) => (
-    <ul className="list-none space-y-3 mb-8 ml-0" {...props}>
+    <ul className="list-none space-y-3 mb-8 ml-0 pl-0" {...props}>
       {children}
     </ul>
   ),
   li: ({ children, ...props }: ComponentPropsWithoutRef<'li'>) => (
-    <li className="flex items-start gap-3 text-lg text-brand-textSecondary dark:text-gray-300" {...props}>
-      <span className="w-1.5 h-1.5 rounded-full bg-brand-primary shrink-0 mt-[0.6rem]" />
-      <span>{children}</span>
+    <li className="text-lg leading-relaxed text-brand-textSecondary dark:text-gray-300" {...props}>
+      {children}
     </li>
+  ),
+  ol: ({ children, ...props }: ComponentPropsWithoutRef<'ol'>) => (
+    <ol className="mb-8 list-decimal space-y-3 pl-6" {...props}>
+      {children}
+    </ol>
   ),
   a: CustomLink,
   blockquote: ({ children, ...props }: ComponentPropsWithoutRef<'blockquote'>) => (
@@ -71,8 +113,8 @@ export const MDXComponents = {
     </blockquote>
   ),
   table: ({ children, ...props }: ComponentPropsWithoutRef<'table'>) => (
-    <div className="overflow-x-auto my-8 rounded-2xl border border-brand-border dark:border-white/10 shadow-sm">
-      <table className="w-full text-left border-collapse min-w-[500px]" {...props}>
+    <div className="table-wrap">
+      <table className="w-full min-w-[40rem] border-collapse text-left text-sm sm:text-base" {...props}>
         {children}
       </table>
     </div>
@@ -83,12 +125,12 @@ export const MDXComponents = {
     </thead>
   ),
   th: ({ children, ...props }: ComponentPropsWithoutRef<'th'>) => (
-    <th className="px-6 py-4 text-sm font-bold uppercase tracking-wider text-brand-textSecondary border-b border-brand-border dark:border-white/10" {...props}>
+    <th className="px-4 py-3 text-xs font-bold uppercase tracking-[0.2em] text-brand-textSecondary border-b border-brand-border dark:border-white/10 sm:px-5 sm:py-4" {...props}>
       {children}
     </th>
   ),
   td: ({ children, ...props }: ComponentPropsWithoutRef<'td'>) => (
-    <td className="px-6 py-4 text-base text-brand-textPrimary dark:text-gray-200 border-b border-brand-border dark:border-white/5" {...props}>
+    <td className="px-4 py-3 align-top text-sm text-brand-textPrimary border-b border-brand-border dark:border-white/5 dark:text-gray-200 sm:px-5 sm:py-4 sm:text-base" {...props}>
       {children}
     </td>
   ),

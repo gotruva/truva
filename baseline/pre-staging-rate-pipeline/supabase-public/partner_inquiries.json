@@ -1,16 +1,1 @@
-[
-  {
-    "id": "e3d344aa-dfe8-478d-9710-4e2e593f1e73",
-    "created_at": "2026-04-06T14:35:36.879211+00:00",
-    "name": "testingggg",
-    "company": "testinggg",
-    "email": "testingggg@gmail.com"
-  },
-  {
-    "id": "3f26d8bd-baba-4579-a64a-ba5c432824bb",
-    "created_at": "2026-04-07T01:41:13.716009+00:00",
-    "name": "testing",
-    "company": "partner",
-    "email": "again@gmail.com"
-  }
-]
+[]

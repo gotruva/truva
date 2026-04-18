@@ -1,0 +1,749 @@
+[
+  {
+    "route": "banking",
+    "path": "/banking",
+    "viewport": "desktop",
+    "metrics": {
+      "title": "Banking in the Philippines: compare rates, use tools, read guides | Truva",
+      "h1": [
+        "Banking"
+      ],
+      "h2": [
+        "Move between Truva comparison desks",
+        "See the after-tax answer first, then decide whether the headline rate is still worth chasing.",
+        "The page tells you how we compare before it asks you to click.",
+        "Three fast ways into the decision",
+        "A fast preview before you open the full comparison desk",
+        "Content grouped by the task a saver is actually trying to solve",
+        "The banking score should only go live after the methodology is easy to inspect."
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "CurrentBankingCompare savings and time deposit rates, calculators, and practical guides.Current desk",
+        "LiveCredit CardsCompare cashback, rewards, annual fees, and review pages before you apply.Open desk",
+        "PreviewLoansPlanned hub for effective rates, approval timelines, and borrower tradeoffs.Open preview",
+        "Overview",
+        "Start here",
+        "Top picks",
+        "Editorial",
+        "Methodology",
+        "Compare live rates",
+        "Read the flagship guide",
+        "Featured rate guideRate GuideBest digital bank Philippines 2026: rates, conditions & real peso mathA snapshot-based guide for savers who want the current rates, the conditions behind them, and the peso math for common balances.11 min readUpdated Apr 13Open article",
+        "Read the trust policy"
+      ],
+      "bodyTextLength": 6885,
+      "innerWidth": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 160
+        },
+        {
+          "tag": "a",
+          "text": "Featured rate guideRate GuideBest digital bank Philippines 2026: rates, conditions & real ",
+          "diff": 40,
+          "width": 475,
+          "left": 789
+        },
+        {
+          "tag": "p",
+          "text": "Best for PHP 100,000 - Maya Savings",
+          "diff": 82,
+          "width": 144,
+          "left": 225
+        },
+        {
+          "tag": "p",
+          "text": "Best for PHP 100,000 - Tonik Time Deposit 12-Month",
+          "diff": 172,
+          "width": 152,
+          "left": 592
+        },
+        {
+          "tag": "p",
+          "text": "Best for PHP 100,000 - Salmon Bank Time Deposit 6-Month",
+          "diff": 213,
+          "width": 154,
+          "left": 964
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": {
+      "headerButtons": [
+        "Products",
+        "Articles",
+        "Feedback"
+      ],
+      "headerLinks": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Join our Community"
+      ]
+    },
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=ykFSnwsNlRPtI-5lUxPpN' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=ykFSnwsNlRPtI-5lUxPpN' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE"
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\banking-desktop.png"
+  },
+  {
+    "route": "credit-cards",
+    "path": "/credit-cards",
+    "viewport": "desktop",
+    "metrics": {
+      "title": "Best Credit Cards in the Philippines (2026 Comparison) | Truva",
+      "h1": [
+        "Credit Cards"
+      ],
+      "h2": [
+        "Move between Truva comparison desks",
+        "Choose the card by job-to-be-done first, not by whichever issuer buys the loudest placement.",
+        "A better card landing page keeps the economic traps in the hero, not hidden below the fold.",
+        "Card pages should explain the fee math and the disclosure rules before they ask for a click-through.",
+        "Pick the entry point that matches the decision you are making",
+        "Start with the card job, then inspect the product",
+        "Every live card, with the decision inputs kept visible",
+        "Amore Cashback Card"
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "LiveBankingCompare savings and time deposit rates, calculators, and practical guides.Open desk",
+        "CurrentCredit CardsCompare cashback, rewards, annual fees, and review pages before you apply.Current desk",
+        "PreviewLoansPlanned hub for effective rates, approval timelines, and borrower tradeoffs.Open preview",
+        "Overview",
+        "Start here",
+        "Top picks",
+        "All cards",
+        "Editorial",
+        "Methodology",
+        "See best-for segments",
+        "Browse card reviews",
+        "Open methodology"
+      ],
+      "bodyTextLength": 7806,
+      "innerWidth": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 96
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fR9uGC4u5nN8xRtw-LUrV' failed: ",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fR9uGC4u5nN8xRtw-LUrV' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\credit-cards-desktop.png"
+  },
+  {
+    "route": "loans",
+    "path": "/loans",
+    "viewport": "desktop",
+    "metrics": {
+      "title": "Loans in the Philippines: compare effective rates, timelines, and borrower tradeoffs | Truva",
+      "h1": [
+        "Loans"
+      ],
+      "h2": [
+        "Move between Truva comparison desks",
+        "Loans should be compared on total pain, not just on the teaser rate that got the ad click.",
+        "No fake marketplace, no fake ranking, no fake score.",
+        "Borrowing comparisons need stronger disclosure than deposit comparisons.",
+        "The right next step depends on whether you want framework or future tools",
+        "What Truva will compare before any lender earns a recommendation",
+        "The future hub should answer these questions immediately",
+        "The loans hub should launch with visible rules before it launches with lender cards."
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "LiveBankingCompare savings and time deposit rates, calculators, and practical guides.Open desk",
+        "LiveCredit CardsCompare cashback, rewards, annual fees, and review pages before you apply.Open desk",
+        "PreviewLoansPlanned hub for effective rates, approval timelines, and borrower tradeoffs.Current desk",
+        "Overview",
+        "Start here",
+        "Compare preview",
+        "Questions",
+        "Methodology",
+        "Read loan methodology",
+        "Read trust policy",
+        "Read the framework",
+        "Review trust policy"
+      ],
+      "bodyTextLength": 5402,
+      "innerWidth": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 160
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=7vnh7c8JfRLxhICcHh-_Z' failed: ",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=7vnh7c8JfRLxhICcHh-_Z' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\loans-desktop.png"
+  },
+  {
+    "route": "methodology",
+    "path": "/methodology",
+    "viewport": "desktop",
+    "metrics": {
+      "title": "Methodology & Trust | Truva | Truva",
+      "h1": [
+        "Methodology & Trust"
+      ],
+      "h2": [
+        "Truva should earn trust by exposing its rules, not by asking for it.",
+        "Start with the category you want to challenge",
+        "We compare products by the user outcome, not by the most marketable number.",
+        "Compensation helps keep the product alive. It should not dictate the editorial answer.",
+        "“Editorial,” “Sponsored,” and “Partner-supported” should never blur together."
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "Banking methodologyHow Truva will weigh after-tax yield, liquidity, conditions complexity, insurance, and payout structure.Open page",
+        "Credit cards methodologyHow fees, fee-waiver realism, rewards usefulness, redemption friction, and approval fit will be handled.Open page",
+        "Loans methodologyHow effective annual cost, fees, funding speed, flexibility, and late-fee risk will shape future recommendations.Open page",
+        "Editorial integrityHow Truva labels sponsored content, what partner compensation can change, and what it cannot touch.Open page",
+        "Read editorial integrity",
+        "Partner with Truva",
+        "Banking",
+        "Credit Cards",
+        "Loans",
+        "Trust Hub",
+        "Banking Methodology",
+        "Card Methodology"
+      ],
+      "bodyTextLength": 3820,
+      "innerWidth": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 160
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=eNOJNmS-gcgxukryzQXZC' failed: ",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=eNOJNmS-gcgxukryzQXZC' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\methodology-desktop.png"
+  },
+  {
+    "route": "editorial-integrity",
+    "path": "/methodology/editorial-integrity",
+    "viewport": "desktop",
+    "metrics": {
+      "title": "Editorial Integrity | Truva | Truva",
+      "h1": [
+        "Editorial Integrity"
+      ],
+      "h2": [
+        "Readers come first when Truva is making editorial judgments. Compensation should help keep the business running, not decide the answer.",
+        "What the labels mean",
+        "Trust policy and scoring policy should sit next to each other"
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "Methodology",
+        "Banking methodology",
+        "Card methodology",
+        "Loans methodology",
+        "Partner with Truva",
+        "Banking",
+        "Credit Cards",
+        "Loans",
+        "Trust Hub",
+        "Banking Methodology",
+        "Card Methodology",
+        "Loans Methodology"
+      ],
+      "bodyTextLength": 3561,
+      "innerWidth": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 224
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=bsgmd7z1dm7TtOODEk_vn' failed: ",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=bsgmd7z1dm7TtOODEk_vn' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\editorial-integrity-desktop.png"
+  },
+  {
+    "route": "banking",
+    "path": "/banking",
+    "viewport": "mobile",
+    "metrics": {
+      "title": "Banking in the Philippines: compare rates, use tools, read guides | Truva",
+      "h1": [
+        "Banking"
+      ],
+      "h2": [
+        "Move between Truva comparison desks",
+        "See the after-tax answer first, then decide whether the headline rate is still worth chasing.",
+        "The page tells you how we compare before it asks you to click.",
+        "Three fast ways into the decision",
+        "A fast preview before you open the full comparison desk",
+        "Content grouped by the task a saver is actually trying to solve",
+        "The banking score should only go live after the methodology is easy to inspect."
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "CurrentBankingCompare savings and time deposit rates, calculators, and practical guides.Current desk",
+        "LiveCredit CardsCompare cashback, rewards, annual fees, and review pages before you apply.Open desk",
+        "PreviewLoansPlanned hub for effective rates, approval timelines, and borrower tradeoffs.Open preview",
+        "Overview",
+        "Start here",
+        "Top picks",
+        "Editorial",
+        "Methodology",
+        "Compare live rates",
+        "Read the flagship guide",
+        "Featured rate guideRate GuideBest digital bank Philippines 2026: rates, conditions & real peso mathA snapshot-based guide for savers who want the current rates, the conditions behind them, and the peso math for common balances.11 min readUpdated Apr 13Open article",
+        "Read the trust policy"
+      ],
+      "bodyTextLength": 6802,
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 15
+        },
+        {
+          "tag": "div",
+          "text": "CurrentBankingCompare savings and time deposit rates, calculators, and practical guides.Cu",
+          "diff": 434,
+          "width": 390,
+          "left": 0
+        },
+        {
+          "tag": "div",
+          "text": "OverviewStart hereTop picksEditorialMethodology",
+          "diff": 237,
+          "width": 358,
+          "left": 16
+        },
+        {
+          "tag": "a",
+          "text": "Featured rate guideRate GuideBest digital bank Philippines 2026: rates, conditions & real ",
+          "diff": 40,
+          "width": 358,
+          "left": 16
+        },
+        {
+          "tag": "div",
+          "text": "Maya BankBest for PHP 100,000 - Maya Savings PDIC insuredAfter-tax rate9.60%Est. earnings+",
+          "diff": 538,
+          "width": 390,
+          "left": 0
+        },
+        {
+          "tag": "p",
+          "text": "Best for PHP 100,000 - Maya Savings",
+          "diff": 99,
+          "width": 94,
+          "left": 52
+        },
+        {
+          "tag": "p",
+          "text": "Tonik Digital Bank",
+          "diff": 30,
+          "width": 100,
+          "left": 350
+        },
+        {
+          "tag": "p",
+          "text": "Best for PHP 100,000 - Tonik Time Deposit 12-Month",
+          "diff": 177,
+          "width": 100,
+          "left": 350
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": {
+      "ok": false,
+      "menuText": "Home Banking Banking An editorial-first comparison desk for Philippine savers: start with after-tax reality, then go deeper only when the terms deserve it. PRODUCTS Move between Truva comparison desks CURRENT Banking Compare savings and time deposit rates, calculators, and practical guides. Current desk LIVE Credit Cards Compare cashback, rewards, annual fees, and review pages before you apply. Open desk PREVIEW Loans Planned hub for effective rates, approval timelines, and borrower tradeoffs. O"
+    },
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=w9hmummIAe_tQNT6Gy7n0' failed: ",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=w9hmummIAe_tQNT6Gy7n0' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\banking-mobile.png"
+  },
+  {
+    "route": "credit-cards",
+    "path": "/credit-cards",
+    "viewport": "mobile",
+    "metrics": {
+      "title": "Best Credit Cards in the Philippines (2026 Comparison) | Truva",
+      "h1": [
+        "Credit Cards"
+      ],
+      "h2": [
+        "Move between Truva comparison desks",
+        "Choose the card by job-to-be-done first, not by whichever issuer buys the loudest placement.",
+        "A better card landing page keeps the economic traps in the hero, not hidden below the fold.",
+        "Card pages should explain the fee math and the disclosure rules before they ask for a click-through.",
+        "Pick the entry point that matches the decision you are making",
+        "Start with the card job, then inspect the product",
+        "Every live card, with the decision inputs kept visible",
+        "Amore Cashback Card"
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "LiveBankingCompare savings and time deposit rates, calculators, and practical guides.Open desk",
+        "CurrentCredit CardsCompare cashback, rewards, annual fees, and review pages before you apply.Current desk",
+        "PreviewLoansPlanned hub for effective rates, approval timelines, and borrower tradeoffs.Open preview",
+        "Overview",
+        "Start here",
+        "Top picks",
+        "All cards",
+        "Editorial",
+        "Methodology",
+        "See best-for segments",
+        "Browse card reviews",
+        "Open methodology"
+      ],
+      "bodyTextLength": 7723,
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 15
+        },
+        {
+          "tag": "div",
+          "text": "LiveBankingCompare savings and time deposit rates, calculators, and practical guides.Open ",
+          "diff": 434,
+          "width": 390,
+          "left": 0
+        },
+        {
+          "tag": "div",
+          "text": "OverviewStart hereTop picksAll cardsEditorialMethodology",
+          "diff": 351,
+          "width": 358,
+          "left": 16
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=w9hmummIAe_tQNT6Gy7n0' failed: ",
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=VpC1fo9xgVr7MuwDuXHms' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\credit-cards-mobile.png"
+  },
+  {
+    "route": "loans",
+    "path": "/loans",
+    "viewport": "mobile",
+    "metrics": {
+      "title": "Loans in the Philippines: compare effective rates, timelines, and borrower tradeoffs | Truva",
+      "h1": [
+        "Loans"
+      ],
+      "h2": [
+        "Move between Truva comparison desks",
+        "Loans should be compared on total pain, not just on the teaser rate that got the ad click.",
+        "No fake marketplace, no fake ranking, no fake score.",
+        "Borrowing comparisons need stronger disclosure than deposit comparisons.",
+        "The right next step depends on whether you want framework or future tools",
+        "What Truva will compare before any lender earns a recommendation",
+        "The future hub should answer these questions immediately",
+        "The loans hub should launch with visible rules before it launches with lender cards."
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "LiveBankingCompare savings and time deposit rates, calculators, and practical guides.Open desk",
+        "LiveCredit CardsCompare cashback, rewards, annual fees, and review pages before you apply.Open desk",
+        "PreviewLoansPlanned hub for effective rates, approval timelines, and borrower tradeoffs.Current desk",
+        "Overview",
+        "Start here",
+        "Compare preview",
+        "Questions",
+        "Methodology",
+        "Read loan methodology",
+        "Read trust policy",
+        "Read the framework",
+        "Review trust policy"
+      ],
+      "bodyTextLength": 5319,
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 15
+        },
+        {
+          "tag": "div",
+          "text": "LiveBankingCompare savings and time deposit rates, calculators, and practical guides.Open ",
+          "diff": 434,
+          "width": 390,
+          "left": 0
+        },
+        {
+          "tag": "div",
+          "text": "OverviewStart hereCompare previewQuestionsMethodology",
+          "diff": 308,
+          "width": 358,
+          "left": 16
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=g2jppD1KGl4Y1et08NeE7' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\loans-mobile.png"
+  },
+  {
+    "route": "methodology",
+    "path": "/methodology",
+    "viewport": "mobile",
+    "metrics": {
+      "title": "Methodology & Trust | Truva | Truva",
+      "h1": [
+        "Methodology & Trust"
+      ],
+      "h2": [
+        "Truva should earn trust by exposing its rules, not by asking for it.",
+        "Start with the category you want to challenge",
+        "We compare products by the user outcome, not by the most marketable number.",
+        "Compensation helps keep the product alive. It should not dictate the editorial answer.",
+        "“Editorial,” “Sponsored,” and “Partner-supported” should never blur together."
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "Banking methodologyHow Truva will weigh after-tax yield, liquidity, conditions complexity, insurance, and payout structure.Open page",
+        "Credit cards methodologyHow fees, fee-waiver realism, rewards usefulness, redemption friction, and approval fit will be handled.Open page",
+        "Loans methodologyHow effective annual cost, fees, funding speed, flexibility, and late-fee risk will shape future recommendations.Open page",
+        "Editorial integrityHow Truva labels sponsored content, what partner compensation can change, and what it cannot touch.Open page",
+        "Read editorial integrity",
+        "Partner with Truva",
+        "Banking",
+        "Credit Cards",
+        "Loans",
+        "Trust Hub",
+        "Banking Methodology",
+        "Card Methodology"
+      ],
+      "bodyTextLength": 3737,
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 15
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\methodology-mobile.png"
+  },
+  {
+    "route": "editorial-integrity",
+    "path": "/methodology/editorial-integrity",
+    "viewport": "mobile",
+    "metrics": {
+      "title": "Editorial Integrity | Truva | Truva",
+      "h1": [
+        "Editorial Integrity"
+      ],
+      "h2": [
+        "Readers come first when Truva is making editorial judgments. Compensation should help keep the business running, not decide the answer.",
+        "What the labels mean",
+        "Trust policy and scoring policy should sit next to each other"
+      ],
+      "actions": [
+        "Compare Rates",
+        "Calculator",
+        "Methodology",
+        "Products",
+        "Articles",
+        "Join our Community",
+        "Feedback",
+        "Home",
+        "Methodology",
+        "Banking methodology",
+        "Card methodology",
+        "Loans methodology",
+        "Partner with Truva",
+        "Banking",
+        "Credit Cards",
+        "Loans",
+        "Trust Hub",
+        "Banking Methodology",
+        "Card Methodology",
+        "Loans Methodology"
+      ],
+      "bodyTextLength": 3478,
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "overflow": [
+        {
+          "tag": "span",
+          "text": "Home",
+          "diff": 36,
+          "width": 1,
+          "left": 15
+        }
+      ],
+      "menuToggleVisible": true
+    },
+    "interaction": null,
+    "consoleErrors": [],
+    "exceptions": [],
+    "pageErrors": [
+      "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=icTzUb6JNpnGnFVZsuUHX' failed: "
+    ],
+    "screenshotPath": "C:\\Users\\betoa\\Documents\\truva\\.qa\\editorial-integrity-mobile.png"
+  }
+]

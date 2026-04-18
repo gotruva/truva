@@ -2,6 +2,7 @@ import assert from 'assert';
 
 import dotenv from 'dotenv';
 
+import { getPublishedSnapshotRates } from '@/lib/rates';
 import { buildPublishedRateSnapshot, loadSeedRates } from '@/lib/rate-pipeline';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 
@@ -49,6 +50,12 @@ async function verifySupabaseSnapshot() {
 
   const payload = Array.isArray(snapshot.payload) ? snapshot.payload : [];
   assert.equal(payload.length, snapshot.product_count, 'Staging published snapshot count does not match payload length.');
+  const materializedRates = await getPublishedSnapshotRates('staging');
+  assert(materializedRates?.length, 'Staging published snapshot should materialize into public rate products.');
+  assert(
+    materializedRates.every((rate) => rate.id && rate.name && rate.category),
+    'Every materialized staging rate needs public product identity fields.',
+  );
   console.log(`Supabase staging snapshot verification passed (${snapshot.product_count} products).`);
 }
 

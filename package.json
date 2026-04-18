@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:admin": "next dev -p 5433",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "baseline:export": "tsx scripts/export-rate-baseline.ts",
     "rates:seed:staging": "tsx scripts/seed-staging-rates.ts",
     "rates:crawl": "tsx scripts/crawl-rate-sources.ts",
@@ -14,7 +15,9 @@
     "rates:review": "tsx scripts/review-rate-changes.ts",
     "rates:snapshot:build": "tsx scripts/build-rate-snapshot.ts",
     "rates:snapshot:promote": "tsx scripts/promote-rate-snapshot.ts",
-    "rates:verify": "tsx scripts/verify-rate-pipeline.ts"
+    "rates:verify": "tsx scripts/verify-rate-pipeline.ts",
+    "mmf:verify": "tsx scripts/verify-mmf-automation.ts",
+    "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
@@ -37,6 +40,7 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1",
     "resend": "^6.10.0",
     "sequenzy": "^0.10.4",
     "shadcn": "^4.1.1",

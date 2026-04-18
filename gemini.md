@@ -6,13 +6,13 @@
 
 ## What is Truva?
 
-**Truva** is the Philippines' financial comparison platform — the NerdWallet of the PH. It helps Filipinos find the best after-tax savings yields across digital banks, government bonds, UITFs, and DeFi.
+**Truva** is the world's best all-in-one financial and lifestyle comparison app. It helps Filipinos (and eventually the world) master their most important life decisions—from finding the best after-tax savings yields to choosing the right health insurance (HMOs), car loans, student loans, and PERA (Personal Equity & Retirement Account).
 
-**The north star:** Most Filipinos are earning less on their savings than they could. Every competitor shows gross rates. Truva shows after-tax rates with a personal yield calculator. That's the product.
+**The north star:** Consolidating siloed financial and lifestyle data into a single optimization engine. We solve the friction of comparison for things that matter most: your wealth, your health, and your mobility.
 
-**The business model:** Free to users, forever. Revenue comes from affiliate fees (₱50–₱10,000+ per account/loan/card opened via Truva) — not subscriptions, not paywalls.
+**The business model:** Free for users, forever. Revenue comes from affiliate fees and partnerships—not subscriptions, not paywalls.
 
-**The user:** Mobile-first Filipino retail saver. 80%+ of traffic is mobile. The mobile experience IS the product.
+**The user:** Mobile-first, lifestyle-conscious savers. 80%+ of traffic is mobile. The mobile experience IS the product.
 
 ---
 
@@ -58,10 +58,10 @@
 
 This is the NerdWallet arc. Each phase unlocks ONLY when the previous phase's gate conditions are met.
 
-### Phase 1 — Now → Month 5: Savings + DeFi Yields
-**What:** Digital banks, government bonds, UITFs, DeFi, cooperatives, dollar TDs
+### Phase 1 — Now → Month 5: Financial Mastery (Yields)
+**What:** Digital banks, govt bonds, UITFs, DeFi, cooperatives, dollar TDs, **PERA**, PH Crypto Exchanges, and all **BSP/SEC initiatives**.
 **CPA:** ₱50–300/account
-**Goal:** Build the audience (3,000+ newsletter subs), establish SEO authority on after-tax rates, secure 2+ formal bank partnerships.
+**Goal:** Build the audience (3,000+ newsletter subs), establish SEO authority on after-tax rates, secure 2+ formal bank/exchange partnerships.
 
 ### Phase 2 — Month 6+: Credit Cards
 **What:** Credit card comparison (rewards, cashback, travel, no-fee)
@@ -74,20 +74,19 @@ This is the NerdWallet arc. Each phase unlocks ONLY when the previous phase's ga
 
 If any condition isn't met by Month 6, Phase 2 is deferred. No partial credit card features in the 8-week sprint.
 
-### Phase 3 — Year 2: Personal Loans + Home Loans
-**What:** Loan comparison (personal, home, auto, SME)
-**CPA:** ₱500–10,000+ per funded loan
-**Why it waits:** Needs SEO domain authority and bank relationship credibility first.
+### Phase 3 — Year 2: Loans & SME Credit (Lifestyle Mastery)
+**What:** Personal loans, Car loans, Student loans, Home loans, and **SME/Business Credit**.
+**CPA:** ₱1,000–10,000+ per funded loan.
+**Why:** These are high-ticket "enablement" products that intersect finance with life ambitions.
 
 ### Phase 4 — Year 2+: Investing
-**What:** UITFs (expanded), stocks, VUL comparisons, broker comparison
-**CPA:** Lower per unit, but high traffic volume
-**Note:** GInvest and Investagrams have partial coverage — Truva's edge is integrated after-tax comparison.
+**What:** UITFs (expanded), Stocks, VUL comparisons, Broker comparison.
+**CPA:** High traffic volume, strategic depth.
 
-### Phase 5 — Year 3+: Insurance
-**What:** Life, health, non-life insurance comparison
-**CPA:** Highest of all verticals
-**⚠️ WARNING:** Moneymax's stronghold. Do NOT enter without: a full team, Insurance Commission broker license, and operating capital. This is not a solo-founder vertical at MVP.
+### Phase 5 — Year 3+: Health & Experience (Essential Mastery)
+**What:** Life insurance, Health insurance, **Travel Insurance**, HMOs (Maxicare, Etiqa, etc.), and Non-life insurance.
+**CPA:** Highest lifetime value (LTV).
+**⚠️ WARNING:** Requires full team and Insurance Commission (IC) licensing.
 
 ---
 

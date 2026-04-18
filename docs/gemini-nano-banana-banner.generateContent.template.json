@@ -1,0 +1,26 @@
+{
+  "system_instruction": {
+    "parts": [
+      {
+        "text": "PASTE_MASTER_SYSTEM_INSTRUCTION_HERE"
+      }
+    ]
+  },
+  "contents": [
+    {
+      "parts": [
+        {
+          "text": "PASTE_PER_ARTICLE_BANNER_BRIEF_HERE"
+        }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["IMAGE"],
+    "imageConfig": {
+      "aspectRatio": "16:9",
+      "imageSize": "2K"
+    }
+  }
+}
+

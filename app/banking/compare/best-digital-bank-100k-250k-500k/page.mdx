@@ -1,0 +1,76 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
+
+export const article = getBankingArticle('best-digital-bank-100k-250k-500k');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+For PHP 100K, Maya can win if you actually hit the mission requirements. For PHP 250K and PHP 500K, BanKo is often the cleaner winner if you can keep the balance floor. If you want the simplest path, Tonik and GoTyme stay competitive.
+</SEOBox>
+
+## PHP 100K balance
+
+| Bank | Why it stands out |
+|---|---|
+| Maya | Highest upside if you already meet the spend and mission rules |
+| BanKo | Strong flat yield if you can keep the account funded |
+| Tonik | Clean flat rate with no missions |
+
+## PHP 250K balance
+
+| Bank | Why it stands out |
+|---|---|
+| BanKo | Strong yield on the full balance if you meet the balance floor |
+| Maya | Still good, but the boosted rate only applies to the first PHP 100K |
+| Tonik | Simple and predictable, though not the absolute top on yield |
+
+## PHP 500K balance
+
+| Bank | Why it stands out |
+|---|---|
+| BanKo | Often the best blend of yield and simplicity for this balance band |
+| Maya | Can still work if you already live in the app, but the cap matters more here |
+| GoTyme | A simpler fallback if you want low friction |
+
+<InArticleCTA
+  kicker="Use the calculator"
+  title="Run your actual balance before you move money"
+  description="The winner changes once the balance cap or mission requirement kicks in."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## Decision rule
+
+If you keep your money in the first PHP 100K band and already use Maya, Maya can be the best fit.
+
+If your balance is larger and you can maintain the floor, BanKo is often easier to justify.
+
+If you want the simplest possible decision, Tonik and GoTyme remain the clean fallback choices.
+
+## Frequently asked questions
+
+### Why do balance bands change the answer?
+
+Because some products cap their best rate or fall back to a lower rate once the balance crosses a threshold.
+
+### Should I split balances?
+
+Yes, especially if you are close to the PDIC limit or if the rate cap changes the effective return.
+
+### Which is safer for large balances?
+
+Any covered deposit stays inside the PDIC limit if you keep each bank below the insured cap.

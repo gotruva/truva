@@ -1,0 +1,178 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
+
+export const article = getBankingArticle('digital-bank-interest-rates-philippines-2026');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+Maya pays the highest anytime-access rate at 12% (9.6% after tax). For locked savings, Tonik pays 8% on a 1-year time deposit (6.4% after tax). GoTyme pays 3% flat with no conditions. All rates are verified April 14, 2026.
+</SEOBox>
+
+## Digital bank interest rates Philippines 2026: full table
+
+| Bank | Product | Gross Rate | After-Tax Rate | Access |
+|---|---|---|---|---|
+| **Maya** | Savings | 12.00% | 9.60% | Withdraw anytime |
+| **Tonik** | Time Deposit (1 yr) | 8.00% | 6.40% | Time locked |
+| **Salmon** | Time Deposit (6 mo) | 6.00% | 4.80% | Time locked |
+| **UNO** | Time Deposit (1 yr) | 5.25% | 4.20% | Time locked |
+| **OwnBank** | Time Deposit (1 yr) | 5.20% | 4.16% | Time locked |
+| **Netbank** | Time Deposit (1 yr) | 5.00% | 4.00% | Time locked |
+| **BanKo** | Savings | 5.00% | 4.00% | Withdraw anytime |
+| **CIMB** | Time Deposit (3 mo) | 4.25% | 3.40% | Time locked |
+| **GoTyme** | Savings | 3.00% | 2.40% | Withdraw anytime |
+| **CIMB/GCash** | Savings | 2.60% | 2.08% | Withdraw anytime |
+
+The After-Tax Rate column already has the 20% Final Withholding Tax (FWT) deducted. That is what actually lands in your account, not the gross percentage the bank advertises.
+
+## What you actually earn: peso math for PHP 100K, PHP 250K, and PHP 500K
+
+Percentages are abstract. Here is what the rates above pay in pesos.
+
+### On PHP 100,000
+
+| Bank | Gross Earnings | After 20% Tax | Monthly Income |
+|---|---|---|---|
+| Maya | ₱12,000 | ₱9,600 | ₱800 |
+| Tonik (1 yr) | ₱8,000 | ₱6,400 | ₱533 |
+| Salmon (6 mo) | ₱6,000 | ₱4,800 | ₱400 |
+| BanKo | ₱5,000 | ₱4,000 | ₱333 |
+| GoTyme | ₱3,000 | ₱2,400 | ₱200 |
+
+### On PHP 250,000
+
+| Bank | Gross Earnings | After 20% Tax | Monthly Income |
+|---|---|---|---|
+| Maya | ₱30,000 | ₱24,000 | ₱2,000 |
+| Tonik (1 yr) | ₱20,000 | ₱16,000 | ₱1,333 |
+| Salmon (6 mo) | ₱15,000 | ₱12,000 | ₱1,000 |
+| BanKo | ₱12,500 | ₱10,000 | ₱833 |
+| GoTyme | ₱7,500 | ₱6,000 | ₱500 |
+
+### On PHP 500,000
+
+| Bank | Gross Earnings | After 20% Tax | Monthly Income |
+|---|---|---|---|
+| Maya | ₱60,000 | ₱48,000 | ₱4,000 |
+| Tonik (1 yr) | ₱40,000 | ₱32,000 | ₱2,667 |
+| Salmon (6 mo) | ₱30,000 | ₱24,000 | ₱2,000 |
+| BanKo | ₱25,000 | ₱20,000 | ₱1,667 |
+| GoTyme | ₱15,000 | ₱12,000 | ₱1,000 |
+
+On PHP 250,000, Maya earns you PHP 24,000 per year after tax. GoTyme earns PHP 6,000. That is an extra PHP 18,000 per year for choosing the right account.
+
+<InArticleCTA
+  kicker="Run your exact balance"
+  title="See what your savings actually earns after tax"
+  description="The calculator shows gross rate, the 20% FWT deduction, and your real take-home peso amount for any balance."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## Withdraw anytime vs time locked: which suits you?
+
+Not all digital bank products work the same way. The two main types trade flexibility for rate.
+
+**Withdraw anytime** accounts (Maya 12%, BanKo 5%, GoTyme 3%) let you pull money out whenever you want. No penalties. No waiting period. The rate is lower because the bank cannot count on your deposit staying.
+
+**Time locked** accounts (Tonik 8%, Salmon 6%, Netbank 5%) require you to commit your money for 3 to 12 months. Banks pay more because they have certainty over your deposit.
+
+The decision rule is simple. If you might need the money within 6 months, use a withdraw-anytime account. If you know you can lock it away, a time deposit pays significantly more. On PHP 250K, the difference between Maya and Tonik is PHP 8,000 per year after tax.
+
+Many savers use both: one account for accessible savings, one for locked yield. For a full feature-by-feature breakdown, [compare Maya and Tonik side by side](/compare/maya-vs-tonik-philippines).
+
+## Why the after-tax number is smaller: the 20% FWT explained
+
+Banks advertise the gross rate. The number you keep is smaller.
+
+The government collects 20% of your interest income as a Final Withholding Tax (FWT). This applies equally to every digital bank in the Philippines. It is not a Truva deduction or fee. It is mandated under the [National Internal Revenue Code of the Philippines](https://www.bir.gov.ph).
+
+The math on PHP 100,000 in Maya:
+
+- Maya pays 12%, so gross earnings = PHP 12,000
+- Tax deducted: PHP 12,000 × 20% = PHP 2,400
+- You keep: PHP 9,600
+- Effective after-tax rate: 9.6%
+
+That gap is why Truva shows after-tax rates by default. Read our full guide on [how the 20% final withholding tax works in the Philippines](/learn/final-withholding-tax-on-savings-philippines) for the complete mechanics, including which products are tax-exempt.
+
+## Digital bank rate changes in early 2026: what you need to know
+
+Rates shifted significantly in the first quarter of 2026. Articles from 2025 are showing numbers that no longer apply.
+
+**Maya:** Base rate unchanged at 3.5%. The boosted rate of 12% requires ₱35,000/month spend, including at least one transaction via Maya Easy Credit (debit card, QR, online checkout, load, bills, stocks, or funds). The 12% rate applies only on the first ₱100,000.
+
+**GoTyme:** Base rate cut from 3.5% to 3% in January 2026. No boosted tier available. Simple 3% flat for all balances.
+
+**BanKo:** Rate unchanged at 5% all year. No cuts announced. A reliable option if rate stability matters to you.
+
+**Tonik:** Time deposit rates unchanged at 8%. Consistent premium over savings accounts.
+
+We update this table weekly. If rates change again, this page reflects the current snapshot.
+
+## PDIC insurance: your money is protected up to PHP 1,000,000
+
+Every BSP-licensed digital bank in the Philippines is covered by [PDIC insurance](/learn/pdic-insurance-limit-philippines), the Philippine Deposit Insurance Corporation. You can verify any bank's coverage status on the [official PDIC website](https://www.pdic.gov.ph).
+
+**Coverage limit:** PHP 1,000,000 per depositor per bank.
+
+What this means in practice:
+
+- PHP 500,000 in Maya: fully covered
+- PHP 1,000,000 in Maya: fully covered
+- PHP 1,500,000 in Maya: only PHP 1,000,000 is protected
+
+If your savings exceed PHP 1M, split across banks. For example: PHP 1,000,000 in Maya and PHP 500,000 in BanKo gives you PHP 1,500,000 fully insured. Use the [PDIC split optimizer](/calculators/pdic-split-calculator) to find the right allocation for your balance.
+
+## Frequently asked questions
+
+### Which digital bank pays the highest interest right now?
+
+Maya pays 12% (9.6% after tax), the highest available anytime-access rate in the Philippines as of April 2026. For locked savings, Tonik pays 8% on a 1-year time deposit.
+
+### Is 12% interest real or is there a catch?
+
+The rate is real, but yes—there is a catch. You must spend ₱35,000 per month and include at least one transaction via Maya Easy Credit (debit card, QR, online checkout, load, bills, stocks, or funds). Without the spending requirement, you earn the base rate of 3.5%.
+
+The 12% rate applies only on the first ₱100,000. Balances above that earn 3.5%. After the 20% government tax on the 12% rate, you take home 9.6%. On PHP 100,000 with the 12% rate and tax deduction, that is PHP 9,600 per year in your account.
+
+### Are digital banks safe? Will the government protect my money if a bank closes?
+
+Yes. All BSP-licensed digital banks are covered by PDIC up to PHP 1,000,000 per bank. If a bank closes, PDIC processes your claim and returns your money up to that limit.
+
+### Why do digital banks pay more than traditional banks like BPI and BDO?
+
+Lower overhead. Digital banks have no physical branches, fewer staff, lower rent. They pass those savings to depositors as higher interest rates.
+
+### Do I pay taxes on digital bank interest?
+
+Yes. The 20% Final Withholding Tax (FWT) is automatically deducted before interest hits your account. The after-tax rates shown in the table above are what you actually receive.
+
+### How often do rates change?
+
+Typically 2 to 4 times per year. Maya and GoTyme cut base rates in January 2026. We update this table weekly so you always see the current snapshot.
+
+## Which digital bank interest rate is right for you in 2026?
+
+The digital bank rates landscape in 2026 is clearer than ever:
+
+1. **Maya pays highest for flexibility** — 12% gross, 9.6% after tax. Best if you need to withdraw anytime.
+2. **Tonik pays highest for lock-ins** — 8% gross, 6.4% after tax. Best if you can commit 1 year.
+3. **After-tax math is what counts** — the gross rate is marketing; the after-tax rate is your real money.
+4. **Rates dropped in early 2026** — old articles show stale numbers; this table is updated weekly.
+5. **PDIC protection is real** — your money is safe up to PHP 1,000,000 per bank.
+
+Pick the product that matches your situation. Then check back here when rates change.

@@ -41,14 +41,14 @@
       }
     ],
     "isSponsored": false,
-    "affiliateUrl": "",
-    "palagoScore": 3
+    "affiliateUrl": "https://www.bpi.com.ph/personal/cards/credit-cards",
+    "trueValueScore": 3
   },
   {
     "id": "unionbank-rewards-visa",
     "name": "Rewards Visa",
     "provider": "UnionBank",
-    "logo": "/logos/unionbank.svg",
+    "logo": "/logos/uniondigital.svg",
     "category": "credit-cards",
     "annualFee": 2500,
     "annualFeeWaiverCondition": "No annual fee for life with NAFFL promo",
@@ -86,7 +86,7 @@
       }
     ],
     "isSponsored": false,
-    "affiliateUrl": "",
-    "palagoScore": 3
+    "affiliateUrl": "https://www.unionbankph.com/personal/cards/credit-cards",
+    "trueValueScore": 3
   }
 ]

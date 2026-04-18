@@ -1,0 +1,238 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
+
+export const article = getBankingArticle('maya-vs-gotyme-philippines');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+Maya pays 3.5% base vs GoTyme's 3.0%, and its boost starts at just 5% with ₱250 in monthly spend. For passive savers who want zero conditions and up to 5 named accounts, GoTyme is the cleaner choice. The smartest move for most people is to use both.
+</SEOBox>
+
+In the Maya vs GoTyme Philippines debate, Maya currently wins on rate: 3.5% base vs GoTyme's 3.0%, even before any boosting. But GoTyme offers something Maya doesn't: zero conditions, up to 5 named savings accounts, and a physical card you can get same-day at a Robinsons kiosk.
+
+Maria has ₱250,000 sitting in GCash earning almost nothing. She's heard Maya pays 15% and GoTyme is "no conditions." Both sound great. One afternoon, she opens both apps and stares at two sets of numbers she doesn't know how to compare.
+
+That confusion is fair. Both banks are BSP-licensed, PDIC-insured, and recommended constantly. The difference isn't obvious until you see the actual peso math, after the 20% tax that every bank deducts automatically.
+
+This article shows you exactly that. We'll break down what each bank actually pays at different balance levels, explain the conditions in plain terms, and tell you which one fits your specific situation, including the strategy most people miss: using both.
+
+> **Key Takeaways**
+> - Maya's base rate (3.5%) beats GoTyme (3.0%), even without any boosting
+> - Maya's boosted rate starts at just 5% with ₱250/month in spend, easy to unlock
+> - At max boost on ₱250,000, Maya earns ₱16,200/year after tax vs GoTyme's ₱6,000
+> - GoTyme wins on simplicity: flat rate, no tasks, up to 5 named savings accounts
+> - Best move: use both, Maya for transactions and boost, GoTyme for passive goal savings
+
+---
+
+## Maya vs GoTyme at a glance
+
+Here's the side-by-side on the numbers that matter.
+
+| Feature | Maya | GoTyme |
+|---|---|---|
+| Base rate | 3.5% p.a. (April 2026 promo)* | 3.0% p.a. |
+| Boosted rate | Up to 15% (spend ladder) | None |
+| Boost cap | First ₱100,000 only | N/A |
+| Savings accounts | 1 main + Personal Goals | Up to 5 Go Save accounts |
+| Physical card | Yes | Yes (printed same-day at kiosk) |
+| Account opening | 100% digital | App or Robinsons/SM kiosk |
+| PDIC insured | Yes, up to ₱1,000,000 | Yes, up to ₱1,000,000 |
+| Minimum deposit | ₱0 | ₱0 |
+
+*Maya's 3.5% base is a promotional rate for April 2026. The post-promo base rate will drop to 3.0%. GoTyme dropped from 3.5% to 3.0% in January 2026.
+
+Both banks cover up to ₱1,000,000 per depositor. PDIC coverage is equal between them.
+
+[How the 20% tax affects your savings →](/guides/final-withholding-tax-explained)
+
+---
+
+## The real peso math: what you actually earn after tax
+
+All interest from Philippine savings accounts is subject to 20% Final Withholding Tax (FWT). Your bank deducts it automatically, you never see the gross amount land in your account. So Maya's "15%" becomes 12% in practice. GoTyme's "3%" becomes 2.4%.
+
+Here's what that means in pesos at three common balance levels.
+
+### ₱100,000
+
+| Scenario | Rate | Gross/year | After-tax/year | Per month |
+|---|---|---|---|---|
+| Maya (max boost, 15%) | 15% on ₱100K | ₱15,000 | **₱12,000** | ₱1,000 |
+| Maya (min boost, 5%) | 5% on ₱100K | ₱5,000 | **₱4,000** | ₱333 |
+| Maya (base only, 3.5%) | 3.5% | ₱3,500 | **₱2,800** | ₱233 |
+| GoTyme (flat 3.0%) | 3.0% | ₱3,000 | **₱2,400** | ₱200 |
+
+### ₱250,000
+
+| Scenario | Gross/year | After-tax/year | Per month |
+|---|---|---|---|
+| Maya (max boost)* | ₱20,250 | **₱16,200** | ₱1,350 |
+| Maya (min boost, 5%)** | ₱10,250 | **₱8,200** | ₱683 |
+| Maya (base only, 3.5%) | ₱8,750 | **₱7,000** | ₱583 |
+| GoTyme (flat 3.0%) | ₱7,500 | **₱6,000** | ₱500 |
+
+*₱100K × 15% = ₱15,000 + ₱150K × 3.5% = ₱5,250
+**₱100K × 5% = ₱5,000 + ₱150K × 3.5% = ₱5,250
+
+### ₱500,000
+
+| Scenario | Gross/year | After-tax/year | Per month |
+|---|---|---|---|
+| Maya (max boost)* | ₱32,500 | **₱26,000** | ₱2,167 |
+| Maya (min boost, 5%)** | ₱22,500 | **₱18,000** | ₱1,500 |
+| Maya (base only, 3.5%) | ₱17,500 | **₱14,000** | ₱1,167 |
+| GoTyme (flat 3.0%) | ₱15,000 | **₱12,000** | ₱1,000 |
+
+*₱100K × 15% + ₱400K × 3.5%
+**₱100K × 5% + ₱400K × 3.5%
+
+**What the numbers show:** Even at the minimum boost (₱250/month in spend), Maya earns more than GoTyme at every balance level. And Maya's base rate (3.5%) already beats GoTyme (3.0%), even if you do nothing extra.
+
+<InArticleCTA
+  kicker="Run your own numbers"
+  title="See what your balance actually earns after tax"
+  description="Use Truva's savings calculator to model Maya vs GoTyme at your exact balance — before you move a peso."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+---
+
+## How Maya's savings rate actually works
+
+Maya doesn't have one savings rate. It has a ladder.
+
+**Base rate (April 2026 promo): 3.5% p.a.**
+This is what you earn with zero effort. No spending required.
+
+**Boosted rate: 5%–15% on your first ₱100,000**
+Your rate climbs based on how much you spend through Maya each calendar month:
+
+| Monthly spend | Rate you unlock |
+|---|---|
+| ₱250 (bills, load, stocks, or payments) | 5% p.a. |
+| ₱1,000 via QR or checkout | 6% p.a. |
+| ₱3,000 via Maya Easy Credit | 8% p.a. |
+| ₱25,000 via QR/card/checkout | 10% p.a. |
+| ₱35,000 via QR/card/checkout | 12% p.a. |
+| Select users: ₱1,000 deposit from Maya Wallet | 15% p.a. |
+
+The boost applies only to your first ₱100,000. Any balance above that earns the base rate.
+
+**New users:** You get 15% p.a. for your first full calendar month after depositing ₱1,000, no spending required.
+
+**Personal Goals:** Named goal accounts earn 4%–8% p.a. on balances up to ₱100,000, on a tiered structure. Useful for goal-based saving without needing to hit the spend ladder.
+
+The honest read: most people who regularly pay bills, buy load, or tap Maya QR when shopping are already hitting the ₱250–₱1,000 spend range. They're earning 5–6% without thinking about it. The 10–15% tiers require serious monthly spending or are invite-only, realistic for heavy spenders, not for everyone.
+
+---
+
+## How GoTyme Go Save actually works
+
+GoTyme's product is simplicity. That's not a compromise, it's the design.
+
+**Rate: 3.0% p.a. flat.** No tiers, no tasks, no spending requirements. The 3.0% applies to your full balance, no cap. You earn it on day one and every day after, without doing anything to maintain it.
+
+**Up to 5 Go Save accounts.** You can open five separate accounts and name each one. "Emergency Fund," "Travel 2027," "New Laptop," "Tuition", whatever works for you. Each earns the full 3.0%. This is the money jar system built into the bank itself.
+
+**Physical debit card.** GoTyme prints your card on-site at any Gokongwei kiosk, Robinsons Supermarket, The Marketplace, Rustan's. You walk in with a valid ID, open your account, and walk out with a physical card the same day. For users wary of pure-digital banks, this matters.
+
+**Save the Change.** GoTyme rounds up your transactions and saves the difference automatically. Small amounts, but they add up without effort.
+
+**PDIC coverage: up to ₱1,000,000**, the same as Maya.
+
+The real GoTyme user: "Hindi ko ginagalaw." I deposit it, I don't touch it, it earns. No monthly tasks to maintain. No rate that resets. No consequences if you do nothing.
+
+---
+
+## Which bank fits your situation
+
+| Your situation | Best pick | Why |
+|---|---|---|
+| Passive saver, deposit and forget | **GoTyme** | Flat 3%, zero requirements, 5 named accounts |
+| You already pay bills or load via Maya | **Maya** | ₱250/month unlocks 5% boost instantly |
+| Heavy Maya spender (₱25K+/month) | **Maya** | 10–12% boost on first ₱100K |
+| Goal-based saver (multiple buckets) | **GoTyme** | 5 named Go Save accounts |
+| First digital bank, want physical card | **GoTyme** | Card printed same-day at kiosk |
+| Need payments + savings in one app | **Maya** | QR, bills, loans, credit card all in one |
+| Savings above ₱1,000,000 | **Use both** | Both insured to ₱1M; split gives combined ₱2M coverage |
+
+The most common mistake: choosing GoTyme as "the easy option" when you're already a regular Maya user. If you pay your bills, buy load, or use QR at least once a month, you're already hitting the ₱250 spend threshold. You'd earn 5% on your Maya savings with zero extra effort.
+
+---
+
+## Should you use both? Most savvy users do.
+
+Yes, and this is the strategy nobody writes about.
+
+You can open both Maya and GoTyme at the same time. Both require only a valid ID and selfie. No minimum deposit for either.
+
+**The strategy:**
+
+Keep Maya as your primary transaction account. Pay bills through it, buy load, tap QR when you shop. You're earning the spend boost automatically, without saving the receipts or "doing missions." Cap your Maya savings at ₱100,000 to maximize the boosted rate.
+
+Park the rest in GoTyme's named goal accounts. Emergency fund in one account. Travel savings in another. No maintenance. No risk of missing a spend target and dropping your rate.
+
+Ana does exactly this. She keeps ₱100,000 in Maya and pays ₱3,000+ in bills through it monthly, that unlocks the 8% boost. After the 20% tax, she earns ₱6,400 per year on that ₱100K. Her other ₱400,000 sits across 4 GoTyme accounts: Emergency, Travel, Home, and one she labels "Don't touch." That ₱400K earns 3.0%, ₱12,000 gross, ₱9,600 after tax. Her total for the year: ₱16,000 after tax. Neither bank alone would have matched that.
+
+**PDIC note:** Both banks insure up to ₱1,000,000 per depositor. If you have more than ₱1M to save, splitting across both gives you ₱2M in combined PDIC coverage.
+
+[Optimize your split with the PDIC calculator →](/optimizer)
+
+---
+
+## Frequently asked questions
+
+### Is Maya or GoTyme better for savings in the Philippines?
+
+Maya earns more if you regularly use it for spending (bills, load, QR). Even the minimum ₱250/month spend unlocks 5%, more than GoTyme's 3%. If you want zero conditions and multiple named accounts, GoTyme is the cleaner choice.
+
+### Can I open both a Maya and GoTyme account?
+
+Yes. Both require only a valid ID and a selfie. Neither has a minimum deposit. Many Filipinos use Maya for day-to-day transactions and GoTyme for passive savings goals.
+
+### What do I need to do to get Maya's boosted interest?
+
+Spend ₱250 or more per month on bills, load, stocks, funds, or payments to unlock the first boost tier (5%). Higher tiers require more spending. The boost applies only to your first ₱100,000. Above that, your balance earns the base rate.
+
+### Does GoTyme have a cap on the 3% rate?
+
+No. GoTyme's 3.0% applies to your full balance with no upper limit. You can have up to 5 separate Go Save accounts, each earning the full 3.0%.
+
+### Are Maya and GoTyme PDIC insured?
+
+Yes. Both are BSP-licensed digital banks. Both Maya and GoTyme are PDIC-insured up to ₱1,000,000 per depositor. Your money is protected in both.
+
+---
+
+## The bottom line
+
+Maya wins on rate, base rate, boosted rate, and nearly every scenario. But "best rate" isn't always the right question. The right question is: which bank matches how you actually save?
+
+**If you already use Maya for payments:** Keep your savings there. You're earning the boost without trying.
+
+**If you want to park money and not think about it:** GoTyme is the cleaner choice. Flat 3%, 5 named accounts, no monthly tasks.
+
+**If you have ₱200,000 or more to save:** Use both. Maya for your transaction float and first ₱100K boost, GoTyme for the rest. You earn from both without spreading yourself thin.
+
+The rates above are verified as of April 15, 2026. Maya's 3.5% base is a promotional rate for April 2026, the post-promo base rate will be 3.0%. Always check the current rates before opening an account.
+
+[See all savings rates →](/#deposit-rates)
+
+---
+
+*Interest income from savings accounts is subject to 20% Final Withholding Tax (FWT) under Philippine law. Rates are subject to change. PDIC insurance covers deposits up to the stated limits per depositor per bank. Last verified: April 15, 2026.*

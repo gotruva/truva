@@ -1,0 +1,327 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
+
+export const article = getBankingArticle('best-digital-bank-philippines');
+
+export const metadata = {
+  title: article?.seoTitle ?? article?.title,
+  description: article?.description,
+  alternates: {
+    canonical: article?.path,
+  },
+};
+
+export default function Page({ children }) {
+  return (
+    <BlogLayout article={article}>
+      {children}
+    </BlogLayout>
+  );
+}
+
+<SEOBox title="The Direct Answer">
+The best digital bank in the Philippines right now depends on how you use your money. If you can hit Maya's monthly requirements, Maya Savings can pay up to 12% on your first PHP 100,000. If you want a simpler setup, BanKo Savings pays 5% on balances from PHP 5,000 to PHP 1,000,000 as long as you keep at least PHP 5,000 in the account.
+</SEOBox>
+
+Most articles show you the headline numbers. We show you what you actually earn, in pesos, with the conditions, for your balance size.
+
+Maria had PHP 150,000 sitting in GCash. She was earning PHP 150 per month. After switching to BanKo, she earns PHP 625 per month. Same money. Zero new apps. She just moved it.
+
+That is what this guide does. We compare 8 digital-bank savings options side by side, show the real peso math for PHP 100K, PHP 250K, and PHP 500K balances, and tell you which one fits your situation better.
+
+**[Compare all current digital bank rates, updated weekly at Truva](/banking/rates#rate-desk)**
+
+---
+
+> **Key Takeaways**
+> - BanKo Savings pays 5% from PHP 5,000 to PHP 1,000,000, but balances below PHP 5,000 earn 0%
+> - Maya Savings can reach 12% on the first PHP 100,000, but the base rate is 3.5% and the boost requires high monthly spend plus Maya Easy Credit activity
+> - Tonik Solo Stash, GoSave, and MariBank are simpler options for savers who do not want monthly tasks
+> - All BSP-licensed digital banks are covered by PDIC, up to PHP 1,000,000 per bank
+> - DiskarTech's headline rate only applies to the first PHP 50,000, and UNOready drops back to 3% if your balance stays below PHP 5,000
+
+---
+
+## Digital bank rates Philippines 2026: the full picture
+
+Here are the current rates for all major Philippine digital banks, with the conditions that usually get buried in the fine print.
+
+*Rates verified against Truva's snapshot dated April 13, 2026. [See live rates updated weekly at Truva.](/banking/rates#rate-desk)*
+
+| Bank | Base Rate | Top Rate | Conditions for Top Rate | Balance Cap (for top rate) |
+|------|-----------|----------|------------------------|---------------------------|
+| BanKo Savings | 0.00% | 5.00% | Keep at least PHP 5,000 in the account | PHP 1,000,000 |
+| Tonik Solo Stash | 4.00% | 4.00% | None | No cap |
+| Maya Savings | 3.50% | 12.00% | PHP 35,000 monthly spend plus Maya Easy Credit activity | PHP 100,000 for boosted rate |
+| UNOready | 3.00% | 3.50% | Keep at least PHP 5,000 balance | PHP 4,999,999 |
+| DiskarTech Savings | 1.00% | 4.00% | None | PHP 50,000 for the top band |
+| MariBank Savings | 3.25% | 3.75% | Balance above PHP 1,000,000 | No cap |
+| GoSave | 3.00% | 3.00% | None | No cap |
+| CIMB GSave | 2.60% | 2.60% | None | No cap |
+
+**Note on BanKo:** The 5% tier is strong, but balances below PHP 5,000 earn nothing and balances above PHP 1,000,000 fall to 0.0625%.
+
+**Note on DiskarTech:** The 4% headline only applies to the first PHP 50,000. Any balance above that earns 1%, so the effective rate drops fast once the account gets bigger.
+
+---
+
+## What you actually earn: peso math for PHP 100K, PHP 250K, and PHP 500K
+
+Percentages are easy to ignore. Peso amounts are not. Here is the real comparison between the best digital banks Philippines has to offer, in peso terms for three common balance sizes.
+
+### If you have PHP 100,000 to save
+
+| Bank | Annual Rate | Earnings per Year | Earnings per Month |
+|------|-------------|-------------------|-------------------|
+| Maya (boosted, if tasks completed) | 12.00% | PHP 12,000 | PHP 1,000 |
+| BanKo Savings | 5.00% | PHP 5,000 | PHP 417 |
+| Tonik Solo Stash | 4.00% | PHP 4,000 | PHP 333 |
+| UNOready | 3.50% | PHP 3,500 | PHP 292 |
+| MariBank Savings | 3.25% | PHP 3,250 | PHP 271 |
+| GoTyme | 3.00% | PHP 3,000 | PHP 250 |
+| CIMB GSave | 2.60% | PHP 2,600 | PHP 217 |
+| DiskarTech Savings | 2.50% effective | PHP 2,500 | PHP 208 |
+| Maya (base rate only) | 3.50% | PHP 3,500 | PHP 292 |
+| Traditional bank (BPI/BDO) | 0.25% | PHP 250 | PHP 21 |
+
+*Note: Rates are gross, before the 20% Final Withholding Tax on interest income. All digital bank and traditional bank interest is subject to the same 20% tax. After tax, Maya's boosted PHP 1,000/month becomes PHP 800/month; BanKo's PHP 417/month becomes PHP 333/month.*
+
+### If you have PHP 250,000 to save
+
+This is where conditions start to matter. Maya's 12% only applies to the first PHP 100,000. Your remaining PHP 150,000 earns just 3.5%.
+
+| Bank | Effective Calculation | Earnings per Year | Earnings per Month |
+|------|----------------------|-------------------|--------------------|
+| Maya (boosted, if tasks completed) | PHP 100K x 12% + PHP 150K x 3.5% | PHP 17,250 | PHP 1,438 |
+| BanKo Savings | PHP 250K x 5% | PHP 12,500 | PHP 1,042 |
+| Tonik Solo Stash | PHP 250K x 4% | PHP 10,000 | PHP 833 |
+| Maya (base rate only) | PHP 250K x 3.5% | PHP 8,750 | PHP 729 |
+| UNOready | PHP 250K x 3.5% | PHP 8,750 | PHP 729 |
+| MariBank Savings | PHP 250K x 3.25% | PHP 8,125 | PHP 677 |
+| GoTyme | PHP 250K x 3% | PHP 7,500 | PHP 625 |
+| CIMB GSave | PHP 250K x 2.6% | PHP 6,500 | PHP 542 |
+| DiskarTech Savings | PHP 50K x 4% + PHP 200K x 1% | PHP 4,000 | PHP 333 |
+| Traditional bank | PHP 250K x 0.25% | PHP 625 | PHP 52 |
+
+The gap between GoTyme and BanKo at PHP 250,000 is still PHP 5,000/year. That is real money created just by choosing the stronger account structure.
+
+The gap between a traditional bank and BanKo is PHP 11,875/year on PHP 250,000. That is money most savers never notice they are giving up.
+
+### If you have PHP 500,000 to save
+
+At PHP 500,000, you are fully covered under the PHP 1,000,000 PDIC limit. No need to split across banks at this balance. We cover PDIC in detail later.
+
+| Bank | Effective Calculation | Earnings per Year | Earnings per Month |
+|------|----------------------|-------------------|--------------------|
+| Maya (boosted, if tasks completed) | PHP 100K x 12% + PHP 400K x 3.5% | PHP 26,000 | PHP 2,167 |
+| BanKo Savings | PHP 500K x 5% | PHP 25,000 | PHP 2,083 |
+| Tonik Solo Stash | PHP 500K x 4% | PHP 20,000 | PHP 1,667 |
+| Maya (base only) | PHP 500K x 3.5% | PHP 17,500 | PHP 1,458 |
+| UNOready | PHP 500K x 3.5% | PHP 17,500 | PHP 1,458 |
+| MariBank Savings | PHP 500K x 3.25% | PHP 16,250 | PHP 1,354 |
+| GoTyme | PHP 500K x 3% | PHP 15,000 | PHP 1,250 |
+| CIMB GSave | PHP 500K x 2.6% | PHP 13,000 | PHP 1,083 |
+| DiskarTech Savings | PHP 50K x 4% + PHP 450K x 1% | PHP 6,500 | PHP 542 |
+| Traditional bank | PHP 500K x 0.25% | PHP 1,250 | PHP 104 |
+
+Renz had PHP 400,000 in savings. He chased Maya's boosted rate because he had read the 12% headline. Two months in, he missed the spending requirements, once because he was traveling, once because he forgot. He lost the boost both times.
+
+Those two months, he dropped to Maya's 3.5% base rate and earned less than Tonik Solo's 4%. He now keeps only his first PHP 100,000 in Maya, because he actively uses it for spending anyway, and places the rest where the return is simpler to keep. The lesson: the boost is only worth chasing if you already live on the Maya app.
+
+<InArticleCTA
+  kicker="Balance check"
+  title="See your own peso math instead of relying on sample balances"
+  description="Use the calculator once you know which banks are even worth considering. It is the fastest way to turn this guide into a concrete move."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+---
+
+## Account conditions: what the headline rate does not tell you
+
+Every bank's marketing leads with the best-case number. Here is what you actually need to know before opening an account.
+
+### Maya
+- **Opening deposit:** PHP 0 minimum
+- **Maintaining balance:** None
+- **Base rate (what you earn without tasks):** 3.5%
+- **Boosted rate (up to 12%):** 10% requires PHP 35,000 in monthly spend across Maya channels. The extra 2% requires Maya Easy Credit activity.
+- **Balance cap for boosted rate:** The boost only applies to your first PHP 100,000. Everything above earns the 3.5% base.
+- **Realistic question to ask yourself:** "Do I already spend heavily inside Maya?" If yes, the boost can be worth it. If not, the base rate is no longer the strongest liquid option.
+
+### GoTyme
+- **Opening deposit:** PHP 0 minimum
+- **Maintaining balance:** None
+- **Rate:** 3% flat, no conditions, no caps, no spending tasks
+- **Withdrawal:** Anytime, fully liquid
+- **ATM access:** GoTyme has kiosks in Robinsons malls where you can get a physical debit card
+- **Bottom line:** Walang conditions. What the label says is what you earn.
+
+### Tonik
+- **Solo Stash:** 4% flat, no conditions. Place money in a "stash" or virtual envelope. Fully liquid.
+- **Group Stash:** 4.5%, with a shared savings goal for 2-5 people.
+- **Time Deposits:** 6% for 6 months, 7% for 9 months, and 8% for 12 months.
+- **Opening deposit:** PHP 50 minimum
+- **Key consideration:** Time deposits are locked. You cannot withdraw early without penalty.
+
+### BanKo Savings
+- **Opening deposit:** No minimum to open, but you need PHP 5,000 in the account to earn interest
+- **Maintaining balance:** Keep at least PHP 5,000 daily to stay in the 5% tier
+- **Rate:** 5% from PHP 5,000 to PHP 1,000,000; balances below PHP 5,000 earn 0%
+- **Withdrawal:** Anytime, with ATM access available via BanKo card
+- **Key consideration:** This is still one of the strongest liquid savings rates, but balances above PHP 1,000,000 fall sharply to 0.0625%.
+
+### UNO Digital Bank
+- **UNOready account:** 3% below PHP 5,000, then 3.5% from PHP 5,000 up to PHP 4,999,999
+- **Opening deposit:** PHP 0 minimum
+- **Time Deposits (UNOearn):** 5.25% for the 12-month and 24-month terms
+- **Withdrawal:** Anytime for UNOReady; locked for time deposits
+
+### CIMB GSave
+- **Base rate:** 2.6%
+- **Boosted rate:** None on the liquid GSave account
+- **Alternative if you want higher CIMB rates:** MaxSave time deposits currently sit around 3.75%-4.25%, depending on term
+- **Opening deposit:** PHP 0 minimum
+- **Key consideration:** As a pure liquid savings option, CIMB is now more of a middle-tier pick than a rate leader.
+
+---
+
+## Best digital bank for your situation
+
+There is no single "best" digital bank. The right answer depends on your balance, how you use money, and how much effort you want to put in.
+
+### What is the best digital bank Philippines for you?
+
+| Your situation | Best pick | Why |
+|----------------|-----------|-----|
+| Strongest liquid rate if you can keep PHP 5K+ | BanKo Savings | 5% up to PHP 1,000,000, but only if the balance stays at PHP 5,000 or above |
+| Zero-maintenance savings | Tonik Solo or GoSave | Clean 3%-4% rates without monthly tasks |
+| Active Maya user already | Maya Savings | The 12% boost can still be worth it if you already meet the spend requirements |
+| Goal saver, can lock money in | Tonik time deposit | Up to 8% for 12 months, highest locked-in rate among digital banks |
+| PHP 1,000,000 or more | Split across banks | PDIC only covers PHP 1M per bank. Splitting keeps all your money insured. |
+| OFW or remittance receiver | GoTyme | Physical kiosks in malls; family can transact without being purely digital |
+
+**On account stacking:** Savvy Filipino savers are not picking one bank. They open two or three:
+- One for daily spending, such as Maya
+- One for serious passive savings, such as BanKo Savings, Tonik Solo, or GoSave
+- One for locked savings goals, such as a Tonik time deposit
+
+You can have accounts at all three at the same time. It is legal, common, and practical.
+
+**[Compare all digital bank rates side by side at Truva](/banking/rates#rate-desk)**
+
+---
+
+## Is your money safe? PDIC insurance for digital banks Philippines
+
+The number one question Filipino savers ask before opening a digital bank account is simple: *"Mababawi ba ang pera ko kung mag-close ang bank?"*
+
+The answer is yes, up to PHP 1,000,000 per bank.
+
+**[PDIC (Philippine Deposit Insurance Corporation)](https://www.pdic.gov.ph)** is the government agency that protects savings deposits in the Philippines. Every BSP-licensed bank, whether traditional or digital, is covered by PDIC.
+
+Here is what that means practically:
+- If a digital bank closes, PDIC pays you back up to PHP 1,000,000 of your deposits
+- This protection applies per bank, per depositor
+- It covers savings accounts, time deposits, and current accounts
+
+**What PDIC does not cover:**
+- UITFs, which are investment products, not deposits
+- Pooled investment funds
+- Insurance products
+
+**All 6 BSP-licensed digital banks in the Philippines are PDIC-insured:**
+1. Maya Bank
+2. GoTyme Bank
+3. Tonik Digital Bank
+4. UNO Digital Bank (UNOBank)
+5. UnionDigital Bank
+6. Overseas Filipino Bank (OFBank)
+
+BanKo, CIMB, MariBank, and Diskartech operate under different BSP license categories, but they are also PDIC-covered.
+
+**If you have more than PHP 1,000,000 to save:**
+
+Split it across banks. PHP 1,000,000 in Bank A is fully insured. PHP 1,000,000 in Bank B is fully insured. PHP 2,000,000 in one bank means PHP 1,000,000 is uninsured if that bank fails.
+
+---
+
+## Digital bank vs traditional bank: why the rates are so different
+
+You might wonder: if digital banks pay 3%-5%, why do BPI and BDO still pay 0.10%-0.25%? Is something wrong?
+
+Nothing is wrong. The math makes sense.
+
+Traditional banks carry enormous overhead. Thousands of employees, hundreds of branches, ATM networks, vaults, and 24/7 security operations. Those costs are real. They come directly out of what the bank can afford to pay depositors.
+
+Digital banks have none of that. No branches. Smaller teams. Everything on an app. Lower costs mean they can share more with you.
+
+**The peso gap for PHP 250,000:**
+
+| Account type | Annual rate | Yearly earnings | Monthly earnings |
+|---|---|---|---|
+| BPI/BDO savings | 0.25% | PHP 625 | PHP 52 |
+| GoSave | 3.00% | PHP 7,500 | PHP 625 |
+| BanKo Savings | 5.00% | PHP 12,500 | PHP 1,042 |
+
+PHP 625 per year versus PHP 12,500 per year. Same PHP 250,000. The only difference is which account it is sitting in.
+
+**When traditional banks still make sense:**
+- You need a physical branch for complex transactions
+- You are taking out a home loan or car loan
+- You need notarized documents or bank certifications
+- Your employer requires payroll into a major bank
+
+You do not have to choose between them. Many Filipinos keep a traditional bank for salary crediting and transactions, and a digital bank for their savings.
+
+---
+
+## Frequently asked questions
+
+### Which digital bank has the highest interest rate in the Philippines right now?
+
+Maya Savings has the highest headline liquid rate in Truva's current snapshot at 12% on the first PHP 100,000, but only if you meet the monthly spend and Easy Credit requirements. For a simpler liquid option, BanKo Savings pays 5% from PHP 5,000 to PHP 1,000,000.
+
+### Is Maya's 12% interest rate real?
+
+Yes, but only on the first PHP 100,000 of your balance, and only in months where you complete the required spend and Easy Credit activity. Miss the requirements and you fall back to Maya's 3.5% base rate.
+
+### Can I open accounts at multiple digital banks at the same time?
+
+Yes. There is no BSP rule against holding accounts at multiple digital banks simultaneously. Many Filipinos use one bank for spending, another for passive liquid savings, and a third for locked savings goals.
+
+### What happens to my money if a digital bank closes?
+
+Your deposits are protected by PDIC, up to PHP 1,000,000 per bank, per depositor. If a BSP-licensed digital bank closes, PDIC processes your claim and returns your money up to that limit.
+
+### Are all digital banks in the Philippines covered by PDIC?
+
+All BSP-licensed digital banks are covered by PDIC. You should still verify that the institution is BSP-supervised before depositing money.
+
+### How do I know if a digital bank is BSP-licensed?
+
+Check [BSP's official list of supervised financial institutions](https://www.bsp.gov.ph). Legitimate digital banks will also display their BSP license number in their app and on their website.
+
+---
+
+## Conclusion: where to start this week
+
+You do not need to overthink this. Here is what to do:
+
+**This week:**
+1. Check how much you currently have in GCash or a traditional savings account
+2. Use Truva's savings calculator to see how much you would earn in BanKo, Tonik, GoSave, or Maya with that balance
+3. Open one account that matches your style: BanKo Savings if you can keep PHP 5,000+, Tonik or GoSave if you want no monthly tasks, or Maya if you already meet the spend requirements
+
+**This month:**
+- If you have PHP 1,000,000 or more, split your savings across two banks to stay fully insured
+- If you are already an active Maya user, check whether you are consistently hitting the current monthly requirements before relying on the 12% headline
+
+Maria switched from GCash to BanKo Savings. Same habit, better account structure. That kind of move is still where most savers get the biggest win.
+
+Your peso's true value is out there. It just needs to be in the right account.
+
+**[See where your peso earns most, compare all savings rates at Truva](/banking/rates#rate-desk)**

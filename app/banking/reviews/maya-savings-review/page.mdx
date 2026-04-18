@@ -1,21 +1,40 @@
 import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
 
-# Maya Savings Review (2026): Is it still the best digital bank?
+export const article = getBankingArticle('maya-savings-review');
+
+export const metadata = {
+  title: article?.seoTitle ?? article?.title,
+  description: article?.description,
+  alternates: {
+    canonical: article?.path,
+  },
+};
+
+export default function Page({ children }) {
+  return (
+    <BlogLayout article={article}>
+      {children}
+    </BlogLayout>
+  );
+}
 
 <SEOBox title="The Direct Answer">
-  Maya remains the **best overall digital bank** in the Philippines for balances up to ₱100,000, offering a base rate of 3.5% that can be boosted to **14% p.a.** through mission-based spending.
+  Maya remains a strong **first-₱100,000 digital bank** in the Philippines, but only if you are the kind of user who will actually complete the monthly missions required to unlock the headline rate.
 </SEOBox>
 
-Maya (formerly PayMaya) has transformed from a simple wallet into a full-featured digital bank. In this review, we break down the rates, the "catch," and how to maximize your after-tax yield.
+Maya (formerly PayMaya) has transformed from a simple wallet into a full-featured digital bank. In this review, we break down the rate, the catch, and who should genuinely use it.
 
 ## Key Facts & Rates
 
 | Feature | Detail |
 | :--- | :--- |
 | **Base Interest Rate** | 3.5% p.a. |
-| **Max Possible Rate** | 14% p.a. (via missions) |
+| **Max Possible Rate** | 12% p.a. (via missions) |
 | **Balance Cap for High Rate** | ₱100,000 |
-| **PDIC Insured?** | Yes, up to ₱500,000 |
+| **PDIC Insured?** | Yes, up to ₱1,000,000 |
 | **Withdrawal Fee** | Free to Maya users, ₱15-18 for others |
 
 ## Why it wins for many Filipinos
@@ -24,19 +43,29 @@ Maya's mission system is its primary moat. While traditional banks like BDO or B
 
 ### The Mission System Explained
 
-To get the headline 14% rate, you need to perform "missions" such as:
+To get the headline 12% rate, you need to perform "missions" such as:
 - Paying with Maya QR
 - Paying bills
 - Buying load
 
 For most users, hitting the 10% mark is relatively easy with normal monthly spending.
 
+<InArticleCTA
+  kicker="Decision shortcut"
+  title="Check whether Maya still wins after the hype"
+  description="Use the live Banking rate desk if you want to compare Maya's mission-based upside against the safer, flatter rates from other banks."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
 ## What to watch out for
 
-1. **The ₱100k Ceiling**: After ₱100,000, your interest rate drops back to the base rate. If you have ₱1M, check out our [Time Deposit comparisons](/banking/rates).
-2. **Engagement Fatigue**: You have to "earn" your rate every month.
+1. **The ₱100k Ceiling**: After ₱100,000, your interest rate drops back to the base rate. If you have larger balances, your effective return changes fast.
+2. **Engagement Fatigue**: You have to "earn" your rate every month. Miss the tasks and you fall back to the base rate.
+3. **Behavior mismatch**: Maya is excellent when the missions fit your real financial behavior. It is weaker when you contort your habits just to justify the headline.
 
 ## Final Verdict
 
 **Best for:** Active spenders who can hit missions and keep under ₱100k.
-**Not for:** Passive savers who want to "set it and forget it" for large amounts.
+
+**Not for:** Passive savers who want to set it and forget it for large balances.

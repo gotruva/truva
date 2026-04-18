@@ -1,0 +1,66 @@
+import { SEOBox } from '@/components/seo/SEOBox';
+import { BlogLayout } from '@/components/layout/BlogLayout';
+import { InArticleCTA } from '@/components/editorial/InArticleCTA';
+import { getBankingArticle } from '@/lib/editorial';
+
+export const article = getBankingArticle('maya-vs-gotyme-vs-tonik');
+
+export const metadata = {
+  title: article.seoTitle ?? article.title,
+  description: article.description,
+  alternates: {
+    canonical: article.path,
+  },
+};
+
+export default function Page({ children }) {
+  return <BlogLayout article={article}>{children}</BlogLayout>;
+}
+
+<SEOBox title="The Direct Answer">
+Maya is the strongest option if you already use its missions and spending flow. GoTyme is the cleaner no-conditions choice. Tonik is the best middle ground if you want a simple stash with a slightly higher flat rate.
+</SEOBox>
+
+## Rate and condition comparison
+
+| Bank | Rate style | Conditions | Best for |
+|---|---|---|---|
+| Maya | Highest upside | Monthly spend and Easy Credit activity | Users already active inside the app |
+| GoTyme | Flat, simple rate | No monthly missions | Savers who want low friction |
+| Tonik | Flat, higher than basic digital-bank rates | No monthly missions on Solo Stash | Users who want a clean stash with a slightly better yield |
+
+## Which saver each bank fits
+
+- **Maya** if you already spend through Maya and can keep the behavior consistent.
+- **GoTyme** if you want the simplest possible setup and do not want to track missions.
+- **Tonik** if you want a flat rate that is easy to understand and maintain.
+
+<InArticleCTA
+  kicker="Make the comparison useful"
+  title="Run your own balance through the calculator"
+  description="Use the live rate desk and calculator to confirm the better choice for your actual balance."
+  primaryCta={article.primaryCta}
+  secondaryCta={article.secondaryCta}
+/>
+
+## Decision matrix
+
+If you already use Maya every month, Maya can win.
+
+If you want the least hassle, GoTyme usually wins.
+
+If you want a middle ground between simplicity and yield, Tonik is often the best fit.
+
+## Frequently asked questions
+
+### Which bank wins for passive savers?
+
+GoTyme or Tonik are usually easier to keep because neither depends on monthly mission behavior.
+
+### Why does Maya still show up first in so many searches?
+
+Because the headline rate is high. The better question is whether you can keep the requirements going every month.
+
+### Should I split money across all three?
+
+Yes, if you have different jobs for each account. One can be for spending, one for passive savings, and one for a locked goal.

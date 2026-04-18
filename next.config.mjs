@@ -2,6 +2,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import createMDX from '@next/mdx';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -13,10 +15,10 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     // unsafe-inline retained for scripts: Next.js App Router injects inline bootstrap
     // scripts for hydration that cannot be nonced without a custom server setup.
-    // unsafe-eval removed: it is not needed in production and allows dynamic code execution.
+    // unsafe-eval added in dev only: React requires eval() for HMR and DevTools.
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com",
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://www.googletagmanager.com https://va.vercel-scripts.com`,
       "style-src 'self' 'unsafe-inline'",
       "font-src 'self' data:",
       "img-src 'self' data: https:",
@@ -47,7 +49,9 @@ const nextConfig = {
 };
 
 const withMDX = createMDX({
-  // Add markdown plugins here, as desired
+  options: {
+    remarkPlugins: ['remark-gfm'],
+  },
 });
 
 export default withMDX(nextConfig);

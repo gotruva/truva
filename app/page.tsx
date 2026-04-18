@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 import { HeroSection } from '@/components/HeroSection';
@@ -5,6 +6,12 @@ import { CompareHub } from '@/components/CompareHub';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gotruva.com';
 const NewsletterSignup = dynamic(() => import('@/components/NewsletterSignup').then((mod) => mod.NewsletterSignup));
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+};
 
 export default async function HomePage() {
   const rates = await getPublicRates();
@@ -89,10 +96,10 @@ export default async function HomePage() {
       },
       {
         '@type': 'Question',
-        'name': 'Are T-Bills tax-exempt in the Philippines?',
+        'name': 'How are T-Bills taxed in the Philippines?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Yes. Treasury Bills (T-Bills), Retail Treasury Bonds (RTBs), and MP2 (Modified Pag-IBIG II) are tax-exempt for individual investors in the Philippines. This makes their effective yield higher than bank savings accounts with the same gross rate.',
+          'text': 'Treasury Bill discount income is generally subject to 20% Final Withholding Tax for taxable investors. Truva compares T-Bill benchmarks on an after-tax basis unless a product is explicitly marked tax-exempt.',
         },
       },
       {

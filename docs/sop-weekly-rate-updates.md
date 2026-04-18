@@ -62,14 +62,18 @@ If any Phase 2 banks (rural banks, Landbank, DBP, etc.) failed to crawl:
 This ensures your customers always see current rates even if a bank's website is temporarily down.
 
 ### Step 4: Approve/Reject in the Internal UI
-1. Navigate to the local admin portal: `http://localhost:3000/admin/rates/review`.
+1. Start the dedicated admin server (runs on private port 5433, separate from public dev server):
+   ```bash
+   npm run dev:admin
+   ```
+2. Navigate to the local admin portal: `http://localhost:5433/admin/rates/review`.
 2. Review the pending items in the queue. You will see a Diff Table showing the `Previous Value` vs `New Value`.
 3. If an extraction was flawed or grabbed the wrong number, hit **Reject** so it doesn't break production. You can then investigate. (If rejected, the production website still safely shows the old rate).
 4. If a rate truly changed and the numbers look accurate, click **Approve** or click **Approve All**.
 5. **Verify all 19 products are reviewed**: Check the count at the top to ensure you've covered all rates from all banks.
 
 ### Step 5: Verify Live Updates
-Once approved, refresh the main application table on `http://localhost:3000`. The new rates and newly calculated after-tax yields should be actively displayed across all 19 products and all banks.
+Once approved, navigate to the public dev server on `http://localhost:3000` to verify the new rates and after-tax yields are displayed correctly across all 19 products. (Keep the admin server at `http://localhost:5433` running in a separate terminal for any additional reviews.)
 
 ---
 

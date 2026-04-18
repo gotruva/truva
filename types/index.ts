@@ -27,6 +27,11 @@ export interface RateCondition {
   requiredMonthlySpend?: number;    // e.g. 500 for Maya
 }
 
+export interface ProductLimit {
+  maxDepositPerProduct?: number;    // e.g. 250000 for ₱250k max per time deposit
+  maxProductsPerUser?: number;      // e.g. 5 for max 5 time deposits per user
+}
+
 export interface RateProduct {
   id: string;
   name: string;
@@ -54,12 +59,13 @@ export interface RateProduct {
   pdic: boolean;
   insurer: string;                  // e.g. "PDIC", "Bureau of Treasury", "Pag-IBIG Fund", "Not Insured"
   lastVerified: string;             // ISO date — when we last confirmed these rates
+  limits?: ProductLimit;             // max deposit per product, max products per user, etc.
 
   // --- Affiliate / monetization ---
   affiliateUrl: string;
   referralCode: string;
   payoutAmount: number;             // in PHP
-  palagoScore: number;              // 1–5 (placeholder = 3 until Week 7)
+  trueValueScore: number;              // 1–5 (placeholder = 3 until Week 7)
 }
 
 export interface AffiliateLink {
@@ -130,5 +136,92 @@ export interface CreditCardProduct {
   sponsoredDisclosure?: string;
   
   affiliateUrl: string;
-  palagoScore: number;
+  trueValueScore: number;
 }
+
+export interface EditorialCta {
+  label: string;
+  href: string;
+  description?: string;
+}
+
+export interface ArticleTocItem {
+  label: string;
+  depth?: 2 | 3;
+}
+
+export interface EditorialFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface EditorialArticle {
+  slug: string;
+  path: string;
+  title: string;
+  seoTitle?: string;
+  description: string;
+  subtitle: string;
+  category: 'banking' | 'credit-cards' | 'guides';
+  categoryLabel: string;
+  section: 'rates' | 'reviews' | 'compare' | 'guides';
+  articleType: 'Rate Guide' | 'Review' | 'Comparison' | 'Explainer';
+  eyebrow: string;
+  bannerUrl?: string;
+  bannerFocus?: string;
+  publishedAt: string;
+  updatedAt: string;
+  author: string;
+  authorUrl?: string;
+  readingTime: string;
+  featured: boolean;
+  keywords?: string[];
+  verificationNote?: string;
+  disclosureNote?: string;
+  sectionPath?: string;
+  toc: ArticleTocItem[];
+  faqItems?: EditorialFaqItem[];
+  primaryCta: EditorialCta;
+  secondaryCta?: EditorialCta;
+  relatedArticles: string[];
+}
+
+// ─── Money Market Funds ───
+
+export interface MoneyMarketFund {
+  id: string;
+  slug: string;
+  name: string;
+  provider: string;
+  fund_type: 'UITF' | 'Mutual Fund';
+  currency: 'PHP' | 'USD';
+  trust_fee_pct: number | null;
+  min_initial: number;
+  min_additional: number | null;
+  redemption_days: number;
+  holding_period_days: number;
+  early_redemption_fee: string | null;
+  benchmark_label: string | null;
+  benchmark_key: string | null;
+  risk_class: string | null;
+  pdic_insured: boolean;
+  access_channels: string[];
+  fund_page_url: string;
+  rate_date: string | null;
+  navpu: number | null;
+  gross_yield_1y: number | null;
+  after_tax_yield: number | null;
+  net_yield: number | null;
+  benchmark_rate: number | null;
+  vs_benchmark: number | null;
+  data_source?: string | null;
+  scraped_at?: string | null;
+}
+
+export interface BenchmarkRate {
+  key: string;
+  label: string;
+  date: string;
+  rate: number;
+}
+

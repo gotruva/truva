@@ -38,7 +38,7 @@ function parseArgs(): ParsedArgs {
 async function listQueuedItems() {
   const queuedItems = await listQueuedChangeReviews();
   if (!queuedItems.length) {
-    console.log('No queued change-event reviews found.');
+    console.log('No queued rate reviews found.');
     return;
   }
 
@@ -52,7 +52,9 @@ async function listQueuedItems() {
     console.log(`created_at: ${item.createdAt}`);
     console.log(`product_id: ${item.productId}`);
     console.log(`product: ${item.providerDisplayName} - ${item.productName}`);
-    console.log(`change_event_id: ${item.changeEventId}`);
+    console.log(`entity_type: ${item.entityType}`);
+    console.log(`entity_id: ${item.entityId}`);
+    if (item.changeEventId) console.log(`change_event_id: ${item.changeEventId}`);
     if (item.newSnapshotId) console.log(`new_snapshot_id: ${item.newSnapshotId}`);
     if (changedFields) console.log(`fields: ${changedFields}`);
     if (item.summary) console.log(`summary: ${item.summary}`);

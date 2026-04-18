@@ -7,8 +7,8 @@
     "category": "banks",
     "headlineRate": 0.12,
     "baseRate": {
-      "grossRate": 0.025,
-      "afterTaxRate": 0.02
+      "grossRate": 0.035,
+      "afterTaxRate": 0.028
     },
     "tierType": "blended",
     "tiers": [
@@ -21,8 +21,8 @@
       {
         "minBalance": 100000,
         "maxBalance": null,
-        "grossRate": 0.025,
-        "afterTaxRate": 0.02
+        "grossRate": 0.035,
+        "afterTaxRate": 0.028
       }
     ],
     "conditions": [
@@ -39,11 +39,11 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-13",
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "MAYA123",
     "payoutAmount": 100,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "maya-td-3mo",
@@ -82,7 +82,7 @@
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "maya-td-6mo",
@@ -121,7 +121,7 @@
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "maya-td-12mo",
@@ -160,7 +160,7 @@
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "maya-personal-goals",
@@ -223,7 +223,7 @@
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-account",
@@ -256,7 +256,7 @@
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-savings",
@@ -289,7 +289,7 @@
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "TONIK456",
     "payoutAmount": 60,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-group-stash",
@@ -328,7 +328,7 @@
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-td-6mo",
@@ -358,10 +358,14 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-td-9mo",
@@ -391,10 +395,14 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-td-12mo",
@@ -424,10 +432,14 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-td-18mo",
@@ -457,10 +469,14 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tonik-td-24mo",
@@ -490,10 +506,14 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "limits": {
+      "maxDepositPerProduct": 250000,
+      "maxProductsPerUser": 5
+    },
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "uno-ready",
@@ -544,7 +564,7 @@
     "affiliateUrl": "https://www.uno.bank/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "uno-td-365",
@@ -583,7 +603,7 @@
     "affiliateUrl": "https://www.uno.bank/",
     "referralCode": "UNO789",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "gotyme-savings",
@@ -616,7 +636,7 @@
     "affiliateUrl": "https://www.gotyme.com.ph/",
     "referralCode": "GOTYME001",
     "payoutAmount": 50,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "cimb-gsave",
@@ -655,7 +675,7 @@
     "affiliateUrl": "https://www.gcash.com/",
     "referralCode": "CIMB002",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "cimb-maxsave-3mo",
@@ -694,7 +714,7 @@
     "affiliateUrl": "https://www.cimbbank.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "cimb-maxsave-6mo",
@@ -733,7 +753,7 @@
     "affiliateUrl": "https://www.cimbbank.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "cimb-maxsave-12mo",
@@ -772,7 +792,7 @@
     "affiliateUrl": "https://www.cimbbank.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "cimb-maxsave-24mo",
@@ -811,7 +831,7 @@
     "affiliateUrl": "https://www.cimbbank.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "maribank-savings",
@@ -850,7 +870,7 @@
     "affiliateUrl": "https://www.maribank.ph/",
     "referralCode": "MARI003",
     "payoutAmount": 50,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "maribank-td-3mo",
@@ -889,7 +909,7 @@
     "affiliateUrl": "https://www.maribank.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "uniondigital-savings",
@@ -928,7 +948,7 @@
     "affiliateUrl": "https://www.uniondigitalbank.io/",
     "referralCode": "UD004",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "uniondigital-td",
@@ -967,7 +987,7 @@
     "affiliateUrl": "https://www.uniondigitalbank.io/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "salmon-td-6mo",
@@ -1006,7 +1026,7 @@
     "affiliateUrl": "https://salmon.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "salmon-td-12mo",
@@ -1057,7 +1077,7 @@
     "affiliateUrl": "https://salmon.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "netbank-savings",
@@ -1096,7 +1116,7 @@
     "affiliateUrl": "https://netbank.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "netbank-td-6mo",
@@ -1129,7 +1149,7 @@
     "affiliateUrl": "https://netbank.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "netbank-td-12mo",
@@ -1162,7 +1182,7 @@
     "affiliateUrl": "https://netbank.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "komo-savings",
@@ -1213,7 +1233,7 @@
     "affiliateUrl": "https://komo.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "diskartech-savings",
@@ -1258,7 +1278,7 @@
     "affiliateUrl": "https://diskartech.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ownbank-td-15d",
@@ -1291,7 +1311,7 @@
     "affiliateUrl": "https://www.ownbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ownbank-td-30d",
@@ -1324,7 +1344,7 @@
     "affiliateUrl": "https://www.ownbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ownbank-td-60d",
@@ -1357,7 +1377,7 @@
     "affiliateUrl": "https://www.ownbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ownbank-td-90d",
@@ -1390,7 +1410,7 @@
     "affiliateUrl": "https://www.ownbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ownbank-td-180d",
@@ -1423,7 +1443,7 @@
     "affiliateUrl": "https://www.ownbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ownbank-td-360d",
@@ -1456,7 +1476,7 @@
     "affiliateUrl": "https://www.ownbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "landbank-iaccess",
@@ -1489,7 +1509,7 @@
     "affiliateUrl": "https://www.landbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "dbp-savings",
@@ -1522,7 +1542,7 @@
     "affiliateUrl": "https://www.dbp.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "ofbank-savings",
@@ -1555,7 +1575,7 @@
     "affiliateUrl": "https://www.ofbank.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tbill-91",
@@ -1594,7 +1614,7 @@
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tbill-182",
@@ -1633,7 +1653,7 @@
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "tbill-364",
@@ -1672,7 +1692,7 @@
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "pagibig-mp2",
@@ -1711,7 +1731,7 @@
     "affiliateUrl": "https://www.pagibigfund.gov.ph/MP2.html",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "rtb-27",
@@ -1750,7 +1770,7 @@
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "bdo-mmf-uitf",
@@ -1789,7 +1809,7 @@
     "affiliateUrl": "https://www.bdo.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "bpi-mmf-uitf",
@@ -1828,7 +1848,7 @@
     "affiliateUrl": "https://www.bpi.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "aave-v3-usdc-base",
@@ -1867,7 +1887,7 @@
     "affiliateUrl": "https://app.aave.com/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   },
   {
     "id": "bpi-banko-savings",
@@ -1918,6 +1938,6 @@
     "affiliateUrl": "https://www.banko.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
-    "palagoScore": 3
+    "trueValueScore": 3
   }
 ]

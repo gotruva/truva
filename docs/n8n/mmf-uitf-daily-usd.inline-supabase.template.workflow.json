@@ -1,0 +1,277 @@
+{
+  "name": "Truva MMF - USD UITF Daily Scrape (Inline Supabase Template)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0f1b5b7d-6c68-4f09-b2cb-742f1e237101",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "35 18 * * *"
+            }
+          ]
+        },
+        "timezone": "Asia/Manila"
+      },
+      "id": "80679d3a-dbd7-4f78-90c1-f781a0b4e4f0",
+      "name": "Daily 6:35 PM PHT",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/money_market_funds?select=id,slug,name,provider,trust_fee_pct,uitf_fund_id&is_active=eq.true&currency=eq.USD&fund_type=eq.UITF&navpu_source=eq.uitf_com_ph",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "d1cf2b02-7c75-4c6a-9e1b-01b51c48cbf0",
+      "name": "Get Target Funds",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -430,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/benchmark_rates?select=rate,date&key=eq.US_TBILL_90D&order=date.desc&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "b4ac8d78-4f5e-4745-a6ec-51d3976ce30e",
+      "name": "Get Latest Benchmark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -110,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.uitf.com.ph/test_print_topfunds.php?class_id=4&currency=USD&fday=&fmonth=&fyear=&radio1=yoy&tday=&tmonth=&tyear=",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (compatible; TruvaMMF/1.0)"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "30a9473a-461f-40f6-97be-bcba055ae1cb",
+      "name": "Fetch UITF Source",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        210,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nfunction nodeRows(name) {\n  return $items(name).flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return Object.keys(item.json || {}).length ? [item.json] : [];\n  });\n}\nfunction decode(value) {\n  return String(value || '')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&#x27;|&#39;/g, String.fromCharCode(39))\n    .replace(/&quot;/g, String.fromCharCode(34))\n    .replace(/\\u00a0/g, ' ');\n}\nfunction strip(value) {\n  return decode(value).replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n}\nfunction parsePercent(value) {\n  const match = String(value || '').match(/-?\\d+(?:\\.\\d+)?\\s*%?/);\n  return match ? Number(match[0].replace('%', '').trim()) : NaN;\n}\nfunction parseHtmlRows(html) {\n  const rows = [...html.matchAll(/<tr[\\s\\S]*?<\\/tr>/gi)].map((match) => match[0]);\n  const parsed = [];\n  for (const row of rows) {\n    const cells = [...row.matchAll(/<t[dh][^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)].map((match) => strip(match[1]));\n    if (cells.length < 3) continue;\n    const first = cells[0] || '';\n    if (!/^\\d+$/.test(first)) continue;\n    const rank = Number(first);\n    const bank = cells[1] || '';\n    const name = cells[2] || '';\n    const returnCell = cells.find((cell, index) => index >= 3 && /%/.test(cell)) || cells[cells.length - 1];\n    const return1y = parsePercent(returnCell);\n    const hrefMatch = row.match(/fund[_-]?id=(\\d+)/i);\n    const fundId = hrefMatch ? Number(hrefMatch[1]) : null;\n    if (name && Number.isFinite(return1y)) parsed.push({ rank, bank, fund_id: fundId, name, navpu: null, return_1y: return1y });\n  }\n  return parsed;\n}\nfunction parseTextRows(text) {\n  const parsed = [];\n  const lines = String(text || '').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);\n  for (let i = 0; i < lines.length; i += 1) {\n    const line = lines[i];\n    const pipeCells = line.includes('|') ? line.split('|').map((cell) => strip(cell)).filter(Boolean) : [];\n    if (pipeCells.length >= 4 && /^\\d+$/.test(pipeCells[0]) && /%/.test(pipeCells[pipeCells.length - 1])) {\n      const return1y = parsePercent(pipeCells[pipeCells.length - 1]);\n      if (Number.isFinite(return1y)) parsed.push({ rank: Number(pipeCells[0]), bank: pipeCells[1], name: pipeCells[2], navpu: null, return_1y: return1y });\n      continue;\n    }\n    const compactMatch = line.match(/^\\s*(\\d+)\\s+(.+?)\\s{2,}(.+?)\\s+(-?\\d+(?:\\.\\d+)?)%\\s*$/);\n    if (compactMatch) {\n      parsed.push({ rank: Number(compactMatch[1]), bank: strip(compactMatch[2]), name: strip(compactMatch[3]), navpu: null, return_1y: Number(compactMatch[4]) });\n    }\n  }\n  return parsed;\n}\nconst funds = nodeRows('Get Target Funds').filter((row) => row.id);\nif (!funds.length) throw new Error('No target USD UITF funds returned from Supabase');\nconst benchmarks = nodeRows('Get Latest Benchmark').filter((row) => row.rate !== undefined && row.rate !== null);\nif (!benchmarks.length) throw new Error('Missing US_TBILL_90D benchmark. Run the US T-Bill benchmark workflow first.');\nconst benchmarkRate = Number(benchmarks[0].rate);\nconst benchmarkAfterTaxRate = benchmarkRate;\nconst raw = $json.data || $json.body || $json.html || $json.response || '';\nconst html = typeof raw === 'string' ? raw : JSON.stringify(raw || {});\nif (!html || html === '{}') throw new Error('UITF source returned no usable body. JSON keys: ' + Object.keys($json || {}).join(', '));\nif (/incapsula|request unsuccessful|incident id/i.test(html)) throw new Error('UITF source blocked the n8n request: ' + strip(html).slice(0, 300));\nconst text = strip(html).replace(/\\s*\\|\\s*/g, ' | ');\nlet scraped = parseHtmlRows(html);\nif (!scraped.length) scraped = parseTextRows(text);\nif (!scraped.length) throw new Error('No UITF source rows parsed. Sample: ' + text.slice(0, 700));\nconst allowlist = {\n  'bdo dollar money market fund': 'bdo-dollar-money-market-fund',\n  'chinabank dollar cash fund': 'chinabank-dollar-cash-fund',\n  'landbank us dollar money market fund': 'landbank-us-dollar-money-market-fund',\n  'landbank us money market fund': 'landbank-us-dollar-money-market-fund',\n  'metro dollar money market fund': 'metro-dollar-money-market-fund',\n  'metro money market fund': 'metro-dollar-money-market-fund',\n  'pnb prime dollar money market fund': 'pnb-prime-dollar-money-market-fund'\n};\nconst norm = (value) => String(value || '').toLowerCase().replace(/&/g, 'and').split('$').join(' dollar ').replace(/[^a-z0-9]+/g, ' ').trim();\nconst byId = new Map(scraped.filter((row) => row.fund_id).map((row) => [String(row.fund_id), row]));\nconst bySlug = new Map();\nfor (const row of scraped) {\n  const direct = allowlist[norm(row.name)];\n  if (direct) bySlug.set(direct, row);\n  for (const [key, slug] of Object.entries(allowlist)) {\n    if (!bySlug.has(slug) && norm(row.name).includes(key)) bySlug.set(slug, row);\n  }\n}\nconst today = phtDate();\nconst output = [];\nconst missing = [];\nfor (const fund of funds) {\n  const scrapedRow = (fund.uitf_fund_id ? byId.get(String(fund.uitf_fund_id)) : null) || bySlug.get(fund.slug);\n  if (!scrapedRow) {\n    missing.push(fund.provider + ' - ' + fund.name);\n    continue;\n  }\n  const grossYield = Number(scrapedRow.return_1y) / 100;\n  const trustFee = Number(fund.trust_fee_pct || 0);\n  const afterTaxYield = grossYield * 0.8;\n  const netYield = afterTaxYield - trustFee;\n  output.push({ json: { fund_id: fund.id, date: today, navpu: scrapedRow.navpu, gross_yield_1y: Number(grossYield.toFixed(6)), after_tax_yield: Number(afterTaxYield.toFixed(6)), net_yield: Number(netYield.toFixed(6)), benchmark_rate: benchmarkRate, vs_benchmark: Number((netYield - benchmarkAfterTaxRate).toFixed(6)), data_source: 'scraper' } });\n}\nif (missing.length) {\n  const seen = scraped.slice(0, 30).map((row) => row.name + ' (' + row.return_1y + '%)').join('; ');\n  throw new Error('Missing scraped rows for ' + missing.length + ' target funds: ' + missing.join('; ') + '. Parsed rows sample: ' + seen);\n}\nreturn output;"
+      },
+      "id": "2ace5506-2d93-4f22-96f5-e7b55f4cb0fd",
+      "name": "Build Daily Rate Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        530,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://REPLACE_WITH_SUPABASE_PROJECT.supabase.co/rest/v1/mmf_daily_rates?on_conflict=fund_id,date",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}"
+      },
+      "id": "9d5246ed-e49d-4443-887b-90d447942d51",
+      "name": "Upsert mmf_daily_rates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        850,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Target Funds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily 6:35 PM PHT": {
+      "main": [
+        [
+          {
+            "node": "Get Target Funds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Target Funds": {
+      "main": [
+        [
+          {
+            "node": "Get Latest Benchmark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Latest Benchmark": {
+      "main": [
+        [
+          {
+            "node": "Fetch UITF Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch UITF Source": {
+      "main": [
+        [
+          {
+            "node": "Build Daily Rate Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Daily Rate Payload": {
+      "main": [
+        [
+          {
+            "node": "Upsert mmf_daily_rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "uitf-usd-inline-template",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

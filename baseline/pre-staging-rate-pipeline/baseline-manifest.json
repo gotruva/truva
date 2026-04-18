@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-10T05:03:04.903Z",
-  "gitRef": "ff04c410fb79d3431858457121678e346371968c",
+  "generatedAt": "2026-04-13T10:52:30.580Z",
+  "gitRef": "6809a9a295deb5bfd6e5def7c261584e897fe1a6",
   "seedProductCount": 50,
   "seedProviderCount": 22,
   "seedProviders": [
@@ -62,9 +62,8 @@
   "manualAnnualProductIds": [
     "pagibig-mp2"
   ],
-  "maxLastVerified": "2026-04-03",
+  "maxLastVerified": "2026-04-10",
   "exportedSupabaseTables": [
-    "credit_cards",
     "affiliate_clicks",
     "partner_inquiries"
   ]

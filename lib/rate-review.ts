@@ -1,7 +1,6 @@
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 
 export type ReviewDecision = 'approved' | 'rejected';
-export type EntityType = 'change_event' | 'product_snapshot';
 
 interface ReviewQueueRow {
   id: string;
@@ -19,6 +18,15 @@ interface ChangeEventRow {
   new_snapshot_id: string | null;
   summary: string | null;
   diff: unknown;
+}
+
+interface ProductSnapshotRow {
+  id: string;
+  product_id: string;
+  structured_payload: unknown;
+  metadata: unknown;
+  captured_at: string;
+  created_at: string;
 }
 
 interface ProductRow {
@@ -45,8 +53,7 @@ export interface RateDiffDetail {
 
 export interface QueuedChangeReviewItem {
   reviewQueueId: string;
-  entityType: EntityType;
-  changeEventId: string | null;
+  changeEventId: string;
   productId: string;
   providerDisplayName: string;
   productName: string;
@@ -96,55 +103,39 @@ function extractDiffDetails(diff: unknown): RateDiffDetail[] {
     }));
 }
 
-/**
- * Builds a human-readable "diff" from a product_snapshot structured_payload
- * so it renders in the same DiffTable component as change_event diffs.
- */
-function snapshotToDiffDetails(payload: Record<string, unknown>): RateDiffDetail[] {
-  const details: RateDiffDetail[] = [];
-
-  const headlineRate = payload['headlineRate'];
-  if (typeof headlineRate === 'number') {
-    details.push({ field: 'headlineRate', previous: null, next: headlineRate });
-  }
-
-  const baseRate = payload['baseRate'] as Record<string, number> | undefined;
-  if (baseRate) {
-    if (typeof baseRate['grossRate'] === 'number') {
-      details.push({ field: 'grossRate', previous: null, next: baseRate['grossRate'] });
-    }
-    if (typeof baseRate['afterTaxRate'] === 'number') {
-      details.push({ field: 'afterTaxRate', previous: null, next: baseRate['afterTaxRate'] });
-    }
-  }
-
-  const tierType = payload['tierType'];
-  if (tierType) {
-    details.push({ field: 'tierType', previous: null, next: tierType });
-  }
-
-  const tiers = payload['tiers'];
-  if (tiers) {
-    details.push({ field: 'tiers', previous: null, next: tiers });
-  }
-
-  return details;
-}
-
 async function syncProductReviewStatus(productId: string) {
   const client = getStagingAdminClient();
+
   const { data: pendingRows, error: pendingError } = await client
     .from('change_events')
     .select('id')
     .eq('product_id', productId)
     .eq('review_status', 'pending_review')
     .limit(1);
-  if (pendingError) throw pendingError;
+  if (pendingChangeError) throw pendingChangeError;
 
-  const nextStatus = (pendingRows?.length ?? 0) > 0 ? 'pending_review' : 'approved';
+  const { data: pendingSnapshotRows, error: pendingSnapshotError } = await client
+    .from('product_snapshots')
+    .select('id')
+    .eq('product_id', productId)
+    .eq('review_status', 'pending_review')
+    .limit(1);
+  if (pendingSnapshotError) throw pendingSnapshotError;
+
+  const { data: approvedSnapshotRows, error: approvedSnapshotError } = await client
+    .from('product_snapshots')
+    .select('id')
+    .eq('product_id', productId)
+    .eq('review_status', 'approved')
+    .limit(1);
+  if (approvedSnapshotError) throw approvedSnapshotError;
+
+  const hasPending = (pendingChangeRows?.length ?? 0) > 0 || (pendingSnapshotRows?.length ?? 0) > 0;
+  const hasApprovedSnapshot = (approvedSnapshotRows?.length ?? 0) > 0;
+  const nextStatus = hasPending ? 'pending_review' : hasApprovedSnapshot ? 'approved' : 'rejected';
   const { error: updateError } = await client
     .from('products')
-    .update({ review_status: nextStatus })
+    .update({ review_status: nextStatus, active_public: hasApprovedSnapshot })
     .eq('id', productId);
   if (updateError) throw updateError;
 }
@@ -164,42 +155,35 @@ export async function listQueuedChangeReviews(): Promise<QueuedChangeReviewItem[
   const queuedRows = (queueRows ?? []) as ReviewQueueRow[];
   if (!queuedRows.length) return [];
 
-  const changeEventRows = queuedRows.filter((r) => r.entity_type === 'change_event');
-  const snapshotRows = queuedRows.filter((r) => r.entity_type === 'product_snapshot');
+  const changeEventIds = queuedRows.map((row) => row.entity_id);
+  const { data: changeRows, error: changeError } = await client
+    .from('change_events')
+    .select('id, product_id, new_snapshot_id, summary, diff')
+    .in('id', changeEventIds);
+  if (changeError) throw changeError;
 
-  // ── Handle change_event items ──────────────────────────────────────────────
-  const changeItems: QueuedChangeReviewItem[] = [];
+  const mappedChangeRows = (changeRows ?? []) as ChangeEventRow[];
+  const changeById = new Map(mappedChangeRows.map((row) => [row.id, row]));
 
-  if (changeEventRows.length) {
-    const changeEventIds = changeEventRows.map((r) => r.entity_id);
-    const { data: changeData, error: changeError } = await client
-      .from('change_events')
-      .select('id, product_id, new_snapshot_id, summary, diff')
-      .in('id', changeEventIds);
-    if (changeError) throw changeError;
+  const productIds = [...new Set(mappedChangeRows.map((row) => row.product_id))];
+  let productsById = new Map<string, ProductRow>();
 
-    const mappedChangeRows = (changeData ?? []) as ChangeEventRow[];
-    const changeById = new Map(mappedChangeRows.map((r) => [r.id, r]));
+  if (productIds.length) {
+    const { data: productData, error: productError } = await client
+      .from('products')
+      .select('id, provider_display_name, product_name')
+      .in('id', productIds);
+    if (productError) throw productError;
+    productsById = new Map((productData ?? [] as ProductRow[]).map((r) => [r.id, r]));
+  }
 
-    const productIds = [...new Set(mappedChangeRows.map((r) => r.product_id))];
-    let productsById = new Map<string, ProductRow>();
-
-    if (productIds.length) {
-      const { data: productData, error: productError } = await client
-        .from('products')
-        .select('id, provider_display_name, product_name')
-        .in('id', productIds);
-      if (productError) throw productError;
-      productsById = new Map((productData ?? [] as ProductRow[]).map((r) => [r.id, r]));
-    }
-
-    for (const queue of changeEventRows) {
+  return queuedRows
+    .map((queue) => {
       const change = changeById.get(queue.entity_id);
       if (!change) continue;
       const product = productsById.get(change.product_id);
       changeItems.push({
         reviewQueueId: queue.id,
-        entityType: 'change_event',
         changeEventId: change.id,
         productId: change.product_id,
         providerDisplayName: product?.provider_display_name ?? 'Unknown Provider',
@@ -211,63 +195,9 @@ export async function listQueuedChangeReviews(): Promise<QueuedChangeReviewItem[
         newSnapshotId: change.new_snapshot_id,
         priority: queue.priority,
         createdAt: queue.created_at,
-      });
-    }
-  }
-
-  // ── Handle product_snapshot items (from scraper) ───────────────────────────
-  const snapshotItems: QueuedChangeReviewItem[] = [];
-
-  if (snapshotRows.length) {
-    const snapshotIds = snapshotRows.map((r) => r.entity_id);
-    const { data: snapData, error: snapError } = await client
-      .from('product_snapshots')
-      .select('id, product_id, source_mode, review_status, structured_payload, captured_at, metadata')
-      .in('id', snapshotIds);
-    if (snapError) throw snapError;
-
-    const mappedSnapshots = (snapData ?? []) as ProductSnapshotRow[];
-    const snapshotById = new Map(mappedSnapshots.map((r) => [r.id, r]));
-
-    const snapshotProductIds = [...new Set(mappedSnapshots.map((r) => r.product_id))];
-    let snapProductsById = new Map<string, ProductRow>();
-
-    if (snapshotProductIds.length) {
-      const { data: snapProductData, error: snapProductError } = await client
-        .from('products')
-        .select('id, provider_display_name, product_name')
-        .in('id', snapshotProductIds);
-      if (snapProductError) throw snapProductError;
-      snapProductsById = new Map((snapProductData ?? [] as ProductRow[]).map((r) => [r.id, r]));
-    }
-
-    for (const queue of snapshotRows) {
-      const snap = snapshotById.get(queue.entity_id);
-      if (!snap) continue;
-      const product = snapProductsById.get(snap.product_id);
-      const meta = snap.metadata ?? {};
-      snapshotItems.push({
-        reviewQueueId: queue.id,
-        entityType: 'product_snapshot',
-        changeEventId: null,
-        productId: snap.product_id,
-        providerDisplayName: product?.provider_display_name ?? snap.product_id,
-        productName: product?.product_name ?? snap.product_id,
-        reason: queue.reason,
-        summary: `Automated scrape captured on ${snap.captured_at.slice(0, 10)}`,
-        changedFields: ['headlineRate', 'grossRate', 'afterTaxRate'],
-        diffDetails: snapshotToDiffDetails(snap.structured_payload),
-        newSnapshotId: snap.id,
-        priority: queue.priority,
-        createdAt: queue.created_at,
-        scrapedPayload: snap.structured_payload,
-        sourceUrl: typeof meta['source_url'] === 'string' ? meta['source_url'] : undefined,
-        evidenceText: typeof meta['evidence_text'] === 'string' ? meta['evidence_text'] : undefined,
-      });
-    }
-  }
-
-  return [...snapshotItems, ...changeItems];
+      } satisfies QueuedChangeReviewItem;
+    })
+    .filter((item): item is QueuedChangeReviewItem => Boolean(item));
 }
 
 export async function applyChangeReviewDecision(
@@ -285,76 +215,60 @@ export async function applyChangeReviewDecision(
   if (queueError) throw queueError;
   if (!queueRow) throw new Error(`Review queue row ${reviewQueueId} not found.`);
 
-  if (!['change_event', 'product_snapshot'].includes(queueRow.entity_type as string)) {
-    throw new Error(`Review queue row ${reviewQueueId} has unsupported entity_type: ${queueRow.entity_type}.`);
+  if ((queueRow.entity_type as string) !== 'change_event') {
+    throw new Error(`Review queue row ${reviewQueueId} is ${queueRow.entity_type}, expected change_event.`);
   }
   if ((queueRow.status as string) !== 'queued') {
     throw new Error(`Review queue row ${reviewQueueId} is already ${queueRow.status}.`);
   }
 
+  const changeEventId = queueRow.entity_id as string;
+  const { data: changeRow, error: changeError } = await client
+    .from('change_events')
+    .select('id, product_id, new_snapshot_id')
+    .eq('id', changeEventId)
+    .single();
+  if (changeError) throw changeError;
+  if (!changeRow) throw new Error(`Change event ${changeEventId} not found.`);
+
+  const productId = changeRow.product_id as string;
+  const newSnapshotId = changeRow.new_snapshot_id as string | null;
   const resolvedAt = new Date().toISOString();
-  const entityId = queueRow.entity_id as string;
 
-  if ((queueRow.entity_type as string) === 'product_snapshot') {
-    // Direct scraper snapshot — update its review_status
-    const snapshotPatch: Record<string, unknown> = { review_status: decision };
-    if (decision === 'approved') snapshotPatch.approved_at = resolvedAt;
-
-    const { error: snapError } = await client
-      .from('product_snapshots')
-      .update(snapshotPatch)
-      .eq('id', entityId);
-    if (snapError) throw snapError;
-
-    // Fetch snapshot's product_id to sync product review status
-    const { data: snapRow, error: snapFetchError } = await client
-      .from('product_snapshots')
-      .select('product_id')
-      .eq('id', entityId)
-      .single();
-    if (snapFetchError) throw snapFetchError;
-    if (snapRow) await syncProductReviewStatus(snapRow.product_id as string);
-  } else {
-    // Legacy change_event path
-    const { data: changeRow, error: changeError } = await client
-      .from('change_events')
-      .select('id, product_id, new_snapshot_id')
-      .eq('id', entityId)
-      .single();
-    if (changeError) throw changeError;
-    if (!changeRow) throw new Error(`Change event ${entityId} not found.`);
-
-    const productId = changeRow.product_id as string;
-    const newSnapshotId = changeRow.new_snapshot_id as string | null;
-
-    if (newSnapshotId) {
-      const snapshotPatch: Record<string, unknown> = { review_status: decision };
-      if (decision === 'approved') snapshotPatch.approved_at = resolvedAt;
-
-      const { error: snapshotError } = await client
-        .from('product_snapshots')
-        .update(snapshotPatch)
-        .eq('id', newSnapshotId);
-      if (snapshotError) throw snapshotError;
-
-      const { error: factsError } = await client
-        .from('facts')
-        .update({ review_status: decision })
-        .eq('product_snapshot_id', newSnapshotId);
-      if (factsError) throw factsError;
+  if (newSnapshotId) {
+    const snapshotPatch: Record<string, unknown> = {
+      review_status: decision,
+    };
+    if (decision === 'approved') {
+      snapshotPatch.approved_at = resolvedAt;
     }
 
-    const { error: changeUpdateError } = await client
-      .from('change_events')
-      .update({ review_status: decision, resolved_at: resolvedAt })
-      .eq('id', entityId);
-    if (changeUpdateError) throw changeUpdateError;
+    const { error: snapshotError } = await client
+      .from('product_snapshots')
+      .update(snapshotPatch)
+      .eq('id', newSnapshotId);
+    if (snapshotError) throw snapshotError;
 
-    await syncProductReviewStatus(productId);
+    const { error: factsError } = await client
+      .from('facts')
+      .update({ review_status: decision })
+      .eq('product_snapshot_id', newSnapshotId);
+    if (factsError) throw factsError;
   }
 
-  // Resolve the queue item
-  const queuePatch: Record<string, unknown> = { status: decision, resolved_at: resolvedAt };
+  const { error: changeUpdateError } = await client
+    .from('change_events')
+    .update({
+      review_status: decision,
+      resolved_at: resolvedAt,
+    })
+    .eq('id', changeEventId);
+  if (changeUpdateError) throw changeUpdateError;
+
+  const queuePatch: Record<string, unknown> = {
+    status: decision,
+    resolved_at: resolvedAt,
+  };
   if (notes) queuePatch.reviewer_notes = notes;
 
   const { error: queueUpdateError } = await client
@@ -397,9 +311,9 @@ export async function buildAndPromoteRateSnapshot(): Promise<PublishResult> {
   if (promoteError) throw promoteError;
 
   return {
-    stagingSnapshotId: staging.out_snapshot_id,
-    productCount: staging.out_product_count,
-    providerCount: staging.out_provider_count,
-    generatedAt: staging.out_generated_at,
+    reviewQueueId,
+    changeEventId,
+    productId,
+    decision,
   };
 }

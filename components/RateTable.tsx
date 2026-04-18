@@ -536,6 +536,11 @@ export function RateTable({
                                         <Calendar className="h-3 w-3 shrink-0" />
                                         Interest Paid: {formatPayoutFrequency(product.payoutFrequency)}
                                       </span>
+                                      {product.limits?.maxDepositPerProduct && (
+                                        <Badge variant="outline" className="border-blue-400/30 bg-blue-50 py-0 text-[10px] font-bold text-blue-700 dark:bg-blue-950/20 dark:text-blue-400">
+                                          Max ₱{product.limits.maxDepositPerProduct.toLocaleString()} per Time Deposit
+                                        </Badge>
+                                      )}
                                     </div>
 
                                     {tierCount > 1 && (
@@ -579,7 +584,7 @@ export function RateTable({
                                       </div>
                                     )}
 
-                                    {!hasConditions && tierCount <= 1 && (
+                                    {!hasConditions && tierCount <= 1 && !product.limits && (
                                       <p className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-positive">
                                         <ShieldCheck className="h-3 w-3" /> No conditions - flat rate on any amount
                                       </p>
