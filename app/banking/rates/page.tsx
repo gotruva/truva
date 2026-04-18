@@ -9,6 +9,8 @@ import { BASE_URL } from '@/lib/constants';
 import { buildItemListSchema, getBankingArticles, getBankingArticlesBySlugs, getFeaturedBankingArticle } from '@/lib/editorial';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Digital Bank Interest Rates Philippines 2026',
   description:

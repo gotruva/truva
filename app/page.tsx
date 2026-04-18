@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gotruva.com';
-const NewsletterSignup = dynamic(() => import('@/components/NewsletterSignup').then((mod) => mod.NewsletterSignup));
+const NewsletterSignup = nextDynamic(() => import('@/components/NewsletterSignup').then((mod) => mod.NewsletterSignup));
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   alternates: {

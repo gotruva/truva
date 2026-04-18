@@ -7,6 +7,7 @@ import type { QueuedChangeReviewItem, RateDiffDetail } from '@/lib/rate-review';
 export const dynamic = 'force-dynamic';
 
 const BULK_ACTION_CAP = 25;
+const RATE_SURFACE_PATHS = ['/', '/banking', '/banking/rates', '/calculator', '/api/rates'];
 
 function isReviewUiEnabled() {
   return process.env.TRUVA_ENABLE_STAGING_REVIEW_UI === 'true' || process.env.NODE_ENV === 'development';
@@ -254,6 +255,9 @@ async function publishToProductionAction() {
   'use server';
   if (!isReviewUiEnabled()) throw new Error('Review dashboard is disabled.');
   await buildAndPromoteRateSnapshot();
+  for (const path of RATE_SURFACE_PATHS) {
+    revalidatePath(path);
+  }
   revalidatePath('/admin/rates/review');
 }
 
@@ -425,8 +429,13 @@ export default async function RateReviewPage() {
                   <span className="font-medium">Queue ID:</span> {item.reviewQueueId}
                 </p>
                 <p>
-                  <span className="font-medium">Change Event ID:</span> {item.changeEventId}
+                  <span className="font-medium">Entity:</span> {item.entityType} ({item.entityId})
                 </p>
+                {item.changeEventId ? (
+                  <p>
+                    <span className="font-medium">Change Event ID:</span> {item.changeEventId}
+                  </p>
+                ) : null}
                 {item.newSnapshotId ? (
                   <p>
                     <span className="font-medium">New Snapshot ID:</span> {item.newSnapshotId}

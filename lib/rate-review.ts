@@ -1,6 +1,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 
 export type ReviewDecision = 'approved' | 'rejected';
+export type EntityType = 'change_event' | 'product_snapshot';
 
 interface ReviewQueueRow {
   id: string;
@@ -18,15 +19,6 @@ interface ChangeEventRow {
   new_snapshot_id: string | null;
   summary: string | null;
   diff: unknown;
-}
-
-interface ProductSnapshotRow {
-  id: string;
-  product_id: string;
-  structured_payload: unknown;
-  metadata: unknown;
-  captured_at: string;
-  created_at: string;
 }
 
 interface ProductRow {
@@ -53,7 +45,9 @@ export interface RateDiffDetail {
 
 export interface QueuedChangeReviewItem {
   reviewQueueId: string;
-  changeEventId: string;
+  entityType: EntityType;
+  entityId: string;
+  changeEventId: string | null;
   productId: string;
   providerDisplayName: string;
   productName: string;
@@ -64,10 +58,17 @@ export interface QueuedChangeReviewItem {
   newSnapshotId: string | null;
   priority: number;
   createdAt: string;
-  // For product_snapshot items from the scraper
   scrapedPayload?: Record<string, unknown>;
   sourceUrl?: string;
   evidenceText?: string;
+}
+
+export interface ReviewDecisionResult {
+  reviewQueueId: string;
+  entityType: EntityType;
+  entityId: string;
+  productId: string;
+  decision: ReviewDecision;
 }
 
 function getStagingAdminClient() {
@@ -103,10 +104,41 @@ function extractDiffDetails(diff: unknown): RateDiffDetail[] {
     }));
 }
 
+function snapshotToDiffDetails(payload: Record<string, unknown>): RateDiffDetail[] {
+  const details: RateDiffDetail[] = [];
+
+  const headlineRate = payload.headlineRate;
+  if (typeof headlineRate === 'number') {
+    details.push({ field: 'headlineRate', previous: null, next: headlineRate });
+  }
+
+  const baseRate = payload.baseRate as Record<string, number> | undefined;
+  if (baseRate) {
+    if (typeof baseRate.grossRate === 'number') {
+      details.push({ field: 'grossRate', previous: null, next: baseRate.grossRate });
+    }
+    if (typeof baseRate.afterTaxRate === 'number') {
+      details.push({ field: 'afterTaxRate', previous: null, next: baseRate.afterTaxRate });
+    }
+  }
+
+  const tierType = payload.tierType;
+  if (tierType) {
+    details.push({ field: 'tierType', previous: null, next: tierType });
+  }
+
+  const tiers = payload.tiers;
+  if (tiers) {
+    details.push({ field: 'tiers', previous: null, next: tiers });
+  }
+
+  return details;
+}
+
 async function syncProductReviewStatus(productId: string) {
   const client = getStagingAdminClient();
 
-  const { data: pendingRows, error: pendingError } = await client
+  const { data: pendingChangeRows, error: pendingChangeError } = await client
     .from('change_events')
     .select('id')
     .eq('product_id', productId)
@@ -133,6 +165,7 @@ async function syncProductReviewStatus(productId: string) {
   const hasPending = (pendingChangeRows?.length ?? 0) > 0 || (pendingSnapshotRows?.length ?? 0) > 0;
   const hasApprovedSnapshot = (approvedSnapshotRows?.length ?? 0) > 0;
   const nextStatus = hasPending ? 'pending_review' : hasApprovedSnapshot ? 'approved' : 'rejected';
+
   const { error: updateError } = await client
     .from('products')
     .update({ review_status: nextStatus, active_public: hasApprovedSnapshot })
@@ -155,35 +188,42 @@ export async function listQueuedChangeReviews(): Promise<QueuedChangeReviewItem[
   const queuedRows = (queueRows ?? []) as ReviewQueueRow[];
   if (!queuedRows.length) return [];
 
-  const changeEventIds = queuedRows.map((row) => row.entity_id);
-  const { data: changeRows, error: changeError } = await client
-    .from('change_events')
-    .select('id, product_id, new_snapshot_id, summary, diff')
-    .in('id', changeEventIds);
-  if (changeError) throw changeError;
+  const changeEventRows = queuedRows.filter((row) => row.entity_type === 'change_event');
+  const snapshotRows = queuedRows.filter((row) => row.entity_type === 'product_snapshot');
+  const changeItems: QueuedChangeReviewItem[] = [];
+  const snapshotItems: QueuedChangeReviewItem[] = [];
 
-  const mappedChangeRows = (changeRows ?? []) as ChangeEventRow[];
-  const changeById = new Map(mappedChangeRows.map((row) => [row.id, row]));
+  if (changeEventRows.length) {
+    const changeEventIds = changeEventRows.map((row) => row.entity_id);
+    const { data: changeData, error: changeError } = await client
+      .from('change_events')
+      .select('id, product_id, new_snapshot_id, summary, diff')
+      .in('id', changeEventIds);
+    if (changeError) throw changeError;
 
-  const productIds = [...new Set(mappedChangeRows.map((row) => row.product_id))];
-  let productsById = new Map<string, ProductRow>();
+    const mappedChangeRows = (changeData ?? []) as ChangeEventRow[];
+    const changeById = new Map(mappedChangeRows.map((row) => [row.id, row]));
+    const productIds = [...new Set(mappedChangeRows.map((row) => row.product_id))];
+    let productsById = new Map<string, ProductRow>();
 
-  if (productIds.length) {
-    const { data: productData, error: productError } = await client
-      .from('products')
-      .select('id, provider_display_name, product_name')
-      .in('id', productIds);
-    if (productError) throw productError;
-    productsById = new Map((productData ?? [] as ProductRow[]).map((r) => [r.id, r]));
-  }
+    if (productIds.length) {
+      const { data: productData, error: productError } = await client
+        .from('products')
+        .select('id, provider_display_name, product_name')
+        .in('id', productIds);
+      if (productError) throw productError;
+      productsById = new Map(((productData ?? []) as ProductRow[]).map((row) => [row.id, row]));
+    }
 
-  return queuedRows
-    .map((queue) => {
+    for (const queue of changeEventRows) {
       const change = changeById.get(queue.entity_id);
       if (!change) continue;
       const product = productsById.get(change.product_id);
+
       changeItems.push({
         reviewQueueId: queue.id,
+        entityType: 'change_event',
+        entityId: queue.entity_id,
         changeEventId: change.id,
         productId: change.product_id,
         providerDisplayName: product?.provider_display_name ?? 'Unknown Provider',
@@ -195,16 +235,68 @@ export async function listQueuedChangeReviews(): Promise<QueuedChangeReviewItem[
         newSnapshotId: change.new_snapshot_id,
         priority: queue.priority,
         createdAt: queue.created_at,
-      } satisfies QueuedChangeReviewItem;
-    })
-    .filter((item): item is QueuedChangeReviewItem => Boolean(item));
+      });
+    }
+  }
+
+  if (snapshotRows.length) {
+    const snapshotIds = snapshotRows.map((row) => row.entity_id);
+    const { data: snapshotData, error: snapshotError } = await client
+      .from('product_snapshots')
+      .select('id, product_id, source_mode, review_status, structured_payload, captured_at, metadata')
+      .in('id', snapshotIds);
+    if (snapshotError) throw snapshotError;
+
+    const mappedSnapshots = (snapshotData ?? []) as ProductSnapshotRow[];
+    const snapshotById = new Map(mappedSnapshots.map((row) => [row.id, row]));
+    const productIds = [...new Set(mappedSnapshots.map((row) => row.product_id))];
+    let productsById = new Map<string, ProductRow>();
+
+    if (productIds.length) {
+      const { data: productData, error: productError } = await client
+        .from('products')
+        .select('id, provider_display_name, product_name')
+        .in('id', productIds);
+      if (productError) throw productError;
+      productsById = new Map(((productData ?? []) as ProductRow[]).map((row) => [row.id, row]));
+    }
+
+    for (const queue of snapshotRows) {
+      const snapshot = snapshotById.get(queue.entity_id);
+      if (!snapshot) continue;
+      const product = productsById.get(snapshot.product_id);
+      const metadata = snapshot.metadata ?? {};
+
+      snapshotItems.push({
+        reviewQueueId: queue.id,
+        entityType: 'product_snapshot',
+        entityId: queue.entity_id,
+        changeEventId: null,
+        productId: snapshot.product_id,
+        providerDisplayName: product?.provider_display_name ?? snapshot.product_id,
+        productName: product?.product_name ?? snapshot.product_id,
+        reason: queue.reason,
+        summary: `Automated scrape captured on ${snapshot.captured_at.slice(0, 10)}`,
+        changedFields: ['headlineRate', 'grossRate', 'afterTaxRate'],
+        diffDetails: snapshotToDiffDetails(snapshot.structured_payload),
+        newSnapshotId: snapshot.id,
+        priority: queue.priority,
+        createdAt: queue.created_at,
+        scrapedPayload: snapshot.structured_payload,
+        sourceUrl: typeof metadata.source_url === 'string' ? metadata.source_url : undefined,
+        evidenceText: typeof metadata.evidence_text === 'string' ? metadata.evidence_text : undefined,
+      });
+    }
+  }
+
+  return [...snapshotItems, ...changeItems];
 }
 
 export async function applyChangeReviewDecision(
   reviewQueueId: string,
   decision: ReviewDecision,
   notes: string | null = null,
-) {
+): Promise<ReviewDecisionResult> {
   const client = getStagingAdminClient();
 
   const { data: queueRow, error: queueError } = await client
@@ -215,60 +307,79 @@ export async function applyChangeReviewDecision(
   if (queueError) throw queueError;
   if (!queueRow) throw new Error(`Review queue row ${reviewQueueId} not found.`);
 
-  if ((queueRow.entity_type as string) !== 'change_event') {
-    throw new Error(`Review queue row ${reviewQueueId} is ${queueRow.entity_type}, expected change_event.`);
+  const entityType = queueRow.entity_type as string;
+  if (entityType !== 'change_event' && entityType !== 'product_snapshot') {
+    throw new Error(`Review queue row ${reviewQueueId} has unsupported entity_type: ${queueRow.entity_type}.`);
   }
   if ((queueRow.status as string) !== 'queued') {
     throw new Error(`Review queue row ${reviewQueueId} is already ${queueRow.status}.`);
   }
 
-  const changeEventId = queueRow.entity_id as string;
-  const { data: changeRow, error: changeError } = await client
-    .from('change_events')
-    .select('id, product_id, new_snapshot_id')
-    .eq('id', changeEventId)
-    .single();
-  if (changeError) throw changeError;
-  if (!changeRow) throw new Error(`Change event ${changeEventId} not found.`);
-
-  const productId = changeRow.product_id as string;
-  const newSnapshotId = changeRow.new_snapshot_id as string | null;
   const resolvedAt = new Date().toISOString();
+  const entityId = queueRow.entity_id as string;
+  let productId: string;
 
-  if (newSnapshotId) {
-    const snapshotPatch: Record<string, unknown> = {
-      review_status: decision,
-    };
-    if (decision === 'approved') {
-      snapshotPatch.approved_at = resolvedAt;
-    }
+  if (entityType === 'product_snapshot') {
+    const { data: snapshotRow, error: snapshotFetchError } = await client
+      .from('product_snapshots')
+      .select('product_id')
+      .eq('id', entityId)
+      .single();
+    if (snapshotFetchError) throw snapshotFetchError;
+    if (!snapshotRow) throw new Error(`Product snapshot ${entityId} not found.`);
+
+    productId = snapshotRow.product_id as string;
+    const snapshotPatch: Record<string, unknown> = { review_status: decision };
+    if (decision === 'approved') snapshotPatch.approved_at = resolvedAt;
 
     const { error: snapshotError } = await client
       .from('product_snapshots')
       .update(snapshotPatch)
-      .eq('id', newSnapshotId);
+      .eq('id', entityId);
     if (snapshotError) throw snapshotError;
 
     const { error: factsError } = await client
       .from('facts')
       .update({ review_status: decision })
-      .eq('product_snapshot_id', newSnapshotId);
+      .eq('product_snapshot_id', entityId);
     if (factsError) throw factsError;
+  } else {
+    const { data: changeRow, error: changeError } = await client
+      .from('change_events')
+      .select('id, product_id, new_snapshot_id')
+      .eq('id', entityId)
+      .single();
+    if (changeError) throw changeError;
+    if (!changeRow) throw new Error(`Change event ${entityId} not found.`);
+
+    productId = changeRow.product_id as string;
+    const newSnapshotId = changeRow.new_snapshot_id as string | null;
+
+    if (newSnapshotId) {
+      const snapshotPatch: Record<string, unknown> = { review_status: decision };
+      if (decision === 'approved') snapshotPatch.approved_at = resolvedAt;
+
+      const { error: snapshotError } = await client
+        .from('product_snapshots')
+        .update(snapshotPatch)
+        .eq('id', newSnapshotId);
+      if (snapshotError) throw snapshotError;
+
+      const { error: factsError } = await client
+        .from('facts')
+        .update({ review_status: decision })
+        .eq('product_snapshot_id', newSnapshotId);
+      if (factsError) throw factsError;
+    }
+
+    const { error: changeUpdateError } = await client
+      .from('change_events')
+      .update({ review_status: decision, resolved_at: resolvedAt })
+      .eq('id', entityId);
+    if (changeUpdateError) throw changeUpdateError;
   }
 
-  const { error: changeUpdateError } = await client
-    .from('change_events')
-    .update({
-      review_status: decision,
-      resolved_at: resolvedAt,
-    })
-    .eq('id', changeEventId);
-  if (changeUpdateError) throw changeUpdateError;
-
-  const queuePatch: Record<string, unknown> = {
-    status: decision,
-    resolved_at: resolvedAt,
-  };
+  const queuePatch: Record<string, unknown> = { status: decision, resolved_at: resolvedAt };
   if (notes) queuePatch.reviewer_notes = notes;
 
   const { error: queueUpdateError } = await client
@@ -277,7 +388,15 @@ export async function applyChangeReviewDecision(
     .eq('id', reviewQueueId);
   if (queueUpdateError) throw queueUpdateError;
 
-  return { reviewQueueId, decision };
+  await syncProductReviewStatus(productId);
+
+  return {
+    reviewQueueId,
+    entityType,
+    entityId,
+    productId,
+    decision,
+  };
 }
 
 export interface PublishResult {
@@ -291,7 +410,6 @@ export async function buildAndPromoteRateSnapshot(): Promise<PublishResult> {
   const client = createSupabaseAdminClient('public');
   if (!client) throw new Error('Missing Supabase admin environment variables.');
 
-  // 1. Build staging snapshot
   const { data: stagingData, error: stagingError } = await client.rpc('build_rate_snapshot', {
     requested_channel: 'staging',
     snapshot_notes: `Admin-initiated publish at ${new Date().toISOString()}`,
@@ -306,14 +424,13 @@ export async function buildAndPromoteRateSnapshot(): Promise<PublishResult> {
     out_generated_at: string;
   };
 
-  // 2. Promote to production
   const { error: promoteError } = await client.rpc('promote_rate_snapshot');
   if (promoteError) throw promoteError;
 
   return {
-    reviewQueueId,
-    changeEventId,
-    productId,
-    decision,
+    stagingSnapshotId: staging.out_snapshot_id,
+    productCount: staging.out_product_count,
+    providerCount: staging.out_provider_count,
+    generatedAt: staging.out_generated_at,
   };
 }

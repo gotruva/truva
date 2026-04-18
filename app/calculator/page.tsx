@@ -2,6 +2,8 @@ import { getPublicRates } from '@/lib/rates';
 import { CalculatorPageClient } from '@/components/CalculatorPageClient';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Savings Interest Calculator Philippines',
   description: 'Estimate how much your savings could earn after tax. Compare Philippine digital bank, T-Bill, and UITF rates with our free after-tax savings calculator.',
