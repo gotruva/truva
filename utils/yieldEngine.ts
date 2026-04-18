@@ -101,6 +101,14 @@ export function computeReturn(
   product: RateProduct,
   months: number
 ): number {
+  if (product.tierType === 'flat') {
+    const grossRate = product.tiers[0]?.grossRate ?? product.baseRate.grossRate;
+    const afterTaxRate = product.taxExempt
+      ? calcTaxExempt(grossRate)
+      : calcAfterTaxPhp(grossRate);
+    return (amount * afterTaxRate / 12) * months;
+  }
+
   if (product.tierType === 'threshold') {
     return computeThresholdReturn(amount, product.tiers, months, product.taxExempt);
   }
@@ -113,6 +121,13 @@ export function computeEffectiveRate(
   product: RateProduct
 ): number {
   if (amount <= 0 || product.tiers.length === 0) return 0;
+
+  if (product.tierType === 'flat') {
+    const grossRate = product.tiers[0]?.grossRate ?? product.baseRate.grossRate;
+    return product.taxExempt
+      ? calcTaxExempt(grossRate)
+      : calcAfterTaxPhp(grossRate);
+  }
 
   if (product.tierType === 'threshold') {
     return computeThresholdEffectiveRate(amount, product.tiers, product.taxExempt);
@@ -219,12 +234,14 @@ function buildPrimaryScenario(
     : '20% final withholding tax applied';
   const hasConditions = product.conditions.some((condition) => condition.type !== 'none');
 
-  if (product.tierType === 'threshold') {
+  if (product.tierType === 'flat' || product.tierType === 'threshold') {
     let applicableTier = product.tiers[0];
 
-    for (const tier of product.tiers) {
-      if (amount >= tier.minBalance) {
-        applicableTier = tier;
+    if (product.tierType === 'threshold') {
+      for (const tier of product.tiers) {
+        if (amount >= tier.minBalance) {
+          applicableTier = tier;
+        }
       }
     }
 
@@ -236,7 +253,9 @@ function buildPrimaryScenario(
       lines: [
         {
           amount,
-          label: `Entire deposit qualifies for ${getTierRangeLabel(applicableTier)}`,
+          label: product.tierType === 'flat'
+            ? 'Flat rate applied to the full deposit'
+            : `Entire deposit qualifies for ${getTierRangeLabel(applicableTier)}`,
           grossRate: applicableTier.grossRate,
           afterTaxRate: getAfterTaxRate(applicableTier.grossRate, product.taxExempt),
         },

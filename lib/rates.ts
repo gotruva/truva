@@ -9,6 +9,11 @@ import { fetchAaveBaseUSDC } from './defi';
 import { normalizeRateProduct } from './score';
 
 type SnapshotRecord = Record<string, unknown>;
+type SnapshotProductMapping = {
+  publicId: string;
+  preferSeedName?: boolean;
+  defaults?: Partial<RateProduct>;
+};
 
 const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> = {
   'maya-bank': { logo: '/logos/maya.svg', affiliateUrl: 'https://www.maya.ph/' },
@@ -28,6 +33,186 @@ const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> 
   banko: { logo: '/logos/banko.svg', affiliateUrl: 'https://www.banko.com.ph/' },
   landbank: { logo: '/logos/landbank.svg', affiliateUrl: 'https://www.landbank.com/' },
   dbp: { logo: '/logos/dbp.svg', affiliateUrl: 'https://www.dbp.ph/' },
+};
+
+const MANUAL_PUBLIC_RATE_IDS = new Set(['pagibig-mp2']);
+
+function bankDefaults(
+  provider: string,
+  providerKey: string,
+  overrides: Partial<RateProduct> = {},
+): Partial<RateProduct> {
+  const defaults = PROVIDER_DEFAULTS[providerKey];
+  return {
+    provider,
+    logo: defaults?.logo ?? '/logos/maya.svg',
+    category: 'banks',
+    taxExempt: false,
+    payoutFrequency: 'daily',
+    lockInDays: 0,
+    riskLevel: 'Low',
+    pdic: true,
+    insurer: 'PDIC',
+    affiliateUrl: defaults?.affiliateUrl ?? '',
+    referralCode: '',
+    payoutAmount: 0,
+    trueValueScore: 3,
+    conditions: [],
+    ...overrides,
+  };
+}
+
+function salmonTermDefaults(months: number): Partial<RateProduct> {
+  return bankDefaults('Salmon Bank', 'salmon-bank', {
+    payoutFrequency: 'at_maturity',
+    lockInDays: Math.round((365 / 12) * months),
+  });
+}
+
+const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
+  'maya-bank:maya-savings': { publicId: 'maya-savings' },
+  'maya-bank:maya-time-deposit-plus': { publicId: 'maya-td-6mo', preferSeedName: true },
+  'maya-time-deposit-plus': { publicId: 'maya-td-6mo', preferSeedName: true },
+  'maya-bank:maya-savings-promo': {
+    publicId: 'maya-savings-promo',
+    defaults: bankDefaults('Maya Bank', 'maya-bank', {
+      name: 'Maya Savings (Boosted)',
+      tierType: 'threshold',
+      conditions: [{
+        type: 'promo',
+        description: 'Activity-based boost promo. Bonus tiers require qualifying Maya transactions.',
+        expiresAt: null,
+      }],
+    }),
+  },
+  'maya-savings-promo': {
+    publicId: 'maya-savings-promo',
+    defaults: bankDefaults('Maya Bank', 'maya-bank', {
+      name: 'Maya Savings (Boosted)',
+      tierType: 'threshold',
+      conditions: [{
+        type: 'promo',
+        description: 'Activity-based boost promo. Bonus tiers require qualifying Maya transactions.',
+        expiresAt: null,
+      }],
+    }),
+  },
+  'tonik-digital-bank:tonik-account': { publicId: 'tonik-account' },
+  'tonik-digital-bank:tonik-time-deposit': { publicId: 'tonik-td-12mo', preferSeedName: true },
+  'tonik-time-deposit': { publicId: 'tonik-td-12mo', preferSeedName: true },
+  'gotyme-bank:gotyme-savings': { publicId: 'gotyme-savings' },
+  'ofbank:ofbank-savings': { publicId: 'ofbank-savings' },
+  'uno-digital-bank:uno-savings': { publicId: 'uno-ready' },
+  'uno-savings': { publicId: 'uno-ready' },
+  'uno-digital-bank:uno-time-deposit': { publicId: 'uno-td-365', preferSeedName: true },
+  'uno-time-deposit': { publicId: 'uno-td-365', preferSeedName: true },
+  'maribank:maribank-savings': { publicId: 'maribank-savings' },
+  'uniondigital-bank:uniondigital-savings': { publicId: 'uniondigital-savings' },
+  'uniondigital-bank:uniondigital-time-deposit': { publicId: 'uniondigital-td', preferSeedName: true },
+  'uniondigital-time-deposit': { publicId: 'uniondigital-td', preferSeedName: true },
+  'cimb-gcash:cimb-gsave': { publicId: 'cimb-gsave' },
+  'cimb-bank:cimb-upsave': {
+    publicId: 'cimb-upsave',
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', {
+      name: 'CIMB UpSave',
+      tierType: 'flat',
+    }),
+  },
+  'cimb-upsave': {
+    publicId: 'cimb-upsave',
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', {
+      name: 'CIMB UpSave',
+      tierType: 'flat',
+    }),
+  },
+  'cimb-bank:cimb-maxsave': { publicId: 'cimb-maxsave-3mo', preferSeedName: true },
+  'cimb-maxsave': { publicId: 'cimb-maxsave-3mo', preferSeedName: true },
+  'salmon-bank:salmon-savings': {
+    publicId: 'salmon-savings',
+    defaults: bankDefaults('Salmon Bank', 'salmon-bank', { name: 'Salmon Savings', tierType: 'flat' }),
+  },
+  'salmon-savings': {
+    publicId: 'salmon-savings',
+    defaults: bankDefaults('Salmon Bank', 'salmon-bank', { name: 'Salmon Savings', tierType: 'flat' }),
+  },
+  'salmon-bank:salmon-bank-on-eight': {
+    publicId: 'salmon-bank-on-eight',
+    defaults: bankDefaults('Salmon Bank', 'salmon-bank', {
+      name: 'Salmon Bank on Eight Promo',
+      payoutFrequency: 'at_maturity',
+      lockInDays: 365,
+      tierType: 'threshold',
+      conditions: [{
+        type: 'promo',
+        description: 'Promotional time deposit rate subject to Salmon Bank eligibility and promo mechanics.',
+        expiresAt: null,
+      }],
+    }),
+  },
+  'salmon-bank-on-eight': {
+    publicId: 'salmon-bank-on-eight',
+    defaults: bankDefaults('Salmon Bank', 'salmon-bank', {
+      name: 'Salmon Bank on Eight Promo',
+      payoutFrequency: 'at_maturity',
+      lockInDays: 365,
+      tierType: 'threshold',
+      conditions: [{
+        type: 'promo',
+        description: 'Promotional time deposit rate subject to Salmon Bank eligibility and promo mechanics.',
+        expiresAt: null,
+      }],
+    }),
+  },
+  'salmon-td-12m-5000': { publicId: 'salmon-td-12m-5000', defaults: salmonTermDefaults(12) },
+  'salmon-td-60m-5000': { publicId: 'salmon-td-60m-5000', defaults: salmonTermDefaults(60) },
+  'salmon-td-12m-500000': { publicId: 'salmon-td-12m-500000', defaults: salmonTermDefaults(12) },
+  'salmon-td-60m-500000': { publicId: 'salmon-td-60m-500000', defaults: salmonTermDefaults(60) },
+  'salmon-td-12m-1000000': { publicId: 'salmon-td-12m-1000000', defaults: salmonTermDefaults(12) },
+  'salmon-td-60m-1000000': { publicId: 'salmon-td-60m-1000000', defaults: salmonTermDefaults(60) },
+  'netbank:netbank-savings': { publicId: 'netbank-savings' },
+  'netbank-savings-new': { publicId: 'netbank-savings' },
+  'netbank-savings-existing': { publicId: 'netbank-savings' },
+  'netbank:netbank-time-deposit': { publicId: 'netbank-td-12mo', preferSeedName: true },
+  'netbank-time-deposit': { publicId: 'netbank-td-12mo', preferSeedName: true },
+  'ownbank:ownbank-savings': {
+    publicId: 'ownbank-savings',
+    defaults: bankDefaults('OwnBank', 'ownbank', { name: 'OwnBank Savings', tierType: 'flat' }),
+  },
+  'ownbank-savings': {
+    publicId: 'ownbank-savings',
+    defaults: bankDefaults('OwnBank', 'ownbank', { name: 'OwnBank Savings', tierType: 'flat' }),
+  },
+  'ownbank:ownbank-time-deposit': {
+    publicId: 'ownbank-time-deposit',
+    defaults: bankDefaults('OwnBank', 'ownbank', {
+      name: 'OwnBank Time Deposit',
+      payoutFrequency: 'at_maturity',
+      lockInDays: 365,
+      tierType: 'flat',
+    }),
+  },
+  'ownbank-time-deposit': {
+    publicId: 'ownbank-time-deposit',
+    defaults: bankDefaults('OwnBank', 'ownbank', {
+      name: 'OwnBank Time Deposit',
+      payoutFrequency: 'at_maturity',
+      lockInDays: 365,
+      tierType: 'flat',
+    }),
+  },
+  'komo:komo-savings': { publicId: 'komo-savings' },
+  'diskartech:diskartech-savings': { publicId: 'diskartech-savings' },
+  'banko:banko-todo-savings': { publicId: 'bpi-banko-savings' },
+  'banko-todo-savings': { publicId: 'bpi-banko-savings' },
+  'landbank:landbank-passbook-savings': {
+    publicId: 'landbank-passbook-savings',
+    defaults: bankDefaults('Landbank', 'landbank', { name: 'LANDBANK Regular Passbook Savings', tierType: 'threshold' }),
+  },
+  'landbank-passbook-savings': {
+    publicId: 'landbank-passbook-savings',
+    defaults: bankDefaults('Landbank', 'landbank', { name: 'LANDBANK Regular Passbook Savings', tierType: 'threshold' }),
+  },
+  'dbp:dbp-savings': { publicId: 'dbp-savings' },
 };
 
 function getLocalRates(): RateProduct[] {
@@ -68,10 +253,40 @@ function getNumber(value: unknown, fallback: number) {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
 
-function publicProductId(sourceProductId: string | null, snapshot: SnapshotRecord, index: number) {
-  const rawId = getString(snapshot.id) ?? getString(snapshot.productId) ?? getString(snapshot.product_id);
-  const sourceId = rawId ?? sourceProductId ?? `snapshot-${index}`;
-  return sourceId.includes(':') ? sourceId.split(':').slice(1).join(':') : sourceId;
+function stripProviderPrefix(productId: string) {
+  return productId.includes(':') ? productId.split(':').slice(1).join(':') : productId;
+}
+
+function getSnapshotMapping(snapshotKey: string, sourceProductId: string | null) {
+  return SCRAPER_PRODUCT_MAPPINGS[snapshotKey]
+    ?? (sourceProductId ? SCRAPER_PRODUCT_MAPPINGS[sourceProductId] : undefined)
+    ?? SCRAPER_PRODUCT_MAPPINGS[stripProviderPrefix(snapshotKey)]
+    ?? (sourceProductId ? SCRAPER_PRODUCT_MAPPINGS[stripProviderPrefix(sourceProductId)] : undefined);
+}
+
+function resolveSnapshotIdentity(sourceProductId: string | null, snapshot: SnapshotRecord, index: number) {
+  const structuredId = getString(snapshot.id);
+
+  if (structuredId) {
+    const mapping = SCRAPER_PRODUCT_MAPPINGS[structuredId] ?? SCRAPER_PRODUCT_MAPPINGS[stripProviderPrefix(structuredId)];
+    return {
+      snapshotKey: structuredId,
+      publicId: mapping?.publicId ?? stripProviderPrefix(structuredId),
+      mapping,
+    };
+  }
+
+  const snapshotKey = getString(snapshot.productId)
+    ?? getString(snapshot.product_id)
+    ?? sourceProductId
+    ?? `snapshot-${index}`;
+  const mapping = getSnapshotMapping(snapshotKey, sourceProductId);
+
+  return {
+    snapshotKey,
+    publicId: mapping?.publicId ?? stripProviderPrefix(snapshotKey),
+    mapping,
+  };
 }
 
 function providerSlug(sourceProductId: string | null, snapshot: SnapshotRecord) {
@@ -94,6 +309,39 @@ function isTermProduct(productId: string, productName: string) {
   return inferLockInDays(productId, productName) > 0;
 }
 
+function isTierType(value: unknown): value is RateProduct['tierType'] {
+  return value === 'flat' || value === 'blended' || value === 'threshold';
+}
+
+function resolveTiers(
+  raw: SnapshotRecord,
+  seed: RateProduct | undefined,
+  grossRate: number,
+  afterTaxRate: number,
+): RateProduct['tiers'] {
+  const rawTiers = Array.isArray(raw.tiers) ? raw.tiers as RateProduct['tiers'] : null;
+
+  if (rawTiers?.length === 1 && seed?.tiers.length === 1) {
+    return [{
+      ...seed.tiers[0],
+      grossRate: rawTiers[0]?.grossRate ?? grossRate,
+      afterTaxRate: rawTiers[0]?.afterTaxRate ?? afterTaxRate,
+    }];
+  }
+
+  if (rawTiers?.length) return rawTiers;
+  if (seed?.tiers.length) return seed.tiers;
+  return [{ minBalance: 0, maxBalance: null, grossRate, afterTaxRate }];
+}
+
+function mergeManualPublicRates(rates: RateProduct[], localRates: RateProduct[]) {
+  const existingIds = new Set(rates.map((rate) => rate.id));
+  const manualRates = localRates.filter((rate) => (
+    MANUAL_PUBLIC_RATE_IDS.has(rate.id) && !existingIds.has(rate.id)
+  ));
+  return [...rates, ...manualRates];
+}
+
 function hydrateSnapshotRate(
   rawValue: unknown,
   sourceProductId: string | null,
@@ -102,46 +350,53 @@ function hydrateSnapshotRate(
   index: number,
 ): RateProduct {
   const raw = isRecord(rawValue) ? rawValue : {};
-  const id = publicProductId(sourceProductId, raw, index);
+  const { snapshotKey, publicId, mapping } = resolveSnapshotIdentity(sourceProductId, raw, index);
+  const mappingDefaults = mapping?.defaults;
+  const id = publicId;
   const seed = seedRatesById.get(id);
   const providerKey = providerSlug(sourceProductId, raw);
   const defaults = providerKey ? PROVIDER_DEFAULTS[providerKey] : undefined;
-  const productName = getString(raw.productName) ?? getString(raw.name) ?? seed?.name ?? id;
-  const providerName = getString(raw.providerDisplayName) ?? seed?.provider ?? providerKey ?? 'Unknown Provider';
+  const rawProductName = getString(raw.productName) ?? getString(raw.name);
+  const productName = mapping?.preferSeedName
+    ? seed?.name ?? rawProductName ?? mappingDefaults?.name ?? id
+    : rawProductName ?? seed?.name ?? mappingDefaults?.name ?? id;
+  const providerName = getString(raw.providerDisplayName) ?? seed?.provider ?? mappingDefaults?.provider ?? providerKey ?? 'Unknown Provider';
   const rawBaseRate = isRecord(raw.baseRate) ? raw.baseRate : {};
   const headlineRate = getNumber(raw.headlineRate, seed?.headlineRate ?? 0);
   const grossRate = getNumber(rawBaseRate.grossRate, seed?.baseRate.grossRate ?? headlineRate);
   const afterTaxRate = getNumber(rawBaseRate.afterTaxRate, seed?.baseRate.afterTaxRate ?? grossRate * 0.8);
   const baseRate = { grossRate, afterTaxRate };
-  const tiers = Array.isArray(raw.tiers)
-    ? raw.tiers as RateProduct['tiers']
-    : seed?.tiers ?? [{ minBalance: 0, maxBalance: null, grossRate, afterTaxRate }];
-  const lockInDays = seed?.lockInDays ?? inferLockInDays(id, productName);
-  const payoutFrequency = seed?.payoutFrequency ?? (isTermProduct(id, productName) ? 'at_maturity' : 'daily');
+  const tiers = resolveTiers(raw, seed, grossRate, afterTaxRate);
+  const lockInDays = seed?.lockInDays ?? mappingDefaults?.lockInDays ?? inferLockInDays(id, productName);
+  const payoutFrequency = seed?.payoutFrequency
+    ?? mappingDefaults?.payoutFrequency
+    ?? (isTermProduct(id, productName) ? 'at_maturity' : 'daily');
 
   return normalizeRateProduct({
     id,
     name: productName,
     provider: providerName,
-    logo: seed?.logo ?? defaults?.logo ?? '/logos/maya.svg',
-    category: seed?.category ?? 'banks',
+    logo: seed?.logo ?? mappingDefaults?.logo ?? defaults?.logo ?? '/logos/maya.svg',
+    category: seed?.category ?? mappingDefaults?.category ?? 'banks',
     headlineRate,
     baseRate,
-    tierType: raw.tierType === 'blended' || raw.tierType === 'threshold' ? raw.tierType : seed?.tierType ?? 'threshold',
+    tierType: isTierType(raw.tierType) ? raw.tierType : seed?.tierType ?? mappingDefaults?.tierType ?? 'threshold',
     tiers,
-    conditions: Array.isArray(raw.conditions) ? raw.conditions as RateProduct['conditions'] : seed?.conditions ?? [],
-    taxExempt: seed?.taxExempt ?? false,
+    conditions: Array.isArray(raw.conditions)
+      ? raw.conditions as RateProduct['conditions']
+      : seed?.conditions ?? mappingDefaults?.conditions ?? [],
+    taxExempt: seed?.taxExempt ?? mappingDefaults?.taxExempt ?? false,
     payoutFrequency,
     lockInDays,
-    riskLevel: seed?.riskLevel ?? 'Low',
-    pdic: seed?.pdic ?? true,
-    insurer: seed?.insurer ?? 'PDIC',
+    riskLevel: seed?.riskLevel ?? mappingDefaults?.riskLevel ?? 'Low',
+    pdic: seed?.pdic ?? mappingDefaults?.pdic ?? true,
+    insurer: seed?.insurer ?? mappingDefaults?.insurer ?? 'PDIC',
     lastVerified: getString(raw.lastVerified) ?? generatedAt?.slice(0, 10) ?? seed?.lastVerified ?? '',
-    limits: seed?.limits,
-    affiliateUrl: seed?.affiliateUrl ?? defaults?.affiliateUrl ?? '',
-    referralCode: seed?.referralCode ?? '',
-    payoutAmount: seed?.payoutAmount ?? 0,
-    trueValueScore: seed?.trueValueScore ?? 3,
+    limits: seed?.limits ?? mappingDefaults?.limits,
+    affiliateUrl: seed?.affiliateUrl ?? mappingDefaults?.affiliateUrl ?? defaults?.affiliateUrl ?? '',
+    referralCode: seed?.referralCode ?? mappingDefaults?.referralCode ?? '',
+    payoutAmount: seed?.payoutAmount ?? mappingDefaults?.payoutAmount ?? 0,
+    trueValueScore: seed?.trueValueScore ?? mappingDefaults?.trueValueScore ?? 3,
   });
 }
 
@@ -161,15 +416,17 @@ export async function getPublishedSnapshotRates(channel: RateSnapshotChannel): P
   const snapshot = Array.isArray(data) ? data[0] : data;
   if (!isRecord(snapshot) || !Array.isArray(snapshot.payload)) return null;
 
-  const seedRatesById = new Map(getLocalRates().map((rate) => [rate.id, rate]));
+  const localRates = getLocalRates();
+  const seedRatesById = new Map(localRates.map((rate) => [rate.id, rate]));
   const sourceProductIds = Array.isArray(snapshot.source_product_ids)
     ? snapshot.source_product_ids.map((id) => getString(id))
     : [];
   const generatedAt = getString(snapshot.generated_at);
 
-  return snapshot.payload.map((raw, index) => (
+  const hydratedRates = snapshot.payload.map((raw, index) => (
     hydrateSnapshotRate(raw, sourceProductIds[index] ?? null, generatedAt, seedRatesById, index)
   ));
+  return mergeManualPublicRates(hydratedRates, localRates);
 }
 
 async function getRatesCatalog(): Promise<RateProduct[]> {

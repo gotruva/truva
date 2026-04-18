@@ -45,7 +45,7 @@ export interface RateProduct {
     grossRate: number;
     afterTaxRate: number;
   };
-  tierType: 'blended' | 'threshold'; // blended = each band earns independently (Maya Goals), threshold = whole balance earns bracket rate (Salmon Bank)
+  tierType: 'flat' | 'blended' | 'threshold'; // flat = one rate, blended = each band earns independently, threshold = whole balance earns bracket rate
   tiers: RateTier[];                // ordered from lowest to highest balance
   conditions: RateCondition[];      // conditions to unlock higher tiers
   taxExempt: boolean;
@@ -224,4 +224,3 @@ export interface BenchmarkRate {
   date: string;
   rate: number;
 }
-

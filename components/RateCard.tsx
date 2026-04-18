@@ -140,7 +140,11 @@ function ProductRow({ product, amount, months, isBest }: {
               {tierCount > 1 && (
                 <div>
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400 mb-1">
-                    {product.tierType === 'threshold' ? 'Rate by Deposit Amount' : 'How Your Balance Earns'}
+                    {product.tierType === 'flat'
+                      ? 'Flat Rate'
+                      : product.tierType === 'threshold'
+                        ? 'Rate by Deposit Amount'
+                        : 'How Your Balance Earns'}
                   </h4>
                   <div className="space-y-0.5">
                     {product.tiers.map((tier, i) => {
