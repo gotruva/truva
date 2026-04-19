@@ -82,10 +82,10 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
     publicId: 'maya-savings-promo',
     defaults: bankDefaults('Maya Bank', 'maya-bank', {
       name: 'Maya Savings (Boosted)',
-      tierType: 'threshold',
+      tierType: 'blended',
       conditions: [{
         type: 'promo',
-        description: 'Activity-based boost promo. Bonus tiers require qualifying Maya transactions.',
+        description: 'Activity-based boost promo. Bonus tiers require qualifying Maya transactions. Boosted rate applies only on first ₱100,000.',
         expiresAt: null,
       }],
     }),
@@ -94,10 +94,10 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
     publicId: 'maya-savings-promo',
     defaults: bankDefaults('Maya Bank', 'maya-bank', {
       name: 'Maya Savings (Boosted)',
-      tierType: 'threshold',
+      tierType: 'blended',
       conditions: [{
         type: 'promo',
-        description: 'Activity-based boost promo. Bonus tiers require qualifying Maya transactions.',
+        description: 'Activity-based boost promo. Bonus tiers require qualifying Maya transactions. Boosted rate applies only on first ₱100,000.',
         expiresAt: null,
       }],
     }),
@@ -340,6 +340,15 @@ function resolveTiers(
       grossRate: rawTiers[0]?.grossRate ?? grossRate,
       afterTaxRate: rawTiers[0]?.afterTaxRate ?? afterTaxRate,
     }];
+  }
+
+  // Scraper has 1 capped tier but seed defines a multi-tier blended structure.
+  // Take the scraper's fresh rate for tier 1; preserve seed's remaining tiers.
+  if (rawTiers?.length === 1 && rawTiers[0]?.maxBalance !== null && seed && seed.tiers.length > 1) {
+    return [
+      { ...seed.tiers[0], grossRate: rawTiers[0].grossRate, afterTaxRate: rawTiers[0].afterTaxRate },
+      ...seed.tiers.slice(1),
+    ];
   }
 
   if (rawTiers?.length) return rawTiers;

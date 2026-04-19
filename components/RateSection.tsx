@@ -46,6 +46,10 @@ export function RateSection({
   ];
 
   const filteredRates = rates.filter((rate) => {
+    const horizonMap: Record<number, number> = { 3: 91, 6: 182, 12: 365, 24: 730 };
+    const horizonDays = horizonMap[comparisonState.months] ?? comparisonState.months * 30;
+    if (rate.lockInDays > 0 && rate.lockInDays > horizonDays) return false;
+
     if (comparisonState.liquidityFilter === 'liquid' && rate.lockInDays > 0) return false;
     if (comparisonState.liquidityFilter === 'locked' && rate.lockInDays === 0) return false;
     if (comparisonState.payoutFilter === 'monthly' && !['daily', 'monthly', 'quarterly'].includes(rate.payoutFrequency)) return false;

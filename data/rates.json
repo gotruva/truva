@@ -46,6 +46,51 @@
     "trueValueScore": 3
   },
   {
+    "id": "maya-savings-promo",
+    "name": "Maya Savings (Boosted)",
+    "provider": "Maya Bank",
+    "logo": "/logos/maya.svg",
+    "category": "banks",
+    "headlineRate": 0.15,
+    "baseRate": {
+      "grossRate": 0.035,
+      "afterTaxRate": 0.028
+    },
+    "tierType": "blended",
+    "tiers": [
+      {
+        "minBalance": 0,
+        "maxBalance": 100000,
+        "grossRate": 0.15,
+        "afterTaxRate": 0.12
+      },
+      {
+        "minBalance": 100000,
+        "maxBalance": null,
+        "grossRate": 0.035,
+        "afterTaxRate": 0.028
+      }
+    ],
+    "conditions": [
+      {
+        "type": "promo",
+        "description": "Activity-based boost promo. Bonus tiers require qualifying Maya transactions. Boosted rate applies only on first ₱100,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "daily",
+    "lockInDays": 0,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-18",
+    "affiliateUrl": "https://www.maya.ph/",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
     "id": "maya-td-3mo",
     "name": "Maya Time Deposit Plus 3-Month",
     "provider": "Maya Bank",
