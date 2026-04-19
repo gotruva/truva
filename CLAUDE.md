@@ -16,10 +16,10 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 ## Current state (April 20, 2026)
 
 - Public bank-rate source of truth is the approved Supabase `production` snapshot, not only `data/rates.json`.
-- Latest production snapshot: `e50164fd-49c2-4f59-a968-5801e9c85e79`, promoted April 20, 2026. It contains 46 raw snapshot products and hydrates to 43 public API products after canonical-ID dedupe.
+- Latest production snapshot: `bd3fb21c-a136-42b5-9386-8c96bfb635a5`, promoted April 20, 2026. It contains 46 raw snapshot products and hydrates to 36 public API products after canonical-ID dedupe.
 - Live validation passed for `https://www.gotruva.com/api/rates`, `/`, `/banking/rates`, and `/calculator`. API has no duplicate public product IDs. `pagibig-mp2` remains present in API/home/calculator; it is intentionally absent from the bank-only `/banking/rates` page.
 - Supabase hydration in `lib/rates.ts` prefers `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping. It dedupes hydrated public IDs and prefers canonical structured IDs over older generic scraper rows.
-- `RateProduct.tierType` supports `flat | blended | threshold`; `flat` products use single-tier flat-rate math and labels.
+- `RateProduct.tierType` supports `flat | blended | threshold`; `flat` products use single-tier flat-rate math and labels. Threshold calculations must only qualify a deposit when it falls inside the tier min/max range.
 - Dynamic public surfaces: `/`, `/banking/rates`, `/calculator`, and `/api/rates` are forced dynamic for fresh rate reads.
 - Yield Calculator + mobile pre-qual flow working.
 - Newsletter + affiliate CTAs wired.
@@ -34,7 +34,7 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 - MVP `main` includes hydration dedupe commit `ba82640`.
 - Approved in the latest review pass: normalized Salmon TD products `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo` with aggregated tiers. Earlier approved products include canonical/seed-backed Maya TD terms, Tonik TD terms, Salmon savings, Netbank new-user savings and TDs, OwnBank savings/TD, Komo, DiskarTech, and BanKo.
 - Rejected intentionally in the previous production pass: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and pre-normalization Salmon TD variants.
-- MVP hydration preserves scraper `validUntil` by attaching it to promo conditions; Salmon 12- and 60-month TDs carry `expiresAt: 2026-06-01`. Salmon seed metadata uses the official ₱5,000 floor, monthly payout, and a 1,825-day lock-in for the 60-month product.
+- MVP hydration preserves scraper `validUntil` by attaching it to promo conditions; Salmon 12- and 60-month TDs carry `expiresAt: 2026-06-01`. Salmon canonical TDs now use the official effective/compounded rate table: at PHP 500,000, `salmon-td-60mo` uses 7.41% gross / 5.928% after tax. Legacy one-tier Salmon IDs map into canonical public IDs and should not render separately.
 
 **Active sprint target:** 8-week build. See `🗓️ Truva 8-Week Sprint Plan*.md` for current tasks.
 

@@ -52,16 +52,16 @@ You are building the "Mastery Pillar" engine for:
 
 Use this section to avoid re-discovering the rate pipeline:
 
-- Production bank rates now come from Supabase `production` snapshots. Latest promoted snapshot: `e50164fd-49c2-4f59-a968-5801e9c85e79` (46 raw products, 43 public API products after hydration/dedupe).
+- Production bank rates now come from Supabase `production` snapshots. Latest promoted snapshot: `bd3fb21c-a136-42b5-9386-8c96bfb635a5` (46 raw products, 36 public API products after hydration/dedupe).
 - Live `https://www.gotruva.com/api/rates` was verified after promotion: 200 response, no duplicate public IDs, key products present (`tonik-td-12mo` at 8%, Netbank TDs, OwnBank savings/TD, Salmon savings/TDs, `pagibig-mp2`).
 - `lib/rates.ts` hydrates Supabase payloads into public `RateProduct`s. Identity precedence is `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping.
 - Hydration dedupes public IDs and prefers rows with canonical `structured_payload.id` over older generic scraper rows. This prevents pairs like `tonik-time-deposit` and `tonik-td-12mo` from both rendering as `tonik-td-12mo`.
 - Manual seed products are still important: they preserve metadata and keep public/manual products like `pagibig-mp2` available when the scraper does not own them.
-- `tierType` is now `flat | blended | threshold`; flat products should not be labeled as deposit-amount tiers.
+- `tierType` is now `flat | blended | threshold`; flat products should not be labeled as deposit-amount tiers, and threshold products must reject amounts outside a tier range.
 - Scraper repo `/Users/albertoaldaba/truva-scraping` has live parser hardening on `main` at `d566c16` plus Salmon TD normalization from April 20, 2026.
 - MVP repo `/Users/albertoaldaba/truva-mvp` has hydration dedupe on `main` at `ba82640`.
-- Last queue decision: approved normalized Salmon TD product `salmon-td-60mo`; previous Salmon approvals are `salmon-td-6mo` and `salmon-td-12mo`. Previous rejects remain stale Tonik 12-month 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
-- Salmon scraper emits `salmon-savings`, `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`; the TD products aggregate balance tiers under seed-backed public IDs. MVP hydration turns scraper `validUntil` into promo condition `expiresAt`, so Salmon 12- and 60-month products carry `2026-06-01`.
+- Last queue decision: approved Salmon effective/compounded TD tiers for `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`. Previous rejects remain stale Tonik 12-month 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
+- Salmon scraper emits `salmon-savings`, `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`; the TD products aggregate balance tiers under seed-backed public IDs. At PHP 500,000, `salmon-td-60mo` must use 7.41% gross / 5.928% after tax, not the PHP 1M+ 9.40% tier. Legacy one-tier Salmon IDs are mapped/deduped into canonical IDs.
 
 ---
 
