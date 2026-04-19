@@ -13,13 +13,28 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 
 ---
 
-## Current state (Week 1 done, April 2026)
+## Current state (April 20, 2026)
 
-- 19 products live: digital banks, govt bonds (T-Bills, MP2, RTB), UITFs, DeFi
-- Yield Calculator + mobile pre-qual flow working
-- Newsletter + affiliate CTAs wired
-- `/optimizer` and `/tracker` routes are stubs (not built yet)
-- Supabase auth skeleton in place, tables not created
+- Public bank-rate source of truth is the approved Supabase `production` snapshot, not only `data/rates.json`.
+- Latest production snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`, promoted April 20, 2026. It contains 43 raw snapshot products and hydrates to 40 public API products after canonical-ID dedupe.
+- Live validation passed for `https://www.gotruva.com/api/rates`, `/`, `/banking/rates`, and `/calculator`. API has no duplicate public product IDs. `pagibig-mp2` remains present in API/home/calculator; it is intentionally absent from the bank-only `/banking/rates` page.
+- Supabase hydration in `lib/rates.ts` prefers `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping. It dedupes hydrated public IDs and prefers canonical structured IDs over older generic scraper rows.
+- `RateProduct.tierType` supports `flat | blended | threshold`; `flat` products use single-tier flat-rate math and labels.
+- Dynamic public surfaces: `/`, `/banking/rates`, `/calculator`, and `/api/rates` are forced dynamic for fresh rate reads.
+- Yield Calculator + mobile pre-qual flow working.
+- Newsletter + affiliate CTAs wired.
+- `/optimizer` and `/tracker` routes are stubs (not built yet).
+- Supabase auth skeleton in place, tables not fully productized.
+
+### Bank-rate pipeline memory
+
+- Scraper repo: `/Users/albertoaldaba/truva-scraping`.
+- MVP repo: `/Users/albertoaldaba/truva-mvp`.
+- Scraper `main` includes parser hardening commit `d566c16` for Tonik, Netbank, OwnBank, DiskarTech, and Salmon live-page drift.
+- MVP `main` includes hydration dedupe commit `ba82640`.
+- Approved in the last review pass: canonical/seed-backed Maya TD terms, Tonik TD terms, Salmon savings, Netbank new-user savings and TDs, OwnBank savings/TD, Komo, DiskarTech, and BanKo.
+- Rejected intentionally: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and Salmon TD variants until they are normalized into public term products with aggregated tiers.
+- Next data-engineering step: normalize Salmon TD scraper output into public products such as `salmon-td-6mo` and `salmon-td-12mo` with tier aggregation and seed-backed metadata; optionally add explicit public products if supporting 60-month terms.
 
 **Active sprint target:** 8-week build. See `🗓️ Truva 8-Week Sprint Plan*.md` for current tasks.
 
@@ -53,7 +68,7 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 
 - `gemini.md` — full strategy, roadmap, and AI alignment doc
 - `truva-antigravity-briefing.md` — complete product spec and design constraints
-- `data/rates.json` — all 19 products
+- `data/rates.json` — manual/seed public catalog used as metadata fallback and for non-scraper products
 - `types/index.ts` — TypeScript interfaces
 - `utils/yieldEngine.ts` — after-tax math engine (handle with care)
 - `lib/tax.ts` — 3 tax regimes (20% FWT, tax-exempt, 7.5% FCD)

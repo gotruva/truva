@@ -1,6 +1,6 @@
 # Truva — AI Alignment Document
 > For any AI model (Claude, Gemini, GPT, etc.) continuing work on this codebase.
-> Last updated: 2026-04-01
+> Last updated: 2026-04-20
 
 ---
 
@@ -16,15 +16,15 @@
 
 ---
 
-## Current Build State (Week 1 Complete)
+## Current Build State (April 20, 2026)
 
 ### Live and working
 - Rate comparison table (desktop) + card layout (mobile, 375px)
-- 19 products across 4 active categories:
-  - **Banks (12):** Maya, Tonik, UNO, GoTyme, CIMB/GSave, MariBank, UnionDigital, OwnBank, Landbank, DBP, OFBank
-  - **Govt (5):** T-Bill 91-day, T-Bill 182-day, T-Bill 364-day, Pag-IBIG MP2, RTB Series 27
-  - **UITFs (2):** BDO Peso MMF, BPI Money Market Fund
-  - **DeFi (1):** Aave V3 USDC Base (live DefiLlama feed)
+- Public rate catalog now hydrates from Supabase snapshots in production, with `data/rates.json` as manual/metadata seed fallback.
+- Latest production snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`, promoted April 20, 2026.
+- Live API shape after hydration: 40 public products, no duplicate public IDs. Raw Supabase snapshot has 43 products across 17 providers.
+- Verified public pages: `/api/rates`, `/`, `/banking/rates`, and `/calculator` all read the current production snapshot. `pagibig-mp2` remains present in API/home/calculator and absent from bank-only rates by design.
+- Bank products now include canonical scraper-fed term products for Maya, Tonik, Netbank, OwnBank, Komo, DiskarTech, BanKo, plus manual/seed metadata fallbacks.
 - Personal Yield Calculator — dual scenarios (best case vs base case), tiered rates, bar chart
 - Mobile pre-qual flow (3-step: amount → lock-in → risk tolerance)
 - Newsletter signup (Resend integration, rate-limited)
@@ -141,6 +141,18 @@ If any condition isn't met by Month 6, Phase 2 is deferred. No partial credit ca
 | UITF yields | Weekly | Fund provider NAVPS |
 | Aave V3 USDC | Auto (5-min ISR) | DefiLlama API |
 | Landbank / DBP / OFBank | Monthly | Bank websites |
+
+### Supabase and scraper pipeline notes
+
+- MVP repo: `/Users/albertoaldaba/truva-mvp`.
+- Scraper repo: `/Users/albertoaldaba/truva-scraping`.
+- Scraper `main` includes live parser hardening commit `d566c16` for Tonik calculator terms, Netbank mobile rates, OwnBank live headline fallback, DiskarTech FAQ, and Salmon live FAQ/compound-rate parsing.
+- MVP `main` includes hydration dedupe commit `ba82640`.
+- `lib/rates.ts` identity precedence: `structured_payload.id`, then `source_product_ids[index]` mapper, then provider-prefix stripping.
+- Hydration dedupes by public product ID and prefers canonical `structured_payload.id` rows over old generic rows.
+- `RateProduct.tierType` is `flat | blended | threshold`. Flat products must render as flat rate, not amount-tiered rate.
+- Last review pass approved conservative canonical/seed-backed products and rejected: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and Salmon TD variants until they are normalized into public term products.
+- Next data-maintenance step: normalize Salmon TD output into public products with aggregated tiers and metadata, likely starting with existing seed products `salmon-td-6mo` and `salmon-td-12mo`.
 
 ---
 

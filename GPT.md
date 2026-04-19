@@ -48,4 +48,21 @@ You are building the "Mastery Pillar" engine for:
 
 ---
 
+## Current Operating Memory (April 20, 2026)
+
+Use this section to avoid re-discovering the rate pipeline:
+
+- Production bank rates now come from Supabase `production` snapshots. Latest promoted snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032` (43 raw products, 40 public API products after hydration/dedupe).
+- Live `https://www.gotruva.com/api/rates` was verified after promotion: 200 response, no duplicate public IDs, key products present (`tonik-td-12mo` at 8%, Netbank TDs, OwnBank savings/TD, Salmon savings, `pagibig-mp2`).
+- `lib/rates.ts` hydrates Supabase payloads into public `RateProduct`s. Identity precedence is `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping.
+- Hydration dedupes public IDs and prefers rows with canonical `structured_payload.id` over older generic scraper rows. This prevents pairs like `tonik-time-deposit` and `tonik-td-12mo` from both rendering as `tonik-td-12mo`.
+- Manual seed products are still important: they preserve metadata and keep public/manual products like `pagibig-mp2` available when the scraper does not own them.
+- `tierType` is now `flat | blended | threshold`; flat products should not be labeled as deposit-amount tiers.
+- Scraper repo `/Users/albertoaldaba/truva-scraping` has live parser hardening on `main` at `d566c16`.
+- MVP repo `/Users/albertoaldaba/truva-mvp` has hydration dedupe on `main` at `ba82640`.
+- Last queue decision: approved conservative canonical products; rejected stale Tonik 12-month 6%, Netbank existing-user savings collision, and Salmon TD variants pending normalization.
+- Next preferred step: normalize Salmon TD output into public term products with aggregated tiers and seed-backed metadata.
+
+---
+
 **"Build the bridge between what people earn and what they could earn. Close the gap."**

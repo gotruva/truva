@@ -1,5 +1,5 @@
 # Truva — Master Project Charter & AI Strategic Brief
-**Version:** 2.0 | **Status:** Active | **Identity:** Founder Mentality for C-Suite Shipping
+**Version:** 2.1 | **Status:** Active | **Identity:** Founder Mentality for C-Suite Shipping
 
 ---
 
@@ -77,7 +77,16 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 - **Rate Engine**: [yieldEngine.ts](file:///c:/Users/betoa/Documents/truva/utils/yieldEngine.ts) (Core calculation logic).
 - **Tax Logic**: [tax.ts](file:///c:/Users/betoa/Documents/truva/lib/tax.ts) (Centralized tax rules).
 - **Data Schemas**: [types/index.ts](file:///c:/Users/betoa/Documents/truva/types/index.ts) (Base models for all products).
-- **Current Data**: [rates.json](file:///c:/Users/betoa/Documents/truva/data/rates.json) (19+ products live).
+- **Current Data**: Supabase `production` rate snapshots are the live source of truth for bank rates. [rates.json](file:///c:/Users/betoa/Documents/truva/data/rates.json) remains the manual/seed catalog for metadata fallbacks and non-scraper products.
+
+### Operational Rate Pipeline Snapshot (April 20, 2026)
+
+- Latest production rate snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`.
+- Public API materializes 40 products after hydration/dedupe; raw snapshot has 43 products across 17 providers.
+- MVP hydration prefers canonical `structured_payload.id`, then `source_product_ids[index]` mappings, then provider-prefix stripping.
+- Duplicate public IDs must be deduped in hydration before rendering; canonical structured IDs beat old generic scraper rows.
+- Manual products such as `pagibig-mp2` must remain merged when the scraper does not own them.
+- Next data-pipeline step: normalize Salmon TD scraper output into public term products with aggregated tiers and seed-backed metadata.
 
 ---
 

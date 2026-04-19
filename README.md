@@ -19,11 +19,22 @@ If you are an AI model (Gemini, Claude, GPT) or a developer joining the project,
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS + shadcn/ui
 - **Database/Auth**: Supabase
 - **Visuals**: Framer Motion + Recharts
 - **Delivery**: Resend
+
+## 📌 Current Rate Pipeline State
+
+As of April 20, 2026, Truva's public bank-rate source of truth is Supabase `production` snapshots. `data/rates.json` is still the manual/seed catalog for metadata fallback and non-scraper products.
+
+- Latest production snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`
+- Public API: 40 hydrated products, no duplicate public IDs
+- Raw snapshot: 43 products across 17 providers
+- Key files: `lib/rates.ts`, `lib/rate-review.ts`, `scripts/verify-rate-pipeline.ts`
+- Scraper workspace: `/Users/albertoaldaba/truva-scraping`
+- Next data task: normalize Salmon TD scraper output into public products with aggregated tiers
 
 ---
 
