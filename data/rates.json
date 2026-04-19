@@ -1003,7 +1003,7 @@
     "tierType": "threshold",
     "tiers": [
       {
-        "minBalance": 50000,
+        "minBalance": 5000,
         "maxBalance": null,
         "grossRate": 0.06,
         "afterTaxRate": 0.048
@@ -1012,7 +1012,7 @@
     "conditions": [
       {
         "type": "none",
-        "description": "Minimum ₱50,000. Monthly interest payout. 6% p.a. applies to all balance tiers for the 6-month term. BSP-licensed rural bank, PDIC insured.",
+        "description": "Minimum ₱5,000. Monthly interest payout. 6% p.a. applies to all balance tiers for the 6-month term. BSP-licensed rural bank, PDIC insured.",
         "expiresAt": null
       }
     ],
@@ -1042,7 +1042,7 @@
     "tierType": "threshold",
     "tiers": [
       {
-        "minBalance": 50000,
+        "minBalance": 5000,
         "maxBalance": 499999,
         "grossRate": 0.06,
         "afterTaxRate": 0.048
@@ -1063,7 +1063,7 @@
     "conditions": [
       {
         "type": "none",
-        "description": "Minimum ₱50,000. Monthly interest payout. Rates: ₱50k–₱499k: 6%, ₱500k–₱999k: 6.5%, ₱1M–₱50M: 8%. Same rates apply for 2–5 year terms. BSP-licensed rural bank, PDIC insured.",
+        "description": "Minimum ₱5,000. Monthly interest payout. Rates: ₱5k–₱499k: 6%, ₱500k–₱999k: 6.5%, ₱1M–₱50M: 8%. Same rates apply for 2–5 year terms. BSP-licensed rural bank, PDIC insured.",
         "expiresAt": null
       }
     ],
@@ -1074,6 +1074,57 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "affiliateUrl": "https://salmon.ph/",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "salmon-td-60mo",
+    "name": "Salmon Bank Time Deposit 60-Month",
+    "provider": "Salmon Bank",
+    "logo": "/logos/salmon.svg",
+    "category": "banks",
+    "headlineRate": 0.08,
+    "baseRate": {
+      "grossRate": 0.06,
+      "afterTaxRate": 0.048
+    },
+    "tierType": "threshold",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 499999,
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
+      },
+      {
+        "minBalance": 500000,
+        "maxBalance": 999999,
+        "grossRate": 0.065,
+        "afterTaxRate": 0.052
+      },
+      {
+        "minBalance": 1000000,
+        "maxBalance": 50000000,
+        "grossRate": 0.08,
+        "afterTaxRate": 0.064
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Minimum ₱5,000. Monthly interest payout. Rates: ₱5k–₱499k: 6%, ₱500k–₱999k: 6.5%, ₱1M–₱50M: 8%. Five-year lock-in; same official nominal rate row applies to 12–60 month terms. BSP-licensed rural bank, PDIC insured.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "monthly",
+    "lockInDays": 1825,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
     "affiliateUrl": "https://salmon.ph/",
     "referralCode": "",
     "payoutAmount": 0,

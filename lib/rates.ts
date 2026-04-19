@@ -69,7 +69,7 @@ function bankDefaults(
 
 function salmonTermDefaults(months: number): Partial<RateProduct> {
   return bankDefaults('Salmon Bank', 'salmon-bank', {
-    payoutFrequency: 'at_maturity',
+    payoutFrequency: 'monthly',
     lockInDays: Math.round((365 / 12) * months),
   });
 }
@@ -168,6 +168,12 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
       }],
     }),
   },
+  'salmon-bank:salmon-td-6mo': { publicId: 'salmon-td-6mo', defaults: salmonTermDefaults(6) },
+  'salmon-td-6mo': { publicId: 'salmon-td-6mo', defaults: salmonTermDefaults(6) },
+  'salmon-bank:salmon-td-12mo': { publicId: 'salmon-td-12mo', defaults: salmonTermDefaults(12) },
+  'salmon-td-12mo': { publicId: 'salmon-td-12mo', defaults: salmonTermDefaults(12) },
+  'salmon-bank:salmon-td-60mo': { publicId: 'salmon-td-60mo', defaults: salmonTermDefaults(60) },
+  'salmon-td-60mo': { publicId: 'salmon-td-60mo', defaults: salmonTermDefaults(60) },
   'salmon-td-12m-5000': { publicId: 'salmon-td-12m-5000', defaults: salmonTermDefaults(12) },
   'salmon-td-60m-5000': { publicId: 'salmon-td-60m-5000', defaults: salmonTermDefaults(60) },
   'salmon-td-12m-500000': { publicId: 'salmon-td-12m-500000', defaults: salmonTermDefaults(12) },
