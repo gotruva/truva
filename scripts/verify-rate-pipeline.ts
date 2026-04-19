@@ -52,6 +52,12 @@ async function verifySupabaseSnapshot() {
   assert.equal(payload.length, snapshot.product_count, 'Staging published snapshot count does not match payload length.');
   const materializedRates = await getPublishedSnapshotRates('staging');
   assert(materializedRates?.length, 'Staging published snapshot should materialize into public rate products.');
+  const materializedIds = materializedRates.map((rate) => rate.id);
+  assert.equal(
+    materializedIds.length,
+    new Set(materializedIds).size,
+    'Materialized staging snapshot contains duplicate public product IDs.',
+  );
   assert(
     materializedRates.every((rate) => rate.id && rate.name && rate.category),
     'Every materialized staging rate needs public product identity fields.',

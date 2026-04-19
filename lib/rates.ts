@@ -14,6 +14,11 @@ type SnapshotProductMapping = {
   preferSeedName?: boolean;
   defaults?: Partial<RateProduct>;
 };
+type HydratedSnapshotEntry = {
+  rate: RateProduct;
+  score: number;
+  index: number;
+};
 
 const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> = {
   'maya-bank': { logo: '/logos/maya.svg', affiliateUrl: 'https://www.maya.ph/' },
@@ -342,6 +347,31 @@ function mergeManualPublicRates(rates: RateProduct[], localRates: RateProduct[])
   return [...rates, ...manualRates];
 }
 
+function getSnapshotHydrationScore(rawValue: unknown, sourceProductId: string | null, publicId: string) {
+  const raw = isRecord(rawValue) ? rawValue : {};
+  const structuredId = getString(raw.id);
+  let score = 0;
+
+  if (structuredId) score += 100;
+  if (structuredId && stripProviderPrefix(structuredId) === publicId) score += 50;
+  if (sourceProductId && stripProviderPrefix(sourceProductId) === publicId) score += 20;
+
+  return score;
+}
+
+function dedupeHydratedSnapshotRates(entries: HydratedSnapshotEntry[]) {
+  const bestById = new Map<string, HydratedSnapshotEntry>();
+
+  for (const entry of entries) {
+    const existing = bestById.get(entry.rate.id);
+    if (!existing || entry.score > existing.score || (entry.score === existing.score && entry.index > existing.index)) {
+      bestById.set(entry.rate.id, entry);
+    }
+  }
+
+  return [...bestById.values()].map((entry) => entry.rate);
+}
+
 function hydrateSnapshotRate(
   rawValue: unknown,
   sourceProductId: string | null,
@@ -423,10 +453,16 @@ export async function getPublishedSnapshotRates(channel: RateSnapshotChannel): P
     : [];
   const generatedAt = getString(snapshot.generated_at);
 
-  const hydratedRates = snapshot.payload.map((raw, index) => (
-    hydrateSnapshotRate(raw, sourceProductIds[index] ?? null, generatedAt, seedRatesById, index)
-  ));
-  return mergeManualPublicRates(hydratedRates, localRates);
+  const hydratedRates = snapshot.payload.map((raw, index) => {
+    const sourceProductId = sourceProductIds[index] ?? null;
+    const rate = hydrateSnapshotRate(raw, sourceProductId, generatedAt, seedRatesById, index);
+    return {
+      rate,
+      score: getSnapshotHydrationScore(raw, sourceProductId, rate.id),
+      index,
+    };
+  });
+  return mergeManualPublicRates(dedupeHydratedSnapshotRates(hydratedRates), localRates);
 }
 
 async function getRatesCatalog(): Promise<RateProduct[]> {
