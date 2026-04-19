@@ -30,11 +30,11 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 
 - Scraper repo: `/Users/albertoaldaba/truva-scraping`.
 - MVP repo: `/Users/albertoaldaba/truva-mvp`.
-- Scraper `main` includes parser hardening commit `d566c16` for Tonik, Netbank, OwnBank, DiskarTech, and Salmon live-page drift.
+- Scraper `main` includes parser hardening commit `d566c16` for Tonik, Netbank, OwnBank, DiskarTech, and Salmon live-page drift, plus Salmon TD normalization from April 20, 2026.
 - MVP `main` includes hydration dedupe commit `ba82640`.
 - Approved in the last review pass: canonical/seed-backed Maya TD terms, Tonik TD terms, Salmon savings, Netbank new-user savings and TDs, OwnBank savings/TD, Komo, DiskarTech, and BanKo.
-- Rejected intentionally: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and Salmon TD variants until they are normalized into public term products with aggregated tiers.
-- Next data-engineering step: normalize Salmon TD scraper output into public products such as `salmon-td-6mo` and `salmon-td-12mo` with tier aggregation and seed-backed metadata; optionally add explicit public products if supporting 60-month terms.
+- Rejected intentionally in the last production pass: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and pre-normalization Salmon TD variants.
+- Salmon parser now emits seed-backed public products `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers. Next data-engineering step is a Supabase-enabled Salmon-only extract/review/publish pass; optionally add explicit public products if supporting 60-month terms.
 
 **Active sprint target:** 8-week build. See `🗓️ Truva 8-Week Sprint Plan*.md` for current tasks.
 

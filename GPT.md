@@ -58,10 +58,10 @@ Use this section to avoid re-discovering the rate pipeline:
 - Hydration dedupes public IDs and prefers rows with canonical `structured_payload.id` over older generic scraper rows. This prevents pairs like `tonik-time-deposit` and `tonik-td-12mo` from both rendering as `tonik-td-12mo`.
 - Manual seed products are still important: they preserve metadata and keep public/manual products like `pagibig-mp2` available when the scraper does not own them.
 - `tierType` is now `flat | blended | threshold`; flat products should not be labeled as deposit-amount tiers.
-- Scraper repo `/Users/albertoaldaba/truva-scraping` has live parser hardening on `main` at `d566c16`.
+- Scraper repo `/Users/albertoaldaba/truva-scraping` has live parser hardening on `main` at `d566c16` plus Salmon TD normalization from April 20, 2026.
 - MVP repo `/Users/albertoaldaba/truva-mvp` has hydration dedupe on `main` at `ba82640`.
-- Last queue decision: approved conservative canonical products; rejected stale Tonik 12-month 6%, Netbank existing-user savings collision, and Salmon TD variants pending normalization.
-- Next preferred step: normalize Salmon TD output into public term products with aggregated tiers and seed-backed metadata.
+- Last queue decision: approved conservative canonical products; rejected stale Tonik 12-month 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
+- Salmon scraper now emits `salmon-savings`, `salmon-td-6mo`, and `salmon-td-12mo`; the TD products aggregate balance tiers under seed-backed public IDs. Next preferred step is a Supabase-enabled Salmon-only staging/review/publish pass.
 
 ---
 

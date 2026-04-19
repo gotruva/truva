@@ -34,7 +34,8 @@ As of April 20, 2026, Truva's public bank-rate source of truth is Supabase `prod
 - Raw snapshot: 43 products across 17 providers
 - Key files: `lib/rates.ts`, `lib/rate-review.ts`, `scripts/verify-rate-pipeline.ts`
 - Scraper workspace: `/Users/albertoaldaba/truva-scraping`
-- Next data task: normalize Salmon TD scraper output into public products with aggregated tiers
+- Salmon scraper status: normalized TD output emits `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers
+- Next data task: Supabase-enabled Salmon-only staging/review/publish pass
 
 ---
 

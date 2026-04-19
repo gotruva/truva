@@ -146,13 +146,13 @@ If any condition isn't met by Month 6, Phase 2 is deferred. No partial credit ca
 
 - MVP repo: `/Users/albertoaldaba/truva-mvp`.
 - Scraper repo: `/Users/albertoaldaba/truva-scraping`.
-- Scraper `main` includes live parser hardening commit `d566c16` for Tonik calculator terms, Netbank mobile rates, OwnBank live headline fallback, DiskarTech FAQ, and Salmon live FAQ/compound-rate parsing.
+- Scraper `main` includes live parser hardening commit `d566c16` for Tonik calculator terms, Netbank mobile rates, OwnBank live headline fallback, DiskarTech FAQ, Salmon live FAQ/compound-rate parsing, and Salmon TD normalization from April 20, 2026.
 - MVP `main` includes hydration dedupe commit `ba82640`.
 - `lib/rates.ts` identity precedence: `structured_payload.id`, then `source_product_ids[index]` mapper, then provider-prefix stripping.
 - Hydration dedupes by public product ID and prefers canonical `structured_payload.id` rows over old generic rows.
 - `RateProduct.tierType` is `flat | blended | threshold`. Flat products must render as flat rate, not amount-tiered rate.
-- Last review pass approved conservative canonical/seed-backed products and rejected: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and Salmon TD variants until they are normalized into public term products.
-- Next data-maintenance step: normalize Salmon TD output into public products with aggregated tiers and metadata, likely starting with existing seed products `salmon-td-6mo` and `salmon-td-12mo`.
+- Last review pass approved conservative canonical/seed-backed products and rejected: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
+- Salmon scraper now emits `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers under existing seed-backed public IDs. Next data-maintenance step is a Supabase-enabled Salmon-only staging/review/publish pass.
 
 ---
 

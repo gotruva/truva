@@ -86,7 +86,8 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 - MVP hydration prefers canonical `structured_payload.id`, then `source_product_ids[index]` mappings, then provider-prefix stripping.
 - Duplicate public IDs must be deduped in hydration before rendering; canonical structured IDs beat old generic scraper rows.
 - Manual products such as `pagibig-mp2` must remain merged when the scraper does not own them.
-- Next data-pipeline step: normalize Salmon TD scraper output into public term products with aggregated tiers and seed-backed metadata.
+- Salmon scraper now emits public seed-backed TD products `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers.
+- Next data-pipeline step: run a Supabase-enabled Salmon-only staging/review/publish pass if the queued output remains clean.
 
 ---
 
