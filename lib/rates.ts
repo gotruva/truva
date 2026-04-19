@@ -339,6 +339,41 @@ function resolveTiers(
   return [{ minBalance: 0, maxBalance: null, grossRate, afterTaxRate }];
 }
 
+function resolveConditions(
+  raw: SnapshotRecord,
+  seed: RateProduct | undefined,
+  mappingDefaults: Partial<RateProduct> | undefined,
+  validUntil: string | null,
+): RateProduct['conditions'] {
+  const baseConditions = Array.isArray(raw.conditions)
+    ? raw.conditions as RateProduct['conditions']
+    : seed?.conditions ?? mappingDefaults?.conditions ?? [];
+
+  if (!validUntil) return baseConditions;
+
+  let appliedToPromo = false;
+  const conditionsWithExpiry = baseConditions.map((condition) => {
+    if (condition.type === 'promo' && !condition.expiresAt) {
+      appliedToPromo = true;
+      return { ...condition, expiresAt: validUntil };
+    }
+    return condition;
+  });
+
+  if (appliedToPromo || conditionsWithExpiry.some((condition) => condition.expiresAt === validUntil)) {
+    return conditionsWithExpiry;
+  }
+
+  return [
+    ...conditionsWithExpiry,
+    {
+      type: 'promo',
+      description: `Promotional headline rate valid until ${validUntil}.`,
+      expiresAt: validUntil,
+    },
+  ];
+}
+
 function mergeManualPublicRates(rates: RateProduct[], localRates: RateProduct[]) {
   const existingIds = new Set(rates.map((rate) => rate.id));
   const manualRates = localRates.filter((rate) => (
@@ -397,6 +432,7 @@ function hydrateSnapshotRate(
   const afterTaxRate = getNumber(rawBaseRate.afterTaxRate, seed?.baseRate.afterTaxRate ?? grossRate * 0.8);
   const baseRate = { grossRate, afterTaxRate };
   const tiers = resolveTiers(raw, seed, grossRate, afterTaxRate);
+  const validUntil = getString(raw.validUntil) ?? getString(raw.valid_until);
   const lockInDays = seed?.lockInDays ?? mappingDefaults?.lockInDays ?? inferLockInDays(id, productName);
   const payoutFrequency = seed?.payoutFrequency
     ?? mappingDefaults?.payoutFrequency
@@ -412,9 +448,7 @@ function hydrateSnapshotRate(
     baseRate,
     tierType: isTierType(raw.tierType) ? raw.tierType : seed?.tierType ?? mappingDefaults?.tierType ?? 'threshold',
     tiers,
-    conditions: Array.isArray(raw.conditions)
-      ? raw.conditions as RateProduct['conditions']
-      : seed?.conditions ?? mappingDefaults?.conditions ?? [],
+    conditions: resolveConditions(raw, seed, mappingDefaults, validUntil),
     taxExempt: seed?.taxExempt ?? mappingDefaults?.taxExempt ?? false,
     payoutFrequency,
     lockInDays,

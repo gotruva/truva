@@ -16,7 +16,7 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 ## Current state (April 20, 2026)
 
 - Public bank-rate source of truth is the approved Supabase `production` snapshot, not only `data/rates.json`.
-- Latest production snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`, promoted April 20, 2026. It contains 43 raw snapshot products and hydrates to 40 public API products after canonical-ID dedupe.
+- Latest production snapshot: `46f88b68-f805-4ee3-8978-a04e68fcf702`, promoted April 20, 2026. It contains 45 raw snapshot products and hydrates to 42 public API products after canonical-ID dedupe.
 - Live validation passed for `https://www.gotruva.com/api/rates`, `/`, `/banking/rates`, and `/calculator`. API has no duplicate public product IDs. `pagibig-mp2` remains present in API/home/calculator; it is intentionally absent from the bank-only `/banking/rates` page.
 - Supabase hydration in `lib/rates.ts` prefers `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping. It dedupes hydrated public IDs and prefers canonical structured IDs over older generic scraper rows.
 - `RateProduct.tierType` supports `flat | blended | threshold`; `flat` products use single-tier flat-rate math and labels.
@@ -32,9 +32,9 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 - MVP repo: `/Users/albertoaldaba/truva-mvp`.
 - Scraper `main` includes parser hardening commit `d566c16` for Tonik, Netbank, OwnBank, DiskarTech, and Salmon live-page drift, plus Salmon TD normalization from April 20, 2026.
 - MVP `main` includes hydration dedupe commit `ba82640`.
-- Approved in the last review pass: canonical/seed-backed Maya TD terms, Tonik TD terms, Salmon savings, Netbank new-user savings and TDs, OwnBank savings/TD, Komo, DiskarTech, and BanKo.
-- Rejected intentionally in the last production pass: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and pre-normalization Salmon TD variants.
-- Salmon parser now emits seed-backed public products `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers. Next data-engineering step is a Supabase-enabled Salmon-only extract/review/publish pass; optionally add explicit public products if supporting 60-month terms.
+- Approved in the latest review pass: normalized Salmon TD products `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers. Earlier approved products include canonical/seed-backed Maya TD terms, Tonik TD terms, Salmon savings, Netbank new-user savings and TDs, OwnBank savings/TD, Komo, DiskarTech, and BanKo.
+- Rejected intentionally in the previous production pass: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and pre-normalization Salmon TD variants.
+- MVP hydration preserves scraper `validUntil` by attaching it to promo conditions; Salmon 12-month carries `expiresAt: 2026-06-01`. Optional future data work: add explicit public products if supporting Salmon 60-month terms.
 
 **Active sprint target:** 8-week build. See `🗓️ Truva 8-Week Sprint Plan*.md` for current tasks.
 

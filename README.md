@@ -29,13 +29,13 @@ If you are an AI model (Gemini, Claude, GPT) or a developer joining the project,
 
 As of April 20, 2026, Truva's public bank-rate source of truth is Supabase `production` snapshots. `data/rates.json` is still the manual/seed catalog for metadata fallback and non-scraper products.
 
-- Latest production snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`
-- Public API: 40 hydrated products, no duplicate public IDs
-- Raw snapshot: 43 products across 17 providers
+- Latest production snapshot: `46f88b68-f805-4ee3-8978-a04e68fcf702`
+- Public API: 42 hydrated products, no duplicate public IDs
+- Raw snapshot: 45 products across 17 providers
 - Key files: `lib/rates.ts`, `lib/rate-review.ts`, `scripts/verify-rate-pipeline.ts`
 - Scraper workspace: `/Users/albertoaldaba/truva-scraping`
-- Salmon scraper status: normalized TD output emits `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers
-- Next data task: Supabase-enabled Salmon-only staging/review/publish pass
+- Salmon scraper status: normalized TD output emits approved `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers
+- MVP hydration preserves scraper `validUntil` as promo condition expiry
 
 ---
 

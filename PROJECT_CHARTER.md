@@ -81,13 +81,13 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 
 ### Operational Rate Pipeline Snapshot (April 20, 2026)
 
-- Latest production rate snapshot: `732a7711-8192-4ca7-8a11-f1c59db5b032`.
-- Public API materializes 40 products after hydration/dedupe; raw snapshot has 43 products across 17 providers.
+- Latest production rate snapshot: `46f88b68-f805-4ee3-8978-a04e68fcf702`.
+- Public API materializes 42 products after hydration/dedupe; raw snapshot has 45 products across 17 providers.
 - MVP hydration prefers canonical `structured_payload.id`, then `source_product_ids[index]` mappings, then provider-prefix stripping.
 - Duplicate public IDs must be deduped in hydration before rendering; canonical structured IDs beat old generic scraper rows.
 - Manual products such as `pagibig-mp2` must remain merged when the scraper does not own them.
-- Salmon scraper now emits public seed-backed TD products `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers.
-- Next data-pipeline step: run a Supabase-enabled Salmon-only staging/review/publish pass if the queued output remains clean.
+- Salmon scraper emits public seed-backed TD products `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers; both are approved into the latest production snapshot.
+- MVP hydration preserves scraper `validUntil` as promo condition expiry for public UI/API metadata.
 
 ---
 
