@@ -90,10 +90,10 @@
     "provider": "Maya Bank",
     "logo": "/logos/maya.svg",
     "category": "banks",
-    "headlineRate": 0.06,
+    "headlineRate": 0.0606,
     "baseRate": {
-      "grossRate": 0.06,
-      "afterTaxRate": 0.048
+      "grossRate": 0.0606,
+      "afterTaxRate": 0.04848
     },
     "tierType": "threshold",
     "tiers": [
@@ -336,10 +336,10 @@
     "provider": "Tonik Digital Bank",
     "logo": "/logos/tonik.svg",
     "category": "banks",
-    "headlineRate": 0.06,
+    "headlineRate": 0.0606,
     "baseRate": {
-      "grossRate": 0.06,
-      "afterTaxRate": 0.048
+      "grossRate": 0.0606,
+      "afterTaxRate": 0.04848
     },
     "tierType": "threshold",
     "tiers": [
@@ -1005,14 +1005,14 @@
       {
         "minBalance": 5000,
         "maxBalance": null,
-        "grossRate": 0.06,
-        "afterTaxRate": 0.048
+        "grossRate": 0.0606,
+        "afterTaxRate": 0.04848
       }
     ],
     "conditions": [
       {
         "type": "none",
-        "description": "Minimum ₱5,000. Monthly interest payout. 6% p.a. applies to all balance tiers for the 6-month term. BSP-licensed rural bank, PDIC insured.",
+        "description": "Minimum ₱5,000. Effective annual rate when monthly interest is left in the Time Deposit. 6.06% p.a. applies to all balance tiers for the 6-month term. BSP-licensed rural bank, PDIC insured.",
         "expiresAt": null
       }
     ],
@@ -1034,36 +1034,36 @@
     "provider": "Salmon Bank",
     "logo": "/logos/salmon.svg",
     "category": "banks",
-    "headlineRate": 0.08,
+    "headlineRate": 0.0824,
     "baseRate": {
-      "grossRate": 0.06,
-      "afterTaxRate": 0.048
+      "grossRate": 0.0613,
+      "afterTaxRate": 0.04904
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 5000,
         "maxBalance": 499999,
-        "grossRate": 0.06,
-        "afterTaxRate": 0.048
+        "grossRate": 0.0613,
+        "afterTaxRate": 0.04904
       },
       {
         "minBalance": 500000,
         "maxBalance": 999999,
-        "grossRate": 0.065,
-        "afterTaxRate": 0.052
+        "grossRate": 0.0666,
+        "afterTaxRate": 0.05328
       },
       {
         "minBalance": 1000000,
         "maxBalance": 50000000,
-        "grossRate": 0.08,
-        "afterTaxRate": 0.064
+        "grossRate": 0.0824,
+        "afterTaxRate": 0.06592
       }
     ],
     "conditions": [
       {
         "type": "none",
-        "description": "Minimum ₱5,000. Monthly interest payout. Rates: ₱5k–₱499k: 6%, ₱500k–₱999k: 6.5%, ₱1M–₱50M: 8%. Same rates apply for 2–5 year terms. BSP-licensed rural bank, PDIC insured.",
+        "description": "Minimum ₱5,000. Effective annual rates when monthly interest is left in the Time Deposit: ₱5k–₱499k: 6.13%, ₱500k–₱999k: 6.66%, ₱1M–₱50M: 8.24%. BSP-licensed rural bank, PDIC insured.",
         "expiresAt": null
       }
     ],
@@ -1085,36 +1085,36 @@
     "provider": "Salmon Bank",
     "logo": "/logos/salmon.svg",
     "category": "banks",
-    "headlineRate": 0.08,
+    "headlineRate": 0.094,
     "baseRate": {
-      "grossRate": 0.06,
-      "afterTaxRate": 0.048
+      "grossRate": 0.0677,
+      "afterTaxRate": 0.05416
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 5000,
         "maxBalance": 499999,
-        "grossRate": 0.06,
-        "afterTaxRate": 0.048
+        "grossRate": 0.0677,
+        "afterTaxRate": 0.05416
       },
       {
         "minBalance": 500000,
         "maxBalance": 999999,
-        "grossRate": 0.065,
-        "afterTaxRate": 0.052
+        "grossRate": 0.0741,
+        "afterTaxRate": 0.05928
       },
       {
         "minBalance": 1000000,
         "maxBalance": 50000000,
-        "grossRate": 0.08,
-        "afterTaxRate": 0.064
+        "grossRate": 0.094,
+        "afterTaxRate": 0.0752
       }
     ],
     "conditions": [
       {
         "type": "none",
-        "description": "Minimum ₱5,000. Monthly interest payout. Rates: ₱5k–₱499k: 6%, ₱500k–₱999k: 6.5%, ₱1M–₱50M: 8%. Five-year lock-in; same official nominal rate row applies to 12–60 month terms. BSP-licensed rural bank, PDIC insured.",
+        "description": "Minimum ₱5,000. Effective annual rates when monthly interest is left in the Time Deposit: ₱5k–₱499k: 6.77%, ₱500k–₱999k: 7.41%, ₱1M–₱50M: 9.40%. Five-year lock-in. BSP-licensed rural bank, PDIC insured.",
         "expiresAt": null
       }
     ],

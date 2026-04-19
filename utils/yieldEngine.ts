@@ -23,6 +23,13 @@ export interface CalculationBreakdown {
   base?: CalculationScenario;
 }
 
+function findThresholdTier(amount: number, tiers: RateTier[]): RateTier | null {
+  return tiers.find((tier) => (
+    amount >= tier.minBalance
+    && (tier.maxBalance === null || amount <= tier.maxBalance)
+  )) ?? null;
+}
+
 export function computeBlendedReturn(
   amount: number,
   tiers: RateTier[],
@@ -63,12 +70,8 @@ export function computeThresholdReturn(
 ): number {
   if (amount <= 0 || tiers.length === 0) return 0;
 
-  let applicableTier = tiers[0];
-  for (const tier of tiers) {
-    if (amount >= tier.minBalance) {
-      applicableTier = tier;
-    }
-  }
+  const applicableTier = findThresholdTier(amount, tiers);
+  if (!applicableTier) return 0;
 
   const afterTaxRate = taxExempt
     ? calcTaxExempt(applicableTier.grossRate)
@@ -84,12 +87,8 @@ export function computeThresholdEffectiveRate(
 ): number {
   if (amount <= 0 || tiers.length === 0) return 0;
 
-  let applicableTier = tiers[0];
-  for (const tier of tiers) {
-    if (amount >= tier.minBalance) {
-      applicableTier = tier;
-    }
-  }
+  const applicableTier = findThresholdTier(amount, tiers);
+  if (!applicableTier) return 0;
 
   return taxExempt
     ? calcTaxExempt(applicableTier.grossRate)
@@ -235,15 +234,10 @@ function buildPrimaryScenario(
   const hasConditions = product.conditions.some((condition) => condition.type !== 'none');
 
   if (product.tierType === 'flat' || product.tierType === 'threshold') {
-    let applicableTier = product.tiers[0];
-
-    if (product.tierType === 'threshold') {
-      for (const tier of product.tiers) {
-        if (amount >= tier.minBalance) {
-          applicableTier = tier;
-        }
-      }
-    }
+    const applicableTier = product.tierType === 'threshold'
+      ? findThresholdTier(amount, product.tiers)
+      : product.tiers[0] ?? null;
+    const grossRate = applicableTier?.grossRate ?? 0;
 
     return {
       label: hasConditions ? 'If conditions are met' : 'Current calculation',
@@ -255,9 +249,11 @@ function buildPrimaryScenario(
           amount,
           label: product.tierType === 'flat'
             ? 'Flat rate applied to the full deposit'
-            : `Entire deposit qualifies for ${getTierRangeLabel(applicableTier)}`,
-          grossRate: applicableTier.grossRate,
-          afterTaxRate: getAfterTaxRate(applicableTier.grossRate, product.taxExempt),
+            : applicableTier
+              ? `Entire deposit qualifies for ${getTierRangeLabel(applicableTier)}`
+              : 'Deposit does not meet this product tier minimum',
+          grossRate,
+          afterTaxRate: getAfterTaxRate(grossRate, product.taxExempt),
         },
       ],
     };
