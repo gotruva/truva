@@ -463,7 +463,7 @@ function hydrateSnapshotRate(
     category: seed?.category ?? mappingDefaults?.category ?? 'banks',
     headlineRate,
     baseRate,
-    tierType: isTierType(raw.tierType) ? raw.tierType : seed?.tierType ?? mappingDefaults?.tierType ?? 'threshold',
+    tierType: mappingDefaults?.tierType ?? (isTierType(raw.tierType) ? raw.tierType : seed?.tierType ?? 'threshold'),
     tiers,
     conditions: resolveConditions(raw, seed, mappingDefaults, validUntil),
     taxExempt: seed?.taxExempt ?? mappingDefaults?.taxExempt ?? false,
