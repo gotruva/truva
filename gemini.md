@@ -21,8 +21,8 @@
 ### Live and working
 - Rate comparison table (desktop) + card layout (mobile, 375px)
 - Public rate catalog now hydrates from Supabase snapshots in production, with `data/rates.json` as manual/metadata seed fallback.
-- Latest production snapshot: `46f88b68-f805-4ee3-8978-a04e68fcf702`, promoted April 20, 2026.
-- Live API shape after hydration: 42 public products, no duplicate public IDs. Raw Supabase snapshot has 45 products across 17 providers.
+- Latest production snapshot: `e50164fd-49c2-4f59-a968-5801e9c85e79`, promoted April 20, 2026.
+- Live API shape after hydration: 43 public products, no duplicate public IDs. Raw Supabase snapshot has 46 products across 17 providers.
 - Verified public pages: `/api/rates`, `/`, `/banking/rates`, and `/calculator` all read the current production snapshot. `pagibig-mp2` remains present in API/home/calculator and absent from bank-only rates by design.
 - Bank products now include canonical scraper-fed term products for Maya, Tonik, Netbank, OwnBank, Komo, DiskarTech, BanKo, plus manual/seed metadata fallbacks.
 - Personal Yield Calculator — dual scenarios (best case vs base case), tiered rates, bar chart
@@ -151,8 +151,8 @@ If any condition isn't met by Month 6, Phase 2 is deferred. No partial credit ca
 - `lib/rates.ts` identity precedence: `structured_payload.id`, then `source_product_ids[index]` mapper, then provider-prefix stripping.
 - Hydration dedupes by public product ID and prefers canonical `structured_payload.id` rows over old generic rows.
 - `RateProduct.tierType` is `flat | blended | threshold`. Flat products must render as flat rate, not amount-tiered rate.
-- Latest review pass approved normalized Salmon TD products `salmon-td-6mo` and `salmon-td-12mo`; previous rejects remain stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
-- Salmon scraper emits `salmon-td-6mo` and `salmon-td-12mo` with aggregated tiers under existing seed-backed public IDs. MVP hydration preserves scraper `validUntil` as promo condition `expiresAt`; Salmon 12-month uses `2026-06-01`.
+- Latest review pass approved normalized Salmon TD product `salmon-td-60mo`; previous normalized Salmon approvals are `salmon-td-6mo` and `salmon-td-12mo`. Previous rejects remain stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
+- Salmon scraper emits `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo` with aggregated tiers under existing seed-backed public IDs. MVP hydration preserves scraper `validUntil` as promo condition `expiresAt`; Salmon 12- and 60-month products use `2026-06-01`.
 
 ---
 
