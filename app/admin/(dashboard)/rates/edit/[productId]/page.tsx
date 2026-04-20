@@ -24,7 +24,7 @@ export default async function RateEditPage({ params }: { params: Promise<{ produ
   const { data: snapshot } = await supabase
     .from('product_snapshots')
     .select('structured_payload')
-    .eq('product_id', params.productId)
+    .eq('product_id', productId)
     .order('captured_at', { ascending: false })
     .limit(1)
     .single();
