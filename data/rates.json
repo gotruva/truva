@@ -5,34 +5,21 @@
     "provider": "Maya Bank",
     "logo": "/logos/maya.svg",
     "category": "banks",
-    "headlineRate": 0.12,
+    "headlineRate": 0.035,
     "baseRate": {
       "grossRate": 0.035,
       "afterTaxRate": 0.028
     },
-    "tierType": "blended",
+    "tierType": "flat",
     "tiers": [
       {
         "minBalance": 0,
-        "maxBalance": 100000,
-        "grossRate": 0.12,
-        "afterTaxRate": 0.096
-      },
-      {
-        "minBalance": 100000,
         "maxBalance": null,
         "grossRate": 0.035,
         "afterTaxRate": 0.028
       }
     ],
-    "conditions": [
-      {
-        "type": "spending",
-        "description": "10% requires ₱35,000/month total spend via QR, debit card, online checkout, load, bills, stocks, or funds. Extra +2% (to reach 12%) requires any spend via Maya Easy Credit. Boosted rate applies only on first ₱100,000.",
-        "expiresAt": null,
-        "requiredMonthlySpend": 35000
-      }
-    ],
+    "conditions": [],
     "taxExempt": false,
     "payoutFrequency": "daily",
     "lockInDays": 0,
