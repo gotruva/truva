@@ -37,6 +37,7 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 - Approved in the latest review pass: normalized Salmon TD products `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo` with aggregated tiers. Earlier approved products include canonical/seed-backed Maya TD terms, Tonik TD terms, Salmon savings, Netbank new-user savings and TDs, OwnBank savings/TD, Komo, DiskarTech, and BanKo.
 - Rejected intentionally in the previous production pass: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and pre-normalization Salmon TD variants.
 - MVP hydration preserves scraper `validUntil` by attaching it to promo conditions; Salmon 12- and 60-month TDs carry `expiresAt: 2026-06-01`. Salmon canonical TDs now use the official effective/compounded rate table: at PHP 500,000, `salmon-td-60mo` uses 7.41% gross / 5.928% after tax. Legacy one-tier Salmon IDs map into canonical public IDs and should not render separately.
+- Maya TD OCR cleanup on April 20, 2026: `/Users/albertoaldaba/truva-scraping` intentionally removed the broken hero-image OCR/vision source. Tesseract was unreliable on Maya's stylized coin graphic; the scraper keeps HTML extraction for the 6-month/max-rate signal, while 3-month and 12-month Maya TD terms stay seed/public-catalog plus manual-review items.
 
 **Active sprint target:** 8-week build. See `🗓️ Truva 8-Week Sprint Plan*.md` for current tasks.
 
