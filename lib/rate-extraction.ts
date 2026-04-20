@@ -947,12 +947,63 @@ function extractUNOBankCandidates(artifacts: LocalRateArtifact[], seedRates: Map
   const verifiedDate = new Date().toISOString().slice(0, 10);
   const candidates: ExtractedRateCandidate[] = [];
   const savingsSeed = seedRates.get('uno-ready');
-  const tdSeeds = [
+  const boostSeeds = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((months) => ({
+    seed: seedRates.get(`uno-boost-${months}mo`),
+    months,
+  }));
+  const earnSeeds = [
     { seed: seedRates.get('uno-td-365'), months: 12 },
     { seed: seedRates.get('uno-td-730'), months: 24 },
   ] as const;
   const savingsArtifact = artifacts.find(a => a.sourceUrl.includes('savings'));
   const tdArtifact = artifacts.find(a => a.sourceUrl.includes('time-deposit'));
+  const tdText = tdArtifact ? stripTags(tdArtifact.html) : '';
+  const boostText = extractTextSection(tdText, '#UNOboost', ['#UNOearn']);
+  const earnText = extractTextSection(tdText, '#UNOearn', ['One app for all']);
+
+  function extractTextSection(text: string, startMarker: string, stopMarkers: string[]) {
+    const lowerText = text.toLowerCase();
+    const start = lowerText.indexOf(startMarker.toLowerCase());
+    if (start < 0) return '';
+
+    const section = text.slice(start);
+    const lowerSection = section.toLowerCase();
+    const stops = stopMarkers
+      .map((marker) => lowerSection.indexOf(marker.toLowerCase()))
+      .filter((index) => index >= 0);
+    const stop = stops.length > 0 ? Math.min(...stops) : -1;
+    return stop >= 0 ? section.slice(0, stop) : section;
+  }
+
+  function applyFlatRate(seed: RateProduct, headline: number) {
+    const nextRate = deepCloneRate(seed);
+    nextRate.headlineRate = headline;
+    nextRate.baseRate = {
+      grossRate: headline,
+      afterTaxRate: calcAfterTax(headline),
+    };
+    nextRate.tiers = nextRate.tiers.map((tier) => ({
+      ...tier,
+      grossRate: headline,
+      afterTaxRate: calcAfterTax(headline),
+    }));
+    nextRate.lastVerified = verifiedDate;
+    return nextRate;
+  }
+
+  function extractUNOBoostRate(months: number) {
+    if (!boostText) return null;
+
+    const direct = extractPercentValue(boostText, new RegExp(`([0-9.]+)%\\s+for\\s+a\\s*${months}-month term`, 'i'));
+    if (direct !== null) return direct;
+
+    for (const match of boostText.matchAll(/([0-9.]+)%\s+for\s+(?:terms of\s+)?([^.%]+?) months/gi)) {
+      const listedMonths = [...match[2]!.matchAll(/\d{1,2}/g)].map((monthMatch) => Number.parseInt(monthMatch[0], 10));
+      if (listedMonths.includes(months)) return Number.parseFloat(match[1]!) / 100;
+    }
+
+    return null;
+  }
   
   if (savingsSeed) {
     const nextRate = deepCloneRate(savingsSeed);
@@ -971,26 +1022,30 @@ function extractUNOBankCandidates(artifacts: LocalRateArtifact[], seedRates: Map
     });
   }
 
-  for (const { seed: tdSeed, months } of tdSeeds) {
+  for (const { seed: boostSeed, months } of boostSeeds) {
+    if (!boostSeed) continue;
+
+    const headline = extractUNOBoostRate(months) ?? boostSeed.headlineRate;
+    const nextRate = applyFlatRate(boostSeed, headline);
+    candidates.push({
+      productId: nextRate.id,
+      structuredPayload: nextRate,
+      rawPayload: { parserVersion: EXTRACTION_VERSION, productKind: 'unobank_boost_td', sourceUrl: tdArtifact?.sourceUrl || '', extracted: { headline, months } },
+      rawText: `UNOboost ${months}-month extracted as ${formatPercent(headline)} p.a.`,
+      facts: buildFactsFromRate(nextRate, {}, { evidenceText: `Parsed UNOboost ${months}-month rate.`, sourceUrl: tdArtifact?.sourceUrl || '', confidence: 0.9 }, []),
+      materialSignature: buildMaterialSignature(nextRate),
+      summary: `Detected UNOboost ${months}-month Time Deposit rate of ${formatPercent(headline)} p.a.`,
+    });
+  }
+
+  for (const { seed: tdSeed, months } of earnSeeds) {
     if (!tdSeed) continue;
 
-    const nextRate = deepCloneRate(tdSeed);
-    const text = tdArtifact ? stripTags(tdArtifact.html) : '';
-    const headlineHtml = text
-      ? extractPercentValue(text, new RegExp(`([0-9.]+)%\\s+for\\s+a?\\s*${months}-month term`, 'i'))
+    const headlineHtml = earnText
+      ? extractPercentValue(earnText, new RegExp(`([0-9.]+)%\\s+for\\s+a?\\s*${months}-month term`, 'i'))
       : null;
     const headline = headlineHtml ?? tdSeed.headlineRate;
-    nextRate.headlineRate = headline;
-    nextRate.baseRate = {
-      grossRate: headline,
-      afterTaxRate: calcAfterTax(headline),
-    };
-    nextRate.tiers = nextRate.tiers.map((tier) => ({
-      ...tier,
-      grossRate: headline,
-      afterTaxRate: calcAfterTax(headline),
-    }));
-    nextRate.lastVerified = verifiedDate;
+    const nextRate = applyFlatRate(tdSeed, headline);
     candidates.push({
       productId: nextRate.id,
       structuredPayload: nextRate,

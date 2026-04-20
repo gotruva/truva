@@ -612,6 +612,396 @@
     "trueValueScore": 3
   },
   {
+    "id": "uno-boost-3mo",
+    "name": "#UNOboost 3-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.04,
+    "baseRate": {
+      "grossRate": 0.04,
+      "afterTaxRate": 0.032
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "3-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 91,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-4mo",
+    "name": "#UNOboost 4-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.04,
+    "baseRate": {
+      "grossRate": 0.04,
+      "afterTaxRate": 0.032
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "4-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 122,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-5mo",
+    "name": "#UNOboost 5-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.04,
+    "baseRate": {
+      "grossRate": 0.04,
+      "afterTaxRate": 0.032
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.04,
+        "afterTaxRate": 0.032
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "5-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 152,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-6mo",
+    "name": "#UNOboost 6-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.0425,
+    "baseRate": {
+      "grossRate": 0.0425,
+      "afterTaxRate": 0.034
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.0425,
+        "afterTaxRate": 0.034
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "6-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 182,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-7mo",
+    "name": "#UNOboost 7-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.0425,
+    "baseRate": {
+      "grossRate": 0.0425,
+      "afterTaxRate": 0.034
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.0425,
+        "afterTaxRate": 0.034
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "7-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 213,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-8mo",
+    "name": "#UNOboost 8-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.0425,
+    "baseRate": {
+      "grossRate": 0.0425,
+      "afterTaxRate": 0.034
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.0425,
+        "afterTaxRate": 0.034
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "8-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 243,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-9mo",
+    "name": "#UNOboost 9-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.0425,
+    "baseRate": {
+      "grossRate": 0.0425,
+      "afterTaxRate": 0.034
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.0425,
+        "afterTaxRate": 0.034
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "9-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 274,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-10mo",
+    "name": "#UNOboost 10-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.045,
+    "baseRate": {
+      "grossRate": 0.045,
+      "afterTaxRate": 0.036
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.045,
+        "afterTaxRate": 0.036
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "10-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 304,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-11mo",
+    "name": "#UNOboost 11-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.045,
+    "baseRate": {
+      "grossRate": 0.045,
+      "afterTaxRate": 0.036
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.045,
+        "afterTaxRate": 0.036
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "11-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 335,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-boost-12mo",
+    "name": "#UNOboost 12-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.055,
+    "baseRate": {
+      "grossRate": 0.055,
+      "afterTaxRate": 0.044
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.055,
+        "afterTaxRate": 0.044
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "12-month #UNOboost term. Interest earnings are subject to 20% withholding tax. Min ₱5,000; max ₱500,000.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "at_maturity",
+    "lockInDays": 365,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
     "id": "uno-td-365",
     "name": "#UNOearn 12-Month",
     "provider": "UNO Digital Bank",

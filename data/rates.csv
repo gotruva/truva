@@ -15,6 +15,16 @@ tonik-td-12mo,Tonik Time Deposit 12-Month,Tonik Digital Bank,banks,standard,8,8,
 tonik-td-18mo,Tonik Time Deposit 18-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,548,yes,PDIC,#,2026-04-03
 tonik-td-24mo,Tonik Time Deposit 24-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,730,yes,PDIC,#,2026-04-03
 uno-ready,#UNOready,UNO Digital Bank,banks,standard,3.5,3,5000,3.5,"3% below ₱5k. 3.5% for ₱5k–₱4.99M. 1% for ₱5M+. Interest credited daily.",0,yes,PDIC,#,2026-04-03
+uno-boost-3mo,#UNOboost 3-Month,UNO Digital Bank,banks,standard,4.00,4.00,,,"3-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",91,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-4mo,#UNOboost 4-Month,UNO Digital Bank,banks,standard,4.00,4.00,,,"4-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",122,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-5mo,#UNOboost 5-Month,UNO Digital Bank,banks,standard,4.00,4.00,,,"5-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",152,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-6mo,#UNOboost 6-Month,UNO Digital Bank,banks,standard,4.25,4.25,,,"6-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",182,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-7mo,#UNOboost 7-Month,UNO Digital Bank,banks,standard,4.25,4.25,,,"7-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",213,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-8mo,#UNOboost 8-Month,UNO Digital Bank,banks,standard,4.25,4.25,,,"8-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",243,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-9mo,#UNOboost 9-Month,UNO Digital Bank,banks,standard,4.25,4.25,,,"9-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",274,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-10mo,#UNOboost 10-Month,UNO Digital Bank,banks,standard,4.50,4.50,,,"10-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",304,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-11mo,#UNOboost 11-Month,UNO Digital Bank,banks,standard,4.50,4.50,,,"11-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",335,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-boost-12mo,#UNOboost 12-Month,UNO Digital Bank,banks,standard,5.50,5.50,,,"12-month term. Min ₱5,000; max ₱500,000. Interest subject to 20% withholding tax.",365,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
 uno-td-365,#UNOearn 12-Month,UNO Digital Bank,banks,standard,4.75,4.75,,,"12-month term. Monthly interest paid out to #UNOready account. Min ₱5,000; max ₱500,000.",365,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
 uno-td-730,#UNOearn 24-Month,UNO Digital Bank,banks,standard,5.00,5.00,,,"24-month term. Monthly interest paid out to #UNOready account. Min ₱5,000; max ₱500,000.",730,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
 gotyme-savings,GoSave,GoTyme Bank,banks,standard,3,3,,,no conditions,0,yes,PDIC,#,2026-04-03

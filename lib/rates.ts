@@ -88,6 +88,35 @@ function unoEarnDefaults(months: 12 | 24): Partial<RateProduct> {
   });
 }
 
+function unoBoostLockInDays(months: number) {
+  return ({
+    3: 91,
+    4: 122,
+    5: 152,
+    6: 182,
+    7: 213,
+    8: 243,
+    9: 274,
+    10: 304,
+    11: 335,
+    12: 365,
+  } as Record<number, number>)[months] ?? Math.round((365 / 12) * months);
+}
+
+function unoBoostDefaults(months: number): Partial<RateProduct> {
+  return bankDefaults('UNO Digital Bank', 'uno-digital-bank', {
+    name: `#UNOboost ${months}-Month`,
+    payoutFrequency: 'at_maturity',
+    lockInDays: unoBoostLockInDays(months),
+    tierType: 'flat',
+    conditions: [{
+      type: 'none',
+      description: `${months}-month #UNOboost term. Interest earnings are subject to 20% withholding tax.`,
+      expiresAt: null,
+    }],
+  });
+}
+
 const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
   'maya-bank:maya-savings': { publicId: 'maya-savings' },
   'maya-bank:maya-time-deposit-plus': { publicId: 'maya-td-6mo', preferSeedName: true },
@@ -123,6 +152,26 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
   'ofbank:ofbank-savings': { publicId: 'ofbank-savings' },
   'uno-digital-bank:uno-savings': { publicId: 'uno-ready' },
   'uno-savings': { publicId: 'uno-ready' },
+  'uno-digital-bank:uno-boost-3mo': { publicId: 'uno-boost-3mo', preferSeedName: true, defaults: unoBoostDefaults(3) },
+  'uno-boost-3mo': { publicId: 'uno-boost-3mo', preferSeedName: true, defaults: unoBoostDefaults(3) },
+  'uno-digital-bank:uno-boost-4mo': { publicId: 'uno-boost-4mo', preferSeedName: true, defaults: unoBoostDefaults(4) },
+  'uno-boost-4mo': { publicId: 'uno-boost-4mo', preferSeedName: true, defaults: unoBoostDefaults(4) },
+  'uno-digital-bank:uno-boost-5mo': { publicId: 'uno-boost-5mo', preferSeedName: true, defaults: unoBoostDefaults(5) },
+  'uno-boost-5mo': { publicId: 'uno-boost-5mo', preferSeedName: true, defaults: unoBoostDefaults(5) },
+  'uno-digital-bank:uno-boost-6mo': { publicId: 'uno-boost-6mo', preferSeedName: true, defaults: unoBoostDefaults(6) },
+  'uno-boost-6mo': { publicId: 'uno-boost-6mo', preferSeedName: true, defaults: unoBoostDefaults(6) },
+  'uno-digital-bank:uno-boost-7mo': { publicId: 'uno-boost-7mo', preferSeedName: true, defaults: unoBoostDefaults(7) },
+  'uno-boost-7mo': { publicId: 'uno-boost-7mo', preferSeedName: true, defaults: unoBoostDefaults(7) },
+  'uno-digital-bank:uno-boost-8mo': { publicId: 'uno-boost-8mo', preferSeedName: true, defaults: unoBoostDefaults(8) },
+  'uno-boost-8mo': { publicId: 'uno-boost-8mo', preferSeedName: true, defaults: unoBoostDefaults(8) },
+  'uno-digital-bank:uno-boost-9mo': { publicId: 'uno-boost-9mo', preferSeedName: true, defaults: unoBoostDefaults(9) },
+  'uno-boost-9mo': { publicId: 'uno-boost-9mo', preferSeedName: true, defaults: unoBoostDefaults(9) },
+  'uno-digital-bank:uno-boost-10mo': { publicId: 'uno-boost-10mo', preferSeedName: true, defaults: unoBoostDefaults(10) },
+  'uno-boost-10mo': { publicId: 'uno-boost-10mo', preferSeedName: true, defaults: unoBoostDefaults(10) },
+  'uno-digital-bank:uno-boost-11mo': { publicId: 'uno-boost-11mo', preferSeedName: true, defaults: unoBoostDefaults(11) },
+  'uno-boost-11mo': { publicId: 'uno-boost-11mo', preferSeedName: true, defaults: unoBoostDefaults(11) },
+  'uno-digital-bank:uno-boost-12mo': { publicId: 'uno-boost-12mo', preferSeedName: true, defaults: unoBoostDefaults(12) },
+  'uno-boost-12mo': { publicId: 'uno-boost-12mo', preferSeedName: true, defaults: unoBoostDefaults(12) },
   'uno-digital-bank:uno-earn-12mo': { publicId: 'uno-td-365', preferSeedName: true, defaults: unoEarnDefaults(12) },
   'uno-earn-12mo': { publicId: 'uno-td-365', preferSeedName: true, defaults: unoEarnDefaults(12) },
   'uno-digital-bank:uno-earn-24mo': { publicId: 'uno-td-730', preferSeedName: true, defaults: unoEarnDefaults(24) },
