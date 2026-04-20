@@ -118,12 +118,12 @@
       }
     ],
     "taxExempt": false,
-    "payoutFrequency": "at_maturity",
+    "payoutFrequency": "monthly",
     "lockInDays": 91,
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-20",
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -135,10 +135,10 @@
     "provider": "Maya Bank",
     "logo": "/logos/maya.svg",
     "category": "banks",
-    "headlineRate": 0.0606,
+    "headlineRate": 0.06,
     "baseRate": {
-      "grossRate": 0.0606,
-      "afterTaxRate": 0.04848
+      "grossRate": 0.06,
+      "afterTaxRate": 0.048
     },
     "tierType": "threshold",
     "tiers": [
@@ -157,12 +157,12 @@
       }
     ],
     "taxExempt": false,
-    "payoutFrequency": "at_maturity",
+    "payoutFrequency": "monthly",
     "lockInDays": 182,
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-20",
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -196,12 +196,12 @@
       }
     ],
     "taxExempt": false,
-    "payoutFrequency": "at_maturity",
+    "payoutFrequency": "monthly",
     "lockInDays": 365,
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-20",
     "affiliateUrl": "https://www.maya.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -1415,57 +1415,24 @@
     "provider": "OwnBank",
     "logo": "/logos/ownbank.svg",
     "category": "banks",
-    "headlineRate": 0.06,
+    "headlineRate": 0.038,
     "baseRate": {
-      "grossRate": 0.06,
-      "afterTaxRate": 0.048
+      "grossRate": 0.038,
+      "afterTaxRate": 0.0304
     },
     "tierType": "flat",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.06,
-        "afterTaxRate": 0.048
+        "grossRate": 0.038,
+        "afterTaxRate": 0.0304
       }
     ],
     "conditions": [],
     "taxExempt": false,
     "payoutFrequency": "daily",
     "lockInDays": 0,
-    "riskLevel": "Low",
-    "pdic": true,
-    "insurer": "PDIC",
-    "lastVerified": "2026-04-20",
-    "affiliateUrl": "https://www.ownbank.com/",
-    "referralCode": "",
-    "payoutAmount": 0,
-    "trueValueScore": 3
-  },
-  {
-    "id": "ownbank-td-15d",
-    "name": "OwnBank Time Deposit 15-Day",
-    "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
-    "category": "banks",
-    "headlineRate": 0.04,
-    "baseRate": {
-      "grossRate": 0.04,
-      "afterTaxRate": 0.032
-    },
-    "tierType": "threshold",
-    "tiers": [
-      {
-        "minBalance": 0,
-        "maxBalance": null,
-        "grossRate": 0.04,
-        "afterTaxRate": 0.032
-      }
-    ],
-    "conditions": [],
-    "taxExempt": false,
-    "payoutFrequency": "at_maturity",
-    "lockInDays": 15,
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",

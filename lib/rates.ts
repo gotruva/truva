@@ -74,6 +74,14 @@ function salmonTermDefaults(months: number): Partial<RateProduct> {
   });
 }
 
+function ownbankTermDefaults(days: number): Partial<RateProduct> {
+  return bankDefaults('OwnBank', 'ownbank', {
+    payoutFrequency: 'at_maturity',
+    lockInDays: days,
+    tierType: 'threshold',
+  });
+}
+
 const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
   'maya-bank:maya-savings': { publicId: 'maya-savings' },
   'maya-bank:maya-time-deposit-plus': { publicId: 'maya-td-6mo', preferSeedName: true },
@@ -195,24 +203,14 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
     publicId: 'ownbank-savings',
     defaults: bankDefaults('OwnBank', 'ownbank', { name: 'OwnBank Savings', tierType: 'flat' }),
   },
-  'ownbank:ownbank-time-deposit': {
-    publicId: 'ownbank-time-deposit',
-    defaults: bankDefaults('OwnBank', 'ownbank', {
-      name: 'OwnBank Time Deposit',
-      payoutFrequency: 'at_maturity',
-      lockInDays: 365,
-      tierType: 'flat',
-    }),
-  },
-  'ownbank-time-deposit': {
-    publicId: 'ownbank-time-deposit',
-    defaults: bankDefaults('OwnBank', 'ownbank', {
-      name: 'OwnBank Time Deposit',
-      payoutFrequency: 'at_maturity',
-      lockInDays: 365,
-      tierType: 'flat',
-    }),
-  },
+  'ownbank-td-15d':  { publicId: 'ownbank-td-15d',  defaults: ownbankTermDefaults(15)  },
+  'ownbank-td-30d':  { publicId: 'ownbank-td-30d',  defaults: ownbankTermDefaults(30)  },
+  'ownbank-td-60d':  { publicId: 'ownbank-td-60d',  defaults: ownbankTermDefaults(60)  },
+  'ownbank-td-90d':  { publicId: 'ownbank-td-90d',  defaults: ownbankTermDefaults(90)  },
+  'ownbank-td-180d': { publicId: 'ownbank-td-180d', defaults: ownbankTermDefaults(180) },
+  'ownbank-td-360d': { publicId: 'ownbank-td-360d', defaults: ownbankTermDefaults(360) },
+  'ownbank:ownbank-time-deposit': { publicId: 'ownbank-td-360d', preferSeedName: true, defaults: ownbankTermDefaults(360) },
+  'ownbank-time-deposit':         { publicId: 'ownbank-td-360d', preferSeedName: true, defaults: ownbankTermDefaults(360) },
   'komo:komo-savings': { publicId: 'komo-savings' },
   'diskartech:diskartech-savings': { publicId: 'diskartech-savings' },
   'banko:banko-todo-savings': { publicId: 'bpi-banko-savings' },
