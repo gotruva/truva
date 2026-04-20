@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { AffiliateButton } from './AffiliateButton';
 import { Lock, ShieldCheck, AlertTriangle, Calendar, ChevronDown, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatRate, formatPHP } from '@/utils/yieldEngine';
+import { formatRate, formatPHP, computeEffectiveGrossRate } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
@@ -261,7 +261,7 @@ interface BankCardProps {
 export function BankCard({ provider, logo, products, bestEffectiveRate, bestReturn, rank, amount, months, insurer, isExpanded, onToggle, isRecommended }: BankCardProps) {
 
   const best = products[0];
-  const headlineGross = best.headlineRate;
+  const headlineGross = computeEffectiveGrossRate(amount, best);
 
   return (
     <div
@@ -333,7 +333,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
           <div className="flex items-end justify-between mt-2">
             <div>
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
-                Highest listed rate: {(headlineGross * 100).toFixed(2)}% gross
+                Effective rate: {(headlineGross * 100).toFixed(2)}% gross
               </div>
               <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight ${rank === 1 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
                 {formatRate(bestEffectiveRate)}

@@ -25,7 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { computeEffectiveRate, computeReturn, formatPHP, formatRate } from '@/utils/yieldEngine';
+import { computeEffectiveGrossRate, computeEffectiveRate, computeReturn, formatPHP, formatRate } from '@/utils/yieldEngine';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
@@ -385,7 +385,7 @@ export function RateTable({
           {bankGroups.map((group, groupIndex) => {
             const isExpanded = expandedProvider === group.provider;
             const best = group.bestProduct;
-            const headlineGross = best.headlineRate;
+            const headlineGross = computeEffectiveGrossRate(numAmount, best);
             const isRecommended = group.products.some((product) => recommendedIds.includes(product.id));
 
             return (

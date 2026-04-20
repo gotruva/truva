@@ -136,6 +136,40 @@ export function computeEffectiveRate(
   return yearlyReturn / amount;
 }
 
+export function computeEffectiveGrossRate(
+  amount: number,
+  product: RateProduct
+): number {
+  if (amount <= 0 || product.tiers.length === 0) return 0;
+
+  if (product.tierType === 'flat') {
+    return product.tiers[0]?.grossRate ?? product.baseRate.grossRate;
+  }
+
+  if (product.tierType === 'threshold') {
+    const applicableTier = findThresholdTier(amount, product.tiers);
+    return applicableTier?.grossRate ?? 0;
+  }
+
+  // Blended case: compute total gross yearly return then divide by amount
+  let remaining = amount;
+  let totalGrossYearly = 0;
+
+  for (const tier of product.tiers) {
+    if (remaining <= 0) break;
+
+    const tierCapacity = tier.maxBalance !== null
+      ? tier.maxBalance - tier.minBalance
+      : Infinity;
+    const tierAmount = Math.min(remaining, tierCapacity);
+
+    totalGrossYearly += tierAmount * tier.grossRate;
+    remaining -= tierAmount;
+  }
+
+  return totalGrossYearly / amount;
+}
+
 export function computeBaseReturn(
   amount: number,
   product: RateProduct,
