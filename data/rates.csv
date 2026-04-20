@@ -26,8 +26,13 @@ maribank-savings,MariBank Savings,MariBank,banks,standard,3.75,3.25,1000001,3.75
 maribank-td-3mo,MariBank Time Deposit 3-Month,MariBank,banks,standard,3.75,3.75,,,"Maximum ₱1,000,000.",91,yes,PDIC,#,2026-04-03
 uniondigital-savings,UnionDigital Savings,UnionDigital Bank,banks,standard,3.25,3,5000001,3.25,no conditions,0,yes,PDIC,#,2026-04-03
 uniondigital-td,UD Time Deposit,UnionDigital Bank,banks,standard,3.15,3.15,,,"Terms: 30-59d (3.15%) | 60-89d (3.10%) | 90-119d (3.00%) | 120-179d (2.75%) | 180-364d (2.65%) | 1yr (2.50%). Min ₱1,000. Headline is 30-59 day rate.",30,yes,PDIC,#,2026-04-03
-salmon-td-6mo,Salmon Bank Time Deposit 6-Month,Salmon Bank,banks,standard,6,6,,,"Min ₱50,000. Monthly payout. 6% applies to all balance tiers for 6-month term. BSP-licensed rural bank.",182,yes,PDIC,#,2026-04-03
-salmon-td-12mo,Salmon Bank Time Deposit 12-Month,Salmon Bank,banks,standard,8,6,1000000,8,"Min ₱50,000. Monthly payout. ₱50k-₱499k: 6% | ₱500k-₱999k: 6.5% | ₱1M+: 8%. Same rates for 2-5yr terms. BSP-licensed rural bank.",365,yes,PDIC,#,2026-04-03
+salmon-td-6mo,Salmon Bank Time Deposit 6-Month,Salmon Bank,banks,standard,6.06,6.06,,,"Min ₱5,000. Effective annual rate when monthly interest remains in TD. Applies to all balance tiers.",182,yes,PDIC,#,2026-04-20
+salmon-td-9mo,Salmon Bank Time Deposit 9-Month,Salmon Bank,banks,standard,6.10,6.10,,,"Min ₱5,000. Effective annual rate when monthly interest remains in TD. Applies to all balance tiers.",274,yes,PDIC,#,2026-04-20
+salmon-td-12mo,Salmon Bank Time Deposit 12-Month,Salmon Bank,banks,standard,8.24,6.13,1000000,8.24,"Min ₱5,000. Effective annual rates: ₱5k-₱499k 6.13% | ₱500k-₱999k 6.66% | ₱1M-₱50M 8.24%.",365,yes,PDIC,#,2026-04-20
+salmon-td-24mo,Salmon Bank Time Deposit 24-Month,Salmon Bank,banks,standard,8.51,6.28,1000000,8.51,"Min ₱5,000. Effective annual rates: ₱5k-₱499k 6.28% | ₱500k-₱999k 6.83% | ₱1M-₱50M 8.51%.",730,yes,PDIC,#,2026-04-20
+salmon-td-36mo,Salmon Bank Time Deposit 36-Month,Salmon Bank,banks,standard,8.79,6.44,1000000,8.79,"Min ₱5,000. Effective annual rates: ₱5k-₱499k 6.44% | ₱500k-₱999k 7.02% | ₱1M-₱50M 8.79%.",1095,yes,PDIC,#,2026-04-20
+salmon-td-48mo,Salmon Bank Time Deposit 48-Month,Salmon Bank,banks,standard,9.09,6.60,1000000,9.09,"Min ₱5,000. Effective annual rates: ₱5k-₱499k 6.60% | ₱500k-₱999k 7.21% | ₱1M-₱50M 9.09%.",1460,yes,PDIC,#,2026-04-20
+salmon-td-60mo,Salmon Bank Time Deposit 60-Month,Salmon Bank,banks,standard,9.40,6.77,1000000,9.40,"Min ₱5,000. Effective annual rates: ₱5k-₱499k 6.77% | ₱500k-₱999k 7.41% | ₱1M-₱50M 9.40%.",1825,yes,PDIC,#,2026-04-20
 netbank-savings,Netbank Savings,Netbank,banks,standard,3.25,3.25,,,"Daily interest crediting and compounding.",0,yes,PDIC,#,2026-04-03
 netbank-td-6mo,Netbank Time Deposit 6-Month,Netbank,banks,standard,4.5,4.5,,,no conditions,182,yes,PDIC,#,2026-04-03
 netbank-td-12mo,Netbank Time Deposit 12-Month,Netbank,banks,standard,5,5,,,no conditions,365,yes,PDIC,#,2026-04-03

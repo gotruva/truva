@@ -1040,10 +1040,10 @@
     "provider": "Salmon Bank",
     "logo": "/logos/salmon.svg",
     "category": "banks",
-    "headlineRate": 0.06,
+    "headlineRate": 0.0606,
     "baseRate": {
-      "grossRate": 0.06,
-      "afterTaxRate": 0.048
+      "grossRate": 0.0606,
+      "afterTaxRate": 0.04848
     },
     "tierType": "threshold",
     "tiers": [
@@ -1067,7 +1067,46 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://salmon.ph/",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "salmon-td-9mo",
+    "name": "Salmon Bank Time Deposit 9-Month",
+    "provider": "Salmon Bank",
+    "logo": "/logos/salmon.svg",
+    "category": "banks",
+    "headlineRate": 0.061,
+    "baseRate": {
+      "grossRate": 0.061,
+      "afterTaxRate": 0.0488
+    },
+    "tierType": "threshold",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": null,
+        "grossRate": 0.061,
+        "afterTaxRate": 0.0488
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Minimum ₱5,000. Effective annual rate when monthly interest is left in the Time Deposit. 6.10% p.a. applies to all balance tiers for the 9-month term. BSP-licensed rural bank, PDIC insured.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "monthly",
+    "lockInDays": 274,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
     "affiliateUrl": "https://salmon.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -1119,6 +1158,159 @@
     "pdic": true,
     "insurer": "PDIC",
     "lastVerified": "2026-04-10",
+    "affiliateUrl": "https://salmon.ph/",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "salmon-td-24mo",
+    "name": "Salmon Bank Time Deposit 24-Month",
+    "provider": "Salmon Bank",
+    "logo": "/logos/salmon.svg",
+    "category": "banks",
+    "headlineRate": 0.0851,
+    "baseRate": {
+      "grossRate": 0.0628,
+      "afterTaxRate": 0.05024
+    },
+    "tierType": "threshold",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 499999,
+        "grossRate": 0.0628,
+        "afterTaxRate": 0.05024
+      },
+      {
+        "minBalance": 500000,
+        "maxBalance": 999999,
+        "grossRate": 0.0683,
+        "afterTaxRate": 0.05464
+      },
+      {
+        "minBalance": 1000000,
+        "maxBalance": 50000000,
+        "grossRate": 0.0851,
+        "afterTaxRate": 0.06808
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Minimum ₱5,000. Effective annual rates when monthly interest is left in the Time Deposit: ₱5k–₱499k: 6.28%, ₱500k–₱999k: 6.83%, ₱1M–₱50M: 8.51%. BSP-licensed rural bank, PDIC insured.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "monthly",
+    "lockInDays": 730,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://salmon.ph/",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "salmon-td-36mo",
+    "name": "Salmon Bank Time Deposit 36-Month",
+    "provider": "Salmon Bank",
+    "logo": "/logos/salmon.svg",
+    "category": "banks",
+    "headlineRate": 0.0879,
+    "baseRate": {
+      "grossRate": 0.0644,
+      "afterTaxRate": 0.05152
+    },
+    "tierType": "threshold",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 499999,
+        "grossRate": 0.0644,
+        "afterTaxRate": 0.05152
+      },
+      {
+        "minBalance": 500000,
+        "maxBalance": 999999,
+        "grossRate": 0.0702,
+        "afterTaxRate": 0.05616
+      },
+      {
+        "minBalance": 1000000,
+        "maxBalance": 50000000,
+        "grossRate": 0.0879,
+        "afterTaxRate": 0.07032
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Minimum ₱5,000. Effective annual rates when monthly interest is left in the Time Deposit: ₱5k–₱499k: 6.44%, ₱500k–₱999k: 7.02%, ₱1M–₱50M: 8.79%. BSP-licensed rural bank, PDIC insured.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "monthly",
+    "lockInDays": 1095,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://salmon.ph/",
+    "referralCode": "",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "salmon-td-48mo",
+    "name": "Salmon Bank Time Deposit 48-Month",
+    "provider": "Salmon Bank",
+    "logo": "/logos/salmon.svg",
+    "category": "banks",
+    "headlineRate": 0.0909,
+    "baseRate": {
+      "grossRate": 0.066,
+      "afterTaxRate": 0.0528
+    },
+    "tierType": "threshold",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 499999,
+        "grossRate": 0.066,
+        "afterTaxRate": 0.0528
+      },
+      {
+        "minBalance": 500000,
+        "maxBalance": 999999,
+        "grossRate": 0.0721,
+        "afterTaxRate": 0.05768
+      },
+      {
+        "minBalance": 1000000,
+        "maxBalance": 50000000,
+        "grossRate": 0.0909,
+        "afterTaxRate": 0.07272
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "Minimum ₱5,000. Effective annual rates when monthly interest is left in the Time Deposit: ₱5k–₱499k: 6.60%, ₱500k–₱999k: 7.21%, ₱1M–₱50M: 9.09%. BSP-licensed rural bank, PDIC insured.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "monthly",
+    "lockInDays": 1460,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
     "affiliateUrl": "https://salmon.ph/",
     "referralCode": "",
     "payoutAmount": 0,

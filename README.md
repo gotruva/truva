@@ -34,7 +34,7 @@ As of April 20, 2026, Truva's public bank-rate source of truth is Supabase `prod
 - Raw snapshot: 46 products across 17 providers
 - Key files: `lib/rates.ts`, `lib/rate-review.ts`, `scripts/verify-rate-pipeline.ts`
 - Scraper workspace: `/Users/albertoaldaba/truva-scraping`
-- Salmon scraper status: normalized TD output emits approved `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo` with aggregated effective/compounded tiers
+- Salmon scraper status: normalized TD output supports the official 6/9/12/24/36/48/60-month terms with aggregated effective/compounded tiers
 - Threshold calculator status: PHP 500,000 on `salmon-td-60mo` uses the PHP 500k-999,999 tier, 7.41% gross / 5.928% after tax
 - MVP hydration preserves scraper `validUntil` as promo condition expiry
 
