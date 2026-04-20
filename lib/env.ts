@@ -14,22 +14,6 @@ const optional = [
 // vars are only injected at runtime (e.g. on Vercel). Throw only at runtime.
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
-for (const key of critical) {
-  if (!process.env[key]) {
-    if (isBuildPhase) {
-      console.warn(`Build: missing env var ${key} — required at runtime.`);
-    } else {
-      throw new Error(`Missing required environment variable: ${key}. Check your .env.local file.`);
-    }
-  }
-}
-
-for (const key of optional) {
-  if (!process.env[key]) {
-    console.warn(`Missing optional env var: ${key} — related features will be disabled.`);
-  }
-}
-
 export const env = {
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
@@ -37,6 +21,24 @@ export const env = {
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
 };
 
+// We check these after defining the 'env' object to ensure static replacement 
+// by the bundler (Next.js/Turbopack) works correctly on the client.
+if (!isBuildPhase) {
+  if (!env.NEXT_PUBLIC_SUPABASE_URL) {
+    throw new Error('Missing required environment variable: NEXT_PUBLIC_SUPABASE_URL. Check your .env.local file.');
+  }
+  if (!env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    throw new Error('Missing required environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY. Check your .env.local file.');
+  }
+}
+
+// Optional warns
+if (!isBuildPhase) {
+  if (!env.SUPABASE_SERVICE_ROLE_KEY) console.warn('Missing optional env var: SUPABASE_SERVICE_ROLE_KEY');
+  if (!env.RESEND_API_KEY) console.warn('Missing optional env var: RESEND_API_KEY');
+}
+
 export function hasSupabaseEnv() {
   return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
+

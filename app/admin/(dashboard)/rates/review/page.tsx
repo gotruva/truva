@@ -9,10 +9,6 @@ export const dynamic = 'force-dynamic';
 const BULK_ACTION_CAP = 25;
 const RATE_SURFACE_PATHS = ['/', '/banking', '/banking/rates', '/calculator', '/api/rates'];
 
-function isReviewUiEnabled() {
-  return process.env.TRUVA_ENABLE_STAGING_REVIEW_UI === 'true' || process.env.NODE_ENV === 'development';
-}
-
 function getOptionalText(value: FormDataEntryValue | null) {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
@@ -203,7 +199,6 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
 
 async function approveReviewAction(formData: FormData) {
   'use server';
-  if (!isReviewUiEnabled()) throw new Error('Review dashboard is disabled.');
   const reviewQueueId = getOptionalText(formData.get('reviewQueueId'));
   if (!reviewQueueId) throw new Error('Missing review queue ID for approval.');
   await applyChangeReviewDecision(reviewQueueId, 'approved', getOptionalText(formData.get('notes')));
@@ -212,7 +207,6 @@ async function approveReviewAction(formData: FormData) {
 
 async function rejectReviewAction(formData: FormData) {
   'use server';
-  if (!isReviewUiEnabled()) throw new Error('Review dashboard is disabled.');
   const reviewQueueId = getOptionalText(formData.get('reviewQueueId'));
   if (!reviewQueueId) throw new Error('Missing review queue ID for rejection.');
   await applyChangeReviewDecision(reviewQueueId, 'rejected', getOptionalText(formData.get('notes')));
@@ -221,7 +215,6 @@ async function rejectReviewAction(formData: FormData) {
 
 async function approveAllAction(formData: FormData) {
   'use server';
-  if (!isReviewUiEnabled()) throw new Error('Review dashboard is disabled.');
   const confirm = getOptionalText(formData.get('confirm'));
   if (confirm !== 'APPROVE_ALL') throw new Error('Bulk approve requires the confirmation token APPROVE_ALL.');
   const rawIds = getOptionalText(formData.get('reviewQueueIds'));
@@ -237,7 +230,6 @@ async function approveAllAction(formData: FormData) {
 
 async function rejectAllAction(formData: FormData) {
   'use server';
-  if (!isReviewUiEnabled()) throw new Error('Review dashboard is disabled.');
   const confirm = getOptionalText(formData.get('confirm'));
   if (confirm !== 'REJECT_ALL') throw new Error('Bulk reject requires the confirmation token REJECT_ALL.');
   const rawIds = getOptionalText(formData.get('reviewQueueIds'));
@@ -253,7 +245,6 @@ async function rejectAllAction(formData: FormData) {
 
 async function publishToProductionAction() {
   'use server';
-  if (!isReviewUiEnabled()) throw new Error('Review dashboard is disabled.');
   await buildAndPromoteRateSnapshot();
   for (const path of RATE_SURFACE_PATHS) {
     revalidatePath(path);
@@ -264,8 +255,6 @@ async function publishToProductionAction() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function RateReviewPage() {
-  if (!isReviewUiEnabled()) notFound();
-
   const queuedItems = await listQueuedChangeReviews();
   const allIds = queuedItems.map((item) => item.reviewQueueId).join(',');
   const bulkCapExceeded = queuedItems.length > BULK_ACTION_CAP;

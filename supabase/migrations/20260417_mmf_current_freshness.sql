@@ -1,3 +1,4 @@
+drop view if exists public.mmf_current cascade;
 create or replace view public.mmf_current as
 select
   f.id,

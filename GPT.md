@@ -60,8 +60,11 @@ Use this section to avoid re-discovering the rate pipeline:
 - `tierType` is now `flat | blended | threshold`; flat products should not be labeled as deposit-amount tiers, and threshold products must reject amounts outside a tier range.
 - Scraper repo `/Users/albertoaldaba/truva-scraping` has live parser hardening on `main` at `d566c16` plus Salmon TD normalization from April 20, 2026.
 - MVP repo `/Users/albertoaldaba/truva-mvp` has hydration dedupe on `main` at `ba82640`.
+- Admin Rate Catalog: Fixed category filtering mismatch between staging schema (`savings`, `time_deposit`) and UI (`digital_bank`).
+- Category Normalization: Catalog now uses inclusive filtering to handle both granular and aggregate categories (`banks`, `govt`, `uitf`, `defi`, `credit-card`).
 - Last queue decision: approved Salmon effective/compounded TD tiers for `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`. Previous rejects remain stale Tonik 12-month 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
 - Salmon scraper emits `salmon-savings`, `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`; the TD products aggregate balance tiers under seed-backed public IDs. At PHP 500,000, `salmon-td-60mo` must use 7.41% gross / 5.928% after tax, not the PHP 1M+ 9.40% tier. Legacy one-tier Salmon IDs are mapped/deduped into canonical IDs.
+- Admin Catalog filtering logic hardened to handle `savings`, `time_deposit`, `banks`, `digital_bank`, and `traditional_bank` under a unified 'Banks' view. Similar normalization applied to `govt`, `uitf`, and `defi` categories.
 
 ---
 

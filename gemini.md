@@ -31,6 +31,8 @@
 - Affiliate CTAs with disclosure on every product
 - Dark mode, GA4, SEO structured data, security headers
 - Supabase auth skeleton (middleware in place, tables not yet created)
+- Admin Rate Catalog: Fixed category filtering mismatch between staging schema (`savings`, `time_deposit`) and UI (`digital_bank`).
+- Category Normalization: Catalog now uses inclusive filtering to handle both granular and aggregate categories.
 
 ### Stubbed / placeholder (routes exist, not built)
 - `/optimizer` — PDIC Smart Split Optimizer
@@ -153,6 +155,7 @@ If any condition isn't met by Month 6, Phase 2 is deferred. No partial credit ca
 - `RateProduct.tierType` is `flat | blended | threshold`. Flat products must render as flat rate, and threshold products must not qualify deposits outside the tier min/max range.
 - Latest review pass approved Salmon effective/compounded TD tiers for `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`. Previous rejects remain stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
 - Salmon scraper emits `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo` with aggregated tiers under existing seed-backed public IDs. At PHP 500,000, `salmon-td-60mo` should use 7.41% gross / 5.928% after tax; the PHP 1M+ 9.40% tier must not qualify.
+- Admin Catalog filtering logic hardened to handle `savings`, `time_deposit`, `banks`, `digital_bank`, and `traditional_bank` under a unified 'Banks' view. Similar normalization applied to `govt`, `uitf`, and `defi` categories.
 
 ---
 

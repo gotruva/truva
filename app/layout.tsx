@@ -7,6 +7,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { PublicChrome } from '@/components/PublicChrome';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -63,11 +64,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={cn('font-sans antialiased text-brand-textPrimary', spaceGrotesk.variable, inter.variable)}>
       <body className="flex flex-col min-h-screen bg-brand-surface dark:bg-slate-950 overflow-x-hidden transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
-          <Navbar />
+          <PublicChrome><Navbar /></PublicChrome>
           <main className="flex-1 w-full text-brand-textPrimary dark:text-gray-100">
             {children}
           </main>
-          <Footer />
+          <PublicChrome><Footer /></PublicChrome>
         </ThemeProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

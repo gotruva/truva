@@ -153,6 +153,7 @@ on conflict (slug) do update set
   is_active = excluded.is_active,
   updated_at = now();
 
+drop view if exists public.mmf_current cascade;
 create or replace view public.mmf_current as
 select
   f.id,

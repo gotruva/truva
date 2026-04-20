@@ -434,3 +434,23 @@ export async function buildAndPromoteRateSnapshot(): Promise<PublishResult> {
     generatedAt: staging.out_generated_at,
   };
 }
+
+export async function rollbackToSnapshot(snapshotId: string): Promise<PublishResult> {
+  const client = createSupabaseAdminClient('public');
+  if (!client) throw new Error('Missing Supabase admin environment variables.');
+
+  const { data: productionData, error: productionError } = await client.rpc('promote_specific_snapshot', {
+    source_snapshot_id: snapshotId,
+  });
+  if (productionError) throw productionError;
+  if (!productionData?.[0]) throw new Error('promote_specific_snapshot returned no result.');
+
+  const result = productionData[0] as any;
+
+  return {
+    stagingSnapshotId: result.out_snapshot_id,
+    productCount: result.out_product_count,
+    providerCount: result.out_provider_count,
+    generatedAt: result.out_generated_at,
+  };
+}

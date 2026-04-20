@@ -36,9 +36,11 @@ export async function updateSession(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with cross-browser cookies.
 
+  console.log('[updateSession] Fetching user...');
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  console.log('[updateSession] User fetch complete.');
 
   return { supabaseResponse, user }
 }

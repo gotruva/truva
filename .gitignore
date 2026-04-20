@@ -40,3 +40,8 @@ dev-server.err
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.claude/settings.local.json
+scratch/
+scratch.js
+scratch-approve.ts
