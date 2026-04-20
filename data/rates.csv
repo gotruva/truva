@@ -15,7 +15,8 @@ tonik-td-12mo,Tonik Time Deposit 12-Month,Tonik Digital Bank,banks,standard,8,8,
 tonik-td-18mo,Tonik Time Deposit 18-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,548,yes,PDIC,#,2026-04-03
 tonik-td-24mo,Tonik Time Deposit 24-Month,Tonik Digital Bank,banks,standard,6,6,,,no conditions,730,yes,PDIC,#,2026-04-03
 uno-ready,#UNOready,UNO Digital Bank,banks,standard,3.5,3,5000,3.5,"3% below ₱5k. 3.5% for ₱5k–₱4.99M. 1% for ₱5M+. Interest credited daily.",0,yes,PDIC,#,2026-04-03
-uno-td-365,#UNOearn,UNO Digital Bank,banks,standard,5.25,5.25,,,"12 or 24-month terms. Monthly interest paid out to #UNOready account.",365,yes,PDIC,#,2026-04-03
+uno-td-365,#UNOearn 12-Month,UNO Digital Bank,banks,standard,4.75,4.75,,,"12-month term. Monthly interest paid out to #UNOready account. Min ₱5,000; max ₱500,000.",365,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
+uno-td-730,#UNOearn 24-Month,UNO Digital Bank,banks,standard,5.00,5.00,,,"24-month term. Monthly interest paid out to #UNOready account. Min ₱5,000; max ₱500,000.",730,yes,PDIC,https://www.uno.bank/time-deposit/,2026-04-20
 gotyme-savings,GoSave,GoTyme Bank,banks,standard,3,3,,,no conditions,0,yes,PDIC,#,2026-04-03
 cimb-gsave,GSave,CIMB / GCash,banks,standard,2.6,2.6,,,"Interest paid out monthly.",0,yes,PDIC,#,2026-04-03
 cimb-maxsave-3mo,CIMB MaxSave 3-Month,CIMB Bank Philippines,banks,standard,4.25,4.25,,,"CIMBPrime/Biz accounts earn 4.75% for this term.",91,yes,PDIC,#,2026-04-03

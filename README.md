@@ -29,12 +29,13 @@ If you are an AI model (Gemini, Claude, GPT) or a developer joining the project,
 
 As of April 20, 2026, Truva's public bank-rate source of truth is Supabase `production` snapshots. `data/rates.json` is still the manual/seed catalog for metadata fallback and non-scraper products.
 
-- Latest production snapshot: `bd3fb21c-a136-42b5-9386-8c96bfb635a5`
-- Public API: 36 hydrated products, no duplicate public IDs
-- Raw snapshot: 46 products across 17 providers
+- Latest production snapshot: `cd66e6b9-edf8-493d-889e-98085cba0f2e`
+- Public API: 47 hydrated products, no duplicate public IDs
+- Raw snapshot: 57 products across 17 providers
 - Key files: `lib/rates.ts`, `lib/rate-review.ts`, `scripts/verify-rate-pipeline.ts`
 - Scraper workspace: `/Users/albertoaldaba/truva-scraping`
 - Salmon scraper status: normalized TD output supports the official 6/9/12/24/36/48/60-month terms with aggregated effective/compounded tiers
+- UNO #UNOearn status: term-specific scraper output supports 12 months at 4.75% and 24 months at 5.00%; the old generic UNO time-deposit staging product is disabled
 - Threshold calculator status: PHP 500,000 on `salmon-td-60mo` uses the PHP 500k-999,999 tier, 7.41% gross / 5.928% after tax
 - MVP hydration preserves scraper `validUntil` as promo condition expiry
 

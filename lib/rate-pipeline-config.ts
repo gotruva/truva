@@ -60,6 +60,7 @@ const PROVIDER_DEFINITIONS: RateProviderDefinition[] = [
     sources: [
       { kind: 'product_page', url: 'https://www.uno.bank/', parseStrategy: 'html' },
       { kind: 'product_page', url: 'https://www.uno.bank/savings-account/', parseStrategy: 'html' },
+      { kind: 'product_page', url: 'https://www.uno.bank/time-deposit/', parseStrategy: 'html' },
     ],
   },
   {
@@ -407,4 +408,3 @@ export function inferSeedProductType(rate: RateProduct): string {
 export function listRateProviderDefinitions(): RateProviderDefinition[] {
   return [...PROVIDER_DEFINITIONS];
 }
-

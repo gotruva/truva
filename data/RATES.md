@@ -12,7 +12,7 @@ Last verified: **2026-04-01**
 |---|---|---|---|---|
 | Maya Bank | Maya Savings | **15%** (up to ₱100k) | 12% | Must spend ₱500–₱35,000/month via Maya to unlock. Above ₱100k drops to 2.5% gross / 2% after-tax |
 | Tonik | Tonik Stash | **4%** | 3.2% | No conditions, fully liquid |
-| UNO Digital Bank | #UNOearn | **5.75%** | 4.6% | 365-day lock-in (time deposit) |
+| UNO Digital Bank | #UNOearn | **5.00%** | 4.0% | 24-month lock-in; 12-month term is 4.75% gross / 3.8% after tax |
 | GoTyme Bank | GoSave | **3.5%** | 2.8% | No conditions, fully liquid |
 | CIMB / GCash | GSave | **2.5%** | 2% | No conditions, fully liquid |
 | MariBank | MariBank Savings | **2.6%** | 2.08% | No conditions, fully liquid |

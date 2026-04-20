@@ -947,8 +947,12 @@ function extractUNOBankCandidates(artifacts: LocalRateArtifact[], seedRates: Map
   const verifiedDate = new Date().toISOString().slice(0, 10);
   const candidates: ExtractedRateCandidate[] = [];
   const savingsSeed = seedRates.get('uno-ready');
-  const tdSeed = seedRates.get('uno-td-365');
+  const tdSeeds = [
+    { seed: seedRates.get('uno-td-365'), months: 12 },
+    { seed: seedRates.get('uno-td-730'), months: 24 },
+  ] as const;
   const savingsArtifact = artifacts.find(a => a.sourceUrl.includes('savings'));
+  const tdArtifact = artifacts.find(a => a.sourceUrl.includes('time-deposit'));
   
   if (savingsSeed) {
     const nextRate = deepCloneRate(savingsSeed);
@@ -967,20 +971,34 @@ function extractUNOBankCandidates(artifacts: LocalRateArtifact[], seedRates: Map
     });
   }
 
-  if (tdSeed) {
+  for (const { seed: tdSeed, months } of tdSeeds) {
+    if (!tdSeed) continue;
+
     const nextRate = deepCloneRate(tdSeed);
-    const headlineHtml = savingsArtifact ? extractPercentValue(savingsArtifact.html, /UNOearn[\s\S]{0,300}?([0-9.]+)%\s*p\.?a/i) : null;
+    const text = tdArtifact ? stripTags(tdArtifact.html) : '';
+    const headlineHtml = text
+      ? extractPercentValue(text, new RegExp(`([0-9.]+)%\\s+for\\s+a?\\s*${months}-month term`, 'i'))
+      : null;
     const headline = headlineHtml ?? tdSeed.headlineRate;
-    nextRate.headlineRate = Math.max(tdSeed.headlineRate, headline);
+    nextRate.headlineRate = headline;
+    nextRate.baseRate = {
+      grossRate: headline,
+      afterTaxRate: calcAfterTax(headline),
+    };
+    nextRate.tiers = nextRate.tiers.map((tier) => ({
+      ...tier,
+      grossRate: headline,
+      afterTaxRate: calcAfterTax(headline),
+    }));
     nextRate.lastVerified = verifiedDate;
     candidates.push({
       productId: nextRate.id,
       structuredPayload: nextRate,
-      rawPayload: { parserVersion: EXTRACTION_VERSION, productKind: 'unobank_td', sourceUrl: savingsArtifact?.sourceUrl || '', extracted: { headline } },
-      rawText: `UNOearn extracted as ${formatPercent(headline)} p.a.`,
-      facts: buildFactsFromRate(nextRate, {}, { evidenceText: `Parsed UNOearn rate.`, sourceUrl: savingsArtifact?.sourceUrl || '', confidence: 0.9 }, []),
+      rawPayload: { parserVersion: EXTRACTION_VERSION, productKind: 'unobank_td', sourceUrl: tdArtifact?.sourceUrl || '', extracted: { headline, months } },
+      rawText: `UNOearn ${months}-month extracted as ${formatPercent(headline)} p.a.`,
+      facts: buildFactsFromRate(nextRate, {}, { evidenceText: `Parsed UNOearn ${months}-month rate.`, sourceUrl: tdArtifact?.sourceUrl || '', confidence: 0.9 }, []),
       materialSignature: buildMaterialSignature(nextRate),
-      summary: `Detected UNOearn Time Deposit rate of ${formatPercent(headline)} p.a.`,
+      summary: `Detected UNOearn ${months}-month Time Deposit rate of ${formatPercent(headline)} p.a.`,
     });
   }
   return candidates;
@@ -1090,4 +1108,3 @@ export function formatRateDiffSummary(product: RateProduct, diffs: RateMaterialD
   const fields = diffs.map((diff) => diff.field).join(', ');
   return `${product.provider} ${product.name}: detected ${diffs.length} material change(s) in ${fields}.`;
 }
-

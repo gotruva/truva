@@ -74,6 +74,20 @@ function salmonTermDefaults(months: number): Partial<RateProduct> {
   });
 }
 
+function unoEarnDefaults(months: 12 | 24): Partial<RateProduct> {
+  return bankDefaults('UNO Digital Bank', 'uno-digital-bank', {
+    name: `#UNOearn ${months}-Month`,
+    payoutFrequency: 'monthly',
+    lockInDays: months === 12 ? 365 : 730,
+    tierType: 'flat',
+    conditions: [{
+      type: 'none',
+      description: `${months}-month #UNOearn term. Monthly interest paid out to your #UNOready account.`,
+      expiresAt: null,
+    }],
+  });
+}
+
 const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
   'maya-bank:maya-savings': { publicId: 'maya-savings' },
   'maya-bank:maya-time-deposit-plus': { publicId: 'maya-td-6mo', preferSeedName: true },
@@ -109,6 +123,10 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
   'ofbank:ofbank-savings': { publicId: 'ofbank-savings' },
   'uno-digital-bank:uno-savings': { publicId: 'uno-ready' },
   'uno-savings': { publicId: 'uno-ready' },
+  'uno-digital-bank:uno-earn-12mo': { publicId: 'uno-td-365', preferSeedName: true, defaults: unoEarnDefaults(12) },
+  'uno-earn-12mo': { publicId: 'uno-td-365', preferSeedName: true, defaults: unoEarnDefaults(12) },
+  'uno-digital-bank:uno-earn-24mo': { publicId: 'uno-td-730', preferSeedName: true, defaults: unoEarnDefaults(24) },
+  'uno-earn-24mo': { publicId: 'uno-td-730', preferSeedName: true, defaults: unoEarnDefaults(24) },
   'uno-digital-bank:uno-time-deposit': { publicId: 'uno-td-365', preferSeedName: true },
   'uno-time-deposit': { publicId: 'uno-td-365', preferSeedName: true },
   'maribank:maribank-savings': { publicId: 'maribank-savings' },
@@ -319,7 +337,7 @@ function providerSlug(sourceProductId: string | null, snapshot: SnapshotRecord) 
 
 function inferLockInDays(productId: string, productName: string) {
   const normalized = `${productId} ${productName}`.toLowerCase();
-  const monthMatch = normalized.match(/(?:td-|time deposit[^0-9]*)(\d{1,2})m|(\d{1,2})\s*month/);
+  const monthMatch = normalized.match(/(?:td-|time deposit[^0-9]*)(\d{1,2})m|(\d{1,2})[-\s]*month/);
   const months = Number.parseInt(monthMatch?.[1] ?? monthMatch?.[2] ?? '', 10);
   if (Number.isFinite(months) && months > 0) return Math.round((365 / 12) * months);
   if (normalized.includes('time-deposit') || normalized.includes('time deposit') || normalized.includes('maxsave')) return 365;

@@ -613,28 +613,28 @@
   },
   {
     "id": "uno-td-365",
-    "name": "#UNOearn",
+    "name": "#UNOearn 12-Month",
     "provider": "UNO Digital Bank",
     "logo": "/logos/uno.svg",
     "category": "banks",
-    "headlineRate": 0.0525,
+    "headlineRate": 0.0475,
     "baseRate": {
-      "grossRate": 0.0525,
-      "afterTaxRate": 0.042
+      "grossRate": 0.0475,
+      "afterTaxRate": 0.038
     },
-    "tierType": "threshold",
+    "tierType": "flat",
     "tiers": [
       {
-        "minBalance": 0,
-        "maxBalance": null,
-        "grossRate": 0.0525,
-        "afterTaxRate": 0.042
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.0475,
+        "afterTaxRate": 0.038
       }
     ],
     "conditions": [
       {
         "type": "none",
-        "description": "12 or 24-month terms. Monthly interest paid out to your #UNOready account.",
+        "description": "12-month #UNOearn term. Monthly interest paid out to your #UNOready account.",
         "expiresAt": null
       }
     ],
@@ -644,8 +644,47 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
-    "affiliateUrl": "https://www.uno.bank/",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
+    "referralCode": "UNO789",
+    "payoutAmount": 0,
+    "trueValueScore": 3
+  },
+  {
+    "id": "uno-td-730",
+    "name": "#UNOearn 24-Month",
+    "provider": "UNO Digital Bank",
+    "logo": "/logos/uno.svg",
+    "category": "banks",
+    "headlineRate": 0.05,
+    "baseRate": {
+      "grossRate": 0.05,
+      "afterTaxRate": 0.04
+    },
+    "tierType": "flat",
+    "tiers": [
+      {
+        "minBalance": 5000,
+        "maxBalance": 500000,
+        "grossRate": 0.05,
+        "afterTaxRate": 0.04
+      }
+    ],
+    "conditions": [
+      {
+        "type": "none",
+        "description": "24-month #UNOearn term. Monthly interest paid out to your #UNOready account.",
+        "expiresAt": null
+      }
+    ],
+    "taxExempt": false,
+    "payoutFrequency": "monthly",
+    "lockInDays": 730,
+    "riskLevel": "Low",
+    "pdic": true,
+    "insurer": "PDIC",
+    "lastVerified": "2026-04-20",
+    "affiliateUrl": "https://www.uno.bank/time-deposit/",
     "referralCode": "UNO789",
     "payoutAmount": 0,
     "trueValueScore": 3
