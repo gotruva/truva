@@ -3,7 +3,17 @@
     "allow": [
       "Bash(xargs -I {} jq \".[] | select\\(.id == \\\\\"{}\\\\\"\\)\" data/rates.json)",
       "Bash(npm install:*)",
-      "Bash(curl -s -I http://localhost:3000)"
+      "Bash(curl -s -I http://localhost:3000)",
+      "Bash(npm run *)",
+      "Bash(SUPABASE_URL=\"https://oyibmsakvgzinxwosxsh.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"REDACTED\" npm run extract -- --provider=maya-bank)",
+      "Bash(SUPABASE_URL=\"https://oyibmsakvgzinxwosxsh.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"REDACTED\" node dist/cli.js validate)",
+      "Bash(node -e ' *)",
+      "Bash(curl -s \"https://www.gotruva.com/api/rates\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(grep -o \"CIMB[^;]\\\\{0,50\\\\}\" /Users/albertoaldaba/truva-scraping/fixtures/deposits/cimb-gcash/gsave.sample.html)",
+      "Bash(grep -o \"gsave-bank shade-0\\\\\">2\\\\.[0-9]*%\\\\|Annual Interest Rate[^<]\\\\{0,200\\\\}CIMB\\\\|CIMB[^<]\\\\{0,80\\\\}Annual\\\\|popup-feature-card-value-7 gsave-bank shade-0\\\\\">[0-9.]*%\" /Users/albertoaldaba/truva-scraping/fixtures/deposits/cimb-gcash/gsave.sample.html)"
     ]
   }
 }
