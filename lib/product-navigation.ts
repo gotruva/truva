@@ -32,7 +32,7 @@ export const PRODUCT_NAVIGATION_ITEMS: ProductNavigationItem[] = [
     methodologyHref: '/methodology/credit-cards',
     editorialIntegrityHref: '/methodology/editorial-integrity',
     icon: CreditCard,
-    status: 'live',
+    status: 'coming-soon',
   },
   {
     id: 'loans',
@@ -42,6 +42,6 @@ export const PRODUCT_NAVIGATION_ITEMS: ProductNavigationItem[] = [
     methodologyHref: '/methodology/loans',
     editorialIntegrityHref: '/methodology/editorial-integrity',
     icon: HandCoins,
-    status: 'preview',
+    status: 'coming-soon',
   },
 ];

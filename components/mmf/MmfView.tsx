@@ -27,6 +27,7 @@ function FundSection({
   amount,
   isPrimary = false,
   benchmark,
+  phtDate,
 }: {
   title: string;
   description: string;
@@ -34,6 +35,7 @@ function FundSection({
   amount: number;
   isPrimary?: boolean;
   benchmark?: BenchmarkRate | null;
+  phtDate?: string;
 }) {
   const sortedFunds = useMemo(() => sortFunds(funds), [funds]);
   const topFund = sortedFunds[0];
@@ -100,12 +102,12 @@ function FundSection({
 
       <div className="md:hidden space-y-3">
         {sortedFunds.map((fund) => (
-          <MmfCard key={fund.id} fund={fund} amount={amount} />
+          <MmfCard key={fund.id} fund={fund} amount={amount} phtDate={phtDate} />
         ))}
       </div>
 
       <div className="hidden md:block">
-        <MmfTable funds={sortedFunds} amount={amount} />
+        <MmfTable funds={sortedFunds} amount={amount} phtDate={phtDate} />
       </div>
 
       {isPrimary ? (
@@ -121,10 +123,12 @@ export function MmfView({
   phpFunds,
   usdFunds,
   usdBenchmark,
+  phtDate,
 }: {
   phpFunds: MoneyMarketFund[];
   usdFunds: MoneyMarketFund[];
   usdBenchmark?: BenchmarkRate | null;
+  phtDate?: string;
 }) {
   const [amount, setAmount] = useState(MMF_DEFAULT_AMOUNT);
 
@@ -191,6 +195,7 @@ export function MmfView({
         funds={phpFunds}
         amount={amount}
         isPrimary
+        phtDate={phtDate}
       />
 
       <FundSection
@@ -199,6 +204,7 @@ export function MmfView({
         funds={usdFunds}
         amount={amount}
         benchmark={usdBenchmark}
+        phtDate={phtDate}
       />
     </div>
   );

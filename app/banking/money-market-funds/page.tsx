@@ -9,7 +9,6 @@ import {
   formatPhtDateTime,
   getLatestCheckedAt,
   getLatestRateDate,
-  getPhpUitfFreshnessIssues,
   getPhtDateString,
 } from '@/lib/mmf';
 
@@ -76,7 +75,6 @@ export default async function MoneyMarketFundsPage() {
   const usdFunds = funds.filter((fund) => fund.currency === 'USD');
   const phpUitfFunds = phpFunds.filter((fund) => fund.fund_type === 'UITF');
   const phtDate = getPhtDateString();
-  const freshnessIssues = getPhpUitfFreshnessIssues(phpFunds, phtDate);
   const latestCheckedAt = getLatestCheckedAt(phpUitfFunds) ?? getLatestCheckedAt(funds);
   const latestRateDate = getLatestRateDate(phpUitfFunds) ?? getLatestRateDate(funds);
 
@@ -162,37 +160,34 @@ export default async function MoneyMarketFundsPage() {
         </div>
       </section>
 
-      {loadError ? (
+      {loadError && (
         <div className="mb-6 rounded-2xl border border-danger/20 bg-danger/5 p-4 text-sm text-danger">
           <div className="flex gap-3">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
             <p>{loadError} The page will recover automatically when the live data service responds.</p>
           </div>
         </div>
-      ) : freshnessIssues.length > 0 ? (
-        <div className="mb-6 rounded-2xl border border-warning/20 bg-warning/5 p-4 text-sm text-brand-textPrimary dark:text-gray-100">
-          <div className="flex gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
-            <div>
-              <p className="font-semibold">Data update needs review</p>
-              <p className="mt-1 text-brand-textSecondary dark:text-gray-300">
-                {freshnessIssues.length} issue{freshnessIssues.length === 1 ? '' : 's'} found for {phtDate}.
-              </p>
-              <ul className="mt-2 space-y-1 text-xs text-brand-textSecondary dark:text-gray-300">
-                {freshnessIssues.slice(0, 4).map((issue) => (
-                  <li key={issue}>{issue}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      )}
 
-      <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} />
+      <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} phtDate={phtDate} />
 
-      <p className="mt-8 border-t border-brand-border pt-6 text-xs leading-relaxed text-brand-textSecondary/55 dark:border-white/10 dark:text-white/35">
-        Truva may earn referral fees when you open an account via our links. This does not affect our rankings. Yields are historical and not guaranteed. UITFs and mutual funds are <strong>not PDIC-insured</strong>. Past performance does not guarantee future results.
-      </p>
+      <div className="mt-8 space-y-3 border-t border-brand-border pt-6 dark:border-white/10">
+        <p className="text-xs leading-relaxed text-brand-textSecondary/55 dark:text-white/35">
+          Truva may earn referral fees when you open an account via our links. This does not affect our rankings. Yields are historical and not guaranteed. UITFs and mutual funds are <strong>not PDIC-insured</strong>. Past performance does not guarantee future results.
+        </p>
+        <p className="text-xs leading-relaxed text-brand-textSecondary/55 dark:text-white/35">
+          PHP UITF yield data sourced from{' '}
+          <a
+            href="https://uitf.com.ph"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-brand-textSecondary dark:hover:text-white/60"
+          >
+            uitf.com.ph
+          </a>
+          . Truva is not affiliated with or endorsed by uitf.com.ph.
+        </p>
+      </div>
     </main>
   );
 }

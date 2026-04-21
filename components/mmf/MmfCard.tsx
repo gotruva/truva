@@ -1,10 +1,12 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
 import { MoneyMarketFund } from '@/types';
 import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
+  getFundFreshnessIssue,
   redemptionLabel,
 } from '@/lib/mmf';
 import { MmfCtaButton } from './MmfCtaButton';
@@ -15,11 +17,14 @@ import { ProviderLogo } from './ProviderLogo';
 export function MmfCard({
   fund,
   amount,
+  phtDate,
 }: {
   fund: MoneyMarketFund;
   amount: number;
+  phtDate?: string;
 }) {
   const benchmarkDelta = fund.vs_benchmark;
+  const freshnessIssue = phtDate ? getFundFreshnessIssue(fund, phtDate) : null;
   const deltaPositive = (benchmarkDelta ?? 0) >= 0;
   const deltaColor =
     benchmarkDelta === null || benchmarkDelta === undefined
@@ -41,6 +46,12 @@ export function MmfCard({
               <p className="mt-1 truncate text-xs text-brand-textSecondary/60 dark:text-white/40">
                 {fund.provider} | {fund.fund_type}
               </p>
+              {freshnessIssue && (
+                <p className="mt-1.5 flex items-center gap-1 text-[10px] font-semibold text-warning/80">
+                  <AlertTriangle className="h-3 w-3 shrink-0" />
+                  {freshnessIssue}
+                </p>
+              )}
             </div>
           </div>
         </div>

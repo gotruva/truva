@@ -92,6 +92,20 @@ export function getLatestRateDate(funds: MoneyMarketFund[]) {
     .at(-1) ?? null;
 }
 
+export function getFundFreshnessIssue(fund: MoneyMarketFund, phtDate: string): string | null {
+  if (fund.currency !== 'PHP' || fund.fund_type !== 'UITF') return null;
+
+  const staleDate = fund.rate_date !== phtDate;
+  const unconfirmed = fund.data_source !== 'scraper';
+
+  if (!staleDate && !unconfirmed) return null;
+
+  const parts: string[] = [];
+  if (staleDate) parts.push(`rate as of ${formatPhtDate(fund.rate_date)}`);
+  if (unconfirmed) parts.push("pending today's update");
+  return parts.join(' · ');
+}
+
 export function getPhpUitfFreshnessIssues(funds: MoneyMarketFund[], phtDate: string) {
   return funds
     .filter((fund) => fund.currency === 'PHP' && fund.fund_type === 'UITF')

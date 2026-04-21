@@ -19,7 +19,7 @@ const TRUST_POINTS = [
   {
     icon: CheckCircle2,
     title: 'Easy side-by-side view',
-    description: 'Compare savings accounts and time deposits in one clean table.',
+    description: 'Compare savings accounts, time deposits, and money market funds in one view.',
   },
 ];
 
@@ -31,7 +31,7 @@ export function HeroSection({ formattedDate }: HeroSectionProps) {
       <div className="relative max-w-5xl mx-auto flex flex-col items-center text-center z-10">
         <div>
           <h1 className="mb-6 max-w-3xl text-4xl font-extrabold leading-[1.1] tracking-tight md:text-6xl">
-            Find the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-blue-600">best savings rates</span> in the Philippines
+            Compare <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-blue-600">savings rates and money market funds</span> — after tax
           </h1>
 
           {formattedDate && (
