@@ -41,6 +41,10 @@ const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> 
 };
 
 const MANUAL_PUBLIC_RATE_IDS = new Set(['pagibig-mp2']);
+const DENIED_SNAPSHOT_PRODUCT_IDS = new Set([
+  'ownbank-time-deposit',
+  'ownbank:ownbank-time-deposit',
+]);
 
 function bankDefaults(
   provider: string,
@@ -270,24 +274,6 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
     publicId: 'ownbank-savings',
     defaults: bankDefaults('OwnBank', 'ownbank', { name: 'OwnBank Savings', tierType: 'flat' }),
   },
-  'ownbank:ownbank-time-deposit': {
-    publicId: 'ownbank-time-deposit',
-    defaults: bankDefaults('OwnBank', 'ownbank', {
-      name: 'OwnBank Time Deposit',
-      payoutFrequency: 'at_maturity',
-      lockInDays: 365,
-      tierType: 'flat',
-    }),
-  },
-  'ownbank-time-deposit': {
-    publicId: 'ownbank-time-deposit',
-    defaults: bankDefaults('OwnBank', 'ownbank', {
-      name: 'OwnBank Time Deposit',
-      payoutFrequency: 'at_maturity',
-      lockInDays: 365,
-      tierType: 'flat',
-    }),
-  },
   'komo:komo-savings': { publicId: 'komo-savings' },
   'diskartech:diskartech-savings': { publicId: 'diskartech-savings' },
   'banko:banko-todo-savings': { publicId: 'bpi-banko-savings' },
@@ -343,6 +329,21 @@ function getNumber(value: unknown, fallback: number) {
 
 function stripProviderPrefix(productId: string) {
   return productId.includes(':') ? productId.split(':').slice(1).join(':') : productId;
+}
+
+function isDeniedSnapshotProduct(rawValue: unknown, sourceProductId: string | null) {
+  const raw = isRecord(rawValue) ? rawValue : {};
+  const productIds = [
+    sourceProductId,
+    getString(raw.id),
+    getString(raw.productId),
+    getString(raw.product_id),
+  ].filter((value): value is string => Boolean(value));
+
+  return productIds.some((productId) => (
+    DENIED_SNAPSHOT_PRODUCT_IDS.has(productId)
+    || DENIED_SNAPSHOT_PRODUCT_IDS.has(stripProviderPrefix(productId))
+  ));
 }
 
 function getSnapshotMapping(snapshotKey: string, sourceProductId: string | null) {
@@ -579,14 +580,16 @@ export async function getPublishedSnapshotRates(channel: RateSnapshotChannel): P
     : [];
   const generatedAt = getString(snapshot.generated_at);
 
-  const hydratedRates = snapshot.payload.map((raw, index) => {
+  const hydratedRates = snapshot.payload.flatMap((raw, index) => {
     const sourceProductId = sourceProductIds[index] ?? null;
+    if (isDeniedSnapshotProduct(raw, sourceProductId)) return [];
+
     const rate = hydrateSnapshotRate(raw, sourceProductId, generatedAt, seedRatesById, index);
-    return {
+    return [{
       rate,
       score: getSnapshotHydrationScore(raw, sourceProductId, rate.id),
       index,
-    };
+    }];
   });
   return mergeManualPublicRates(dedupeHydratedSnapshotRates(hydratedRates), localRates);
 }
