@@ -111,7 +111,20 @@
     },
     {
       "parameters": {
-        "url": "https://www.uitf.com.ph/test_print_topfunds.php?class_id=4&currency=USD&fday=&fmonth=&fyear=&radio1=yoy&tday=&tmonth=&tyear=",
+        "jsCode": "const sourceUrls = [\n  {\n    source: 'top-funds-yoy',\n    url: 'https://www.uitf.com.ph/test_print_topfunds.php?class_id=4&currency=USD&fday=&fmonth=&fyear=&radio1=yoy&tday=&tmonth=&tyear=',\n  },\n  { source: 'metrobank-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=1' },\n  { source: 'pnb-daily-navpu', url: 'https://www.uitf.com.ph/home/daily_navpu.php?bank_id=2' },\n  { source: 'bdo-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=6' },\n  { source: 'chinabank-daily-navpu', url: 'https://www.uitf.com.ph/home/daily_navpu.php?bank_id=7' },\n  { source: 'landbank-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=9' },\n];\n\nreturn sourceUrls.map((source) => ({ json: source }));"
+      },
+      "id": "f1d74899-6c39-47ad-b4bb-a4e893b70954",
+      "name": "Build UITF Source Requests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        210,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.url}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -140,20 +153,20 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        210,
+        530,
         0
       ]
     },
     {
       "parameters": {
-        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nfunction nodeRows(name) {\n  return $items(name).flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return Object.keys(item.json || {}).length ? [item.json] : [];\n  });\n}\nfunction decode(value) {\n  return String(value || '')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&#x27;|&#39;/g, String.fromCharCode(39))\n    .replace(/&quot;/g, String.fromCharCode(34))\n    .replace(/\\u00a0/g, ' ');\n}\nfunction strip(value) {\n  return decode(value).replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n}\nfunction parsePercent(value) {\n  const match = String(value || '').match(/-?\\d+(?:\\.\\d+)?\\s*%?/);\n  return match ? Number(match[0].replace('%', '').trim()) : NaN;\n}\nfunction parseHtmlRows(html) {\n  const rows = [...html.matchAll(/<tr[\\s\\S]*?<\\/tr>/gi)].map((match) => match[0]);\n  const parsed = [];\n  for (const row of rows) {\n    const cells = [...row.matchAll(/<t[dh][^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)].map((match) => strip(match[1]));\n    if (cells.length < 3) continue;\n    const first = cells[0] || '';\n    if (!/^\\d+$/.test(first)) continue;\n    const rank = Number(first);\n    const bank = cells[1] || '';\n    const name = cells[2] || '';\n    const returnCell = cells.find((cell, index) => index >= 3 && /%/.test(cell)) || cells[cells.length - 1];\n    const return1y = parsePercent(returnCell);\n    const hrefMatch = row.match(/fund[_-]?id=(\\d+)/i);\n    const fundId = hrefMatch ? Number(hrefMatch[1]) : null;\n    if (name && Number.isFinite(return1y)) parsed.push({ rank, bank, fund_id: fundId, name, navpu: null, return_1y: return1y });\n  }\n  return parsed;\n}\nfunction parseTextRows(text) {\n  const parsed = [];\n  const lines = String(text || '').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);\n  for (let i = 0; i < lines.length; i += 1) {\n    const line = lines[i];\n    const pipeCells = line.includes('|') ? line.split('|').map((cell) => strip(cell)).filter(Boolean) : [];\n    if (pipeCells.length >= 4 && /^\\d+$/.test(pipeCells[0]) && /%/.test(pipeCells[pipeCells.length - 1])) {\n      const return1y = parsePercent(pipeCells[pipeCells.length - 1]);\n      if (Number.isFinite(return1y)) parsed.push({ rank: Number(pipeCells[0]), bank: pipeCells[1], name: pipeCells[2], navpu: null, return_1y: return1y });\n      continue;\n    }\n    const compactMatch = line.match(/^\\s*(\\d+)\\s+(.+?)\\s{2,}(.+?)\\s+(-?\\d+(?:\\.\\d+)?)%\\s*$/);\n    if (compactMatch) {\n      parsed.push({ rank: Number(compactMatch[1]), bank: strip(compactMatch[2]), name: strip(compactMatch[3]), navpu: null, return_1y: Number(compactMatch[4]) });\n    }\n  }\n  return parsed;\n}\nconst funds = nodeRows('Get Target Funds').filter((row) => row.id);\nif (!funds.length) throw new Error('No target USD UITF funds returned from Supabase');\nconst benchmarks = nodeRows('Get Latest Benchmark').filter((row) => row.rate !== undefined && row.rate !== null);\nif (!benchmarks.length) throw new Error('Missing US_TBILL_90D benchmark. Run the US T-Bill benchmark workflow first.');\nconst benchmarkRate = Number(benchmarks[0].rate);\nconst benchmarkAfterTaxRate = benchmarkRate;\nconst raw = $json.data || $json.body || $json.html || $json.response || '';\nconst html = typeof raw === 'string' ? raw : JSON.stringify(raw || {});\nif (!html || html === '{}') throw new Error('UITF source returned no usable body. JSON keys: ' + Object.keys($json || {}).join(', '));\nif (/incapsula|request unsuccessful|incident id/i.test(html)) throw new Error('UITF source blocked the n8n request: ' + strip(html).slice(0, 300));\nconst text = strip(html).replace(/\\s*\\|\\s*/g, ' | ');\nlet scraped = parseHtmlRows(html);\nif (!scraped.length) scraped = parseTextRows(text);\nif (!scraped.length) throw new Error('No UITF source rows parsed. Sample: ' + text.slice(0, 700));\nconst allowlist = {\n  'bdo dollar money market fund': 'bdo-dollar-money-market-fund',\n  'chinabank dollar cash fund': 'chinabank-dollar-cash-fund',\n  'landbank us dollar money market fund': 'landbank-us-dollar-money-market-fund',\n  'landbank us money market fund': 'landbank-us-dollar-money-market-fund',\n  'metro dollar money market fund': 'metro-dollar-money-market-fund',\n  'metro money market fund': 'metro-dollar-money-market-fund',\n  'pnb prime dollar money market fund': 'pnb-prime-dollar-money-market-fund'\n};\nconst norm = (value) => String(value || '').toLowerCase().replace(/&/g, 'and').split('$').join(' dollar ').replace(/[^a-z0-9]+/g, ' ').trim();\nconst byId = new Map(scraped.filter((row) => row.fund_id).map((row) => [String(row.fund_id), row]));\nconst bySlug = new Map();\nfor (const row of scraped) {\n  const direct = allowlist[norm(row.name)];\n  if (direct) bySlug.set(direct, row);\n  for (const [key, slug] of Object.entries(allowlist)) {\n    if (!bySlug.has(slug) && norm(row.name).includes(key)) bySlug.set(slug, row);\n  }\n}\nconst today = phtDate();\nconst output = [];\nconst missing = [];\nfor (const fund of funds) {\n  const scrapedRow = (fund.uitf_fund_id ? byId.get(String(fund.uitf_fund_id)) : null) || bySlug.get(fund.slug);\n  if (!scrapedRow) {\n    missing.push(fund.provider + ' - ' + fund.name);\n    continue;\n  }\n  const grossYield = Number(scrapedRow.return_1y) / 100;\n  const trustFee = Number(fund.trust_fee_pct || 0);\n  const afterTaxYield = grossYield * 0.8;\n  const netYield = afterTaxYield - trustFee;\n  output.push({ json: { fund_id: fund.id, date: today, navpu: scrapedRow.navpu, gross_yield_1y: Number(grossYield.toFixed(6)), after_tax_yield: Number(afterTaxYield.toFixed(6)), net_yield: Number(netYield.toFixed(6)), benchmark_rate: benchmarkRate, vs_benchmark: Number((netYield - benchmarkAfterTaxRate).toFixed(6)), data_source: 'scraper' } });\n}\nif (missing.length) {\n  const seen = scraped.slice(0, 30).map((row) => row.name + ' (' + row.return_1y + '%)').join('; ');\n  throw new Error('Missing scraped rows for ' + missing.length + ' target funds: ' + missing.join('; ') + '. Parsed rows sample: ' + seen);\n}\nreturn output;"
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nfunction nodeRows(name) {\n  return $items(name).flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return Object.keys(item.json || {}).length ? [item.json] : [];\n  });\n}\nfunction decode(value) {\n  return String(value || '')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&#x27;|&#39;/g, String.fromCharCode(39))\n    .replace(/&quot;/g, String.fromCharCode(34))\n    .replace(/\\u00a0/g, ' ');\n}\nfunction strip(value) {\n  return decode(value).replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n}\nfunction parseNumber(value) {\n  const match = strip(value).replace(/,/g, '').match(/-?\\d+(?:\\.\\d+)?/);\n  return match ? Number(match[0]) : NaN;\n}\nfunction parsePercent(value) {\n  return parseNumber(String(value || '').replace('%', ''));\n}\nfunction parseHtmlRows(html) {\n  const rows = [...html.matchAll(/<tr[\\s\\S]*?<\\/tr>/gi)].map((match) => match[0]);\n  const parsed = [];\n  for (const row of rows) {\n    const cells = [...row.matchAll(/<t[dh][^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)].map((match) => strip(match[1]));\n    if (cells.length < 3) continue;\n\n    const first = cells[0] || '';\n    const hrefMatch = row.match(/fund[_-]?id=(\\d+)/i);\n    const fundId = hrefMatch ? Number(hrefMatch[1]) : null;\n\n    if (/^\\d+$/.test(first)) {\n      const rank = Number(first);\n      const bank = cells[1] || '';\n      const name = cells[2] || '';\n      const returnCell = cells.find((cell, index) => index >= 3 && /%/.test(cell)) || cells[cells.length - 1];\n      const return1y = parsePercent(returnCell);\n      if (name && Number.isFinite(return1y)) parsed.push({ rank, bank, fund_id: fundId, name, navpu: null, return_1y: return1y });\n      continue;\n    }\n\n    if (/fund name/i.test(first)) continue;\n\n    const name = first;\n    let navpuCell = null;\n    let returnCell = null;\n\n    if (cells.length >= 5 && /fund/i.test(cells[1]) && Number.isFinite(parseNumber(cells[2])) && Number.isFinite(parsePercent(cells[3]))) {\n      navpuCell = cells[2];\n      returnCell = cells[3];\n    } else if (cells.length >= 4 && Number.isFinite(parseNumber(cells[1])) && Number.isFinite(parsePercent(cells[2]))) {\n      navpuCell = cells[1];\n      returnCell = cells[2];\n    } else if (cells.length >= 4 && Number.isFinite(parseNumber(cells[2])) && Number.isFinite(parsePercent(cells[3]))) {\n      navpuCell = cells[2];\n      returnCell = cells[3];\n    }\n\n    const navpu = parseNumber(navpuCell);\n    const return1y = parsePercent(returnCell);\n    if (name && Number.isFinite(return1y)) {\n      parsed.push({ rank: null, bank: '', fund_id: fundId, name, navpu: Number.isFinite(navpu) ? navpu : null, return_1y: return1y });\n    }\n  }\n  return parsed;\n}\nfunction parseTextRows(text) {\n  const parsed = [];\n  const lines = String(text || '').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);\n  for (let i = 0; i < lines.length; i += 1) {\n    const line = lines[i];\n    const pipeCells = line.includes('|') ? line.split('|').map((cell) => strip(cell)).filter(Boolean) : [];\n    if (pipeCells.length >= 4 && /^\\d+$/.test(pipeCells[0]) && /%/.test(pipeCells[pipeCells.length - 1])) {\n      const return1y = parsePercent(pipeCells[pipeCells.length - 1]);\n      if (Number.isFinite(return1y)) parsed.push({ rank: Number(pipeCells[0]), bank: pipeCells[1], name: pipeCells[2], navpu: null, return_1y: return1y });\n      continue;\n    }\n    if (pipeCells.length >= 4 && !/^\\d+$/.test(pipeCells[0])) {\n      const hasClassification = /fund/i.test(pipeCells[1] || '');\n      const navpu = parseNumber(hasClassification ? pipeCells[2] : pipeCells[1]);\n      const return1y = parsePercent(hasClassification ? pipeCells[3] : pipeCells[2]);\n      if (pipeCells[0] && Number.isFinite(return1y)) {\n        parsed.push({ rank: null, bank: '', name: pipeCells[0], navpu: Number.isFinite(navpu) ? navpu : null, return_1y: return1y });\n      }\n      continue;\n    }\n    const compactMatch = line.match(/^\\s*(\\d+)\\s+(.+?)\\s{2,}(.+?)\\s+(-?\\d+(?:\\.\\d+)?)%\\s*$/);\n    if (compactMatch) {\n      parsed.push({ rank: Number(compactMatch[1]), bank: strip(compactMatch[2]), name: strip(compactMatch[3]), navpu: null, return_1y: Number(compactMatch[4]) });\n    }\n  }\n  return parsed;\n}\nconst funds = nodeRows('Get Target Funds').filter((row) => row.id);\nif (!funds.length) throw new Error('No target USD UITF funds returned from Supabase');\nconst benchmarks = nodeRows('Get Latest Benchmark').filter((row) => row.rate !== undefined && row.rate !== null);\nif (!benchmarks.length) throw new Error('Missing US_TBILL_90D benchmark. Run the US T-Bill benchmark workflow first.');\nconst benchmarkRate = Number(benchmarks[0].rate);\nconst benchmarkAfterTaxRate = benchmarkRate;\nconst sourceItems = $items('Fetch UITF Source');\nconst htmlDocuments = sourceItems.map((item) => {\n  const raw = item.json.data || item.json.body || item.json.html || item.json.response || '';\n  return typeof raw === 'string' ? raw : JSON.stringify(raw || {});\n}).filter((html) => html && html !== '{}');\nif (!htmlDocuments.length) throw new Error('UITF sources returned no usable bodies. Fetch item count: ' + sourceItems.length);\nlet scraped = [];\nconst sourceSamples = [];\nfor (const html of htmlDocuments) {\n  const text = strip(html).replace(/\\s*\\|\\s*/g, ' | ');\n  if (/incapsula|request unsuccessful|incident id/i.test(html)) throw new Error('UITF source blocked the n8n request: ' + text.slice(0, 300));\n  const parsed = parseHtmlRows(html);\n  scraped = scraped.concat(parsed.length ? parsed : parseTextRows(text));\n  if (sourceSamples.length < 3) sourceSamples.push(text.slice(0, 220));\n}\nif (!scraped.length) throw new Error('No UITF source rows parsed. Samples: ' + sourceSamples.join(' || '));\nconst allowlist = {\n  'bdo dollar money market fund': 'bdo-dollar-money-market-fund',\n  'chinabank dollar cash fund': 'chinabank-dollar-cash-fund',\n  'landbank us dollar money market fund': 'landbank-us-dollar-money-market-fund',\n  'landbank us money market fund': 'landbank-us-dollar-money-market-fund',\n  'metro dollar money market fund': 'metro-dollar-money-market-fund',\n  'pnb prime dollar money market fund': 'pnb-prime-dollar-money-market-fund'\n};\nconst norm = (value) => String(value || '').toLowerCase().replace(/&/g, 'and').split('$').join(' dollar ').replace(/[^a-z0-9]+/g, ' ').trim();\nconst byId = new Map(scraped.filter((row) => row.fund_id).map((row) => [String(row.fund_id), row]));\nconst bySlug = new Map();\nfor (const row of scraped) {\n  const normalizedName = norm(row.name);\n  const direct = allowlist[normalizedName];\n  if (direct) bySlug.set(direct, row);\n  for (const [key, slug] of Object.entries(allowlist)) {\n    if (!bySlug.has(slug) && normalizedName.includes(key)) bySlug.set(slug, row);\n  }\n}\nconst today = phtDate();\nconst output = [];\nconst missing = [];\nfor (const fund of funds) {\n  const scrapedRow = (fund.uitf_fund_id ? byId.get(String(fund.uitf_fund_id)) : null) || bySlug.get(fund.slug);\n  if (!scrapedRow) {\n    missing.push(fund.provider + ' - ' + fund.name);\n    continue;\n  }\n  const grossYield = Number(scrapedRow.return_1y) / 100;\n  const trustFee = Number(fund.trust_fee_pct || 0);\n  const afterTaxYield = grossYield * 0.8;\n  const netYield = afterTaxYield - trustFee;\n  output.push({ json: { fund_id: fund.id, date: today, navpu: scrapedRow.navpu, gross_yield_1y: Number(grossYield.toFixed(6)), after_tax_yield: Number(afterTaxYield.toFixed(6)), net_yield: Number(netYield.toFixed(6)), benchmark_rate: benchmarkRate, vs_benchmark: Number((netYield - benchmarkAfterTaxRate).toFixed(6)), data_source: 'scraper' } });\n}\nif (missing.length) {\n  const seen = scraped.slice(0, 40).map((row) => row.name + ' (' + row.return_1y + '%)').join('; ');\n  throw new Error('Missing scraped rows for ' + missing.length + ' target funds: ' + missing.join('; ') + '. Parsed rows sample: ' + seen);\n}\nreturn output;"
       },
       "id": "2ace5506-2d93-4f22-96f5-e7b55f4cb0fd",
       "name": "Build Daily Rate Payload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        530,
+        850,
         0
       ]
     },
@@ -191,7 +204,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        850,
+        1170,
         0
       ]
     }
@@ -199,17 +212,6 @@
   "pinData": {},
   "connections": {
     "Manual Trigger": {
-      "main": [
-        [
-          {
-            "node": "Get Target Funds",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Daily 6:30 PM PHT": {
       "main": [
         [
           {
@@ -235,7 +237,7 @@
       "main": [
         [
           {
-            "node": "Fetch UITF Source",
+            "node": "Build UITF Source Requests",
             "type": "main",
             "index": 0
           }
@@ -263,13 +265,35 @@
           }
         ]
       ]
+    },
+    "Daily 6:35 PM PHT": {
+      "main": [
+        [
+          {
+            "node": "Get Target Funds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build UITF Source Requests": {
+      "main": [
+        [
+          {
+            "node": "Fetch UITF Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "uitf-no-fetch-template",
+  "versionId": "uitf-usd-provider-navpu-fallback",
   "meta": {
     "templateCredsSetupCompleted": false
   },
