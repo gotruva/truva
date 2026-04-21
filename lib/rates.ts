@@ -40,6 +40,13 @@ const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> 
   dbp: { logo: '/logos/dbp.svg', affiliateUrl: 'https://www.dbp.ph/' },
 };
 
+function normalizeProviderKey(key: string | null): string | null {
+  if (!key) return null;
+  const normalized = key.toLowerCase().trim().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  if (normalized.startsWith('cimb')) return normalized.includes('gcash') || normalized.includes('gsave') ? 'cimb-gcash' : 'cimb-bank';
+  return normalized;
+}
+
 const MANUAL_PUBLIC_RATE_IDS = new Set(['pagibig-mp2']);
 const DENIED_SNAPSHOT_PRODUCT_IDS = new Set([
   'ownbank-time-deposit',
@@ -51,7 +58,8 @@ function bankDefaults(
   providerKey: string,
   overrides: Partial<RateProduct> = {},
 ): Partial<RateProduct> {
-  const defaults = PROVIDER_DEFAULTS[providerKey];
+  const normalizedKey = normalizeProviderKey(providerKey);
+  const defaults = normalizedKey ? PROVIDER_DEFAULTS[normalizedKey] : undefined;
   return {
     provider,
     logo: defaults?.logo ?? '/logos/maya.svg',
@@ -201,8 +209,20 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
       tierType: 'flat',
     }),
   },
-  'cimb-bank:cimb-maxsave': { publicId: 'cimb-maxsave-3mo', preferSeedName: true },
-  'cimb-maxsave': { publicId: 'cimb-maxsave-3mo', preferSeedName: true },
+  'cimb-bank:cimb-maxsave': {
+    publicId: 'cimb-maxsave-3mo',
+    preferSeedName: true,
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave', tierType: 'threshold' }),
+  },
+  'cimb-maxsave': {
+    publicId: 'cimb-maxsave-3mo',
+    preferSeedName: true,
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave', tierType: 'threshold' }),
+  },
+  'cimb-maxsave-regular-3m': { publicId: 'cimb-maxsave-3mo', preferSeedName: true },
+  'cimb-maxsave-regular-6m': { publicId: 'cimb-maxsave-6mo', preferSeedName: true },
+  'cimb-maxsave-regular-12m': { publicId: 'cimb-maxsave-12mo', preferSeedName: true },
+  'cimb-maxsave-regular-24m': { publicId: 'cimb-maxsave-24mo', preferSeedName: true },
   'salmon-bank:salmon-savings': {
     publicId: 'salmon-savings',
     defaults: bankDefaults('Salmon Bank', 'salmon-bank', { name: 'Salmon Savings', tierType: 'flat' }),
@@ -513,7 +533,8 @@ function hydrateSnapshotRate(
   const id = publicId;
   const seed = seedRatesById.get(id);
   const providerKey = providerSlug(sourceProductId, raw);
-  const defaults = providerKey ? PROVIDER_DEFAULTS[providerKey] : undefined;
+  const normalizedKey = normalizeProviderKey(providerKey);
+  const defaults = normalizedKey ? PROVIDER_DEFAULTS[normalizedKey] : undefined;
   const rawProductName = getString(raw.productName) ?? getString(raw.name);
   const productName = mapping?.preferSeedName
     ? seed?.name ?? rawProductName ?? mappingDefaults?.name ?? id

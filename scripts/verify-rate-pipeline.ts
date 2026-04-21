@@ -29,6 +29,17 @@ function verifyOwnBankPublicRates(rates: { id: string; provider: string; headlin
   );
 }
 
+function verifyCIMBLogos(rates: { provider: string; logo: string; id: string }[], label: string) {
+  const cimbRates = rates.filter((rate) => rate.provider.includes('CIMB'));
+  for (const rate of cimbRates) {
+    assert.strictEqual(
+      rate.logo,
+      '/logos/cimb.svg',
+      `${label}: CIMB product ${rate.id} has incorrect logo ${rate.logo}`,
+    );
+  }
+}
+
 function verifyLocalSnapshot() {
   const rates = loadSeedRates();
   const snapshot = buildPublishedRateSnapshot('staging', rates);
@@ -41,6 +52,7 @@ function verifyLocalSnapshot() {
   assert(!snapshot.payload.some((rate) => rate.category === 'defi'), 'DeFi products must be excluded from the published snapshot until automated.');
   assert(snapshot.payload.filter((rate) => rate.category === 'banks').length > 0, 'Published snapshot should retain vetted bank products.');
   verifyOwnBankPublicRates(snapshot.payload, 'Local published snapshot');
+  verifyCIMBLogos(snapshot.payload, 'Local published snapshot');
 
   console.log(`Local snapshot verification passed (${snapshot.productCount} published products).`);
 }
@@ -84,6 +96,7 @@ async function verifySupabaseSnapshot() {
     'Every materialized staging rate needs public product identity fields.',
   );
   verifyOwnBankPublicRates(materializedRates, 'Materialized staging snapshot');
+  verifyCIMBLogos(materializedRates, 'Materialized staging snapshot');
   console.log(`Supabase staging snapshot verification passed (${snapshot.product_count} products).`);
 }
 
