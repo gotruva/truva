@@ -80,8 +80,8 @@ export function HeroSection({ formattedDate }: HeroSectionProps) {
           onSubmit={handleSubmit}
           className="w-full max-w-lg mb-6"
         >
-          <div className="flex items-center gap-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md p-1.5 shadow-lg shadow-black/10 dark:bg-white/[0.07]">
-            <div className="flex flex-1 items-center gap-2 pl-3">
+          <div className="flex flex-col gap-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md p-2 shadow-lg shadow-black/10 dark:bg-white/[0.07] sm:flex-row sm:items-center sm:p-1.5">
+            <div className="flex flex-1 items-center gap-2 px-2 py-1 sm:pl-3 sm:py-0">
               <span className="text-[15px] font-medium text-blue-200 shrink-0">I&apos;m saving</span>
               <span className="text-[15px] font-bold text-white shrink-0">₱</span>
               <input
@@ -96,7 +96,7 @@ export function HeroSection({ formattedDate }: HeroSectionProps) {
             </div>
             <button
               type="submit"
-              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 text-[15px] font-semibold text-brand-primary shadow-md shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
+              className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 text-[15px] font-semibold text-brand-primary shadow-md shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] sm:w-auto"
             >
               See my returns
               <ArrowRight className="w-4 h-4" />
