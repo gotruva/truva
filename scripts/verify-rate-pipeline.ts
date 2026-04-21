@@ -9,6 +9,26 @@ import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 
+function verifyOwnBankPublicRates(rates: { id: string; provider: string; headlineRate: number }[], label: string) {
+  assert(
+    !rates.some((rate) => rate.id === 'ownbank-time-deposit'),
+    `${label} must not include stale generic OwnBank 8% time deposit.`,
+  );
+
+  const ownIt = rates.find((rate) => rate.id === 'ownbank-savings');
+  if (ownIt) {
+    assert.equal(ownIt.headlineRate, 0.038, `${label} Own It Savings should be 3.80% gross.`);
+  }
+
+  const ownbankTimeDeposits = rates.filter((rate) => (
+    rate.provider === 'OwnBank' && rate.id.startsWith('ownbank-td-')
+  ));
+  assert(
+    ownbankTimeDeposits.every((rate) => rate.headlineRate <= 0.052000001),
+    `${label} OwnBank time-deposit terms should not exceed the official 5.20% gross rate.`,
+  );
+}
+
 function verifyLocalSnapshot() {
   const rates = loadSeedRates();
   const snapshot = buildPublishedRateSnapshot('staging', rates);
@@ -20,6 +40,7 @@ function verifyLocalSnapshot() {
   assert(!snapshot.payload.some((rate) => rate.category === 'uitfs'), 'UITF products must be excluded from the published snapshot until automated.');
   assert(!snapshot.payload.some((rate) => rate.category === 'defi'), 'DeFi products must be excluded from the published snapshot until automated.');
   assert(snapshot.payload.filter((rate) => rate.category === 'banks').length > 0, 'Published snapshot should retain vetted bank products.');
+  verifyOwnBankPublicRates(snapshot.payload, 'Local published snapshot');
 
   console.log(`Local snapshot verification passed (${snapshot.productCount} published products).`);
 }
@@ -62,6 +83,7 @@ async function verifySupabaseSnapshot() {
     materializedRates.every((rate) => rate.id && rate.name && rate.category),
     'Every materialized staging rate needs public product identity fields.',
   );
+  verifyOwnBankPublicRates(materializedRates, 'Materialized staging snapshot');
   console.log(`Supabase staging snapshot verification passed (${snapshot.product_count} products).`);
 }
 
