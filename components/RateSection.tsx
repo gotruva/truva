@@ -50,8 +50,14 @@ export function RateSection({
     const horizonDays = horizonMap[comparisonState.months] ?? comparisonState.months * 30;
     if (rate.lockInDays > 0 && rate.lockInDays > horizonDays) return false;
 
-    if (comparisonState.liquidityFilter === 'liquid' && rate.lockInDays > 0) return false;
-    if (comparisonState.liquidityFilter === 'locked' && rate.lockInDays === 0) return false;
+    if (comparisonState.liquidityFilter === 'liquid') {
+      if (rate.lockInDays > 0) return false;
+      if (rate.category !== 'banks') return false;
+    }
+    if (comparisonState.liquidityFilter === 'locked') {
+      if (rate.lockInDays === 0) return false;
+      if (rate.category !== 'banks') return false;
+    }
     if (comparisonState.payoutFilter === 'monthly' && !['daily', 'monthly', 'quarterly'].includes(rate.payoutFrequency)) return false;
     if (comparisonState.payoutFilter === 'at_maturity' && !['at_maturity', 'annually'].includes(rate.payoutFrequency)) return false;
     if (comparisonState.includePdicOnly && !rate.pdic) return false;
@@ -105,15 +111,32 @@ export function RateSection({
     return groups;
   }, [comparisonState.months, numAmount, sortedRates]);
 
+  const formattedAmount = numAmount > 0
+    ? `₱${numAmount.toLocaleString('en-PH')}`
+    : '₱100,000';
+
   return (
     <section>
       <div className="mx-auto max-w-5xl px-4 md:px-0">
+        {/* Results header */}
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+              Ranked by after-tax yield
+            </h2>
+            <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
+              {bankGroups.length} provider{bankGroups.length !== 1 ? 's' : ''} · after 20% withholding tax
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-sm font-semibold text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-300">
+            Returns for {formattedAmount}
+          </span>
+        </div>
+
         <div className="hidden md:block">
           <FilterTabs
             activeLiquidity={comparisonState.liquidityFilter}
             onLiquidityChange={(liquidityFilter) => onComparisonStateChange({ liquidityFilter })}
-            activePayoutFilter={comparisonState.payoutFilter}
-            onPayoutFilterChange={(payoutFilter) => onComparisonStateChange({ payoutFilter })}
           />
         </div>
 
@@ -184,8 +207,6 @@ export function RateSection({
           <FilterTabs
             activeLiquidity={comparisonState.liquidityFilter}
             onLiquidityChange={(liquidityFilter) => onComparisonStateChange({ liquidityFilter })}
-            activePayoutFilter={comparisonState.payoutFilter}
-            onPayoutFilterChange={(payoutFilter) => onComparisonStateChange({ payoutFilter })}
           />
 
           <div className="mb-4 rounded-xl border border-brand-border bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900">

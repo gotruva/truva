@@ -43,7 +43,9 @@ const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> 
 function normalizeProviderKey(key: string | null): string | null {
   if (!key) return null;
   const normalized = key.toLowerCase().trim().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  if (normalized.startsWith('cimb')) return normalized.includes('gcash') || normalized.includes('gsave') ? 'cimb-gcash' : 'cimb-bank';
+  if (normalized.startsWith('cimb') || normalized.includes('cimb-bank')) {
+    return normalized.includes('gcash') || normalized.includes('gsave') ? 'cimb-gcash' : 'cimb-bank';
+  }
   return normalized;
 }
 
@@ -62,7 +64,7 @@ function bankDefaults(
   const defaults = normalizedKey ? PROVIDER_DEFAULTS[normalizedKey] : undefined;
   return {
     provider,
-    logo: defaults?.logo ?? '/logos/maya.svg',
+    logo: defaults?.logo ?? '',
     category: 'banks',
     taxExempt: false,
     payoutFrequency: 'daily',
@@ -219,10 +221,26 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
     preferSeedName: true,
     defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave', tierType: 'threshold' }),
   },
-  'cimb-maxsave-regular-3m': { publicId: 'cimb-maxsave-3mo', preferSeedName: true },
-  'cimb-maxsave-regular-6m': { publicId: 'cimb-maxsave-6mo', preferSeedName: true },
-  'cimb-maxsave-regular-12m': { publicId: 'cimb-maxsave-12mo', preferSeedName: true },
-  'cimb-maxsave-regular-24m': { publicId: 'cimb-maxsave-24mo', preferSeedName: true },
+  'cimb-maxsave-regular-3m': {
+    publicId: 'cimb-maxsave-3mo',
+    preferSeedName: true,
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave 3-Month' }),
+  },
+  'cimb-maxsave-regular-6m': {
+    publicId: 'cimb-maxsave-6mo',
+    preferSeedName: true,
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave 6-Month' }),
+  },
+  'cimb-maxsave-regular-12m': {
+    publicId: 'cimb-maxsave-12mo',
+    preferSeedName: true,
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave 12-Month' }),
+  },
+  'cimb-maxsave-regular-24m': {
+    publicId: 'cimb-maxsave-24mo',
+    preferSeedName: true,
+    defaults: bankDefaults('CIMB Bank Philippines', 'cimb-bank', { name: 'CIMB MaxSave 24-Month' }),
+  },
   'salmon-bank:salmon-savings': {
     publicId: 'salmon-savings',
     defaults: bankDefaults('Salmon Bank', 'salmon-bank', { name: 'Salmon Savings', tierType: 'flat' }),
@@ -399,7 +417,7 @@ function resolveSnapshotIdentity(sourceProductId: string | null, snapshot: Snaps
 }
 
 function providerSlug(sourceProductId: string | null, snapshot: SnapshotRecord) {
-  const rawProvider = getString(snapshot.provider);
+  const rawProvider = getString(snapshot.provider) ?? getString(snapshot.providerDisplayName);
   if (rawProvider) return rawProvider;
   if (sourceProductId?.includes(':')) return sourceProductId.split(':')[0];
   return null;
@@ -556,7 +574,7 @@ function hydrateSnapshotRate(
     id,
     name: productName,
     provider: providerName,
-    logo: seed?.logo ?? mappingDefaults?.logo ?? defaults?.logo ?? '/logos/maya.svg',
+    logo: seed?.logo ?? mappingDefaults?.logo ?? defaults?.logo ?? '',
     category: seed?.category ?? mappingDefaults?.category ?? 'banks',
     headlineRate,
     baseRate,

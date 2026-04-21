@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AlertTriangle, ArrowLeft, RefreshCw, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BarChart2, CheckCircle2, RefreshCw, Shield, Zap } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { MmfView } from '@/components/mmf/MmfView';
 import { BenchmarkRate, MoneyMarketFund } from '@/types';
@@ -78,32 +78,74 @@ export default async function MoneyMarketFundsPage() {
   const latestCheckedAt = getLatestCheckedAt(phpUitfFunds) ?? getLatestCheckedAt(funds);
   const latestRateDate = getLatestRateDate(phpUitfFunds) ?? getLatestRateDate(funds);
 
+  const latestDate = latestRateDate ? formatPhtDate(latestRateDate) : null;
+
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6">
-      <div className="mb-6">
-        <Link
-          href="/banking"
-          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primaryDark"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to banking
-        </Link>
+    <main>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-brand-primary px-4 py-20 text-white dark:bg-slate-950">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.28),transparent_52%)] opacity-90 dark:bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.18),transparent_52%)]" />
+        <div className="relative mx-auto max-w-3xl flex flex-col items-center text-center z-10">
+          {latestDate && (
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-semibold backdrop-blur-md">
+              <CheckCircle2 className="w-4 h-4 text-green-300" />
+              <span className="text-blue-50">Rates verified {latestDate}</span>
+            </div>
+          )}
 
-        <div className="max-w-3xl">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-            <TrendingUp className="h-3.5 w-3.5" />
-            Money market funds
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
-            Compare liquid funds by the yield you can actually keep.
+          <h1 className="mb-4 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.25rem]">
+            Your money,{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-300 dark:to-blue-500">
+              working harder.
+            </span>
+            <br />
+            <span className="text-[0.88em]">Compare funds by what you actually keep.</span>
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
-            Net yield comes first: gross one-year yield, less 20% Final Withholding Tax and each fund&apos;s trust fee. Type your amount below to estimate annual earnings directly in the table.
-          </p>
-        </div>
-      </div>
 
-      <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <p className="mb-8 max-w-xl text-lg font-medium text-blue-100/90 dark:text-gray-300">
+            Liquid investing — redeem in 1–5 business days. Net yield shown after 20% withholding tax and trust fees.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 w-full max-w-md">
+            <a
+              href="#mmf-table"
+              className="inline-flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-white px-6 text-[15px] font-semibold text-brand-primary shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              See all funds
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <Link
+              href="/guides"
+              className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-xl border border-white/25 bg-white/10 px-6 text-[15px] font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
+            >
+              What is a money market fund?
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {[
+              { icon: Zap, label: 'Liquid — redeem in 1–5 days' },
+              { icon: Shield, label: 'Not PDIC-insured' },
+              { icon: BarChart2, label: 'Net yield after tax & fees' },
+            ].map((pill) => {
+              const Icon = pill.icon;
+              return (
+                <span
+                  key={pill.label}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-medium text-blue-50 backdrop-blur-md"
+                >
+                  <Icon className="h-3.5 w-3.5 text-blue-200" />
+                  {pill.label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        {/* Benchmark metrics */}
+        <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
             Funds tracked
@@ -169,7 +211,24 @@ export default async function MoneyMarketFundsPage() {
         </div>
       )}
 
-      <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} phtDate={phtDate} />
+      {/* Section header above the table */}
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+            Ranked by net yield
+          </h2>
+          <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
+            {phpFunds.length} PHP funds · after 20% tax + trust fees
+          </p>
+        </div>
+        <span className="shrink-0 rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-sm font-semibold text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-300">
+          Returns for ₱100,000
+        </span>
+      </div>
+
+      <div id="mmf-table">
+        <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} phtDate={phtDate} />
+      </div>
 
       <div className="mt-8 space-y-3 border-t border-brand-border pt-6 dark:border-white/10">
         <p className="text-xs leading-relaxed text-brand-textSecondary/55 dark:text-white/35">
@@ -187,6 +246,7 @@ export default async function MoneyMarketFundsPage() {
           </a>
           . Truva is not affiliated with or endorsed by uitf.com.ph.
         </p>
+      </div>
       </div>
     </main>
   );

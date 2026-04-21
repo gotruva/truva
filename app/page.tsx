@@ -3,7 +3,6 @@ import nextDynamic from 'next/dynamic';
 import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
-import { ProductEntrySection } from '@/components/ProductEntrySection';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gotruva.com';
 const NewsletterSignup = nextDynamic(() => import('@/components/NewsletterSignup').then((mod) => mod.NewsletterSignup));
@@ -147,10 +146,7 @@ export default async function HomePage() {
 
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 transition-colors duration-300">
-        <div className="pt-10 pb-6">
-          <ProductEntrySection />
-        </div>
-        <div className="max-w-7xl mx-auto scroll-mt-28 pt-4" id="calculator">
+        <div className="max-w-7xl mx-auto scroll-mt-28 pt-10" id="calculator">
           <CompareHub rates={rates} formattedDate={formattedDate} />
         </div>
       </div>

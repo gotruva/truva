@@ -411,7 +411,13 @@ export function RateTable({
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white">
-                        <img src={resolveLogoSrc(group.logo)} alt={group.provider} className="h-7 w-7 object-contain" />
+                        {group.logo ? (
+                          <img src={resolveLogoSrc(group.logo)} alt={group.provider} className="h-7 w-7 object-contain" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-brand-primary/10 font-bold text-brand-primary text-base">
+                            {group.provider.charAt(0).toUpperCase()}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <div className="flex flex-wrap items-center gap-2">

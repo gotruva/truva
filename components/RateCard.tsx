@@ -265,32 +265,40 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border rounded-xl mb-3 overflow-hidden shadow-sm transition-all ${
+      className={`border rounded-xl mb-3 overflow-hidden shadow-sm transition-all bg-white dark:bg-gradient-to-br dark:from-[#0D1A3A] dark:to-[#0A1428] ${
         rank <= 3
-          ? 'border-brand-primary/20 dark:border-blue-800/30'
+          ? 'border-brand-primary/20 dark:border-brand-primary/25 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]'
           : 'border-brand-border dark:border-white/10'
       }`}
     >
       {/* Card Header */}
       <button
         onClick={onToggle}
-        className="w-full p-4 flex items-start gap-3 text-left transition-colors duration-200 hover:bg-brand-surface/70 dark:hover:bg-slate-800/60"
+        className="w-full p-4 flex items-start gap-3 text-left transition-all duration-200 hover:bg-brand-surface/70 dark:hover:bg-white/[0.04] hover:-translate-y-0.5"
       >
         {/* Rank + Logo */}
         <div className="flex flex-col items-center gap-1.5 shrink-0">
           {rank <= 3 ? (
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shadow-md ${
-              rank === 1 ? 'glow-rank-1 bg-gradient-to-br from-yellow-400 via-amber-400 to-amber-500' :
-              rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400' :
-              'bg-gradient-to-br from-amber-600 to-amber-700'
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white ${
+              rank === 1
+                ? 'bg-gradient-to-br from-[#FBBF24] to-[#F59E0B] shadow-[0_0_12px_rgba(255,215,0,0.5)]'
+                : rank === 2
+                ? 'bg-gradient-to-br from-[#D1D5DB] to-[#9CA3AF] shadow-md text-gray-700'
+                : 'bg-gradient-to-br from-[#D97706] to-[#B45309] shadow-md'
             }`}>
               {rank === 1 ? <Trophy className="w-3.5 h-3.5" /> : rank}
             </span>
           ) : (
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-brand-textSecondary bg-gray-100 dark:bg-slate-800">{rank}</span>
           )}
-          <div className="w-10 h-10 rounded-lg border border-brand-border dark:border-white/10 bg-white shadow-sm flex items-center justify-center overflow-hidden">
-            <img src={resolveLogoSrc(logo)} alt={provider} className="w-7 h-7 object-contain" />
+          <div className="w-10 h-10 rounded-lg border border-brand-border dark:border-white/10 bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
+            {logo ? (
+              <img src={resolveLogoSrc(logo)} alt={provider} className="w-7 h-7 object-contain" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-brand-primary/10 font-bold text-brand-primary text-lg">
+                {provider.charAt(0).toUpperCase()}
+              </div>
+            )}
           </div>
         </div>
 
@@ -335,7 +343,11 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
                 Effective rate: {(headlineGross * 100).toFixed(2)}% gross
               </div>
-              <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight ${rank === 1 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
+              <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight ${
+                rank === 1
+                  ? 'text-transparent bg-clip-text bg-gradient-to-br from-[#4ADE80] to-[#12B76A]'
+                  : 'text-brand-textPrimary dark:text-gray-100'
+              }`}>
                 {formatRate(bestEffectiveRate)}
               </div>
               <div className="text-[12px] font-bold text-brand-textSecondary dark:text-gray-400 mt-1">
@@ -406,7 +418,13 @@ export function RateCard({ rate }: { rate: RateProduct }) {
     <div className="bg-white dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-lg p-5 mb-4 block md:hidden shadow-sm">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-md border border-brand-border dark:border-white/10 bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-          <img src={resolveLogoSrc(rate.logo)} alt={rate.provider} className="w-7 h-7 object-contain" />
+          {rate.logo ? (
+            <img src={resolveLogoSrc(rate.logo)} alt={rate.provider} className="w-7 h-7 object-contain" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-brand-primary/10 font-bold text-brand-primary text-lg">
+              {rate.provider.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
         <div>
           <span className="block font-semibold text-brand-textPrimary dark:text-gray-100 text-lg leading-tight">{rate.provider}</span>

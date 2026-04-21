@@ -4,39 +4,27 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { BookOpenText, ChevronDown, CreditCard, GraduationCap, Landmark, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
+import { BookOpenText, ChevronDown, Landmark, BarChart2, GraduationCap, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
 
-const NAV_LINKS = [
-  { label: 'Compare Rates', href: '/banking/rates#rate-desk' },
-  { label: 'Calculator', href: '/calculator' },
-  { label: 'Methodology', href: '/methodology' },
-];
-
-const ARTICLE_LINKS = [
+const READ_LINKS = [
   {
-    label: 'Editorial Index',
-    description: 'Start here for the full article map across Truva.',
-    href: '/articles',
-    icon: BookOpenText,
-  },
-  {
-    label: 'Banking Articles',
-    description: 'Reviews, rate guides, and banking explainers.',
-    href: '/banking/rates',
+    label: 'Banking',
+    description: 'Rate guides, digital bank reviews, and account comparisons.',
+    href: '/banking/articles',
     icon: Landmark,
   },
   {
-    label: 'Credit Card Reviews',
-    description: 'Card-by-card writeups and practical verdicts.',
-    href: '/credit-cards/reviews',
-    icon: CreditCard,
+    label: 'Investing',
+    description: 'Money market funds, T-Bills, UITFs, and investing strategies.',
+    href: '/investing',
+    icon: BarChart2,
   },
   {
-    label: 'Guides',
-    description: 'Tax, PDIC, and financial literacy explainers.',
+    label: 'Finance & Lifestyle',
+    description: 'Tax explainers, PDIC basics, and practical money guides.',
     href: '/guides',
     icon: GraduationCap,
   },
@@ -62,15 +50,13 @@ const FeedbackModal = dynamic(
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProductsOpen, setIsProductsOpen] = useState(false);
-  const [isArticlesOpen, setIsArticlesOpen] = useState(false);
-  const [isMobileProductsOpen, setIsMobileProductsOpen] = useState(false);
-  const [isMobileArticlesOpen, setIsMobileArticlesOpen] = useState(false);
-  const productsCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const articlesCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isReadOpen, setIsReadOpen] = useState(false);
+  const [isMobileReadOpen, setIsMobileReadOpen] = useState(false);
+  const readCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -78,94 +64,45 @@ export function Navbar() {
 
   useEffect(() => {
     return () => {
-      if (productsCloseTimeoutRef.current) {
-        clearTimeout(productsCloseTimeoutRef.current);
-      }
-      if (articlesCloseTimeoutRef.current) {
-        clearTimeout(articlesCloseTimeoutRef.current);
-      }
+      if (readCloseTimeoutRef.current) clearTimeout(readCloseTimeoutRef.current);
     };
   }, []);
 
-  const openProductsMenu = () => {
-    if (productsCloseTimeoutRef.current) {
-      clearTimeout(productsCloseTimeoutRef.current);
-    }
-    setIsProductsOpen(true);
+  const openReadMenu = () => {
+    if (readCloseTimeoutRef.current) clearTimeout(readCloseTimeoutRef.current);
+    setIsReadOpen(true);
   };
 
-  const closeProductsMenu = () => {
-    if (productsCloseTimeoutRef.current) {
-      clearTimeout(productsCloseTimeoutRef.current);
-    }
-
-    productsCloseTimeoutRef.current = setTimeout(() => {
-      setIsProductsOpen(false);
-    }, 140);
-  };
-
-  const openArticlesMenu = () => {
-    if (articlesCloseTimeoutRef.current) {
-      clearTimeout(articlesCloseTimeoutRef.current);
-    }
-    setIsArticlesOpen(true);
-  };
-
-  const closeArticlesMenu = () => {
-    if (articlesCloseTimeoutRef.current) {
-      clearTimeout(articlesCloseTimeoutRef.current);
-    }
-
-    articlesCloseTimeoutRef.current = setTimeout(() => {
-      setIsArticlesOpen(false);
-    }, 140);
+  const closeReadMenu = () => {
+    if (readCloseTimeoutRef.current) clearTimeout(readCloseTimeoutRef.current);
+    readCloseTimeoutRef.current = setTimeout(() => setIsReadOpen(false), 140);
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-    setIsMobileProductsOpen(false);
-    setIsMobileArticlesOpen(false);
-  };
-
-  const toggleMobileMenu = () => {
-    if (isMobileMenuOpen) {
-      closeMobileMenu();
-      return;
-    }
-
-    setIsMobileMenuOpen(true);
+    setIsMobileReadOpen(false);
   };
 
   useEffect(() => {
-    if (!isMobileMenuOpen) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
+    if (!isMobileMenuOpen) return;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
+    return () => { document.body.style.overflow = prev; };
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    if (!isMobileMenuOpen) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closeMobileMenu();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    if (!isMobileMenuOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeMobileMenu(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [isMobileMenuOpen]);
+
+  const navLinkClass = (href: string) => {
+    const isActive = pathname === href || pathname.startsWith(href + '/');
+    return isActive
+      ? 'px-3 py-1.5 text-[14px] font-semibold rounded-lg bg-brand-primary text-white transition-colors'
+      : 'px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors';
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-2xl bg-white/80 dark:bg-slate-950/80 border-b border-brand-border/60 dark:border-white/5 h-[76px] flex items-center px-4 md:px-8 shrink-0 transition-colors duration-300 shadow-sm dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
@@ -190,102 +127,47 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Nav links */}
+        {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
+          <Link href="/" className={pathname === '/' ? 'px-3 py-1.5 text-[14px] font-semibold rounded-lg bg-brand-primary text-white transition-colors' : 'px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors'}>
+            Savings
+          </Link>
+          <Link href="/banking/money-market-funds" className={navLinkClass('/banking/money-market-funds')}>
+            Funds
+          </Link>
 
           <div
             className="relative -mb-3 pb-3"
-            onMouseEnter={openProductsMenu}
-            onMouseLeave={closeProductsMenu}
+            onMouseEnter={openReadMenu}
+            onMouseLeave={closeReadMenu}
           >
             <button
               type="button"
               className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary transition-colors hover:bg-gray-100 hover:text-brand-textPrimary dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-gray-100"
-              aria-expanded={isProductsOpen}
+              aria-expanded={isReadOpen}
               aria-haspopup="true"
-              onFocus={openProductsMenu}
-            >
-              Products
-              <ChevronDown className={`h-4 w-4 transition-transform ${isProductsOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {isProductsOpen && (
-              <div
-                className="absolute left-0 top-full z-50 w-[24rem] overflow-hidden rounded-[1.5rem] border border-brand-border bg-white/95 p-2 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95"
-                onMouseEnter={openProductsMenu}
-                onMouseLeave={closeProductsMenu}
-              >
-                <div className="space-y-1">
-                  {PRODUCT_NAVIGATION_ITEMS.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={item.href ?? '#'}
-                      className="group flex items-start gap-3 rounded-[1.15rem] px-3 py-3 transition-colors hover:bg-brand-surface dark:hover:bg-white/5"
-                    >
-                      <div className="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
-                        <item.icon className="h-4.5 w-4.5" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="text-sm font-semibold text-brand-textPrimary transition-colors group-hover:text-brand-primary dark:text-gray-100">
-                            {item.title}
-                          </p>
-                          <span className="rounded-full bg-brand-surface px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-brand-textSecondary dark:bg-white/[0.08] dark:text-gray-300">
-                            {item.status === 'live' ? 'Live' : item.status === 'preview' ? 'Preview' : 'Soon'}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-                          {item.description}
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div
-            className="relative -mb-3 pb-3"
-            onMouseEnter={openArticlesMenu}
-            onMouseLeave={closeArticlesMenu}
-          >
-            <button
-              type="button"
-              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary transition-colors hover:bg-gray-100 hover:text-brand-textPrimary dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-gray-100"
-              aria-expanded={isArticlesOpen}
-              aria-haspopup="true"
-              onFocus={openArticlesMenu}
+              onFocus={openReadMenu}
             >
               <BookOpenText className="h-4 w-4" />
-              Articles
-              <ChevronDown className={`h-4 w-4 transition-transform ${isArticlesOpen ? 'rotate-180' : ''}`} />
+              + Read
+              <ChevronDown className={`h-4 w-4 transition-transform ${isReadOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {isArticlesOpen && (
+            {isReadOpen && (
               <div
                 className="absolute left-0 top-full z-50 w-[22rem] overflow-hidden rounded-[1.5rem] border border-brand-border bg-white/95 p-2 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95"
-                onMouseEnter={openArticlesMenu}
-                onMouseLeave={closeArticlesMenu}
+                onMouseEnter={openReadMenu}
+                onMouseLeave={closeReadMenu}
               >
                 <div className="space-y-1">
-                  {ARTICLE_LINKS.map((link) => (
+                  {READ_LINKS.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
                       className="group flex items-start gap-3 rounded-[1.15rem] px-3 py-3 transition-colors hover:bg-brand-surface dark:hover:bg-white/5"
                     >
                       <div className="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
-                        <link.icon className="h-4.5 w-4.5" />
+                        <link.icon className="h-4 w-4" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-brand-textPrimary transition-colors group-hover:text-brand-primary dark:text-gray-100">
@@ -309,10 +191,10 @@ export function Navbar() {
             href="https://invite.viber.com/?g2=AQAVVY5OHy%2FfvlZdu7vUh%2FIkJ5fqL16B58XFTULkk1mS4%2BUU9O8ZAwYKbEqW4TCX"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200"
+            className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
           >
             <ViberIcon className="w-5 h-5" />
-            <span className="hidden sm:inline text-[14px] font-semibold">Join our Community</span>
+            <span className="hidden md:inline">Community</span>
           </a>
 
           <Button
@@ -322,21 +204,20 @@ export function Navbar() {
             className="hidden sm:flex items-center gap-1.5 text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200"
           >
             <MessageSquare className="w-4 h-4" />
-            <span className="hidden sm:inline text-[14px] font-semibold">Feedback</span>
           </Button>
 
           {mounted && (
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"
-              aria-label="Toggle Dark Mode"
+              aria-label="Toggle dark mode"
             >
               {theme === 'dark' ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
             </button>
           )}
 
           <button
-            onClick={toggleMobileMenu}
+            onClick={() => isMobileMenuOpen ? closeMobileMenu() : setIsMobileMenuOpen(true)}
             className="flex lg:hidden p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}
@@ -346,6 +227,7 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
         <>
           <button
@@ -357,78 +239,38 @@ export function Navbar() {
 
           <div className="fixed left-4 right-4 top-[88px] z-50 rounded-2xl border border-brand-border bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 lg:hidden">
             <nav className="flex flex-col gap-2">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
-                >
-                  {link.label}
-                </a>
-              ))}
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
+              >
+                Savings
+              </Link>
+              <Link
+                href="/banking/money-market-funds"
+                onClick={closeMobileMenu}
+                className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
+              >
+                Funds
+              </Link>
 
               <div className="rounded-xl border border-brand-border/70 bg-brand-surface/50 dark:border-white/10 dark:bg-white/[0.03]">
                 <button
                   type="button"
-                  onClick={() => setIsMobileProductsOpen((open) => !open)}
+                  onClick={() => setIsMobileReadOpen((o) => !o)}
                   className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
-                  aria-expanded={isMobileProductsOpen}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    Products
-                  </span>
-                  <ChevronDown className={`h-4 w-4 text-brand-textSecondary transition-transform dark:text-gray-400 ${isMobileProductsOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {isMobileProductsOpen && (
-                  <div className="space-y-1 px-2 pb-2">
-                    {PRODUCT_NAVIGATION_ITEMS.map((item) => (
-                      <Link
-                        key={item.id}
-                        href={item.href ?? '#'}
-                        onClick={closeMobileMenu}
-                        className="flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white dark:hover:bg-slate-800"
-                      >
-                        <div className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
-                          <item.icon className="h-4 w-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold text-brand-textPrimary dark:text-gray-100">
-                              {item.title}
-                            </p>
-                            <span className="rounded-full bg-brand-surface px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-textSecondary dark:bg-white/[0.08] dark:text-gray-300">
-                              {item.status === 'live' ? 'Live' : item.status === 'preview' ? 'Preview' : 'Soon'}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-                            {item.description}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="rounded-xl border border-brand-border/70 bg-brand-surface/50 dark:border-white/10 dark:bg-white/[0.03]">
-                <button
-                  type="button"
-                  onClick={() => setIsMobileArticlesOpen((open) => !open)}
-                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
-                  aria-expanded={isMobileArticlesOpen}
+                  aria-expanded={isMobileReadOpen}
                 >
                   <span className="inline-flex items-center gap-2">
                     <BookOpenText className="h-4 w-4 text-brand-primary" />
-                    Articles
+                    + Read
                   </span>
-                  <ChevronDown className={`h-4 w-4 text-brand-textSecondary transition-transform dark:text-gray-400 ${isMobileArticlesOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 text-brand-textSecondary transition-transform dark:text-gray-400 ${isMobileReadOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {isMobileArticlesOpen && (
+                {isMobileReadOpen && (
                   <div className="space-y-1 px-2 pb-2">
-                    {ARTICLE_LINKS.map((link) => (
+                    {READ_LINKS.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
@@ -439,12 +281,8 @@ export function Navbar() {
                           <link.icon className="h-4 w-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-brand-textPrimary dark:text-gray-100">
-                            {link.label}
-                          </p>
-                          <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-                            {link.description}
-                          </p>
+                          <p className="text-sm font-semibold text-brand-textPrimary dark:text-gray-100">{link.label}</p>
+                          <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">{link.description}</p>
                         </div>
                       </Link>
                     ))}
@@ -452,6 +290,7 @@ export function Navbar() {
                 )}
               </div>
             </nav>
+
             <div className="mt-4 border-t border-brand-border pt-4 dark:border-white/10">
               <a
                 href="https://invite.viber.com/?g2=AQAVVY5OHy%2FfvlZdu7vUh%2FIkJ5fqL16B58XFTULkk1mS4%2BUU9O8ZAwYKbEqW4TCX"
@@ -464,10 +303,7 @@ export function Navbar() {
                 Join our Community
               </a>
               <button
-                onClick={() => {
-                  closeMobileMenu();
-                  setIsFeedbackOpen(true);
-                }}
+                onClick={() => { closeMobileMenu(); setIsFeedbackOpen(true); }}
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
               >
                 <MessageSquare className="h-4 w-4" />
