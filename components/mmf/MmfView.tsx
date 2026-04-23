@@ -3,13 +3,9 @@
 import { type ChangeEvent, useMemo, useState } from 'react';
 import { Calculator, WalletCards } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { BenchmarkRate, MoneyMarketFund } from '@/types';
+import { MoneyMarketFund } from '@/types';
 import {
-  formatEstimatedAnnualEarnings,
   formatMmfMoney,
-  formatMmfPercent,
-  formatPhtDate,
-  getLatestRateDate,
   MMF_DEFAULT_AMOUNT,
 } from '@/lib/mmf';
 import { MmfTable } from './MmfTable';
@@ -27,18 +23,14 @@ function FundSection({
   funds,
   amount,
   isPrimary = false,
-  benchmark,
 }: {
   title: string;
   description: string;
   funds: MoneyMarketFund[];
   amount: number;
   isPrimary?: boolean;
-  benchmark?: BenchmarkRate | null;
 }) {
   const sortedFunds = useMemo(() => sortFunds(funds), [funds]);
-  const topFund = sortedFunds[0];
-  const latestRateDate = getLatestRateDate(sortedFunds);
 
   if (sortedFunds.length === 0) {
     return (
@@ -75,12 +67,12 @@ function FundSection({
 
       <div className="md:hidden space-y-3">
         {sortedFunds.map((fund) => (
-          <MmfCard key={fund.id} fund={fund} amount={amount} expectedRateDate={latestRateDate} />
+          <MmfCard key={fund.id} fund={fund} amount={amount} />
         ))}
       </div>
 
       <div className="hidden md:block">
-        <MmfTable funds={sortedFunds} amount={amount} expectedRateDate={latestRateDate} />
+        <MmfTable funds={sortedFunds} amount={amount} />
       </div>
 
       {isPrimary ? (
@@ -95,11 +87,9 @@ function FundSection({
 export function MmfView({
   phpFunds,
   usdFunds,
-  usdBenchmark,
 }: {
   phpFunds: MoneyMarketFund[];
   usdFunds: MoneyMarketFund[];
-  usdBenchmark?: BenchmarkRate | null;
 }) {
   const [amount, setAmount] = useState(MMF_DEFAULT_AMOUNT);
 
@@ -173,7 +163,6 @@ export function MmfView({
         description="Secondary set for dollar liquidity. Estimates use the same typed number as USD."
         funds={usdFunds}
         amount={amount}
-        benchmark={usdBenchmark}
       />
     </div>
   );

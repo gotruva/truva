@@ -4,8 +4,8 @@ import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
-  formatPhtDate,
-  getFundFreshnessIssue,
+  getFundDataIssue,
+  getFundSourceDateLabel,
   redemptionLabel,
 } from '@/lib/mmf';
 import { MmfCtaButton } from './MmfCtaButton';
@@ -16,11 +16,9 @@ import { ProviderLogo } from './ProviderLogo';
 export function MmfTable({
   funds,
   amount,
-  expectedRateDate,
 }: {
   funds: MoneyMarketFund[];
   amount: number;
-  expectedRateDate?: string | null;
 }) {
   return (
     <div className="overflow-x-auto rounded-[1.4rem] border border-brand-border bg-white dark:border-white/10 dark:bg-white/[0.03]">
@@ -71,7 +69,7 @@ export function MmfTable({
                 : deltaPositive
                   ? 'text-positive'
                   : 'text-danger';
-            const freshnessIssue = getFundFreshnessIssue(fund, expectedRateDate);
+            const dataIssue = getFundDataIssue(fund);
 
             return (
               <tr
@@ -88,10 +86,13 @@ export function MmfTable({
                       <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
                         {fund.provider} | {fund.fund_type}
                       </p>
-                      {freshnessIssue && (
+                      <p className="mt-1 text-[10px] font-medium text-brand-textSecondary/50 dark:text-white/35">
+                        {getFundSourceDateLabel(fund)}
+                      </p>
+                      {dataIssue && (
                         <p className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-semibold text-warning/80">
                           <AlertTriangle className="h-3 w-3 shrink-0" />
-                          {freshnessIssue}
+                          {dataIssue}
                         </p>
                       )}
                     </div>

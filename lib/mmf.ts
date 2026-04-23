@@ -92,6 +92,10 @@ export function getLatestRateDate(funds: MoneyMarketFund[]) {
     .at(-1) ?? null;
 }
 
+export function getFundSourceDateLabel(fund: MoneyMarketFund) {
+  return `as of ${formatPhtDate(fund.rate_date)}`;
+}
+
 function sourceStatusLabel(dataSource: string | null | undefined) {
   if (!dataSource || dataSource === 'scraper') return null;
   if (dataSource === 'auto_carry_forward') return 'carried forward';
@@ -99,11 +103,7 @@ function sourceStatusLabel(dataSource: string | null | undefined) {
   return 'pending automation confirmation';
 }
 
-export function getFundFreshnessIssue(
-  fund: MoneyMarketFund,
-  expectedRateDate: string | null | undefined,
-): string | null {
-  const staleDate = Boolean(expectedRateDate && fund.rate_date !== expectedRateDate);
+export function getFundDataIssue(fund: MoneyMarketFund): string | null {
   const unconfirmed = sourceStatusLabel(fund.data_source);
   const incompleteYield =
     fund.gross_yield_1y === null ||
@@ -111,13 +111,12 @@ export function getFundFreshnessIssue(
     fund.net_yield === null ||
     fund.net_yield === undefined;
 
-  if (!staleDate && !unconfirmed && !incompleteYield) return null;
+  if (!unconfirmed && !incompleteYield) return null;
 
   const parts: string[] = [];
-  if (staleDate) parts.push(`rate as of ${formatPhtDate(fund.rate_date)}`);
   if (unconfirmed) parts.push(unconfirmed);
   if (incompleteYield) parts.push('yield incomplete');
-  return parts.join(' · ');
+  return parts.join(' | ');
 }
 
 export function getPhpUitfFreshnessIssues(funds: MoneyMarketFund[], phtDate: string) {

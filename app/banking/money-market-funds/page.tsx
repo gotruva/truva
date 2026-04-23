@@ -1,14 +1,11 @@
 import Link from 'next/link';
-import { AlertTriangle, ArrowRight, BarChart2, CheckCircle2, RefreshCw, Shield, Zap } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BarChart2, Shield, Zap } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { MmfView } from '@/components/mmf/MmfView';
 import { BenchmarkRate, MoneyMarketFund } from '@/types';
 import {
   formatMmfPercent,
   formatPhtDate,
-  formatPhtDateTime,
-  getLatestCheckedAt,
-  getLatestRateDate,
 } from '@/lib/mmf';
 
 export const dynamic = 'force-dynamic';
@@ -72,11 +69,6 @@ export default async function MoneyMarketFundsPage() {
 
   const phpFunds = funds.filter((fund) => fund.currency === 'PHP');
   const usdFunds = funds.filter((fund) => fund.currency === 'USD');
-  const phpUitfFunds = phpFunds.filter((fund) => fund.fund_type === 'UITF');
-  const latestCheckedAt = getLatestCheckedAt(phpUitfFunds) ?? getLatestCheckedAt(funds);
-  const latestRateDate = getLatestRateDate(phpUitfFunds) ?? getLatestRateDate(funds);
-
-  const latestDate = latestRateDate ? formatPhtDate(latestRateDate) : null;
 
   return (
     <main>
@@ -198,7 +190,7 @@ export default async function MoneyMarketFundsPage() {
         </div>
 
       <div id="mmf-table">
-        <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} />
+        <MmfView phpFunds={phpFunds} usdFunds={usdFunds} />
       </div>
 
       <div className="mt-8 space-y-3 border-t border-brand-border pt-6 dark:border-white/10">
