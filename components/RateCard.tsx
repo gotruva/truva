@@ -114,6 +114,9 @@ function ProductRow({ product, amount, months, isBest }: {
               +{formatPHP(product.projectedReturn)}
             </div>
           )}
+          <div className="text-[10px] font-medium text-brand-textSecondary dark:text-gray-500 uppercase tracking-wider mt-0.5">
+            Net Return
+          </div>
         </div>
       </div>
 
@@ -343,7 +346,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
               <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
                 Effective rate: {(headlineGross * 100).toFixed(2)}% gross
               </div>
-              <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight ${
+              <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight mt-1 ${
                 rank === 1
                   ? 'text-transparent bg-clip-text bg-gradient-to-br from-[#4ADE80] to-[#12B76A]'
                   : 'text-brand-textPrimary dark:text-gray-100'
@@ -351,7 +354,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
                 {formatRate(bestEffectiveRate)}
               </div>
               <div className="text-[12px] font-bold text-brand-textSecondary dark:text-gray-400 mt-1">
-                net after tax · {best.lockInDays === 0 ? 'withdraw anytime' : `time locked for ${formatLockIn(best.lockInDays)}`}
+                Net Return · {best.lockInDays === 0 ? 'withdraw anytime' : `${formatLockIn(best.lockInDays)} lock`}
               </div>
             </div>
             {amount > 0 && (
@@ -434,7 +437,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
       <div className="text-[32px] font-bold text-positive tabular-nums leading-none">
         {(bestAfterTax * 100).toFixed(2)}%
       </div>
-      <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1">after tax</div>
+      <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1 font-bold">Net Return</div>
       <div className="mt-4">
         <AffiliateButton amount={rate.payoutAmount} productId={rate.id} />
       </div>

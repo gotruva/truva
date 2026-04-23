@@ -122,10 +122,10 @@ export function RateSection({
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Ranked by after-tax yield
+              Ranked by Net Return
             </h2>
             <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-              {bankGroups.length} provider{bankGroups.length !== 1 ? 's' : ''} · after 20% withholding tax
+              {bankGroups.length} provider{bankGroups.length !== 1 ? 's' : ''} compared
             </p>
           </div>
 

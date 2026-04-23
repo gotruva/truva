@@ -171,6 +171,7 @@ export function RateTable({
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [sortCol, setSortCol] = useState<SortCol>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [showGross, setShowGross] = useState(false);
 
   const numAmount = amount || 0;
 
@@ -282,22 +283,29 @@ export function RateTable({
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400">Duration:</span>
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400">View:</span>
             <div className="flex rounded-lg border border-brand-border bg-white p-1 dark:border-white/10 dark:bg-slate-950">
-              {monthOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => onMonthsChange(option.value)}
-                  className={`rounded-md px-3 py-1.5 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
-                    months === option.value
-                      ? 'bg-brand-primary text-white shadow-sm'
-                      : 'text-brand-textSecondary hover:bg-brand-surface hover:text-brand-textPrimary dark:text-gray-500 dark:hover:bg-slate-900 dark:hover:text-gray-300'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
+              <button
+                onClick={() => setShowGross(false)}
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
+                  !showGross
+                    ? 'bg-brand-primary text-white shadow-sm'
+                    : 'text-brand-textSecondary hover:bg-brand-surface dark:text-gray-500'
+                }`}
+              >
+                Net Return
+              </button>
+              <button
+                onClick={() => setShowGross(true)}
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
+                  showGross
+                    ? 'bg-brand-primary text-white shadow-sm'
+                    : 'text-brand-textSecondary hover:bg-brand-surface dark:text-gray-500'
+                }`}
+              >
+                Gross vs Net
+              </button>
             </div>
           </div>
         </div>
@@ -315,14 +323,16 @@ export function RateTable({
                 Bank / Provider <SortIcon col="provider" />
               </button>
             </th>
-            <th className="p-4 py-3.5 text-right font-semibold">
-              <button
-                onClick={() => handleSort('rate')}
-                className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
-              >
-                Marketed Rate <SortIcon col="rate" />
-              </button>
-            </th>
+            {showGross && (
+              <th className="p-4 py-3.5 text-right font-semibold">
+                <button
+                  onClick={() => handleSort('rate')}
+                  className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
+                >
+                  Marketed Rate <SortIcon col="rate" />
+                </button>
+              </th>
+            )}
             <th className="p-4 py-3.5 text-right font-semibold">
               <TooltipProvider delay={150}>
                 <Tooltip>
@@ -334,7 +344,7 @@ export function RateTable({
                       />
                     )}
                   >
-                    After Tax Rate
+                    Net Return
                     <AlertCircle className="h-3.5 w-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
                     <SortIcon col="effective" />
                   </TooltipTrigger>
@@ -343,8 +353,8 @@ export function RateTable({
                     className="max-w-[300px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
                   >
                     <p>
-                      The effective after-tax rate you&apos;d actually earn on PHP {numAmount.toLocaleString()}
-                      {' '}after balance tiers and withholding tax are applied.
+                      The Net Return is what you actually keep on PHP {numAmount.toLocaleString()}
+                      {' '}after the 20% Final Withholding Tax is applied.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -444,18 +454,22 @@ export function RateTable({
                     </div>
                   </td>
 
-                  <td className="p-4 text-right">
-                    <div className="text-[15px] font-semibold tabular-nums text-brand-textPrimary dark:text-gray-100">
-                      {(headlineGross * 100).toFixed(2)}%
-                    </div>
-                    <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">gross</div>
-                  </td>
+                  {showGross && (
+                    <td className="p-4 text-right">
+                      <div className="text-[15px] font-semibold tabular-nums text-brand-textPrimary dark:text-gray-100">
+                        {(headlineGross * 100).toFixed(2)}%
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">gross</div>
+                    </td>
+                  )}
 
                   <td className="p-4 text-right">
                     <div className={`text-[18px] font-bold tabular-nums ${groupIndex === 0 ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
                       {formatRate(group.bestEffectiveRate)}
                     </div>
-                    <div className="mt-0.5 text-[11px] font-medium text-positive">after tax</div>
+                    <div className="mt-0.5 text-[11px] font-medium text-positive">
+                      {showGross ? 'net return' : 'net'}
+                    </div>
                   </td>
 
                   <td className="p-4 text-right">
@@ -611,7 +625,7 @@ export function RateTable({
                                     <div className="text-[16px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
                                       {formatRate(product.effectiveRate)}
                                       <span className="ml-1 text-[11px] font-medium text-brand-textSecondary dark:text-gray-500">
-                                        after tax
+                                        net return
                                       </span>
                                     </div>
                                     {numAmount > 0 && (

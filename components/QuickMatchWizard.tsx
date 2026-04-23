@@ -29,17 +29,17 @@ const GOAL_OPTIONS: Array<{
   {
     id: 'emergency',
     label: 'Easy access',
-    sub: 'Best if you may need the money soon.',
+    sub: 'For short-term needs or emergencies.',
   },
   {
     id: 'idle-cash',
     label: 'Best earnings',
-    sub: 'Best if you want the strongest after-tax return.',
+    sub: 'Maximise growth over long-term savings.',
   },
   {
     id: 'monthly-income',
     label: 'Regular payouts',
-    sub: 'Best if you want interest paid along the way.',
+    sub: 'Receive interest regularly while you save.',
   },
 ];
 
@@ -179,10 +179,10 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
               3 easy steps
             </div>
             <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-gray-100 sm:text-2xl">
-              Find your best rate fast.
+              Find your best savings rate – just answer 3 questions.
             </h2>
             <p className="mt-2 max-w-lg text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400">
-              Answer 3 simple questions. We&apos;ll rank the bank options that fit you best.
+              We&apos;ll rank every bank account by your real Net Return.
             </p>
           </div>
           <button
@@ -198,7 +198,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
             Step {step} of 3
           </span>
           <span className="hidden text-xs text-brand-textSecondary dark:text-gray-500 sm:inline">
-            Your after-tax match
+            Ranking your matches
           </span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-brand-border dark:bg-white/10">
@@ -247,7 +247,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                   How much will you deposit?
                 </h3>
                 <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-400">
-                  We use your amount to show your real after-tax earnings.
+                  We use your amount to show your real Net Return.
                 </p>
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                   {AMOUNT_PRESETS.map((preset) => (

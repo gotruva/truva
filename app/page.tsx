@@ -123,7 +123,17 @@ export default async function HomePage() {
     ],
   };
 
-  const formattedDate = formatVerifiedDate(getLatestVerifiedDate(rates));
+  const latestVerifiedDate = getLatestVerifiedDate(rates);
+  const formattedDate = formatVerifiedDate(latestVerifiedDate);
+
+  // Get current date in PHT for the "Live Sync" indicator
+  const nowPht = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date());
+
   const jsonLdScripts = [
     { id: 'home-rate-list-jsonld', content: rateListJsonLd },
     { id: 'home-website-jsonld', content: websiteJsonLd },
@@ -147,7 +157,7 @@ export default async function HomePage() {
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 transition-colors duration-300">
         <div className="max-w-7xl mx-auto scroll-mt-28 pt-10" id="calculator">
-          <CompareHub rates={rates} formattedDate={formattedDate} />
+          <CompareHub rates={rates} formattedDate={formattedDate} lastCheckDate={nowPht} />
         </div>
       </div>
       

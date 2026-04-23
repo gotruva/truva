@@ -100,8 +100,8 @@ export function Navbar() {
   const navLinkClass = (href: string) => {
     const isActive = pathname === href || pathname.startsWith(href + '/');
     return isActive
-      ? 'px-3 py-1.5 text-[14px] font-semibold rounded-lg bg-brand-primary text-white transition-colors'
-      : 'px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors';
+      ? 'relative px-3 py-2 text-[14px] font-bold text-brand-primary dark:text-blue-400 after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-brand-primary dark:after:bg-blue-400 after:rounded-full transition-colors'
+      : 'px-3 py-2 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 transition-colors';
   };
 
   return (
@@ -129,7 +129,7 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          <Link href="/" className={pathname === '/' ? 'px-3 py-1.5 text-[14px] font-semibold rounded-lg bg-brand-primary text-white transition-colors' : 'px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors'}>
+          <Link href="/" className={pathname === '/' ? 'relative px-3 py-2 text-[14px] font-bold text-brand-primary dark:text-blue-400 after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-brand-primary dark:after:bg-blue-400 after:rounded-full transition-colors' : 'px-3 py-2 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 transition-colors'}>
             Savings
           </Link>
           <Link href="/banking/money-market-funds" className={navLinkClass('/banking/money-market-funds')}>

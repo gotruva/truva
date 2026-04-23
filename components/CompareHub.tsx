@@ -16,6 +16,7 @@ type TopSection = 'quick-match-wizard' | 'quick-match-results' | 'advanced-compa
 interface CompareHubProps {
   rates: RateProduct[];
   formattedDate?: string;
+  lastCheckDate?: string;
 }
 
 interface PersistedCompareHubState {
@@ -129,7 +130,7 @@ function readPersistedState(): PersistedCompareHubState | null {
   }
 }
 
-export function CompareHub({ rates, formattedDate }: CompareHubProps) {
+export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubProps) {
   const [topSection, setTopSection] = useState<TopSection>('quick-match-wizard');
   const [quickMatchAnswers, setQuickMatchAnswers] = useState<QuickMatchAnswers | null>(null);
   const [comparisonState, setComparisonState] = useState<ComparisonState>(DEFAULT_COMPARISON_STATE);
@@ -352,7 +353,15 @@ export function CompareHub({ rates, formattedDate }: CompareHubProps) {
       <div id="deposit-rates" className="mt-4 scroll-mt-28 px-4">
         <div className="mb-8 max-w-3xl">
           <h2 className="text-2xl font-bold text-brand-textPrimary dark:text-gray-100">Compare bank rates in one place</h2>
-
+          <div className="mt-2 flex items-center gap-2">
+            <div className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 duration-1000 dark:bg-emerald-500"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+            </div>
+            <p className="text-[13px] font-medium tracking-tight text-brand-textSecondary dark:text-gray-400">
+              Last verified: <span className="text-brand-textPrimary dark:text-gray-200">{lastCheckDate || formattedDate || 'Checking now...'}</span>
+            </p>
+          </div>
         </div>
         <DynamicRateSection
           rates={rates}
