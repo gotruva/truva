@@ -84,12 +84,7 @@ export default async function MoneyMarketFundsPage() {
       <section className="relative overflow-hidden bg-brand-primary px-4 py-20 text-white dark:bg-slate-950">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.28),transparent_52%)] opacity-90 dark:bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.18),transparent_52%)]" />
         <div className="relative mx-auto max-w-3xl flex flex-col items-center text-center z-10">
-          {latestDate && (
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-semibold backdrop-blur-md">
-              <CheckCircle2 className="w-4 h-4 text-green-300" />
-              <span className="text-blue-50">Rates verified {latestDate}</span>
-            </div>
-          )}
+
 
           <h1 className="mb-4 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.25rem]">
             Your money,{' '}
@@ -143,7 +138,7 @@ export default async function MoneyMarketFundsPage() {
 
       <div className="mx-auto max-w-6xl px-4 py-8">
         {/* Benchmark metrics */}
-        <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
             Funds tracked
@@ -180,24 +175,7 @@ export default async function MoneyMarketFundsPage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
-          <div className="flex items-start gap-3">
-            <div className="rounded-full bg-brand-primary/10 p-2 text-brand-primary">
-              <RefreshCw className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
-                Data last updated
-              </p>
-              <p className="mt-2 text-base font-bold text-brand-textPrimary dark:text-white">
-                {formatPhtDateTime(latestCheckedAt)}
-              </p>
-              <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-                PHP rates as of {formatPhtDate(latestRateDate)}
-              </p>
-            </div>
-          </div>
-        </div>
+
       </section>
 
       {loadError && (
@@ -210,19 +188,14 @@ export default async function MoneyMarketFundsPage() {
       )}
 
       {/* Section header above the table */}
-      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
             Ranked by net yield
           </h2>
           <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-            {phpFunds.length} PHP funds · latest source-date-aware net yields
+            {phpFunds.length} PHP funds ranked by performance
           </p>
         </div>
-        <span className="shrink-0 rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-sm font-semibold text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-300">
-          Returns for ₱100,000
-        </span>
-      </div>
 
       <div id="mmf-table">
         <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} />

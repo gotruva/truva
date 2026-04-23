@@ -80,9 +80,7 @@ export function MmfCard({
             </p>
           </div>
         </div>
-        <p className="mt-1 text-xs font-medium text-brand-textSecondary/45 dark:text-white/30">
-          as of {formatPhtDate(fund.rate_date)}
-        </p>
+
         <p className="mt-2 text-xs text-brand-textSecondary/55 dark:text-white/35">
           Based on {formatMmfMoney(amount, fund.currency)}
         </p>

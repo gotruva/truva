@@ -55,12 +55,7 @@ export function HeroSection({ formattedDate }: HeroSectionProps) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.28),transparent_52%)] opacity-90 dark:bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.18),transparent_52%)]" />
 
       <div className="relative max-w-3xl mx-auto flex flex-col items-center text-center z-10">
-        {formattedDate && (
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-semibold backdrop-blur-md dark:border-blue-700/50 dark:bg-blue-900/30">
-            <CheckCircle2 className="w-4 h-4 text-green-300" />
-            <span className="text-blue-50">Rates verified {formattedDate}</span>
-          </div>
-        )}
+
 
         <h1 className="mb-4 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.25rem]">
           Find where your peso{' '}

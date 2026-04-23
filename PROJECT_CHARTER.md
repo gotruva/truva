@@ -9,9 +9,9 @@
 
 ---
 
-## 1. The Vision: "Financial & Lifestyle Mastery"
+## 1. The Vision: "Finance & Lifestyle Marketplace"
 
-**Truva** is the world's most comprehensive financial and lifestyle comparison platform. We are breaking the silos of personal finance by consolidating fragmented data across banking, credit, loans, health, and mobility into a single, high-trust optimization engine.
+**Truva** is the world's most comprehensive **Consumer Finance and Lifestyle Marketplace**. We bridge the gap between supply (banks and businesses) and demand (consumers), consolidating fragmented data across banking, credit, loans, health, and mobility into a single, high-trust discovery engine.
 
 ### The Problem We Solve
 People live siloed lives because their data is siloed. Comparing a digital bank's yield against an HMO plan or a student loan's interest is nearly impossible for the average person. This fragmentation costs people time and money.
@@ -48,12 +48,11 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 - Desktop is a secondary enhancement.
 - No horizontal scrolling on mobile, ever.
 
-### 💰 After-Tax Engineering ("The Moat")
-- Never display a gross rate without showing the after-tax equivalent.
-- Standard Bank Interest (PHP): `grossRate * 0.80`
-- Dollar Time Deposits (USD): `grossRate * 0.925`
-- Tax-Exempt (MP2, T-Bills): `grossRate * 1.00`
-- **Single Source of Truth**: Always import from `lib/tax.ts`.
+### 💰 Net-Value Engineering ("The Moat")
+- Never display a headline rate or reward in isolation. Our core value is showing the **bottom line** after all deductions (taxes, fees, or hidden conditions).
+- **Banking (After-Tax)**: Standard Bank Interest (PHP): `grossRate * 0.80`, Dollar TDs: `grossRate * 0.925`.
+- **Credit Cards (Net Reward)**: Real Value = `(Reward Value - Annual Fee)`.
+- **Single Source of Truth**: Always import calculation logic from the relevant utility (e.g., `lib/tax.ts` for banking).
 
 ### ⚡ Performance & UX
 - **Lighthouse Mobile Score: ≥90.** No exceptions.
@@ -62,13 +61,13 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 
 ---
 
-## 4. Business Architecture
+## 4. Business Architecture: The Marketplace Model
 
-- **The User pays ₱0.** Truva is free forever.
-- **Revenue Model**: Affiliate commissions + Sponsored placements.
-- **The Engine**: A high-conversion newsletter (`The Truva Brief`) that drives users back to optimized comparison modules.
-- **Regulatory Status**: We are a **Financial Information Platform**. We never touch, hold, or custody user funds.
-- **Regulatory Alignment**: Truva is proactively committed to supporting all current and future **BSP and SEC financial initiatives**. We don't just list products; we advocate for national programs (like PERA) to ensure every Filipino has a seat at the table.
+- **The Supply**: Banks, financial institutions, and lifestyle businesses providing products (loans, insurance, yields, credit).
+- **The Demand**: Consumers looking to optimize their wealth, health, and mobility choices.
+- **The Bridge**: Truva is free forever for consumers. We monetize via affiliate commissions and sponsored placements from our supply partners.
+- **Regulatory Status**: We are a **Financial & Lifestyle Information Marketplace**. We never touch, hold, or custody user funds.
+- **Regulatory Alignment**: Truva is proactively committed to supporting all current and future **BSP and SEC financial initiatives**. We aggregate market supply to ensure every Filipino has a seat at the table.
 
 ---
 

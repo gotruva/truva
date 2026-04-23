@@ -70,34 +70,7 @@ function FundSection({
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          {topFund ? (
-            <div className="shrink-0 rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/40 px-4 py-3 text-sm dark:border-brand-primary/20 dark:bg-brand-primary/10">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-                Top net yield
-              </p>
-              <p className="mt-1 font-bold tabular-nums text-brand-textPrimary dark:text-white">
-                {formatMmfPercent(topFund.net_yield)} | {formatEstimatedAnnualEarnings(topFund, amount)}
-              </p>
-              <p className="mt-0.5 text-xs text-brand-textSecondary/60 dark:text-white/40">
-                {topFund.provider}
-              </p>
-            </div>
-          ) : null}
-          {benchmark ? (
-            <div className="shrink-0 rounded-2xl border border-brand-border bg-brand-surface px-4 py-3 text-sm dark:border-white/10 dark:bg-white/[0.04]">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
-                Benchmark (90-day SOFR)
-              </p>
-              <p className="mt-1 font-bold tabular-nums text-brand-textPrimary dark:text-white">
-                {formatMmfPercent(benchmark.rate)}
-              </p>
-              <p className="mt-0.5 text-xs text-brand-textSecondary/60 dark:text-white/40">
-                US T-Bill proxy · as of {formatPhtDate(benchmark.date)}
-              </p>
-            </div>
-          ) : null}
-        </div>
+
       </div>
 
       <div className="md:hidden space-y-3">

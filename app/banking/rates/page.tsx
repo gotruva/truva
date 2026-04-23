@@ -145,15 +145,7 @@ export default async function BankingRatesHub() {
               Start here for the real numbers. Expand each bank to see tiers, lock-ins, and conditions.
             </p>
 
-            {formattedVerifiedDate && (
-              <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-brand-border bg-white px-3.5 py-1.5 text-xs font-semibold text-brand-textSecondary shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-gray-300 sm:px-4 sm:py-2 sm:text-sm">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-pulse-status absolute inline-flex h-full w-full rounded-full bg-positive opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-positive"></span>
-                </span>
-                Rates verified on <span className="font-bold text-brand-textPrimary dark:text-white">{formattedVerifiedDate}</span>
-              </div>
-            )}
+
           </div>
 
           <div className="rounded-[1.75rem] border border-brand-border bg-brand-surface p-3 shadow-[0_18px_55px_-40px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-slate-950 sm:rounded-[2rem] sm:p-6">

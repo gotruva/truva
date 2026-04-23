@@ -1,8 +1,8 @@
-# Truva — Financial & Lifestyle Mastery
+# Truva — Finance & Lifestyle Marketplace
 
-> **The best all-in-one Financial and Lifestyle comparison app in the world.**
+> **The best all-in-one Finance and Lifestyle Marketplace app in the world.**
 
-Truva is a high-performance, mobile-first optimization platform designed to consolidate siloed financial and lifestyle data into actionable comparisons. We empower users to master their wealth, health, and mobility through precise after-tax engineering and transparent product discovery.
+Truva is a high-performance, mobile-first marketplace designed to connect consumers with the best supply from banks and businesses. We consolidate siloed financial and lifestyle data across wealth, health, and mobility through precise **net-value engineering** (after-tax yields and real reward values) and transparent product discovery.
 
 ---
 
@@ -61,9 +61,9 @@ npm run build
 
 ---
 
-## ⚖️ The "After-Tax" Rule
+## ⚖️ The "Net-Value" Rule
 
-Every financial product on Truva must be displayed with its **After-Tax** equivalent. This is our core competitive moat. Refer to `lib/tax.ts` for the tax regime implementation.
+Every financial product on Truva must be displayed with its **Net-Value** equivalent (After-Tax for banking, Net-Rewards for credit cards). This is our core competitive moat. Refer to `lib/tax.ts` and the Project Charter for implementation details.
 
 ---
 

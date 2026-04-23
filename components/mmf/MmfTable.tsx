@@ -101,9 +101,7 @@ export function MmfTable({
                   <span className="text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">
                     {formatMmfPercent(fund.net_yield)}
                   </span>
-                  <p className="mt-1 text-xs font-medium text-brand-textSecondary/45 dark:text-white/30">
-                    as of {formatPhtDate(fund.rate_date)}
-                  </p>
+
                 </td>
                 <td className="px-4 py-4 text-right">
                   <p className="font-semibold tabular-nums text-brand-textPrimary dark:text-white">

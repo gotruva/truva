@@ -87,9 +87,6 @@ function MmfPreviewCard({ fund }: { fund: MoneyMarketFund }) {
             <p className="text-xs font-semibold tabular-nums text-brand-primary">
               {formatMmfPercent(fund.net_yield)}
             </p>
-            <p className="mt-0.5 text-[10px] font-medium text-brand-primary/65">
-              as of {formatPhtDate(fund.rate_date)}
-            </p>
           </div>
         </div>
 
@@ -194,9 +191,7 @@ export default async function BankingHub() {
           items: [
             {
               title: 'Verified cadence',
-              description: formattedVerifiedDate
-                ? `Rates in this desk were last verified on ${formattedVerifiedDate}.`
-                : 'Rates are reviewed on a recurring verification cycle.',
+              description: 'Rates are reviewed on a recurring verification cycle to ensure accuracy.',
               icon: ShieldCheck,
             },
             {
@@ -338,11 +333,7 @@ export default async function BankingHub() {
                   Money Market Funds
                 </h2>
                 <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                  These PHP UITFs and mutual funds use Truva&apos;s live MMF dataset. Net yield is shown with fund-type adjustments and source dates so you can see how current the comparison is.
-                </p>
-                <p className="inline-flex items-center gap-2 text-xs font-semibold text-brand-textSecondary/70 dark:text-white/45">
-                  <RefreshCw className="h-3.5 w-3.5 text-brand-primary" />
-                  Data last updated: {formatPhtDateTime(latestMmfCheckedAt)}
+                  These PHP UITFs and mutual funds use Truva&apos;s live MMF dataset. Net yield is shown with fund-type adjustments ranked by performance.
                 </p>
               </div>
 
