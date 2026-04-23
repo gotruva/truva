@@ -20,6 +20,7 @@ import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
+  formatPhtDate,
   formatPhtDateTime,
   getLatestCheckedAt,
   MMF_DEFAULT_AMOUNT,
@@ -70,21 +71,26 @@ function MmfPreviewCard({ fund }: { fund: MoneyMarketFund }) {
   return (
     <article className="min-w-[18rem] snap-start rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-[0_18px_48px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-white/[0.04] md:min-w-0">
       <div className="flex h-full flex-col gap-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <ProviderLogo provider={fund.provider} className="h-9 w-9 shrink-0" textClassName="text-sm" />
-            <div className="min-w-0">
-              <h3 className="text-base font-bold leading-tight text-brand-textPrimary dark:text-white">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <ProviderLogo provider={fund.provider} className="h-9 w-9 shrink-0" textClassName="text-sm" />
+              <div className="min-w-0">
+                <h3 className="text-base font-bold leading-tight text-brand-textPrimary dark:text-white">
                 {fund.name}
               </h3>
               <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-                {fund.provider}
-              </p>
+                  {fund.provider}
+                </p>
+              </div>
             </div>
+          <div className="shrink-0 rounded-xl bg-brand-primary/10 px-2.5 py-1.5 text-right">
+            <p className="text-xs font-semibold tabular-nums text-brand-primary">
+              {formatMmfPercent(fund.net_yield)}
+            </p>
+            <p className="mt-0.5 text-[10px] font-medium text-brand-primary/65">
+              as of {formatPhtDate(fund.rate_date)}
+            </p>
           </div>
-          <span className="shrink-0 rounded-full bg-brand-primary/10 px-2.5 py-1 text-xs font-semibold text-brand-primary">
-            {formatMmfPercent(fund.net_yield)}
-          </span>
         </div>
 
         <div className="rounded-2xl border border-brand-primary/15 bg-brand-primaryLight/40 p-4 dark:border-brand-primary/20 dark:bg-brand-primary/10">
@@ -329,10 +335,10 @@ export default async function BankingHub() {
                   Best for liquid investing
                 </span>
                 <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-                  Money Market Funds (UITFs)
+                  Money Market Funds
                 </h2>
                 <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                  These PHP funds use Truva&apos;s live MMF dataset. Net yield is shown after tax and trust fees, with one update timestamp so you can see how current the comparison is.
+                  These PHP UITFs and mutual funds use Truva&apos;s live MMF dataset. Net yield is shown with fund-type adjustments and source dates so you can see how current the comparison is.
                 </p>
                 <p className="inline-flex items-center gap-2 text-xs font-semibold text-brand-textSecondary/70 dark:text-white/45">
                   <RefreshCw className="h-3.5 w-3.5 text-brand-primary" />

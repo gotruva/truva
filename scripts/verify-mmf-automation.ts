@@ -3,27 +3,40 @@ import assert from 'assert';
 import dotenv from 'dotenv';
 
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import {
+  computeDailyRatePayload,
+  fetchOfficialBenchmarks,
+  fetchOfficialFundRates,
+  formatPercent,
+  type DailyRatePayload,
+  type MmfFundForComputation,
+} from './mmf-official-sources';
 
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 
-interface MmfFundRow {
-  id: string;
-  slug: string;
-  name: string;
-  provider: string;
-}
+type FundRow = MmfFundForComputation & {
+  navpu_source: string;
+  is_active: boolean;
+};
 
-interface MmfDailyRateRow {
-  fund_id: string;
-  date: string;
+type CurrentRow = FundRow & {
+  rate_date: string | null;
+  navpu: number | null;
   gross_yield_1y: number | null;
   after_tax_yield: number | null;
   net_yield: number | null;
   benchmark_rate: number | null;
   vs_benchmark: number | null;
   data_source: string | null;
-}
+};
+
+type BenchmarkRow = {
+  key: string;
+  date: string;
+  rate: number;
+  source_url: string | null;
+};
 
 function getArgValue(name: string): string | null {
   const prefix = `--${name}=`;
@@ -31,24 +44,47 @@ function getArgValue(name: string): string | null {
   return match ? match.slice(prefix.length) : null;
 }
 
-function getPhtDate(value = new Date()): string {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Manila',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(value);
-
-  const byType = new Map(parts.map((part) => [part.type, part.value]));
-  return `${byType.get('year')}-${byType.get('month')}-${byType.get('day')}`;
+function isCloseTo(left: number | null | undefined, right: number | null | undefined, tolerance = 0.00005) {
+  if (left === null || left === undefined || right === null || right === undefined) return false;
+  return Math.abs(Number(left) - Number(right)) <= tolerance;
 }
 
-function formatFundList(funds: MmfFundRow[]) {
-  return funds.map((fund) => `${fund.provider} - ${fund.name}`).join('; ');
+function formatIssue(row: CurrentRow, issue: string) {
+  return `${row.provider} - ${row.name}: ${issue}`;
 }
 
-function isCloseTo(left: number, right: number) {
-  return Math.abs(left - right) < 0.000001;
+function compareRateFields(row: CurrentRow, expected: DailyRatePayload) {
+  const issues: string[] = [];
+
+  if (row.rate_date !== expected.date) {
+    issues.push(`source date ${row.rate_date ?? 'missing'} should be ${expected.date}`);
+  }
+
+  if (!isCloseTo(row.navpu, expected.navpu, 0.0005)) {
+    issues.push(`NAVPU ${row.navpu ?? 'missing'} should be ${expected.navpu}`);
+  }
+
+  if (!isCloseTo(row.gross_yield_1y, expected.gross_yield_1y)) {
+    issues.push(`gross ${row.gross_yield_1y ?? 'missing'} should be ${expected.gross_yield_1y}`);
+  }
+
+  if (!isCloseTo(row.after_tax_yield, expected.after_tax_yield)) {
+    issues.push(`after-tax ${row.after_tax_yield ?? 'missing'} should be ${expected.after_tax_yield}`);
+  }
+
+  if (!isCloseTo(row.net_yield, expected.net_yield)) {
+    issues.push(`net ${row.net_yield ?? 'missing'} should be ${expected.net_yield}`);
+  }
+
+  if (!isCloseTo(row.benchmark_rate, expected.benchmark_rate)) {
+    issues.push(`benchmark ${row.benchmark_rate ?? 'missing'} should be ${expected.benchmark_rate}`);
+  }
+
+  if (!isCloseTo(row.vs_benchmark, expected.vs_benchmark)) {
+    issues.push(`vs_benchmark ${row.vs_benchmark ?? 'missing'} should be ${expected.vs_benchmark}`);
+  }
+
+  return issues;
 }
 
 async function main() {
@@ -58,7 +94,7 @@ async function main() {
     return;
   }
 
-  const checkDate = getArgValue('date') ?? getPhtDate();
+  const requiredDate = getArgValue('date');
   const requireScraper = process.argv.includes('--require-scraper');
 
   const tableNames = ['money_market_funds', 'mmf_daily_rates', 'benchmark_rates', 'mmf_current'] as const;
@@ -69,110 +105,102 @@ async function main() {
     console.log(`${tableName}: ${count} rows`);
   }
 
-  const { data: funds, error: fundsError } = await client
-    .from('money_market_funds')
-    .select('id, slug, name, provider, currency, benchmark_key')
-    .eq('is_active', true)
-    .in('currency', ['PHP', 'USD'])
-    .eq('fund_type', 'UITF')
-    .eq('navpu_source', 'uitf_com_ph')
-    .returns<(MmfFundRow & { currency: string, benchmark_key: string })[]>();
+  const [{ data: funds, error: fundsError }, { data: currentRows, error: currentError }] = await Promise.all([
+    client
+      .from('money_market_funds')
+      .select('id, slug, name, provider, fund_type, currency, trust_fee_pct, benchmark_key, navpu_source, is_active')
+      .eq('is_active', true)
+      .returns<FundRow[]>(),
+    client
+      .from('mmf_current')
+      .select('id, slug, name, provider, fund_type, currency, trust_fee_pct, benchmark_key, rate_date, navpu, gross_yield_1y, after_tax_yield, net_yield, benchmark_rate, vs_benchmark, data_source')
+      .returns<CurrentRow[]>(),
+  ]);
 
-  assert(!fundsError, `Failed to load MMF automation targets: ${fundsError?.message}`);
-  assert(funds && funds.length > 0, 'Expected at least one active UITF automation target.');
+  assert(!fundsError, `Failed to load MMF fund targets: ${fundsError?.message}`);
+  assert(!currentError, `Failed to load mmf_current: ${currentError?.message}`);
+  assert(funds && funds.length > 0, 'Expected active MMF fund targets.');
+  assert(currentRows && currentRows.length > 0, 'Expected mmf_current rows.');
 
-  const fundIds = funds.map((fund) => fund.id);
-  const { data: rows, error: ratesError } = await client
-    .from('mmf_daily_rates')
-    .select('fund_id, date, gross_yield_1y, after_tax_yield, net_yield, benchmark_rate, vs_benchmark, data_source')
-    .eq('date', checkDate)
-    .in('fund_id', fundIds)
-    .returns<MmfDailyRateRow[]>();
+  const [officialRates, officialBenchmarks] = await Promise.all([
+    fetchOfficialFundRates(),
+    fetchOfficialBenchmarks(),
+  ]);
 
-  assert(!ratesError, `Failed to load MMF daily rows for ${checkDate}: ${ratesError?.message}`);
+  const currentBySlug = new Map(currentRows.map((row) => [row.slug, row]));
+  const issues: string[] = [];
+  const sourceSummary: Array<Record<string, string | number | null>> = [];
 
-  const rowByFundId = new Map((rows ?? []).map((row) => [row.fund_id, row]));
-  const missingFunds = funds.filter((fund) => !rowByFundId.has(fund.id));
-  assert.equal(
-    missingFunds.length,
-    0,
-    `Missing ${checkDate} MMF daily rows for: ${formatFundList(missingFunds)}`,
-  );
+  for (const fund of funds) {
+    const official = officialRates.get(fund.slug);
+    const current = currentBySlug.get(fund.slug);
 
-  const invalidYieldFunds = funds.filter((fund) => {
-    const row = rowByFundId.get(fund.id);
-    return !row || row.gross_yield_1y === null || row.after_tax_yield === null || row.net_yield === null;
-  });
-  assert.equal(
-    invalidYieldFunds.length,
-    0,
-    `Missing yield values for: ${formatFundList(invalidYieldFunds)}`,
-  );
+    if (!official) {
+      issues.push(`${fund.provider} - ${fund.name}: missing official source mapping`);
+      continue;
+    }
 
-  const invalidBenchmarkFunds = funds.filter((fund) => {
-    const row = rowByFundId.get(fund.id);
-    return !row || row.benchmark_rate === null || row.vs_benchmark === null;
-  });
-  assert.equal(
-    invalidBenchmarkFunds.length,
-    0,
-    `Missing benchmark values for: ${formatFundList(invalidBenchmarkFunds)}`,
-  );
+    if (!current) {
+      issues.push(`${fund.provider} - ${fund.name}: missing mmf_current row`);
+      continue;
+    }
 
-  const manualFunds = funds.filter((fund) => rowByFundId.get(fund.id)?.data_source !== 'scraper');
-  if (requireScraper) {
-    assert.equal(
-      manualFunds.length,
-      0,
-      `Rows must be scraper-sourced before acceptance. Still manual/stale: ${formatFundList(manualFunds)}`,
-    );
-  } else if (manualFunds.length > 0) {
-    console.warn(
-      `Warning: ${manualFunds.length} UITF rows are not scraper-sourced yet. Run with --require-scraper after n8n is live.`,
-    );
+    if (requiredDate && official.date !== requiredDate) {
+      issues.push(`${fund.provider} - ${fund.name}: official source date ${official.date} does not match requested --date=${requiredDate}`);
+    }
+
+    const expected = computeDailyRatePayload(fund, official, officialBenchmarks, 'scraper');
+    for (const issue of compareRateFields(current, expected)) {
+      issues.push(formatIssue(current, issue));
+    }
+
+    if (requireScraper && current.data_source !== 'scraper') {
+      issues.push(formatIssue(current, `data_source ${current.data_source ?? 'missing'} should be scraper`));
+    }
+
+    sourceSummary.push({
+      slug: fund.slug,
+      source_date: official.date,
+      navpu: official.navpu,
+      gross: formatPercent(official.grossYield),
+      expected_net: formatPercent(expected.net_yield),
+      db_date: current.rate_date,
+      db_net: current.net_yield === null ? null : formatPercent(current.net_yield),
+      data_source: current.data_source,
+    });
   }
 
-  // Load benchmarks
-  const { data: benchmarksData, error: benchmarkError } = await client
+  const { data: benchmarkRows, error: benchmarkError } = await client
     .from('benchmark_rates')
-    .select('key, date, rate')
-    .in('key', ['BTR_91D', 'US_TBILL_90D'])
-    .lte('date', checkDate)
-    .order('date', { ascending: false });
+    .select('key, date, rate, source_url')
+    .in('key', officialBenchmarks.map((benchmark) => benchmark.key))
+    .returns<BenchmarkRow[]>();
 
-  assert(!benchmarkError, `Failed to load benchmarks: ${benchmarkError?.message}`);
-  
-  const benchmarks = benchmarksData || [];
-  const btr = benchmarks.find((b) => b.key === 'BTR_91D');
-  const usd = benchmarks.find((b) => b.key === 'US_TBILL_90D');
-  
-  if (funds.some(f => f.benchmark_key === 'BTR_91D')) {
-    assert(btr, `Missing BTR_91D benchmark on or before ${checkDate}.`);
-  }
-  if (funds.some(f => f.benchmark_key === 'US_TBILL_90D')) {
-    assert(usd, `Missing US_TBILL_90D benchmark on or before ${checkDate}.`);
+  assert(!benchmarkError, `Failed to load benchmark rows: ${benchmarkError?.message}`);
+  const benchmarkByKeyDate = new Map((benchmarkRows ?? []).map((row) => [`${row.key}:${row.date}`, row]));
+
+  for (const benchmark of officialBenchmarks) {
+    const dbBenchmark = benchmarkByKeyDate.get(`${benchmark.key}:${benchmark.date}`);
+    if (!dbBenchmark) {
+      issues.push(`${benchmark.key}: missing benchmark row for ${benchmark.date}`);
+      continue;
+    }
+
+    if (!isCloseTo(dbBenchmark.rate, benchmark.rate)) {
+      issues.push(`${benchmark.key}: benchmark rate ${dbBenchmark.rate} should be ${benchmark.rate}`);
+    }
   }
 
-  const incorrectBenchmarkDeltaFunds = funds.filter((fund) => {
-    const row = rowByFundId.get(fund.id);
-    if (!row || row.net_yield === null || row.vs_benchmark === null) return true;
-    
-    const benchmark = fund.benchmark_key === 'BTR_91D' ? btr : usd;
-    if (!benchmark) return true;
-    
-    // Remember: BTR is fully taxable so we *0.8. USD might follow different tax structures, but typically BTR is 0.8
-    const taxAdjustedRate = fund.benchmark_key === 'BTR_91D' ? benchmark.rate * 0.8 : benchmark.rate;
-    return !isCloseTo(row.vs_benchmark, row.net_yield - taxAdjustedRate);
-  });
-  
+  console.table(sourceSummary);
+
   assert.equal(
-    incorrectBenchmarkDeltaFunds.length,
+    issues.length,
     0,
-    `Benchmark delta should compare net yield against the correct tax-adjusted benchmark rate. Check: ${formatFundList(incorrectBenchmarkDeltaFunds)}`,
+    `MMF source verification failed:\n${issues.map((issue) => `- ${issue}`).join('\n')}`,
   );
 
   console.log(
-    `MMF automation verification passed for ${checkDate}: ${funds.length} targets verified.`,
+    `MMF automation verification passed: ${funds.length} funds matched official sources and benchmark rows.`,
   );
 }
 

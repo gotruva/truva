@@ -18,13 +18,13 @@ type Props = {
 
 export const MMF_HELP_TEXT = {
   netYield:
-    "Gross one-year yield less 20% Final Withholding Tax and the fund's annual trust fee. We rank funds by this take-home yield.",
+    "UITF formula: Net yield = ROI-YOY x 80% - annual trust fee. Mutual fund formula: Net yield = published 1-year NAV return, which already reflects fund-level expenses.",
   cashAccess:
     'How quickly your cash is usually available after you redeem: same day, next day, or T+n banking days.',
   vsTbill:
     'Net yield minus the 91-day Treasury Bill rate after 20% Final Withholding Tax. Positive means the fund is ahead of the after-tax T-Bill benchmark.',
   trustFee:
-    "The annual fee charged by the fund provider. It is already deducted in the net yield shown here.",
+    "The annual fee charged by the fund provider. Published NAV-based mutual-fund returns already reflect fund fees.",
 } as const;
 
 export function MmfInfoLabel({

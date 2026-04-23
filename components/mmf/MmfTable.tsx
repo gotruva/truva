@@ -4,6 +4,7 @@ import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
+  formatPhtDate,
   getFundFreshnessIssue,
   redemptionLabel,
 } from '@/lib/mmf';
@@ -15,11 +16,11 @@ import { ProviderLogo } from './ProviderLogo';
 export function MmfTable({
   funds,
   amount,
-  phtDate,
+  expectedRateDate,
 }: {
   funds: MoneyMarketFund[];
   amount: number;
-  phtDate?: string;
+  expectedRateDate?: string | null;
 }) {
   return (
     <div className="overflow-x-auto rounded-[1.4rem] border border-brand-border bg-white dark:border-white/10 dark:bg-white/[0.03]">
@@ -70,7 +71,7 @@ export function MmfTable({
                 : deltaPositive
                   ? 'text-positive'
                   : 'text-danger';
-            const freshnessIssue = phtDate ? getFundFreshnessIssue(fund, phtDate) : null;
+            const freshnessIssue = getFundFreshnessIssue(fund, expectedRateDate);
 
             return (
               <tr
@@ -100,6 +101,9 @@ export function MmfTable({
                   <span className="text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">
                     {formatMmfPercent(fund.net_yield)}
                   </span>
+                  <p className="mt-1 text-xs font-medium text-brand-textSecondary/45 dark:text-white/30">
+                    as of {formatPhtDate(fund.rate_date)}
+                  </p>
                 </td>
                 <td className="px-4 py-4 text-right">
                   <p className="font-semibold tabular-nums text-brand-textPrimary dark:text-white">
