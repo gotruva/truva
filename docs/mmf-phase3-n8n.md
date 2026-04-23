@@ -21,7 +21,6 @@ The public app contract stays unchanged. `/banking/money-market-funds` reads `pu
 | `docs/n8n/mmf-uitf-daily-usd.workflow.json` | Workflow 1b: daily USD UITF scrape and daily-rate upsert. |
 | `docs/n8n/mmf-bpi-wealth-mutual-daily.workflow.json` | Workflow 2: daily PIFA mutual-fund scrape and daily-rate upsert. |
 | `docs/n8n/mmf-btr-benchmark.workflow.json` | **DEPRECATED**: Used to handle BTr scrape before WAF block. Replaced by `npm run sync-btr` in `truva-scraping`. |
-| `docs/n8n/mmf-us-benchmark.workflow.json` | **DEPRECATED**: NY Fed/SOFR benchmark n8n workflow. Replaced by the `truva-scraping` benchmark automation. |
 | `docs/n8n/mmf-btr-benchmark-manual.workflow.json` | **DEPRECATED**: Old manual logic before stealth automation fallback was implemented. |
 | `docs/n8n/mmf-health-check.workflow.json` | Workflow 5: daily health report and Telegram alert. |
 | `docs/n8n/*.inline-supabase.template.workflow.json` | Legacy quick-start templates. Prefer the canonical environment-variable workflows above because they include the source-date scraper fixes. |
@@ -66,7 +65,7 @@ Important objects:
 
 - `money_market_funds`: static fund metadata. n8n must not mutate this table during MVP automation.
 - `mmf_daily_rates`: daily NAVPU/NAVPS and yield rows. UITF and mutual-fund workflows write here.
-- `benchmark_rates`: benchmark rows. Benchmark workflows write here.
+- `benchmark_rates`: benchmark rows. `truva-scraping` benchmark automation writes here.
 - `mmf_current`: frontend view used by `/banking/money-market-funds`.
 - `recalculate_mmf_benchmark(requested_key text, requested_date date)`: refreshes `benchmark_rate` and `vs_benchmark`.
 - `get_mmf_health_report(check_date date)`: returns missing/stale/incomplete rows across all active MMFs for Telegram.
@@ -201,13 +200,9 @@ Manual test:
 2. Confirm one `benchmark_rates` row exists for `BTR_91D` and the auction date.
 3. Confirm same-date BTR-backed `mmf_daily_rates.vs_benchmark` values are updated.
 
-## Workflow 4: US benchmark updater (DEPRECATED)
+## US Benchmark Updater
 
-> [!WARNING]
-> This n8n workflow is deprecated. US_TBILL_90D / NY Fed SOFR benchmark automation now runs in the `truva-scraping` pipeline.
-> Keep the JSON file only as historical reference; do not import, enable, or schedule it in n8n.
-
-Former schedule: weekdays at 8:00 AM PHT.
+US_TBILL_90D / NY Fed SOFR benchmark automation runs in the `truva-scraping` pipeline, not n8n.
 
 Source:
 
@@ -215,7 +210,7 @@ Source:
 https://markets.newyorkfed.org/api/rates/all/latest.json
 ```
 
-Behavior:
+Required behavior:
 
 - Read the `SOFRAI.average90day` value and `SOFRAI.effectiveDate`.
 - Upsert `US_TBILL_90D` using the NY Fed effective date, not the workflow run date.
@@ -303,7 +298,7 @@ npm run build
 ## Rollout order
 
 1. Apply the migration in the target Supabase project.
-2. Import `mmf-btr-benchmark.workflow.json`; configure credentials; run manually.
+2. Confirm the `truva-scraping` BTR_91D benchmark automation is active and has written the latest BTr row.
 3. Confirm the `truva-scraping` US_TBILL_90D benchmark automation is active and has written the latest NY Fed row.
 4. Import `mmf-uitf-daily.workflow.json`; configure credentials; run manually.
 5. Import `mmf-uitf-daily-usd.workflow.json`; configure credentials; run manually.
