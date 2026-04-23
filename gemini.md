@@ -1,6 +1,6 @@
 # Truva — AI Alignment Document
 > For any AI model (Claude, Gemini, GPT, etc.) continuing work on this codebase.
-> Last updated: 2026-04-20
+> Last updated: 2026-04-23
 
 ---
 
@@ -33,6 +33,8 @@
 - Supabase auth skeleton (middleware in place, tables not yet created)
 - Admin Rate Catalog: Fixed category filtering mismatch between staging schema (`savings`, `time_deposit`) and UI (`digital_bank`).
 - Category Normalization: Catalog now uses inclusive filtering to handle both granular and aggregate categories.
+- Yield Calculator Constraints: Safely isolates passive expiration dates (`time_limited`) from active behavioral constraints (`promo`, `spending`) to prevent incorrect baseline "failure" scenarios on threshold-tiered term deposits.
+- BTr Treasury Benchmark: Fully automated via Playwright Stealth WAF bypass natively inside `truva-scraping` (No n8n required).
 
 ### Stubbed / placeholder (routes exist, not built)
 - `/optimizer` — PDIC Smart Split Optimizer
@@ -156,6 +158,8 @@ If any condition isn't met by Month 6, Phase 2 is deferred. No partial credit ca
 - Latest review pass approved Salmon effective/compounded TD tiers for `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`. Previous rejects remain stale duplicate Tonik 12-month at 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
 - Salmon scraper emits `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo` with aggregated tiers under existing seed-backed public IDs. At PHP 500,000, `salmon-td-60mo` should use 7.41% gross / 5.928% after tax; the PHP 1M+ 9.40% tier must not qualify.
 - Admin Catalog filtering logic hardened to handle `savings`, `time_deposit`, `banks`, `digital_bank`, and `traditional_bank` under a unified 'Banks' view. Similar normalization applied to `govt`, `uitf`, and `defi` categories.
+- BTr 91-Day T-Bill fetching successfully migrated from n8n to `truva-scraping` via `npm run sync-btr` utilizing Playwright request stealthing to bypass the Incapsula WAF.
+- `utils/yieldEngine.ts` dual scenarios (With/Without Conditions) are only triggered by actionable constraints (`promo`, `spending`, `new_user`). Simple validity deadlines are typed as `time_limited` to correctly display the standard non-conditional rate tier.
 
 ---
 
