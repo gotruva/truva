@@ -9,7 +9,6 @@ import {
   formatPhtDateTime,
   getLatestCheckedAt,
   getLatestRateDate,
-  getPhtDateString,
 } from '@/lib/mmf';
 
 export const dynamic = 'force-dynamic';
@@ -74,7 +73,6 @@ export default async function MoneyMarketFundsPage() {
   const phpFunds = funds.filter((fund) => fund.currency === 'PHP');
   const usdFunds = funds.filter((fund) => fund.currency === 'USD');
   const phpUitfFunds = phpFunds.filter((fund) => fund.fund_type === 'UITF');
-  const phtDate = getPhtDateString();
   const latestCheckedAt = getLatestCheckedAt(phpUitfFunds) ?? getLatestCheckedAt(funds);
   const latestRateDate = getLatestRateDate(phpUitfFunds) ?? getLatestRateDate(funds);
 
@@ -103,7 +101,7 @@ export default async function MoneyMarketFundsPage() {
           </h1>
 
           <p className="mb-8 max-w-xl text-lg font-medium text-blue-100/90 dark:text-gray-300">
-            Liquid investing — redeem in 1–5 business days. Net yield shown after 20% withholding tax and trust fees.
+            Liquid investing — redeem in 1–5 business days. Net yield comes first: UITFs use the latest published ROI-YOY adjusted for 20% Final Withholding Tax and each fund&apos;s trust fee; mutual funds use the published one-year NAV return.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 w-full max-w-md">
@@ -218,7 +216,7 @@ export default async function MoneyMarketFundsPage() {
             Ranked by net yield
           </h2>
           <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-            {phpFunds.length} PHP funds · after 20% tax + trust fees
+            {phpFunds.length} PHP funds · latest source-date-aware net yields
           </p>
         </div>
         <span className="shrink-0 rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-sm font-semibold text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-300">
@@ -227,7 +225,7 @@ export default async function MoneyMarketFundsPage() {
       </div>
 
       <div id="mmf-table">
-        <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} phtDate={phtDate} />
+        <MmfView phpFunds={phpFunds} usdFunds={usdFunds} usdBenchmark={usdBenchmark} />
       </div>
 
       <div className="mt-8 space-y-3 border-t border-brand-border pt-6 dark:border-white/10">
@@ -244,7 +242,7 @@ export default async function MoneyMarketFundsPage() {
           >
             uitf.com.ph
           </a>
-          . Truva is not affiliated with or endorsed by uitf.com.ph.
+          . Mutual-fund data is sourced from PIFA; ALFM rows are cross-checked against BPI Wealth when both sources publish the same date. Truva is not affiliated with or endorsed by those data providers.
         </p>
       </div>
       </div>

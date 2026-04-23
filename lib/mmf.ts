@@ -92,17 +92,31 @@ export function getLatestRateDate(funds: MoneyMarketFund[]) {
     .at(-1) ?? null;
 }
 
-export function getFundFreshnessIssue(fund: MoneyMarketFund, phtDate: string): string | null {
-  if (fund.currency !== 'PHP' || fund.fund_type !== 'UITF') return null;
+function sourceStatusLabel(dataSource: string | null | undefined) {
+  if (!dataSource || dataSource === 'scraper') return null;
+  if (dataSource === 'auto_carry_forward') return 'carried forward';
+  if (dataSource.startsWith('manual')) return 'manually verified';
+  return 'pending automation confirmation';
+}
 
-  const staleDate = fund.rate_date !== phtDate;
-  const unconfirmed = fund.data_source !== 'scraper';
+export function getFundFreshnessIssue(
+  fund: MoneyMarketFund,
+  expectedRateDate: string | null | undefined,
+): string | null {
+  const staleDate = Boolean(expectedRateDate && fund.rate_date !== expectedRateDate);
+  const unconfirmed = sourceStatusLabel(fund.data_source);
+  const incompleteYield =
+    fund.gross_yield_1y === null ||
+    fund.gross_yield_1y === undefined ||
+    fund.net_yield === null ||
+    fund.net_yield === undefined;
 
-  if (!staleDate && !unconfirmed) return null;
+  if (!staleDate && !unconfirmed && !incompleteYield) return null;
 
   const parts: string[] = [];
   if (staleDate) parts.push(`rate as of ${formatPhtDate(fund.rate_date)}`);
-  if (unconfirmed) parts.push("pending today's update");
+  if (unconfirmed) parts.push(unconfirmed);
+  if (incompleteYield) parts.push('yield incomplete');
   return parts.join(' · ');
 }
 

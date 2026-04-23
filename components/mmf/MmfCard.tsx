@@ -6,6 +6,7 @@ import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
+  formatPhtDate,
   getFundFreshnessIssue,
   redemptionLabel,
 } from '@/lib/mmf';
@@ -17,14 +18,14 @@ import { ProviderLogo } from './ProviderLogo';
 export function MmfCard({
   fund,
   amount,
-  phtDate,
+  expectedRateDate,
 }: {
   fund: MoneyMarketFund;
   amount: number;
-  phtDate?: string;
+  expectedRateDate?: string | null;
 }) {
   const benchmarkDelta = fund.vs_benchmark;
-  const freshnessIssue = phtDate ? getFundFreshnessIssue(fund, phtDate) : null;
+  const freshnessIssue = getFundFreshnessIssue(fund, expectedRateDate);
   const deltaPositive = (benchmarkDelta ?? 0) >= 0;
   const deltaColor =
     benchmarkDelta === null || benchmarkDelta === undefined
@@ -79,6 +80,9 @@ export function MmfCard({
             </p>
           </div>
         </div>
+        <p className="mt-1 text-xs font-medium text-brand-textSecondary/45 dark:text-white/30">
+          as of {formatPhtDate(fund.rate_date)}
+        </p>
         <p className="mt-2 text-xs text-brand-textSecondary/55 dark:text-white/35">
           Based on {formatMmfMoney(amount, fund.currency)}
         </p>

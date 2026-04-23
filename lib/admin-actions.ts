@@ -100,14 +100,44 @@ export async function rollbackSnapshot(snapshotId: string) {
   revalidatePath('/admin/rates/review');
 }
 
-export async function upsertMMFDailyRate(fundId: string, payload: Record<string, any>) {
+type MmfDailyRateUpsertPayload = Record<string, unknown> & {
+  net_yield: number;
+};
+
+export async function upsertMMFDailyRate(fundId: string, payload: MmfDailyRateUpsertPayload) {
   const supabase = getAdminClient('public');
-  
+
+  const { data: fund } = await supabase
+    .from('money_market_funds')
+    .select('benchmark_key, currency')
+    .eq('id', fundId)
+    .single();
+
+  let benchmark_rate = null;
+  let vs_benchmark = null;
+  if (fund?.benchmark_key) {
+    const { data: bench } = await supabase
+      .from('benchmark_rates')
+      .select('rate')
+      .eq('key', fund.benchmark_key)
+      .order('date', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (bench) {
+      benchmark_rate = bench.rate;
+      const afterTaxBench = fund.currency === 'USD' ? bench.rate : bench.rate * 0.80;
+      vs_benchmark = payload.net_yield - afterTaxBench;
+    }
+  }
+
   const { error } = await supabase
     .from('mmf_daily_rates')
     .upsert({
       fund_id: fundId,
       ...payload,
+      benchmark_rate,
+      vs_benchmark,
       data_source: 'manual',
       scraped_at: new Date().toISOString()
     }, { onConflict: 'fund_id,date' });
@@ -122,16 +152,43 @@ export async function upsertMMFDailyRate(fundId: string, payload: Record<string,
 
 export async function copyLastMMFRate(fundId: string, targetDate: string) {
   const supabase = getAdminClient('public');
-  
-  const { data: lastRate, error: fetchError } = await supabase
-    .from('mmf_daily_rates')
-    .select('*')
-    .eq('fund_id', fundId)
-    .order('date', { ascending: false })
-    .limit(1)
-    .single();
+
+  const [{ data: lastRate, error: fetchError }, { data: fund }] = await Promise.all([
+    supabase
+      .from('mmf_daily_rates')
+      .select('*')
+      .eq('fund_id', fundId)
+      .lt('date', targetDate)
+      .order('date', { ascending: false })
+      .limit(1)
+      .single(),
+    supabase
+      .from('money_market_funds')
+      .select('benchmark_key, currency')
+      .eq('id', fundId)
+      .single(),
+  ]);
 
   if (fetchError || !lastRate) throw new Error('Could not find a previous rate to copy.');
+
+  let benchmark_rate = lastRate.benchmark_rate;
+  let vs_benchmark = lastRate.vs_benchmark;
+
+  if ((benchmark_rate === null || benchmark_rate === undefined) && fund?.benchmark_key) {
+    const { data: bench } = await supabase
+      .from('benchmark_rates')
+      .select('rate')
+      .eq('key', fund.benchmark_key)
+      .order('date', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (bench) {
+      benchmark_rate = bench.rate;
+      const afterTaxBench = fund.currency === 'USD' ? bench.rate : bench.rate * 0.80;
+      vs_benchmark = lastRate.net_yield - afterTaxBench;
+    }
+  }
 
   const { error } = await supabase
     .from('mmf_daily_rates')
@@ -142,6 +199,8 @@ export async function copyLastMMFRate(fundId: string, targetDate: string) {
       gross_yield_1y: lastRate.gross_yield_1y,
       after_tax_yield: lastRate.after_tax_yield,
       net_yield: lastRate.net_yield,
+      benchmark_rate,
+      vs_benchmark,
       data_source: 'manual_verification',
       scraped_at: new Date().toISOString()
     }, { onConflict: 'fund_id,date' });
@@ -151,4 +210,3 @@ export async function copyLastMMFRate(fundId: string, targetDate: string) {
   revalidatePath('/admin/mmf');
   revalidatePath('/banking/money-market-funds');
 }
-

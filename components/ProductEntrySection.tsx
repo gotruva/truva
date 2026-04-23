@@ -16,7 +16,7 @@ const PRODUCTS = [
     title: 'Money Market Funds',
     subtitle: 'Liquid investing · Higher potential yield · Not PDIC-insured',
     description:
-      'Compare Philippine UITFs and mutual funds by net yield after tax and trust fees. Typically redeemable within 1–5 business days.',
+      'Compare Philippine UITFs and mutual funds by source-aware net yield and published date. Typically redeemable within 1–5 business days.',
     cta: 'Compare money market funds',
     href: '/banking/money-market-funds',
   },

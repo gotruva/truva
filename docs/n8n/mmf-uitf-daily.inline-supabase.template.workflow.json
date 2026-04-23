@@ -111,19 +111,6 @@
     },
     {
       "parameters": {
-        "jsCode": "const sourceUrls = [\n  {\n    source: 'top-funds-yoy',\n    url: 'https://www.uitf.com.ph/test_print_topfunds.php?class_id=4&currency=PHP&fday=&fmonth=&fyear=&radio1=yoy&tday=&tmonth=&tyear=',\n  },\n  { source: 'bdo-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=6' },\n  { source: 'dbp-daily-navpu', url: 'https://www.uitf.com.ph/home/daily_navpu.php?bank_id=26' },\n  { source: 'eastwest-daily-navpu', url: 'https://www.uitf.com.ph/home/daily_navpu.php?bank_id=8' },\n  { source: 'landbank-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=9' },\n  { source: 'manulife-daily-navpu', url: 'https://www.uitf.com.ph/home/daily_navpu.php?bank_id=39' },\n  { source: 'metrobank-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=1' },\n  { source: 'pnb-daily-navpu', url: 'https://www.uitf.com.ph/home/daily_navpu.php?bank_id=2' },\n  { source: 'psbank-daily-navpu', url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=32' },\n];\n\nreturn sourceUrls.map((source) => ({ json: source }));"
-      },
-      "id": "2b1b0826-4a21-4fc3-a0a6-e62967cf4b9a",
-      "name": "Build UITF Source Requests",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        210,
-        0
-      ]
-    },
-    {
-      "parameters": {
         "url": "={{$json.url}}",
         "sendHeaders": true,
         "headerParameters": {
@@ -145,28 +132,28 @@
               "outputPropertyName": "data"
             }
           },
-          "timeout": 30000
+          "timeout": 45000
         }
       },
       "id": "30a9473a-461f-40f6-97be-bcba055ae1cb",
-      "name": "Fetch UITF Source",
+      "name": "Fetch UITF Provider Sources",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        530,
+        310,
         0
       ]
     },
     {
       "parameters": {
-        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nfunction nodeRows(name) {\n  let items;\n  try {\n    items = $items(name);\n  } catch (error) {\n    throw new Error('Build Daily Rate Payload expected an upstream node named \"' + name + '\". Original n8n error: ' + (error && error.message ? error.message : String(error)));\n  }\n  return items.flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return Object.keys(item.json || {}).length ? [item.json] : [];\n  });\n}\nfunction decode(value) {\n  return String(value || '')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&#x27;|&#39;/g, String.fromCharCode(39))\n    .replace(/&quot;/g, String.fromCharCode(34))\n    .replace(/\\u00a0/g, ' ');\n}\nfunction strip(value) {\n  return decode(value).replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n}\nfunction parseNumber(value) {\n  const match = strip(value).replace(/,/g, '').match(/-?\\d+(?:\\.\\d+)?/);\n  return match ? Number(match[0]) : NaN;\n}\nfunction parsePercent(value) {\n  if (/^-+$/.test(strip(value))) return NaN;\n  return parseNumber(String(value || '').replace('%', ''));\n}\nfunction parseHtmlRows(html, sourceIndex) {\n  const rows = [...html.matchAll(/<tr[\\s\\S]*?<\\/tr>/gi)].map((match) => match[0]);\n  const parsed = [];\n  for (const row of rows) {\n    const cells = [...row.matchAll(/<t[dh][^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)].map((match) => strip(match[1]));\n    if (cells.length < 3) continue;\n\n    const first = cells[0] || '';\n    const hrefMatch = row.match(/fund[_-]?id=(\\d+)/i);\n    const fundId = hrefMatch ? Number(hrefMatch[1]) : null;\n\n    if (/^\\d+$/.test(first)) {\n      const rank = Number(first);\n      const bank = cells[1] || '';\n      const name = cells[2] || '';\n      const returnCell = cells.find((cell, index) => index >= 3 && /%/.test(cell)) || cells[cells.length - 1];\n      const return1y = parsePercent(returnCell);\n      if (name && Number.isFinite(return1y)) parsed.push({ rank, bank, fund_id: fundId, name, navpu: null, return_1y: return1y, source_index: sourceIndex });\n      continue;\n    }\n\n    if (/fund name/i.test(first)) continue;\n\n    const name = first;\n    let navpuCell = null;\n    let returnCell = null;\n\n    if (cells.length >= 5 && /fund/i.test(cells[1]) && Number.isFinite(parseNumber(cells[2])) && Number.isFinite(parsePercent(cells[3]))) {\n      navpuCell = cells[2];\n      returnCell = cells[3];\n    } else if (cells.length >= 4 && Number.isFinite(parseNumber(cells[1])) && Number.isFinite(parsePercent(cells[2]))) {\n      navpuCell = cells[1];\n      returnCell = cells[2];\n    } else if (cells.length >= 4 && Number.isFinite(parseNumber(cells[2])) && Number.isFinite(parsePercent(cells[3]))) {\n      navpuCell = cells[2];\n      returnCell = cells[3];\n    }\n\n    const navpu = parseNumber(navpuCell);\n    const return1y = parsePercent(returnCell);\n    if (name && Number.isFinite(return1y)) {\n      parsed.push({ rank: null, bank: '', fund_id: fundId, name, navpu: Number.isFinite(navpu) ? navpu : null, return_1y: return1y, source_index: sourceIndex });\n    }\n  }\n  return parsed;\n}\nfunction parseTextRows(text, sourceIndex) {\n  const parsed = [];\n  const lines = String(text || '').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);\n  for (let i = 0; i < lines.length; i += 1) {\n    const line = lines[i];\n    const pipeCells = line.includes('|') ? line.split('|').map((cell) => strip(cell)).filter(Boolean) : [];\n    if (pipeCells.length >= 4 && /^\\d+$/.test(pipeCells[0]) && /%/.test(pipeCells[pipeCells.length - 1])) {\n      const return1y = parsePercent(pipeCells[pipeCells.length - 1]);\n      if (Number.isFinite(return1y)) parsed.push({ rank: Number(pipeCells[0]), bank: pipeCells[1], name: pipeCells[2], navpu: null, return_1y: return1y, source_index: sourceIndex });\n      continue;\n    }\n    if (pipeCells.length >= 4 && !/^\\d+$/.test(pipeCells[0])) {\n      const hasClassification = /fund/i.test(pipeCells[1] || '');\n      const navpu = parseNumber(hasClassification ? pipeCells[2] : pipeCells[1]);\n      const return1y = parsePercent(hasClassification ? pipeCells[3] : pipeCells[2]);\n      if (pipeCells[0] && Number.isFinite(return1y)) {\n        parsed.push({ rank: null, bank: '', name: pipeCells[0], navpu: Number.isFinite(navpu) ? navpu : null, return_1y: return1y, source_index: sourceIndex });\n      }\n      continue;\n    }\n    const compactMatch = line.match(/^\\s*(\\d+)\\s+(.+?)\\s{2,}(.+?)\\s+(-?\\d+(?:\\.\\d+)?)%\\s*$/);\n    if (compactMatch) {\n      parsed.push({ rank: Number(compactMatch[1]), bank: strip(compactMatch[2]), name: strip(compactMatch[3]), navpu: null, return_1y: Number(compactMatch[4]), source_index: sourceIndex });\n    }\n  }\n  return parsed;\n}\nconst funds = nodeRows('Get Target Funds').filter((row) => row.id);\nif (!funds.length) throw new Error('No target PHP UITF funds returned from Supabase');\nconst benchmarks = nodeRows('Get Latest Benchmark').filter((row) => row.rate !== undefined && row.rate !== null);\nif (!benchmarks.length) throw new Error('Missing BTR_91D benchmark. Run the BTr benchmark workflow first.');\nconst benchmarkRate = Number(benchmarks[0].rate);\nconst benchmarkAfterTaxRate = benchmarkRate * 0.8;\nconst sourceItems = $items('Fetch UITF Source');\nconst htmlDocuments = sourceItems.map((item) => {\n  const raw = item.json.data || item.json.body || item.json.html || item.json.response || '';\n  return typeof raw === 'string' ? raw : JSON.stringify(raw || {});\n}).filter((html) => html && html !== '{}');\nif (!htmlDocuments.length) throw new Error('UITF sources returned no usable bodies. Fetch item count: ' + sourceItems.length);\nlet scraped = [];\nconst sourceSamples = [];\nfor (let index = 0; index < htmlDocuments.length; index += 1) {\n  const html = htmlDocuments[index];\n  const text = strip(html).replace(/\\s*\\|\\s*/g, ' | ');\n  if (/incapsula|request unsuccessful|incident id/i.test(html)) throw new Error('UITF source blocked the n8n request: ' + text.slice(0, 300));\n  const parsed = parseHtmlRows(html, index);\n  scraped = scraped.concat(parsed.length ? parsed : parseTextRows(text, index));\n  if (sourceSamples.length < 3) sourceSamples.push(text.slice(0, 220));\n}\nif (!scraped.length) throw new Error('No UITF source rows parsed. Samples: ' + sourceSamples.join(' || '));\nconst aliases = [\n  ['atram-peso-money-market-fund', 3, 'atram peso money market fund a unit class'],\n  ['atram-peso-money-market-fund', 2, 'atram peso liquid fund a unit class'],\n  ['bdo-peso-money-market-fund', 3, 'bdo peso money market fund'],\n  ['bpi-money-market-fund', 3, 'bpi money market fund'],\n  ['chinabank-cash-fund', 3, 'chinabank cash fund'],\n  ['chinabank-money-market-fund', 3, 'chinabank money market fund'],\n  ['dbp-unlad-panimula-mmf-class-iii', 3, 'class iii unlad panimula mm fund'],\n  ['dbp-unlad-panimula-mmf-class-iii', 3, 'unlad panimula mm fund class iii'],\n  ['dbp-unlad-panimula-mmf-class-iii', 3, 'dbp unlad panimula mmf class iii'],\n  ['eastwest-peso-money-market-fund', 3, 'eastwest peso money market fund'],\n  ['landbank-money-market-plus-fund', 3, 'landbank money market plus fund'],\n  ['manulife-money-market-fund-class-a', 3, 'manulife money market fund class a'],\n  ['metro-money-market-fund', 3, 'metro money market fund'],\n  ['psbank-money-market-fund', 3, 'psbank money market fund'],\n  ['pnb-prestige-peso-money-market-fund', 3, 'pnb prestige peso money market fund formerly pnb peso fixed income fund'],\n  ['pnb-prestige-peso-money-market-fund', 3, 'pnb prestige peso money market fund'],\n  ['rcbc-peso-money-market-fund', 3, 'rcbc peso money market fund'],\n  ['sb-peso-cash-management-fund', 3, 'sb peso cash management fund'],\n  ['sb-peso-money-market-fund', 3, 'sb peso money market fund'],\n];\nconst norm = (value) => String(value || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim();\nconst aliasEntries = aliases.map(([slug, score, alias]) => ({ slug, score, alias: norm(alias) }));\nconst byId = new Map(scraped.filter((row) => row.fund_id).map((row) => [String(row.fund_id), row]));\nconst matches = new Map();\nfunction rankMatch(slug, row, score) {\n  const existing = matches.get(slug);\n  const candidate = { row, score };\n  if (!existing || candidate.score > existing.score || (candidate.score === existing.score && row.source_index < existing.row.source_index)) {\n    matches.set(slug, candidate);\n  }\n}\nfor (const row of scraped) {\n  const normalizedName = norm(row.name);\n  for (const entry of aliasEntries) {\n    if (normalizedName === entry.alias) rankMatch(entry.slug, row, entry.score + 2);\n  }\n  for (const entry of aliasEntries) {\n    if (normalizedName.includes(entry.alias)) rankMatch(entry.slug, row, entry.score);\n  }\n}\nconst bySlug = new Map([...matches.entries()].map(([slug, match]) => [slug, match.row]));\nconst today = phtDate();\nconst output = [];\nconst missing = [];\nfor (const fund of funds) {\n  const scrapedRow = (fund.uitf_fund_id ? byId.get(String(fund.uitf_fund_id)) : null) || bySlug.get(fund.slug);\n  if (!scrapedRow) {\n    missing.push(fund.provider + ' - ' + fund.name);\n    continue;\n  }\n  const grossYield = Number(scrapedRow.return_1y) / 100;\n  const trustFee = Number(fund.trust_fee_pct || 0);\n  const afterTaxYield = grossYield * 0.8;\n  const netYield = afterTaxYield - trustFee;\n  output.push({ json: { fund_id: fund.id, date: today, navpu: scrapedRow.navpu, gross_yield_1y: Number(grossYield.toFixed(6)), after_tax_yield: Number(afterTaxYield.toFixed(6)), net_yield: Number(netYield.toFixed(6)), benchmark_rate: benchmarkRate, vs_benchmark: Number((netYield - benchmarkAfterTaxRate).toFixed(6)), data_source: 'scraper' } });\n}\nif (missing.length) {\n  const seen = scraped.slice(0, 60).map((row) => row.name + ' (' + row.return_1y + '%)').join('; ');\n  throw new Error('Missing scraped rows for ' + missing.length + ' target funds: ' + missing.join('; ') + '. Parsed rows sample: ' + seen);\n}\nreturn output;"
+        "jsCode": "const SOURCE_CONFIG = {\n  \"atram-peso-money-market-fund\": {\n    \"bank_id\": 31,\n    \"source_name\": \"ATRAM Peso Money Market Fund (A Unit Class)\"\n  },\n  \"bdo-peso-money-market-fund\": {\n    \"bank_id\": 6,\n    \"source_name\": \"BDO PESO MONEY MARKET FUND\"\n  },\n  \"bpi-money-market-fund\": {\n    \"bank_id\": 3,\n    \"source_name\": \"BPI MONEY MARKET FUND\"\n  },\n  \"chinabank-cash-fund\": {\n    \"bank_id\": 7,\n    \"source_name\": \"CHINABANK CASH FUND\"\n  },\n  \"chinabank-money-market-fund\": {\n    \"bank_id\": 7,\n    \"source_name\": \"CHINABANK MONEY MARKET FUND\"\n  },\n  \"dbp-unlad-panimula-mmf-class-iii\": {\n    \"bank_id\": 26,\n    \"source_name\": \"CLASS III - UNLAD PANIMULA MM FUND\"\n  },\n  \"eastwest-peso-money-market-fund\": {\n    \"bank_id\": 8,\n    \"source_name\": \"EastWest Peso Money Market Fund\"\n  },\n  \"landbank-money-market-plus-fund\": {\n    \"bank_id\": 9,\n    \"source_name\": \"LANDBANK Money Market Plus Fund\"\n  },\n  \"manulife-money-market-fund-class-a\": {\n    \"bank_id\": 39,\n    \"source_name\": \"Manulife Money Market Fund (Class A)\"\n  },\n  \"metro-money-market-fund\": {\n    \"bank_id\": 1,\n    \"source_name\": \"Metro Money Market Fund\"\n  },\n  \"pnb-prestige-peso-money-market-fund\": {\n    \"bank_id\": 2,\n    \"source_name\": \"PNB PRESTIGE PESO MONEY MARKET FUND (Formerly PNB Peso Fixed Income Fund)\"\n  },\n  \"psbank-money-market-fund\": {\n    \"bank_id\": 32,\n    \"source_name\": \"PSBANK MONEY MARKET FUND\"\n  },\n  \"rcbc-peso-money-market-fund\": {\n    \"bank_id\": 11,\n    \"source_name\": \"RCBC PESO MONEY MARKET FUND\"\n  },\n  \"sb-peso-cash-management-fund\": {\n    \"bank_id\": 12,\n    \"source_name\": \"SB PESO CASH MANAGEMENT FUND\"\n  },\n  \"sb-peso-money-market-fund\": {\n    \"bank_id\": 12,\n    \"source_name\": \"SB PESO MONEY MARKET FUND\"\n  }\n};\nfunction nodeRows(name) {\n  return $items(name).flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return Object.keys(item.json || {}).length ? [item.json] : [];\n  });\n}\nfunction decode(value) {\n  return String(value || '')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;|&#038;/g, '&')\n    .replace(/&#8211;|&ndash;/g, '-')\n    .replace(/&#x27;|&#39;/g, String.fromCharCode(39))\n    .replace(/&quot;|&#34;/g, String.fromCharCode(34));\n}\nfunction strip(value) {\n  return decode(value)\n    .replace(/<!--[\\s\\S]*?-->/g, ' ')\n    .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')\n    .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')\n    .replace(/<[^>]+>/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\nfunction norm(value) {\n  return String(value || '').toLowerCase().replace(/&/g, 'and').split('$').join(' dollar ').replace(/[^a-z0-9]+/g, ' ').trim();\n}\nfunction parseNumber(value) {\n  const parsed = Number(String(value || '').replace(/,/g, '').trim());\n  return Number.isFinite(parsed) ? parsed : null;\n}\nfunction parseSourceDate(text) {\n  const match = text.match(/NAVpus\\) as of ([A-Za-z]+)\\s+(\\d{1,2}),\\s*(\\d{4})/i);\n  if (!match) throw new Error('Could not find UITF source date. Sample: ' + text.slice(0, 400));\n  const months = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06', jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12' };\n  const month = months[match[1].slice(0, 3).toLowerCase()];\n  if (!month) throw new Error('Unparseable UITF source month: ' + match[1]);\n  return match[3] + '-' + month + '-' + String(match[2]).padStart(2, '0');\n}\nfunction parseRows(html, bankId) {\n  const text = strip(html);\n  const sourceDate = parseSourceDate(text);\n  return [...html.matchAll(/<tr[\\s\\S]*?<\\/tr>/gi)].map((match) => match[0].replace(/<!--[\\s\\S]*?-->/g, ' ')).map((row) => {\n    const cells = [...row.matchAll(/<td[^>]*>([\\s\\S]*?)<\\/td>/gi)].map((match) => strip(match[1])).filter(Boolean);\n    if (cells.length < 4) return null;\n    const numeric = cells.slice(1).map(parseNumber).filter((value) => value !== null);\n    if (numeric.length < 3) return null;\n    return { bank_id: bankId, source_date: sourceDate, name: cells[0], navpu: numeric[0], roi_yoy: numeric[1] };\n  }).filter(Boolean);\n}\nfunction roundRate(value) {\n  return Number(value.toFixed(6));\n}\nconst funds = nodeRows('Get Target Funds').filter((row) => row.id);\nif (!funds.length) throw new Error('No target UITF funds returned from Supabase');\nconst benchmarks = nodeRows('Get Latest Benchmark').filter((row) => row.rate !== undefined && row.rate !== null);\nif (!benchmarks.length) throw new Error('Missing BTR_91D benchmark. Run the benchmark workflow first.');\nconst benchmarkRate = Number(benchmarks[0].rate);\nconst benchmarkComparableRate = benchmarkRate * 0.8;\nconst requestItems = $items('Build Source Requests');\nconst sourceItems = $items('Fetch UITF Provider Sources');\nconst rows = [];\nsourceItems.forEach((item, index) => {\n  const request = requestItems[index]?.json || {};\n  const raw = item.json.data || item.json.body || item.json.html || item.json.response || '';\n  const html = typeof raw === 'string' ? raw : JSON.stringify(raw || {});\n  if (!html || html === '{}') throw new Error('UITF provider source returned no usable body for bank_id=' + request.bank_id);\n  if (/incapsula|request unsuccessful|incident id/i.test(html)) throw new Error('UITF source blocked request for bank_id=' + request.bank_id + ': ' + strip(html).slice(0, 300));\n  rows.push(...parseRows(html, Number(request.bank_id)));\n});\nconst rowsByBankAndName = new Map(rows.map((row) => [row.bank_id + ':' + norm(row.name), row]));\nconst output = [];\nconst missing = [];\nfor (const fund of funds) {\n  const config = SOURCE_CONFIG[fund.slug];\n  if (!config) {\n    missing.push(fund.slug + ' has no source config');\n    continue;\n  }\n  const row = rowsByBankAndName.get(config.bank_id + ':' + norm(config.source_name));\n  if (!row) {\n    missing.push(fund.provider + ' - ' + fund.name + ' expected source row ' + config.source_name);\n    continue;\n  }\n  const grossYield = Number(row.roi_yoy) / 100;\n  const afterTaxYield = grossYield * 0.8;\n  const netYield = afterTaxYield - Number(fund.trust_fee_pct || 0);\n  output.push({ json: { fund_id: fund.id, date: row.source_date, navpu: row.navpu, gross_yield_1y: roundRate(grossYield), after_tax_yield: roundRate(afterTaxYield), net_yield: roundRate(netYield), benchmark_rate: roundRate(benchmarkRate), vs_benchmark: roundRate(netYield - benchmarkComparableRate), data_source: 'scraper' } });\n}\nif (missing.length) {\n  const seen = rows.slice(0, 40).map((row) => row.bank_id + ':' + row.name + ' (' + row.roi_yoy + '%)').join('; ');\n  throw new Error('Missing UITF source rows: ' + missing.join('; ') + '. Parsed sample: ' + seen);\n}\nreturn output;"
       },
       "id": "2ace5506-2d93-4f22-96f5-e7b55f4cb0fd",
       "name": "Build Daily Rate Payload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        850,
+        630,
         0
       ]
     },
@@ -204,7 +191,20 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1170,
+        850,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const SOURCE_CONFIG = {\n  \"atram-peso-money-market-fund\": {\n    \"bank_id\": 31,\n    \"source_name\": \"ATRAM Peso Money Market Fund (A Unit Class)\"\n  },\n  \"bdo-peso-money-market-fund\": {\n    \"bank_id\": 6,\n    \"source_name\": \"BDO PESO MONEY MARKET FUND\"\n  },\n  \"bpi-money-market-fund\": {\n    \"bank_id\": 3,\n    \"source_name\": \"BPI MONEY MARKET FUND\"\n  },\n  \"chinabank-cash-fund\": {\n    \"bank_id\": 7,\n    \"source_name\": \"CHINABANK CASH FUND\"\n  },\n  \"chinabank-money-market-fund\": {\n    \"bank_id\": 7,\n    \"source_name\": \"CHINABANK MONEY MARKET FUND\"\n  },\n  \"dbp-unlad-panimula-mmf-class-iii\": {\n    \"bank_id\": 26,\n    \"source_name\": \"CLASS III - UNLAD PANIMULA MM FUND\"\n  },\n  \"eastwest-peso-money-market-fund\": {\n    \"bank_id\": 8,\n    \"source_name\": \"EastWest Peso Money Market Fund\"\n  },\n  \"landbank-money-market-plus-fund\": {\n    \"bank_id\": 9,\n    \"source_name\": \"LANDBANK Money Market Plus Fund\"\n  },\n  \"manulife-money-market-fund-class-a\": {\n    \"bank_id\": 39,\n    \"source_name\": \"Manulife Money Market Fund (Class A)\"\n  },\n  \"metro-money-market-fund\": {\n    \"bank_id\": 1,\n    \"source_name\": \"Metro Money Market Fund\"\n  },\n  \"pnb-prestige-peso-money-market-fund\": {\n    \"bank_id\": 2,\n    \"source_name\": \"PNB PRESTIGE PESO MONEY MARKET FUND (Formerly PNB Peso Fixed Income Fund)\"\n  },\n  \"psbank-money-market-fund\": {\n    \"bank_id\": 32,\n    \"source_name\": \"PSBANK MONEY MARKET FUND\"\n  },\n  \"rcbc-peso-money-market-fund\": {\n    \"bank_id\": 11,\n    \"source_name\": \"RCBC PESO MONEY MARKET FUND\"\n  },\n  \"sb-peso-cash-management-fund\": {\n    \"bank_id\": 12,\n    \"source_name\": \"SB PESO CASH MANAGEMENT FUND\"\n  },\n  \"sb-peso-money-market-fund\": {\n    \"bank_id\": 12,\n    \"source_name\": \"SB PESO MONEY MARKET FUND\"\n  }\n};\nfunction nodeRows(name) {\n  return $items(name).flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return Object.keys(item.json || {}).length ? [item.json] : [];\n  });\n}\nconst funds = nodeRows('Get Target Funds').filter((row) => row.id);\nif (!funds.length) throw new Error('No target UITF funds returned from Supabase');\nconst bankIds = new Set();\nfor (const fund of funds) {\n  const config = SOURCE_CONFIG[fund.slug];\n  if (!config) throw new Error('Missing source config for ' + fund.slug);\n  bankIds.add(config.bank_id);\n}\nreturn [...bankIds].map((bankId) => ({ json: { bank_id: bankId, url: 'https://www.uitf.com.ph/daily_navpu.php?bank_id=' + bankId } }));"
+      },
+      "id": "generated-build-source-requests",
+      "name": "Build Source Requests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -10,
         0
       ]
     }
@@ -248,18 +248,7 @@
       "main": [
         [
           {
-            "node": "Build UITF Source Requests",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch UITF Source": {
-      "main": [
-        [
-          {
-            "node": "Build Daily Rate Payload",
+            "node": "Build Source Requests",
             "type": "main",
             "index": 0
           }
@@ -277,11 +266,22 @@
         ]
       ]
     },
-    "Build UITF Source Requests": {
+    "Build Source Requests": {
       "main": [
         [
           {
-            "node": "Fetch UITF Source",
+            "node": "Fetch UITF Provider Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch UITF Provider Sources": {
+      "main": [
+        [
+          {
+            "node": "Build Daily Rate Payload",
             "type": "main",
             "index": 0
           }
@@ -293,7 +293,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "uitf-php-provider-navpu-fallback",
+  "versionId": "source-date-daily-navpu-inline-template",
   "meta": {
     "templateCredsSetupCompleted": false
   },

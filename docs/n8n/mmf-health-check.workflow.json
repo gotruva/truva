@@ -35,7 +35,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nconst chatId = $env.TELEGRAM_CHAT_ID;\nif (!chatId || chatId === 'REPLACE_WITH_TELEGRAM_CHAT_ID') throw new Error('Configure TELEGRAM_CHAT_ID before running this workflow');\nreturn [{ json: { check_date: phtDate(), chatId } }];"
+        "jsCode": "function phtDate() {\n  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());\n  const pick = (type) => parts.find((part) => part.type === type).value;\n  return pick('year') + '-' + pick('month') + '-' + pick('day');\n}\nreturn [{ json: { check_date: phtDate() } }];"
       },
       "id": "8d8a3ab8-f024-4487-b9aa-0a6076846456",
       "name": "Build Health Query",
@@ -91,7 +91,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function rowsFromInput() {\n  return $input.all().flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return item.json && item.json.slug ? [item.json] : [];\n  });\n}\nconst context = $items('Build Health Query')[0].json;\nconst issues = rowsFromInput();\nlet text;\nif (!issues.length) {\n  text = 'Truva MMF health: OK\\nDate: ' + context.check_date + '\\nAll active PHP UITF targets have scraper-sourced rows with yields and BTR_91D benchmark values.';\n} else {\n  const lines = issues.slice(0, 20).map((issue) => '- ' + issue.provider + ' - ' + issue.name + ': ' + issue.issue_type + ' - ' + issue.detail);\n  const more = issues.length > 20 ? '\\n...and ' + (issues.length - 20) + ' more issue(s).' : '';\n  text = 'Truva MMF health: ACTION NEEDED\\nDate: ' + context.check_date + '\\nIssues: ' + issues.length + '\\n' + lines.join('\\n') + more;\n}\nreturn [{ json: { chatId: context.chatId, text, date: context.check_date, issue_count: issues.length } }];"
+        "jsCode": "function rowsFromInput() {\n  return $input.all().flatMap((item) => {\n    if (Array.isArray(item.json)) return item.json;\n    if (Array.isArray(item.json.data)) return item.json.data;\n    return item.json && item.json.slug ? [item.json] : [];\n  });\n}\nconst context = $items('Build Health Query')[0].json;\nconst issues = rowsFromInput();\nlet text;\nif (!issues.length) {\n  text = 'Truva MMF health: OK\\nDate: ' + context.check_date + '\\nAll active MMF rows have current source dates, NAVPU/NAVPS, yields, and benchmark comparisons.';\n} else {\n  const lines = issues.slice(0, 25).map((issue) => '- ' + issue.provider + ' - ' + issue.name + ': ' + issue.issue_type + ' - ' + issue.detail);\n  const more = issues.length > 25 ? '\\n...and ' + (issues.length - 25) + ' more issue(s).' : '';\n  text = 'Truva MMF health: ACTION NEEDED\\nDate: ' + context.check_date + '\\nIssues: ' + issues.length + '\\n' + lines.join('\\n') + more;\n}\nreturn [{ json: { text, date: context.check_date, issue_count: issues.length } }];"
       },
       "id": "1fdfc6bb-a2aa-4db7-a9e1-54c9f2d29b1c",
       "name": "Build Health Message",
@@ -104,7 +104,7 @@
     },
     {
       "parameters": {
-        "chatId": "={{$json.chatId}}",
+        "chatId": "REPLACE_WITH_TELEGRAM_CHAT_ID",
         "text": "={{$json.text}}",
         "additionalFields": {}
       },

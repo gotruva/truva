@@ -9,6 +9,7 @@ import {
   formatMmfMoney,
   formatMmfPercent,
   formatPhtDate,
+  getLatestRateDate,
   MMF_DEFAULT_AMOUNT,
 } from '@/lib/mmf';
 import { MmfTable } from './MmfTable';
@@ -27,7 +28,6 @@ function FundSection({
   amount,
   isPrimary = false,
   benchmark,
-  phtDate,
 }: {
   title: string;
   description: string;
@@ -35,10 +35,10 @@ function FundSection({
   amount: number;
   isPrimary?: boolean;
   benchmark?: BenchmarkRate | null;
-  phtDate?: string;
 }) {
   const sortedFunds = useMemo(() => sortFunds(funds), [funds]);
   const topFund = sortedFunds[0];
+  const latestRateDate = getLatestRateDate(sortedFunds);
 
   if (sortedFunds.length === 0) {
     return (
@@ -102,12 +102,12 @@ function FundSection({
 
       <div className="md:hidden space-y-3">
         {sortedFunds.map((fund) => (
-          <MmfCard key={fund.id} fund={fund} amount={amount} phtDate={phtDate} />
+          <MmfCard key={fund.id} fund={fund} amount={amount} expectedRateDate={latestRateDate} />
         ))}
       </div>
 
       <div className="hidden md:block">
-        <MmfTable funds={sortedFunds} amount={amount} phtDate={phtDate} />
+        <MmfTable funds={sortedFunds} amount={amount} expectedRateDate={latestRateDate} />
       </div>
 
       {isPrimary ? (
@@ -123,12 +123,10 @@ export function MmfView({
   phpFunds,
   usdFunds,
   usdBenchmark,
-  phtDate,
 }: {
   phpFunds: MoneyMarketFund[];
   usdFunds: MoneyMarketFund[];
   usdBenchmark?: BenchmarkRate | null;
-  phtDate?: string;
 }) {
   const [amount, setAmount] = useState(MMF_DEFAULT_AMOUNT);
 
@@ -150,7 +148,7 @@ export function MmfView({
               Type an amount and the table updates instantly.
             </h2>
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              This is an annual estimate using the latest net yield after tax and trust fees. For USD rows, the same number is treated as USD.
+              This is an annual estimate using the latest source-aware net yield. UITFs use published ROI-YOY less tax and trust fees; mutual funds use published one-year NAV return. For USD rows, the same number is treated as USD.
             </p>
           </div>
 
@@ -195,7 +193,6 @@ export function MmfView({
         funds={phpFunds}
         amount={amount}
         isPrimary
-        phtDate={phtDate}
       />
 
       <FundSection
@@ -204,7 +201,6 @@ export function MmfView({
         funds={usdFunds}
         amount={amount}
         benchmark={usdBenchmark}
-        phtDate={phtDate}
       />
     </div>
   );

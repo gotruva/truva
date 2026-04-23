@@ -1,0 +1,12 @@
+.claude/
+.env
+.env.*
+.next/
+.vercel/
+coverage/
+node_modules/
+scratch/
+scratch.js
+scratch-approve.ts
+dev-server.log
+dev-server.err
