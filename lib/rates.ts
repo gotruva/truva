@@ -498,7 +498,7 @@ function resolveConditions(
   return [
     ...conditionsWithExpiry,
     {
-      type: 'promo',
+      type: 'time_limited',
       description: `Promotional headline rate valid until ${validUntil}.`,
       expiresAt: validUntil,
     },

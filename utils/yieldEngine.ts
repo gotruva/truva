@@ -219,7 +219,7 @@ export function computeDualScenario(
   conditionBoost: number;
 } {
   const hasConditions = product.conditions.length > 0 &&
-    product.conditions.some((condition) => condition.type !== 'none');
+    product.conditions.some((condition) => condition.type !== 'none' && condition.type !== 'time_limited');
 
   const withConditionsReturn = computeReturn(amount, product, months);
   const withConditionsRate = computeEffectiveRate(amount, product);
@@ -265,7 +265,7 @@ function buildPrimaryScenario(
   const taxLabel = product.taxExempt
     ? 'Tax-exempt product: no withholding tax applied'
     : '20% final withholding tax applied';
-  const hasConditions = product.conditions.some((condition) => condition.type !== 'none');
+  const hasConditions = product.conditions.some((condition) => condition.type !== 'none' && condition.type !== 'time_limited');
 
   if (product.tierType === 'flat' || product.tierType === 'threshold') {
     const applicableTier = product.tierType === 'threshold'
@@ -353,7 +353,7 @@ export function getCalculationBreakdown(
   product: RateProduct,
   months: number
 ): CalculationBreakdown {
-  const hasConditions = product.conditions.some((condition) => condition.type !== 'none');
+  const hasConditions = product.conditions.some((condition) => condition.type !== 'none' && condition.type !== 'time_limited');
 
   return {
     amount,

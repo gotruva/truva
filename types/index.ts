@@ -21,7 +21,7 @@ export interface RateTier {
 
 /** A condition that must be met for a tier to apply */
 export interface RateCondition {
-  type: 'spending' | 'promo' | 'balance_growth' | 'new_user' | 'none';
+  type: 'spending' | 'promo' | 'balance_growth' | 'new_user' | 'none' | 'time_limited';
   description: string;
   expiresAt?: string | null;        // ISO date for promo expiry, null = permanent
   requiredMonthlySpend?: number;    // e.g. 500 for Maya
