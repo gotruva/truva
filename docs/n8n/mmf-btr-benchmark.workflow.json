@@ -84,7 +84,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst success = items.find((item) => item.binary && item.binary.data && !(item.json && item.json.error));\nif (!success) {\n  const attempted = items.map((item) => item.json?.pdf_url || JSON.stringify(item.json || {})).join('; ');\n  throw new Error('Could not download any recent BTr Treasury Bills PDF directly. Attempted: ' + attempted);\n}\nreturn [success];"
+        "jsCode": "const items = $input.all();\nconst success = items.find((item) => item.binary && item.binary.data && item.binary.data.mimeType === 'application/pdf' && !(item.json && item.json.error));\nif (!success) {\n  const attempted = items.map((item) => item.json?.pdf_url || JSON.stringify(item.json || {})).join('; ');\n  throw new Error('Could not download any recent BTr Treasury Bills PDF directly. Request may be blocked by WAF (Incapsula). Attempted: ' + attempted);\n}\nreturn [success];"
       },
       "id": "04cd8039-dd80-4304-93ef-fb9acc948ec3",
       "name": "Filter PDF Success",

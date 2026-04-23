@@ -20,9 +20,9 @@ The public app contract stays unchanged. `/banking/money-market-funds` reads `pu
 | `docs/n8n/mmf-uitf-daily.workflow.json` | Workflow 1: daily PHP UITF scrape and daily-rate upsert. |
 | `docs/n8n/mmf-uitf-daily-usd.workflow.json` | Workflow 1b: daily USD UITF scrape and daily-rate upsert. |
 | `docs/n8n/mmf-bpi-wealth-mutual-daily.workflow.json` | Workflow 2: daily PIFA mutual-fund scrape and daily-rate upsert. |
-| `docs/n8n/mmf-btr-benchmark.workflow.json` | Workflow 3: BTr benchmark scrape, benchmark upsert, and `vs_benchmark` recalculation. |
+| `docs/n8n/mmf-btr-benchmark.workflow.json` | **DEPRECATED**: Used to handle BTr scrape before WAF block. Replaced by `npm run sync-btr` in `truva-scraping`. |
 | `docs/n8n/mmf-us-benchmark.workflow.json` | Workflow 4: NY Fed 90-day SOFR average benchmark upsert and USD `vs_benchmark` recalculation. |
-| `docs/n8n/mmf-btr-benchmark-manual.workflow.json` | Manual BTr fallback for cases where the BTr site blocks self-hosted n8n with Incapsula/WAF. |
+| `docs/n8n/mmf-btr-benchmark-manual.workflow.json` | **DEPRECATED**: Old manual logic before stealth automation fallback was implemented. |
 | `docs/n8n/mmf-health-check.workflow.json` | Workflow 5: daily health report and Telegram alert. |
 | `docs/n8n/*.inline-supabase.template.workflow.json` | Legacy quick-start templates. Prefer the canonical environment-variable workflows above because they include the source-date scraper fixes. |
 | `scripts/verify-mmf-automation.ts` | Read-only local verification against Supabase. |
@@ -170,7 +170,11 @@ vs_benchmark = net_yield - (latest BTR_91D benchmark rate * 0.80)
 
 Mutual-fund published NAV-based one-year returns already reflect fund-level expenses, so this workflow must not apply the UITF `gross * 0.80 - trust_fee_pct` transform. If PIFA and BPI publish ALFM rows for the same source date, the workflow throws on any ALFM mismatch; if BPI lags by a date, PIFA remains the primary source.
 
-## Workflow 3: BTr benchmark updater
+## Workflow 3: BTr benchmark updater (DEPRECATED)
+
+> [!WARNING]
+> This workflow and its manual fallback are deprecated. BTr blocks n8n nodes with a WAF.
+> Use `npm run sync-btr` in the `truva-scraping` framework instead.
 
 Schedule: Mondays at 3:30 PM PHT.
 
