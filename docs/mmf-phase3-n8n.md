@@ -1,15 +1,15 @@
 # MMF Phase 3 n8n Automation Runbook
 
-Phase 3 replaces manually seeded money market fund rate rows with daily n8n automation for the MVP scope:
+Phase 3 replaces manually seeded money market fund rate rows with daily automation for the MVP scope. n8n still handles fund-source scrapes and health alerts; benchmark updates now run in `truva-scraping`.
 
 - PHP UITFs from `uitf.com.ph`
 - USD UITFs from `uitf.com.ph`
 - ALFM and FAMI mutual-fund rows from PIFA, with ALFM cross-checks against BPI Wealth when both sources publish the same source date
-- BTr 91-day Treasury bill benchmark updates
-- NY Fed 90-day SOFR average updates for USD benchmark rows
+- BTr 91-day Treasury bill benchmark updates from `truva-scraping`
+- NY Fed 90-day SOFR average updates for USD benchmark rows from `truva-scraping`
 - Telegram health alerts after the daily scrape window
 
-The public app contract stays unchanged. `/banking/money-market-funds` reads `public.mmf_current`, and n8n writes only to `public.mmf_daily_rates` and `public.benchmark_rates`.
+The public app contract stays unchanged. `/banking/money-market-funds` reads `public.mmf_current`; n8n writes fund rows to `public.mmf_daily_rates`, while `truva-scraping` writes benchmark rows to `public.benchmark_rates`.
 
 ## Repo artifacts
 
@@ -21,7 +21,7 @@ The public app contract stays unchanged. `/banking/money-market-funds` reads `pu
 | `docs/n8n/mmf-uitf-daily-usd.workflow.json` | Workflow 1b: daily USD UITF scrape and daily-rate upsert. |
 | `docs/n8n/mmf-bpi-wealth-mutual-daily.workflow.json` | Workflow 2: daily PIFA mutual-fund scrape and daily-rate upsert. |
 | `docs/n8n/mmf-btr-benchmark.workflow.json` | **DEPRECATED**: Used to handle BTr scrape before WAF block. Replaced by `npm run sync-btr` in `truva-scraping`. |
-| `docs/n8n/mmf-us-benchmark.workflow.json` | Workflow 4: NY Fed 90-day SOFR average benchmark upsert and USD `vs_benchmark` recalculation. |
+| `docs/n8n/mmf-us-benchmark.workflow.json` | **DEPRECATED**: NY Fed/SOFR benchmark n8n workflow. Replaced by the `truva-scraping` benchmark automation. |
 | `docs/n8n/mmf-btr-benchmark-manual.workflow.json` | **DEPRECATED**: Old manual logic before stealth automation fallback was implemented. |
 | `docs/n8n/mmf-health-check.workflow.json` | Workflow 5: daily health report and Telegram alert. |
 | `docs/n8n/*.inline-supabase.template.workflow.json` | Legacy quick-start templates. Prefer the canonical environment-variable workflows above because they include the source-date scraper fixes. |
@@ -201,9 +201,13 @@ Manual test:
 2. Confirm one `benchmark_rates` row exists for `BTR_91D` and the auction date.
 3. Confirm same-date BTR-backed `mmf_daily_rates.vs_benchmark` values are updated.
 
-## Workflow 4: US benchmark updater
+## Workflow 4: US benchmark updater (DEPRECATED)
 
-Schedule: Tuesdays at 8:00 AM PHT.
+> [!WARNING]
+> This n8n workflow is deprecated. US_TBILL_90D / NY Fed SOFR benchmark automation now runs in the `truva-scraping` pipeline.
+> Keep the JSON file only as historical reference; do not import, enable, or schedule it in n8n.
+
+Former schedule: weekdays at 8:00 AM PHT.
 
 Source:
 
@@ -289,8 +293,10 @@ npm run build
 - UITF workflows must fetch `daily_navpu.php?bank_id=...`, not `top-funds.php`.
 - UITF payload dates must come from the source page's `NAVpus as of ...` date, not from the workflow run date.
 - UITF rows must include NAVPU/NAVPS; a `scraper` row with null NAVPU is not production-ready.
+- `supabase/migrations/20260423_mmf_scraper_quality_guard.sql` rejects future source-aware `scraper` rows with missing NAVPU, missing yields, missing benchmark fields, non-positive NAVPU, or whole-percentage yields.
 - PHP UITF workflows should have `Build Source Requests` and `Fetch UITF Provider Sources`; old copies with `Fetch UITF Source`, `today = phtDate()`, or `navpu: null` should be disabled or deleted.
 - Mutual-fund rows use PIFA published one-year NAV return as net yield; do not apply UITF tax/trust-fee math to ALFM/FAMI.
+- NY Fed / US_TBILL_90D benchmark updates must come from `truva-scraping`, not the deprecated n8n workflow.
 - Health checks compare source freshness within provider/source groups. One provider can legitimately publish later than another.
 - After any scraper, n8n, or schema edit, run the source-aware verifier and the health RPC before enabling schedules.
 
@@ -298,7 +304,7 @@ npm run build
 
 1. Apply the migration in the target Supabase project.
 2. Import `mmf-btr-benchmark.workflow.json`; configure credentials; run manually.
-3. Import `mmf-us-benchmark.workflow.json`; configure credentials; run manually.
+3. Confirm the `truva-scraping` US_TBILL_90D benchmark automation is active and has written the latest NY Fed row.
 4. Import `mmf-uitf-daily.workflow.json`; configure credentials; run manually.
 5. Import `mmf-uitf-daily-usd.workflow.json`; configure credentials; run manually.
 6. Import `mmf-bpi-wealth-mutual-daily.workflow.json`; configure credentials; run manually.

@@ -7,6 +7,7 @@ import {
   fetchOfficialBenchmarks,
   fetchOfficialFundRates,
   formatPercent,
+  type OfficialBenchmarkRate,
   type MmfFundForComputation,
 } from './mmf-official-sources';
 
@@ -16,6 +17,14 @@ dotenv.config();
 type FundRow = MmfFundForComputation & {
   navpu_source: string;
   is_active: boolean;
+};
+
+type BenchmarkRow = {
+  key: string;
+  label: string;
+  date: string;
+  rate: number;
+  source_url: string | null;
 };
 
 function hasFlag(name: string) {
@@ -33,6 +42,37 @@ function formatPayloadForLog(payload: ReturnType<typeof computeDailyRatePayload>
     vsBenchmark: payload.vs_benchmark === null ? null : formatPercent(payload.vs_benchmark),
     source: payload.data_source,
   };
+}
+
+async function loadBenchmarkHistory(
+  client: NonNullable<ReturnType<typeof createSupabaseAdminClient>>,
+  officialBenchmarks: OfficialBenchmarkRate[],
+) {
+  const keys = [...new Set(officialBenchmarks.map((benchmark) => benchmark.key))];
+  const { data, error } = await client
+    .from('benchmark_rates')
+    .select('key, label, date, rate, source_url')
+    .in('key', keys)
+    .returns<BenchmarkRow[]>();
+
+  if (error) throw error;
+
+  const byKeyDate = new Map<string, OfficialBenchmarkRate>();
+  for (const row of data ?? []) {
+    byKeyDate.set(`${row.key}:${row.date}`, {
+      key: row.key,
+      label: row.label,
+      date: row.date,
+      rate: Number(row.rate),
+      source_url: row.source_url ?? '',
+    });
+  }
+
+  for (const benchmark of officialBenchmarks) {
+    byKeyDate.set(`${benchmark.key}:${benchmark.date}`, benchmark);
+  }
+
+  return [...byKeyDate.values()];
 }
 
 async function main() {
@@ -56,11 +96,12 @@ async function main() {
     fetchOfficialFundRates(),
     fetchOfficialBenchmarks(),
   ]);
+  const benchmarkHistory = await loadBenchmarkHistory(client, officialBenchmarks);
 
   const payloads = funds.map((fund) => {
     const official = officialRates.get(fund.slug);
     if (!official) throw new Error(`Missing official source rate for ${fund.slug}`);
-    return computeDailyRatePayload(fund, official, officialBenchmarks, 'scraper');
+    return computeDailyRatePayload(fund, official, benchmarkHistory, 'scraper');
   });
 
   console.table(payloads.map((payload) => {
@@ -102,6 +143,32 @@ async function main() {
 
   if (ratesError) throw ratesError;
 
+  let deletedInvalidRows = 0;
+  for (const fund of funds) {
+    const official = officialRates.get(fund.slug);
+    if (!official) continue;
+
+    const { count: nullNavpuCount, error: nullNavpuError } = await client
+      .from('mmf_daily_rates')
+      .delete({ count: 'exact' })
+      .eq('fund_id', fund.id)
+      .eq('data_source', 'scraper')
+      .is('navpu', null);
+
+    if (nullNavpuError) throw nullNavpuError;
+    deletedInvalidRows += nullNavpuCount ?? 0;
+
+    const { count: futureDateCount, error: futureDateError } = await client
+      .from('mmf_daily_rates')
+      .delete({ count: 'exact' })
+      .eq('fund_id', fund.id)
+      .eq('data_source', 'scraper')
+      .gt('date', official.date);
+
+    if (futureDateError) throw futureDateError;
+    deletedInvalidRows += futureDateCount ?? 0;
+  }
+
   for (const [slug, fundId] of Object.entries(MUTUAL_FUND_PIFA_IDS)) {
     const { error } = await client
       .from('money_market_funds')
@@ -126,7 +193,9 @@ async function main() {
     if (error) throw error;
   }
 
-  console.log(`Applied ${payloads.length} official MMF rows and ${benchmarkRows.length} benchmark rows.`);
+  console.log(
+    `Applied ${payloads.length} official MMF rows and ${benchmarkRows.length} benchmark rows; deleted ${deletedInvalidRows} invalid scraper row(s).`,
+  );
 }
 
 main().catch((error) => {

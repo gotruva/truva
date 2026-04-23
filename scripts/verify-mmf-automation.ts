@@ -10,6 +10,7 @@ import {
   formatPercent,
   type DailyRatePayload,
   type MmfFundForComputation,
+  type OfficialBenchmarkRate,
 } from './mmf-official-sources';
 
 dotenv.config({ path: '.env.local' });
@@ -33,6 +34,7 @@ type CurrentRow = FundRow & {
 
 type BenchmarkRow = {
   key: string;
+  label?: string;
   date: string;
   rate: number;
   source_url: string | null;
@@ -87,6 +89,37 @@ function compareRateFields(row: CurrentRow, expected: DailyRatePayload) {
   return issues;
 }
 
+async function loadBenchmarkHistory(
+  client: NonNullable<ReturnType<typeof createSupabaseAdminClient>>,
+  officialBenchmarks: OfficialBenchmarkRate[],
+) {
+  const keys = [...new Set(officialBenchmarks.map((benchmark) => benchmark.key))];
+  const { data, error } = await client
+    .from('benchmark_rates')
+    .select('key, label, date, rate, source_url')
+    .in('key', keys)
+    .returns<BenchmarkRow[]>();
+
+  assert(!error, `Failed to load benchmark history: ${error?.message}`);
+
+  const byKeyDate = new Map<string, OfficialBenchmarkRate>();
+  for (const row of data ?? []) {
+    byKeyDate.set(`${row.key}:${row.date}`, {
+      key: row.key,
+      label: row.label ?? row.key,
+      date: row.date,
+      rate: Number(row.rate),
+      source_url: row.source_url ?? '',
+    });
+  }
+
+  for (const benchmark of officialBenchmarks) {
+    byKeyDate.set(`${benchmark.key}:${benchmark.date}`, benchmark);
+  }
+
+  return [...byKeyDate.values()];
+}
+
 async function main() {
   const client = createSupabaseAdminClient('public');
   if (!client) {
@@ -126,6 +159,7 @@ async function main() {
     fetchOfficialFundRates(),
     fetchOfficialBenchmarks(),
   ]);
+  const benchmarkHistory = await loadBenchmarkHistory(client, officialBenchmarks);
 
   const currentBySlug = new Map(currentRows.map((row) => [row.slug, row]));
   const issues: string[] = [];
@@ -149,7 +183,7 @@ async function main() {
       issues.push(`${fund.provider} - ${fund.name}: official source date ${official.date} does not match requested --date=${requiredDate}`);
     }
 
-    const expected = computeDailyRatePayload(fund, official, officialBenchmarks, 'scraper');
+    const expected = computeDailyRatePayload(fund, official, benchmarkHistory, 'scraper');
     for (const issue of compareRateFields(current, expected)) {
       issues.push(formatIssue(current, issue));
     }

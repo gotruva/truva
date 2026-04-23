@@ -1,6 +1,21 @@
 {
-  "name": "Truva MMF - US T-Bill/SOFR Benchmark (Inline Supabase Template)",
+  "name": "DEPRECATED - Truva MMF - US T-Bill/SOFR Benchmark (Inline Supabase Template)",
   "nodes": [
+    {
+      "parameters": {
+        "content": "DEPRECATED\n\nDo not import or enable this n8n workflow. US_TBILL_90D / NY Fed SOFR benchmark automation now runs in the truva scraper pipeline.",
+        "height": 180,
+        "width": 420
+      },
+      "id": "deprecated-us-benchmark-inline-notice",
+      "name": "Deprecated Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -220
+      ]
+    },
     {
       "parameters": {},
       "id": "e5b8e9b8-1b22-44af-8884-2a6231c5d3d3",
@@ -18,14 +33,14 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 8 * * 2"
+              "expression": "0 8 * * 1-5"
             }
           ]
         },
         "timezone": "Asia/Manila"
       },
       "id": "18f958ee-99a5-4eb8-b219-c637a28ebdf2",
-      "name": "Tuesday 8:00 AM PHT",
+      "name": "Weekdays 8:00 AM PHT",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -179,7 +194,7 @@
         ]
       ]
     },
-    "Tuesday 8:00 AM PHT": {
+    "Weekdays 8:00 AM PHT": {
       "main": [
         [
           {
@@ -239,7 +254,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "usd-us-tbill-sofr-inline-template",
+  "versionId": "deprecated-usd-us-tbill-sofr-inline-template",
   "meta": {
     "templateCredsSetupCompleted": false
   },
