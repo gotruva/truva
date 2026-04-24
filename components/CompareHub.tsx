@@ -167,9 +167,7 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
     readPersistedState,
     () => null,
   );
-  const [clientState, setClientState] = useState<PersistedCompareHubState | null>(null);
-  const skipNextPersistRef = useRef(false);
-  const currentState = clientState ?? persistedState ?? DEFAULT_PERSISTED_STATE;
+  const currentState = persistedState ?? DEFAULT_PERSISTED_STATE;
   const { topSection, quickMatchAnswers, comparisonState } = currentState;
 
   const isQuickMatchTab = topSection !== 'advanced-compare';
@@ -182,19 +180,16 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
   const clearStoredState = useCallback(() => {
     if (typeof window !== 'undefined') {
       window.sessionStorage.removeItem(STORAGE_KEY);
+      window.dispatchEvent(new CustomEvent(HUB_STATE_EVENT));
     }
   }, []);
 
-  const skipNextPersist = useCallback(() => {
-    skipNextPersistRef.current = true;
-    clearStoredState();
-  }, [clearStoredState]);
-
   const updateState = useCallback((updater: (current: PersistedCompareHubState) => PersistedCompareHubState) => {
-    setClientState((current) => {
-      const base = current ?? readPersistedState() ?? DEFAULT_PERSISTED_STATE;
-      return updater(base);
-    });
+    if (typeof window === 'undefined') return;
+    const base = readPersistedState() ?? DEFAULT_PERSISTED_STATE;
+    const next = updater(base);
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    window.dispatchEvent(new CustomEvent(HUB_STATE_EVENT));
   }, []);
 
   const handleHashNavigation = useCallback((hash: string) => {
@@ -236,23 +231,6 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
     };
   }, [handleHashNavigation]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    if (skipNextPersistRef.current) {
-      skipNextPersistRef.current = false;
-      window.sessionStorage.removeItem(STORAGE_KEY);
-      return;
-    }
-
-    const payload: PersistedCompareHubState = {
-      topSection,
-      quickMatchAnswers,
-      comparisonState,
-    };
-
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  }, [comparisonState, quickMatchAnswers, topSection]);
 
   const handleComparisonStateChange = useCallback((updates: Partial<ComparisonState>) => {
     updateState((current) => ({
@@ -286,12 +264,12 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
   }, [updateState]);
 
   const handleAdjustAnswers = useCallback(() => {
-    skipNextPersist();
+    clearStoredState();
     updateState((current) => ({
       ...current,
       topSection: 'quick-match-wizard',
     }));
-  }, [skipNextPersist, updateState]);
+  }, [clearStoredState, updateState]);
 
   const handleQuickMatchTab = useCallback(() => {
     updateState((current) => ({
@@ -308,13 +286,13 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
   }, [updateState]);
 
   const handleClearPrefill = useCallback(() => {
-    skipNextPersist();
+    clearStoredState();
     updateState(() => ({
       topSection: 'advanced-compare',
       quickMatchAnswers: null,
       comparisonState: DEFAULT_COMPARISON_STATE,
     }));
-  }, [skipNextPersist, updateState]);
+  }, [clearStoredState, updateState]);
 
   return (
     <div>
