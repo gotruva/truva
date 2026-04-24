@@ -152,7 +152,7 @@ export default async function HomePage() {
         />
       ))}
 
-      <HeroSection formattedDate={formattedDate} />
+      <HeroSection />
 
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 transition-colors duration-300">

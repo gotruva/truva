@@ -546,7 +546,7 @@ function hydrateSnapshotRate(
   index: number,
 ): RateProduct {
   const raw = isRecord(rawValue) ? rawValue : {};
-  const { snapshotKey, publicId, mapping } = resolveSnapshotIdentity(sourceProductId, raw, index);
+  const { publicId, mapping } = resolveSnapshotIdentity(sourceProductId, raw, index);
   const mappingDefaults = mapping?.defaults;
   const id = publicId;
   const seed = seedRatesById.get(id);

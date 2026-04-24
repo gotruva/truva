@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { rollbackSnapshot } from '@/lib/admin-actions';
+import { getErrorMessage } from '@/lib/error-message';
 
 export function RollbackButton({ snapshotId }: { snapshotId: string }) {
   const [isPending, setIsPending] = useState(false);
@@ -15,8 +16,8 @@ export function RollbackButton({ snapshotId }: { snapshotId: string }) {
     try {
       await rollbackSnapshot(snapshotId);
       alert('Successfully rolled back data.');
-    } catch (err: any) {
-      alert(`Rollback failed: ${err.message}`);
+    } catch (error: unknown) {
+      alert(`Rollback failed: ${getErrorMessage(error)}`);
     } finally {
       setIsPending(false);
     }

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -111,9 +111,6 @@ export function RateSection({
     return groups;
   }, [comparisonState.months, numAmount, sortedRates]);
 
-  const formattedAmount = numAmount > 0
-    ? `₱${numAmount.toLocaleString('en-PH')}`
-    : '₱100,000';
 
   return (
     <section>

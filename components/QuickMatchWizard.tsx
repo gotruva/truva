@@ -112,12 +112,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
     ? (parseInt(customAmount.replace(/,/g, ''), 10) || 0)
     : (amountPreset ?? 0);
 
-  const canProceed: boolean[] = [
-    purpose !== null,
-    amountPreset !== null && (amountPreset !== -1 || resolvedAmount > 0),
-    timeline !== null,
-  ];
-
   const goBack = () => {
     if (step > 1) {
       setStep((current) => current - 1);
@@ -150,16 +144,6 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
       timeline: selectedTimeline,
     });
     onComplete(finalAnswers);
-  };
-
-  const handleComplete = () => {
-    if (!purpose || !timeline || resolvedAmount <= 0) return;
-
-    onComplete(deriveQuickMatchAnswers({
-      purpose,
-      amount: resolvedAmount,
-      timeline,
-    }));
   };
 
   const optionClass = (selected: boolean) =>

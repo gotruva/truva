@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import { getErrorMessage } from '@/lib/error-message';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -29,8 +30,8 @@ export default function AdminLogin() {
 
       router.push('/admin');
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error, 'Failed to sign in'));
       setIsLoading(false);
     }
   }

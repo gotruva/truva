@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Calculator, Sparkles, X } from 'lucide-react';
 import { ComparisonState, QuickMatchAnswers, RateProduct } from '@/types';
 import {
@@ -26,6 +26,7 @@ interface PersistedCompareHubState {
 }
 
 const STORAGE_KEY = 'truva.compare-hub-state.v1';
+const emptySubscribe = () => () => {};
 
 function PanelSkeleton({ rows = 3 }: { rows?: number }) {
   return (
@@ -71,6 +72,12 @@ const DEFAULT_COMPARISON_STATE: ComparisonState = {
   liquidityFilter: 'all',
   payoutFilter: 'all',
   includePdicOnly: false,
+};
+
+const DEFAULT_PERSISTED_STATE: PersistedCompareHubState = {
+  topSection: 'quick-match-wizard',
+  quickMatchAnswers: null,
+  comparisonState: DEFAULT_COMPARISON_STATE,
 };
 
 function isTopSection(value: unknown): value is TopSection {
@@ -131,17 +138,17 @@ function readPersistedState(): PersistedCompareHubState | null {
 }
 
 export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubProps) {
-  const [topSection, setTopSection] = useState<TopSection>('quick-match-wizard');
-  const [quickMatchAnswers, setQuickMatchAnswers] = useState<QuickMatchAnswers | null>(null);
-  const [comparisonState, setComparisonState] = useState<ComparisonState>(DEFAULT_COMPARISON_STATE);
+  const persistedState = useSyncExternalStore(
+    emptySubscribe,
+    readPersistedState,
+    () => null,
+  );
+  const [clientState, setClientState] = useState<PersistedCompareHubState | null>(null);
   const skipNextPersistRef = useRef(false);
-  const quickMatchAnswersRef = useRef<QuickMatchAnswers | null>(null);
+  const currentState = clientState ?? persistedState ?? DEFAULT_PERSISTED_STATE;
+  const { topSection, quickMatchAnswers, comparisonState } = currentState;
 
   const isQuickMatchTab = topSection !== 'advanced-compare';
-
-  useEffect(() => {
-    quickMatchAnswersRef.current = quickMatchAnswers;
-  }, [quickMatchAnswers]);
 
   const recommendedIds = useMemo(
     () => quickMatchAnswers ? getQuickMatchRecommendations(rates, quickMatchAnswers).map((product) => product.id) : [],
@@ -159,11 +166,18 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
     clearStoredState();
   }, [clearStoredState]);
 
+  const updateState = useCallback((updater: (current: PersistedCompareHubState) => PersistedCompareHubState) => {
+    setClientState((current) => updater(current ?? currentState));
+  }, [currentState]);
+
   const handleHashNavigation = useCallback((hash: string) => {
     if (typeof window === 'undefined') return;
 
     if (hash === '#deposit-rates') {
-      setTopSection('advanced-compare');
+      updateState((current) => ({
+        ...current,
+        topSection: 'advanced-compare',
+      }));
       window.setTimeout(() => {
         document.getElementById('deposit-rates')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 80);
@@ -171,29 +185,26 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
     }
 
     if (hash === '#calculator') {
-      setTopSection(quickMatchAnswersRef.current ? 'quick-match-results' : 'quick-match-wizard');
+      updateState((current) => ({
+        ...current,
+        topSection: current.quickMatchAnswers ? 'quick-match-results' : 'quick-match-wizard',
+      }));
       window.setTimeout(() => {
         document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 80);
     }
-  }, []);
+  }, [updateState]);
 
   useEffect(() => {
-    const persisted = readPersistedState();
-
-    if (persisted) {
-      setTopSection(persisted.topSection);
-      setQuickMatchAnswers(persisted.quickMatchAnswers);
-      setComparisonState(persisted.comparisonState);
-      quickMatchAnswersRef.current = persisted.quickMatchAnswers;
-    }
-
-    handleHashNavigation(window.location.hash);
+    const initialHashTimer = window.setTimeout(() => {
+      handleHashNavigation(window.location.hash);
+    }, 0);
 
     const onHashChange = () => handleHashNavigation(window.location.hash);
     window.addEventListener('hashchange', onHashChange);
 
     return () => {
+      window.clearTimeout(initialHashTimer);
       window.removeEventListener('hashchange', onHashChange);
     };
   }, [handleHashNavigation]);
@@ -217,49 +228,66 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
   }, [comparisonState, quickMatchAnswers, topSection]);
 
   const handleComparisonStateChange = useCallback((updates: Partial<ComparisonState>) => {
-    setComparisonState((current) => ({
+    updateState((current) => ({
       ...current,
-      ...updates,
+      comparisonState: {
+        ...current.comparisonState,
+        ...updates,
+      },
     }));
-  }, []);
+  }, [updateState]);
 
   const handleWizardComplete = useCallback((answers: QuickMatchAnswers) => {
-    quickMatchAnswersRef.current = answers;
-    setQuickMatchAnswers(answers);
-    setComparisonState({
-      ...DEFAULT_COMPARISON_STATE,
-      ...mapAnswersToFilters(answers),
-    });
-    setTopSection('quick-match-results');
-  }, []);
+    updateState(() => ({
+      topSection: 'quick-match-results',
+      quickMatchAnswers: answers,
+      comparisonState: {
+        ...DEFAULT_COMPARISON_STATE,
+        ...mapAnswersToFilters(answers),
+      },
+    }));
+  }, [updateState]);
 
   const handleSeeFullComparison = useCallback(() => {
-    setTopSection('advanced-compare');
+    updateState((current) => ({
+      ...current,
+      topSection: 'advanced-compare',
+    }));
     window.setTimeout(() => {
       document.getElementById('compare-hub-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 60);
-  }, []);
+  }, [updateState]);
 
   const handleAdjustAnswers = useCallback(() => {
     skipNextPersist();
-    setTopSection('quick-match-wizard');
-  }, [skipNextPersist]);
+    updateState((current) => ({
+      ...current,
+      topSection: 'quick-match-wizard',
+    }));
+  }, [skipNextPersist, updateState]);
 
   const handleQuickMatchTab = useCallback(() => {
-    setTopSection(quickMatchAnswers ? 'quick-match-results' : 'quick-match-wizard');
-  }, [quickMatchAnswers]);
+    updateState((current) => ({
+      ...current,
+      topSection: current.quickMatchAnswers ? 'quick-match-results' : 'quick-match-wizard',
+    }));
+  }, [updateState]);
 
   const handleAdvancedTab = useCallback(() => {
-    setTopSection('advanced-compare');
-  }, []);
+    updateState((current) => ({
+      ...current,
+      topSection: 'advanced-compare',
+    }));
+  }, [updateState]);
 
   const handleClearPrefill = useCallback(() => {
     skipNextPersist();
-    quickMatchAnswersRef.current = null;
-    setQuickMatchAnswers(null);
-    setComparisonState(DEFAULT_COMPARISON_STATE);
-    setTopSection('advanced-compare');
-  }, [skipNextPersist]);
+    updateState(() => ({
+      topSection: 'advanced-compare',
+      quickMatchAnswers: null,
+      comparisonState: DEFAULT_COMPARISON_STATE,
+    }));
+  }, [skipNextPersist, updateState]);
 
   return (
     <div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveMMFMetadata } from '@/lib/admin-actions';
+import { getErrorMessage } from '@/lib/error-message';
 
 interface MMFEditFormProps {
   fundId: string;
@@ -49,8 +50,8 @@ export function MMFEditForm({ fundId, provider, name, initialData }: MMFEditForm
       await saveMMFMetadata(fundId, payload);
       alert('MMF Metadata saved successfully!');
       router.push('/admin/mmf');
-    } catch (err: any) {
-      alert(`Error saving MMF: ${err.message}`);
+    } catch (error: unknown) {
+      alert(`Error saving MMF: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }

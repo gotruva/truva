@@ -1,19 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { sendGAEvent } from '@next/third-parties/google';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useHasMounted } from '@/lib/use-has-mounted';
 
 export function NewsletterSignup() {
-  const [mounted, setMounted] = useState(false);
+  const hasMounted = useHasMounted();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +62,7 @@ export function NewsletterSignup() {
         New banks, new features, rate changes — get notified when something on Truva updates. No fluff, just the signal.
       </p>
 
-      {mounted ? (
+      {hasMounted ? (
         <form
           onSubmit={handleSubmit}
           className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative"

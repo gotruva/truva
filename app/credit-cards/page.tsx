@@ -249,7 +249,7 @@ export default async function CreditCardsHub() {
               Start with the card job, then inspect the product
             </h2>
             <p className="max-w-3xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              This is the structure strong comparison sites use because it matches reader intent. Users usually start with "best cashback" or "best no-fee," not with an issuer alphabet.
+              This is the structure strong comparison sites use because it matches reader intent. Users usually start with best cashback or best no-fee, not with an issuer alphabet.
             </p>
           </div>
 

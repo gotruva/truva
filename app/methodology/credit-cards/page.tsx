@@ -68,7 +68,7 @@ export default function CreditCardsMethodologyPage() {
             The right card is not the one with the loudest reward claim. It is the one whose economics still make sense after the fine print.
           </h2>
           <p className="text-base leading-relaxed text-brand-textSecondary dark:text-gray-300">
-            Credit cards are especially vulnerable to bad comparison design because temporary promos, flashy categories, and vague reward marketing can make a weak long-term product look strong. Truva's card methodology is meant to punish that distortion, not reward it.
+            Credit cards are especially vulnerable to bad comparison design because temporary promos, flashy categories, and vague reward marketing can make a weak long-term product look strong. Truva&apos;s card methodology is meant to punish that distortion, not reward it.
           </p>
         </div>
       </section>

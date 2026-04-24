@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { upsertMMFDailyRate, copyLastMMFRate } from '@/lib/admin-actions';
+import { getErrorMessage } from '@/lib/error-message';
 
 interface MMFResolveFormProps {
   fundId: string;
@@ -15,6 +16,7 @@ interface MMFResolveFormProps {
 export function MMFResolveForm({ fundId, slug, name, provider, targetDate }: MMFResolveFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  void slug;
 
   // Form states
   const [date, setDate] = useState(targetDate);
@@ -42,22 +44,22 @@ export function MMFResolveForm({ fundId, slug, name, provider, targetDate }: MMF
       await upsertMMFDailyRate(fundId, payload);
       alert('Manual rate submitted successfully. The issue should now be resolved.');
       router.push('/admin/mmf');
-    } catch (err: any) {
-      alert(`Error: ${err.message}`);
+    } catch (error: unknown) {
+      alert(`Error: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleNoChange = async () => {
-    if (!confirm("This will copy the most recent known rate to the target date. Select 'OK' if you've verified that the rate hasn't changed since the last update.")) return;
+    if (!confirm("This will copy the most recent known rate to the target date. Select 'OK' if you have verified that the rate has not changed since the last update.")) return;
     setIsSubmitting(true);
     try {
       await copyLastMMFRate(fundId, date);
       alert('Rate verified as unchanged and data health issue resolved.');
       router.push('/admin/mmf');
-    } catch (err: any) {
-      alert(`Error: ${err.message}`);
+    } catch (error: unknown) {
+      alert(`Error: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -70,7 +72,7 @@ export function MMFResolveForm({ fundId, slug, name, provider, targetDate }: MMF
           <div>
             <h3 className="text-base font-bold text-sky-900 dark:text-sky-200">Rate Unchanged?</h3>
             <p className="text-sm text-sky-700 dark:text-sky-400">
-              If you verified that the rate hasn't changed since the last update, you can simply acknowledge it.
+              If you verified that the rate has not changed since the last update, you can simply acknowledge it.
             </p>
           </div>
           <button

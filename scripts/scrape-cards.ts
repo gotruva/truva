@@ -15,7 +15,6 @@
  *   SUPABASE_SERVICE_ROLE_KEY
  */
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 import FirecrawlApp from '@mendable/firecrawl-js';
 // Note: firecrawl's `extract` is flagged as deprecated in favour of `agent`,
 // but the agent response type exposes `data` as `unknown` with no schema
@@ -193,13 +192,21 @@ type CreditCard = {
 
 // Raw card shape from Firecrawl (unvalidated)
 type RawCard = Record<string, unknown>;
+type FirecrawlExtractResponse = {
+  success?: boolean;
+  data?: unknown;
+};
+
+type FirecrawlExtractApp = FirecrawlApp & {
+  extract: (args: { urls: string[]; prompt: string }) => Promise<FirecrawlExtractResponse>;
+};
 
 async function extractCards(
   app: FirecrawlApp,
   urls: string[],
   bank: string,
 ): Promise<RawCard[]> {
-  const response = await (app as any).extract({ urls, prompt: buildPrompt(bank) });
+  const response = await (app as FirecrawlExtractApp).extract({ urls, prompt: buildPrompt(bank) });
   if (!response?.success || !response.data) return [];
   // Firecrawl returns data as { someKey: [...] } — find the first array value
   const data = response.data as Record<string, unknown>;

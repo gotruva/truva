@@ -56,7 +56,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
             </div>
             <div>
               <h3 className="font-semibold text-brand-textPrimary dark:text-gray-100 text-lg">How much are you saving?</h3>
-              <p className="text-sm text-brand-textSecondary dark:text-gray-400">We'll calculate your exact after-tax returns.</p>
+              <p className="text-sm text-brand-textSecondary dark:text-gray-400">We&apos;ll calculate your exact after-tax returns.</p>
             </div>
           </div>
           <div className="flex items-center gap-2 mb-6 text-xl">
@@ -97,7 +97,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
             ].map((opt) => (
               <button
                 key={opt.id}
-                onClick={() => setLockIn(opt.id as any)}
+                onClick={() => setLockIn(opt.id as PreQualAnswers['lockIn'])}
                 className={`p-4 border rounded-lg text-left flex justify-between items-center transition-colors ${
                   lockIn === opt.id ? 'border-brand-primary bg-brand-primaryLight text-brand-textPrimary' : 'border-brand-border hover:border-gray-300 dark:text-gray-200'
                 }`}
@@ -135,7 +135,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
             ].map((opt) => (
               <button
                 key={opt.id}
-                onClick={() => setRisk(opt.id as any)}
+                onClick={() => setRisk(opt.id as PreQualAnswers['risk'])}
                 className={`p-4 border rounded-lg text-left flex justify-between items-center transition-colors ${
                   risk === opt.id ? 'border-brand-primary bg-brand-primaryLight text-brand-textPrimary' : 'border-brand-border hover:border-gray-300 dark:text-gray-200'
                 }`}

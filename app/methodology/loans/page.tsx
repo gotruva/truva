@@ -75,7 +75,7 @@ export default function LoansMethodologyPage() {
             Loan comparison should protect borrowers from the parts of the pricing story that marketing usually hides.
           </h2>
           <p className="text-base leading-relaxed text-brand-textSecondary dark:text-gray-300">
-            Loans are harder than deposits because the downside matters more. Truva's methodology should compare the real borrowing cost, the amount actually disbursed, the time to funding, and the pain of falling behind.
+            Loans are harder than deposits because the downside matters more. Truva&apos;s methodology should compare the real borrowing cost, the amount actually disbursed, the time to funding, and the pain of falling behind.
           </p>
         </div>
       </section>

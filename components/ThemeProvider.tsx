@@ -3,6 +3,7 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import { type ThemeProviderProps } from 'next-themes';
+import { useHasMounted } from '@/lib/use-has-mounted';
 
 // Dynamically import the provider with SSR disabled.
 // This prevents Next.js from ever evaluating the script-injecting logic on the server.
@@ -12,15 +13,7 @@ const NextThemesProvider = dynamic(
 );
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  // We return a fragment for initial SSR/hydration, and only render the
-  // provider on the client.
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
+  if (!useHasMounted()) {
     return <>{children}</>;
   }
 

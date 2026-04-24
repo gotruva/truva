@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- local logo tiles are fixed-size decorative assets */
 import Link from 'next/link';
 import { ArrowRight, Calendar, Lock, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';

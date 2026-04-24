@@ -445,7 +445,12 @@ export async function rollbackToSnapshot(snapshotId: string): Promise<PublishRes
   if (productionError) throw productionError;
   if (!productionData?.[0]) throw new Error('promote_specific_snapshot returned no result.');
 
-  const result = productionData[0] as any;
+  const result = productionData[0] as {
+    out_snapshot_id: string;
+    out_product_count: number;
+    out_provider_count: number;
+    out_generated_at: string;
+  };
 
   return {
     stagingSnapshotId: result.out_snapshot_id,

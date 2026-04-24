@@ -38,7 +38,7 @@ const CustomLink = ({
 
   if (isInternalLink) {
     return (
-      <Link href={href!} className="text-brand-primary font-medium hover:underline" {...(props as any)}>
+      <Link href={href!} className="text-brand-primary font-medium hover:underline" {...props}>
         {children}
       </Link>
     );
