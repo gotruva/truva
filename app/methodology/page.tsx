@@ -181,7 +181,7 @@ export default function MethodologyHubPage() {
               Labeling rules
             </p>
             <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-              "Editorial," "Sponsored," and "Partner-supported" should never blur together.
+              Editorial, Sponsored, and Partner-supported should never blur together.
             </h2>
             <p className="max-w-3xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
               Truva should use plain labels that readers can understand at a glance. If a post or surface is sponsored, it should say so clearly. If a page is editorial, it should still disclose commercial relationships without pretending those relationships disappear.

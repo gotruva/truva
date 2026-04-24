@@ -1,15 +1,3 @@
-// Critical: app cannot function without these
-const critical = [
-  'NEXT_PUBLIC_SUPABASE_URL',
-  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-] as const;
-
-// Optional: features degrade gracefully without these
-const optional = [
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'RESEND_API_KEY',
-] as const;
-
 // NEXT_PHASE is set during `next build` — don't throw then, since some env
 // vars are only injected at runtime (e.g. on Vercel). Throw only at runtime.
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';

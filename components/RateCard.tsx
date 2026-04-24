@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable @next/next/no-img-element -- local logo tiles are fixed-size decorative assets */
 
 import { useState } from 'react';
 import { RateProduct } from '@/types';

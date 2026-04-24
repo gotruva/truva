@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- local logo tiles are fixed-size decorative assets */
 import { resolveLogoSrc } from '@/lib/logo';
 
 export function getProviderLogo(provider: string): string | null {

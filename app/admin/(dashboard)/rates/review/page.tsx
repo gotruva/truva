@@ -1,5 +1,4 @@
-import { revalidatePath } from 'next/cache';
-import { notFound } from 'next/navigation';
+﻿import { revalidatePath } from 'next/cache';
 
 import { applyChangeReviewDecision, buildAndPromoteRateSnapshot, listQueuedChangeReviews } from '@/lib/rate-review';
 import type { QueuedChangeReviewItem, RateDiffDetail } from '@/lib/rate-review';
@@ -29,7 +28,7 @@ function formatQueueTimestamp(value: string) {
 }
 
 function formatDiffValue(value: unknown): string {
-  if (value === null || value === undefined) return '—';
+  if (value === null || value === undefined) return 'â€”';
   if (typeof value === 'number') {
     if (value > 0 && value <= 0.50) {
       return `${(value * 100).toFixed(value * 100 % 1 === 0 ? 0 : 2)}%`;
@@ -46,7 +45,7 @@ function DiffTable({ details, isNew }: { details: RateDiffDetail[]; isNew?: bool
   return (
     <div className="mt-4 overflow-x-auto">
       <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-        Rate Changes (Previous → New)
+        Rate Changes (Previous â†’ New)
       </p>
       <table className="w-full border-collapse text-sm">
         <thead>
@@ -104,6 +103,8 @@ function DiffTable({ details, isNew }: { details: RateDiffDetail[]; isNew?: bool
   );
 }
 
+// Retained as an alternate review layout while the current inline queue card is in use.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
   const isScraperItem = item.entityType === 'product_snapshot';
   return (
@@ -113,11 +114,11 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
           <div className="flex items-center gap-2">
             {isScraperItem && (
               <span className="rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-semibold text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">
-                🤖 Auto-Scraped
+                ðŸ¤– Auto-Scraped
               </span>
             )}
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              {item.providerDisplayName} — {item.productName}
+              {item.providerDisplayName} â€” {item.productName}
             </h2>
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
@@ -130,7 +131,7 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
               rel="noopener noreferrer"
               className="mt-0.5 inline-block text-xs text-sky-600 underline underline-offset-2 hover:text-sky-700 dark:text-sky-400"
             >
-              View Source Page ↗
+              View Source Page â†—
             </a>
           )}
         </div>
@@ -143,7 +144,7 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
         <p><span className="font-medium">Queued At:</span> {formatQueueTimestamp(item.createdAt)}</p>
         {item.summary && <p><span className="font-medium">Summary:</span> {item.summary}</p>}
         {item.evidenceText && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 italic">"{item.evidenceText}"</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 italic">&quot;{item.evidenceText}&quot;</p>
         )}
         <p><span className="font-medium">Reason:</span> {item.reason}</p>
       </div>
@@ -167,7 +168,7 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
             type="submit"
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
           >
-            ✓ Approve Change
+            âœ“ Approve Change
           </button>
         </form>
 
@@ -187,7 +188,7 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
             type="submit"
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-rose-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-700"
           >
-            ✗ Reject — Keep Current Live Rate
+            âœ— Reject â€” Keep Current Live Rate
           </button>
         </form>
       </div>
@@ -195,7 +196,7 @@ function ReviewCard({ item }: { item: QueuedChangeReviewItem }) {
   );
 }
 
-// ── Server Actions ────────────────────────────────────────────────────────────
+// â”€â”€ Server Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function approveReviewAction(formData: FormData) {
   'use server';
@@ -252,7 +253,7 @@ async function publishToProductionAction() {
   revalidatePath('/admin/rates/review');
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default async function RateReviewPage() {
   const queuedItems = await listQueuedChangeReviews();
@@ -262,12 +263,11 @@ export default async function RateReviewPage() {
   const bulkActionsAllowed = adminSecret === null;
 
   const scraperItems = queuedItems.filter((i) => i.entityType === 'product_snapshot');
-  const changeItems = queuedItems.filter((i) => i.entityType === 'change_event');
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
 
-      {/* ── Header ── */}
+      {/* â”€â”€ Header â”€â”€ */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
           Truva Rate Command Center
@@ -277,28 +277,28 @@ export default async function RateReviewPage() {
         </p>
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           {queuedItems.length} item{queuedItems.length !== 1 ? 's' : ''} pending review
-          {scraperItems.length > 0 && ` · ${scraperItems.length} from automated scraper`}
+          {scraperItems.length > 0 && ` Â· ${scraperItems.length} from automated scraper`}
           {!bulkActionsAllowed && (
             <span className="ml-3 rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-              ⚠ TRUVA_ADMIN_SECRET is set — bulk actions disabled
+              âš  TRUVA_ADMIN_SECRET is set â€” bulk actions disabled
             </span>
           )}
         </p>
       </div>
 
-      {/* ── Publish to Production Card ── */}
+      {/* â”€â”€ Publish to Production Card â”€â”€ */}
       <div className="mb-8 rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-6 shadow-sm dark:border-indigo-800/60 dark:from-indigo-950/40 dark:to-slate-900">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-indigo-900 dark:text-indigo-200">
-              🚀 Publish Rates to Live Website
+              ðŸš€ Publish Rates to Live Website
             </h2>
             <p className="mt-1 text-sm text-indigo-700 dark:text-indigo-300">
               Once you have approved the rate changes above, click this button to push all approved
               snapshots to your live gotruva.com frontend instantly.
             </p>
             <p className="mt-1 text-xs text-indigo-500 dark:text-indigo-400">
-              ⚡ This builds a staging snapshot from all approved rates, then promotes it to production. Only approved data reaches users.
+              âš¡ This builds a staging snapshot from all approved rates, then promotes it to production. Only approved data reaches users.
             </p>
           </div>
           <form action={publishToProductionAction} className="shrink-0">
@@ -306,13 +306,13 @@ export default async function RateReviewPage() {
               type="submit"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow transition-colors hover:bg-indigo-700 active:scale-95 disabled:opacity-50"
             >
-              Publish to Website →
+              Publish to Website â†’
             </button>
           </form>
         </div>
       </div>
 
-      {/* ── Bulk Action Panel ── */}
+      {/* â”€â”€ Bulk Action Panel â”€â”€ */}
       {queuedItems.length > 1 && bulkActionsAllowed && (
         <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-900/60">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -320,7 +320,7 @@ export default async function RateReviewPage() {
           </p>
           {bulkCapExceeded && (
             <p className="mb-3 text-xs text-rose-600 dark:text-rose-400">
-              ⚠ {queuedItems.length} items exceeds the {BULK_ACTION_CAP}-item cap. Use individual approvals or flush in batches.
+              âš  {queuedItems.length} items exceeds the {BULK_ACTION_CAP}-item cap. Use individual approvals or flush in batches.
             </p>
           )}
           <div className="grid gap-4 md:grid-cols-2">
@@ -347,7 +347,7 @@ export default async function RateReviewPage() {
                 disabled={bulkCapExceeded}
                 className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                ✓ Approve All {queuedItems.length} Items
+                âœ“ Approve All {queuedItems.length} Items
               </button>
             </form>
             <form action={rejectAllAction} className="space-y-2 rounded-xl border border-rose-200 p-3 dark:border-rose-900/60">
@@ -373,20 +373,20 @@ export default async function RateReviewPage() {
                 disabled={bulkCapExceeded}
                 className="inline-flex w-full items-center justify-center rounded-md bg-rose-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                ✗ Reject All {queuedItems.length} Items
+                âœ— Reject All {queuedItems.length} Items
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* ── Queue Items ── */}
+      {/* â”€â”€ Queue Items â”€â”€ */}
       {queuedItems.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-2xl">✅</p>
+          <p className="text-2xl">âœ…</p>
           <p className="mt-2 font-medium text-slate-700 dark:text-slate-200">All caught up!</p>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            No pending review items. The scraper runs nightly — check back tomorrow, or click "Publish to Website" to push the latest approved rates now.
+            {'No pending review items. The scraper runs nightly and you can publish the latest approved rates anytime with the Publish to Website button.'}
           </p>
         </div>
       ) : (

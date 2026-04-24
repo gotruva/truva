@@ -6,7 +6,6 @@ import {
   FileSearch,
   GitCompareArrows,
   Landmark,
-  RefreshCw,
   SearchCheck,
   ShieldCheck,
   WalletCards,
@@ -15,14 +14,11 @@ import {
 import { BankPickCard } from '@/components/banking/BankPickCard';
 import { ProductHubTemplate } from '@/components/layout/ProductHubTemplate';
 import { getProductPicksFromRates } from '@/lib/banking';
-import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
+import { getPublicRates } from '@/lib/rates';
 import {
   formatEstimatedAnnualEarnings,
   formatMmfMoney,
   formatMmfPercent,
-  formatPhtDate,
-  formatPhtDateTime,
-  getLatestCheckedAt,
   MMF_DEFAULT_AMOUNT,
   redemptionLabel,
 } from '@/lib/mmf';
@@ -132,9 +128,6 @@ function MmfPreviewCard({ fund }: { fund: MoneyMarketFund }) {
 export default async function BankingHub() {
   const rates = await getPublicRates();
   const mmfPreviewFunds = await getMmfPreviewFunds();
-  const latestVerifiedDate = getLatestVerifiedDate(rates);
-  const formattedVerifiedDate = formatVerifiedDate(latestVerifiedDate);
-  const latestMmfCheckedAt = getLatestCheckedAt(mmfPreviewFunds);
 
   const bankPicks = getProductPicksFromRates(rates, BANK_PICK_AMOUNT, BANK_PICK_MONTHS, ['banks'], 3);
 

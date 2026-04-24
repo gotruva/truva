@@ -1116,7 +1116,11 @@ export function loadLatestLocalArtifacts(providerSlug: string, definition: RateP
 
   return [...latestByUrl.values()]
     .sort((left, right) => left.sourceUrl.localeCompare(right.sourceUrl))
-    .map(({ mtimeMs: _, ...artifact }) => artifact);
+    .map((entry) => {
+      const { mtimeMs, ...artifact } = entry;
+      void mtimeMs;
+      return artifact;
+    });
 }
 
 export function extractAutomatedRateCandidates(

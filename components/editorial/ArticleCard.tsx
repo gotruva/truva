@@ -10,19 +10,6 @@ interface ArticleCardProps {
   className?: string;
 }
 
-function getArticleIcon(articleType: EditorialArticle['articleType']) {
-  switch (articleType) {
-    case 'Review':
-      return SearchCheck;
-    case 'Comparison':
-      return GitCompareArrows;
-    case 'Explainer':
-      return BookOpenText;
-    default:
-      return TrendingUp;
-  }
-}
-
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('en-PH', {
     month: 'short',
@@ -31,12 +18,24 @@ function formatDate(dateString: string) {
   });
 }
 
+function renderArticleIcon(articleType: EditorialArticle['articleType'], className: string) {
+  switch (articleType) {
+    case 'Review':
+      return <SearchCheck className={className} />;
+    case 'Comparison':
+      return <GitCompareArrows className={className} />;
+    case 'Explainer':
+      return <BookOpenText className={className} />;
+    default:
+      return <TrendingUp className={className} />;
+  }
+}
+
 export function ArticleCard({
   article,
   variant = 'default',
   className,
 }: ArticleCardProps) {
-  const Icon = getArticleIcon(article.articleType);
   const isCompact = variant === 'compact';
 
   if (isCompact) {
@@ -61,7 +60,7 @@ export function ArticleCard({
           </div>
         ) : (
           <div className="flex h-32 w-full flex-shrink-0 items-center justify-center bg-gradient-to-br from-brand-primary/8 to-brand-primary/20 dark:from-brand-primary/12 dark:to-brand-primary/28">
-            <Icon className="h-7 w-7 text-brand-primary/50" />
+            {renderArticleIcon(article.articleType, 'h-7 w-7 text-brand-primary/50')}
           </div>
         )}
 
@@ -110,7 +109,7 @@ export function ArticleCard({
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/15">
-            <Icon className="h-5 w-5" />
+            {renderArticleIcon(article.articleType, 'h-5 w-5')}
           </div>
           <span className="rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-textSecondary dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
             {article.articleType}

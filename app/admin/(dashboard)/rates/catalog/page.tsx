@@ -3,6 +3,24 @@ import { CatalogTabs } from '@/components/admin/CatalogTabs';
 
 export const dynamic = 'force-dynamic';
 
+interface SnapshotFact {
+  value: unknown;
+}
+
+interface ProductSnapshotRow {
+  facts: SnapshotFact[] | null;
+}
+
+interface CatalogProductRow {
+  id: string;
+  provider_display_name: string;
+  product_name: string;
+  public_category: string | null;
+  active_public: boolean | null;
+  review_status: string | null;
+  product_snapshots: ProductSnapshotRow[] | null;
+}
+
 export default async function RateCatalogPage() {
   const supabase = getAdminClient('staging');
 
@@ -30,26 +48,30 @@ export default async function RateCatalogPage() {
   }
 
   // Maps the nested structure: products -> snapshots[] -> facts[]
-  const formattedProducts = products.map((p) => {
+  const typedProducts = (products ?? []) as CatalogProductRow[];
+
+  const formattedProducts = typedProducts.map((product) => {
     let latestRate = null;
     
     // We try to find any numeric fact value in the snapshots
-    if (p.product_snapshots && Array.isArray(p.product_snapshots)) {
-        // Flatten all facts from all snapshots for this product (just to find a rate)
-        const allFacts = p.product_snapshots.flatMap((s: any) => s.facts || []);
-        const rates = allFacts.map((f: any) => f.value).filter((v: any) => typeof v === 'number');
-        if (rates.length > 0) {
-            latestRate = Math.max(...rates); 
-        }
+    if (product.product_snapshots && Array.isArray(product.product_snapshots)) {
+      const allFacts = product.product_snapshots.flatMap((snapshot) => snapshot.facts ?? []);
+      const rates = allFacts
+        .map((fact) => fact.value)
+        .filter((value): value is number => typeof value === 'number');
+
+      if (rates.length > 0) {
+        latestRate = Math.max(...rates); 
+      }
     }
 
     return {
-      id: p.id,
-      provider_display_name: p.provider_display_name,
-      product_name: p.product_name,
-      category: p.public_category,
-      active_public: Boolean(p.active_public),
-      review_status: p.review_status || 'unknown',
+      id: product.id,
+      provider_display_name: product.provider_display_name,
+      product_name: product.product_name,
+      category: product.public_category ?? 'unknown',
+      active_public: Boolean(product.active_public),
+      review_status: product.review_status || 'unknown',
       latest_rate: latestRate,
     };
   });

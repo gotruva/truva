@@ -1,19 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Calculator, Lock, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
-interface HeroSectionProps {
-  formattedDate?: string;
-}
-
-const TRUST_PILLS = [
-  { icon: Calculator, label: 'After-tax only' },
-  { icon: Lock, label: 'Conditions upfront' },
-  { icon: CheckCircle2, label: 'Verified weekly' },
-];
-
-export function HeroSection({ formattedDate }: HeroSectionProps) {
+export function HeroSection() {
   const [rawAmount, setRawAmount] = useState('100000');
 
   const displayValue = rawAmount

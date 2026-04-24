@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { hasSupabaseEnv } from '@/lib/env'
 
@@ -20,7 +20,6 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              // @ts-ignore
               cookieStore.set(name, value, options)
             )
           } catch {

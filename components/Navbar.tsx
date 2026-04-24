@@ -8,6 +8,7 @@ import { BookOpenText, ChevronDown, Landmark, BarChart2, GraduationCap, Menu, Me
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useHasMounted } from '@/lib/use-has-mounted';
 
 const READ_LINKS = [
   {
@@ -51,16 +52,12 @@ const FeedbackModal = dynamic(
 export function Navbar() {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
+  const hasMounted = useHasMounted();
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isReadOpen, setIsReadOpen] = useState(false);
   const [isMobileReadOpen, setIsMobileReadOpen] = useState(false);
   const readCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -206,7 +203,7 @@ export function Navbar() {
             <MessageSquare className="w-4 h-4" />
           </Button>
 
-          {mounted && (
+          {hasMounted && (
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"

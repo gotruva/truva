@@ -7,7 +7,7 @@ import { ArticleCard } from '@/components/editorial/ArticleCard';
 import { FeaturedArticleCard } from '@/components/editorial/FeaturedArticleCard';
 import { BASE_URL } from '@/lib/constants';
 import { buildItemListSchema, getBankingArticles, getBankingArticlesBySlugs, getFeaturedBankingArticle } from '@/lib/editorial';
-import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
+import { getPublicRates } from '@/lib/rates';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,7 +35,6 @@ const utilityActions = [
 
 export default async function BankingRatesHub() {
   const rates = (await getPublicRates()).filter((rate) => rate.category === 'banks');
-  const formattedVerifiedDate = formatVerifiedDate(getLatestVerifiedDate(rates));
   const featuredArticle = getFeaturedBankingArticle();
   const rateArticles = getBankingArticles('rates');
   const reviewArticles = getBankingArticles('reviews');

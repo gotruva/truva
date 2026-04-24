@@ -3,12 +3,24 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveManualRateEdit } from '@/lib/admin-actions';
+import { getErrorMessage } from '@/lib/error-message';
+
+interface RateEditPayload {
+  headlineRate?: number | null;
+  tierType?: string | null;
+  sourceUrl?: string | null;
+  baseRate?: {
+    grossRate?: number | null;
+    afterTaxRate?: number | null;
+  } | null;
+  [key: string]: unknown;
+}
 
 interface RateEditFormProps {
   productId: string;
   providerName: string;
   productName: string;
-  initialPayload: Record<string, any>;
+  initialPayload: RateEditPayload;
 }
 
 export function RateEditForm({ productId, providerName, productName, initialPayload }: RateEditFormProps) {
@@ -18,7 +30,7 @@ export function RateEditForm({ productId, providerName, productName, initialPayl
   // Extract initial values
   // Stored as decimals visually. 
   // e.g. 0.05 -> 5.00
-  const parsePercent = (val: any) => {
+  const parsePercent = (val: unknown) => {
     if (typeof val === 'number') return (val * 100).toFixed(2);
     return '';
   };
@@ -50,8 +62,8 @@ export function RateEditForm({ productId, providerName, productName, initialPayl
       await saveManualRateEdit(productId, payload, autoApprove);
       alert('Rate saved successfully.');
       router.push('/admin/rates/catalog');
-    } catch (err: any) {
-      alert(`Error saving rate: ${err.message}`);
+    } catch (error: unknown) {
+      alert(`Error saving rate: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }
