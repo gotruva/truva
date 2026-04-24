@@ -37,6 +37,9 @@ dev-server.err
 # vercel
 .vercel
 
+# supabase local temp
+supabase/.temp/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

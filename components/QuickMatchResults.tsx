@@ -313,7 +313,13 @@ function RecommendationCard({
           />
         </div>
 
-        <AffiliateButton amount={product.payoutAmount} productId={product.id} />
+        <AffiliateButton
+          amount={product.payoutAmount}
+          productId={product.id}
+          provider={product.provider}
+          category={product.category}
+          placement="quick_match_results"
+        />
       </div>
     </motion.div>
   );

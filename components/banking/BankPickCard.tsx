@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Calendar, Lock, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
+import { AffiliateButton } from '@/components/AffiliateButton';
 import { Badge } from '@/components/ui/badge';
 import type { BankPick } from '@/lib/banking';
 import { cn } from '@/lib/utils';
@@ -203,12 +204,14 @@ export function BankPickCard({
           Compare details
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
-        <Link
-          href={`/go/${pick.bestProduct.id}`}
-          className="w-full rounded-full border border-brand-border bg-brand-surface px-4 py-2 text-center text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100 sm:w-auto"
-        >
-          Learn more
-        </Link>
+        <AffiliateButton
+          amount={pick.bestProduct.payoutAmount}
+          productId={pick.bestProduct.id}
+          provider={pick.bestProduct.provider}
+          category={pick.bestProduct.category}
+          placement="bank_pick_card"
+          className="rounded-full border border-brand-border bg-brand-surface px-4 py-2 text-center text-sm font-semibold text-brand-textPrimary hover:border-brand-primary/25 hover:bg-brand-surface hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/5 sm:w-auto"
+        />
       </div>
     </div>
   );

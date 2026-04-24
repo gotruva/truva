@@ -21,18 +21,18 @@ type HydratedSnapshotEntry = {
 };
 
 const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> = {
-  'maya-bank': { logo: '/logos/maya.svg', affiliateUrl: 'https://www.maya.ph/' },
+  'maya-bank': { logo: '/logos/maya.svg', affiliateUrl: 'https://official.maya.ph/be7m/gmsb47rr' },
   'tonik-digital-bank': { logo: '/logos/tonik.svg', affiliateUrl: 'https://tonikbank.com/' },
   'uno-digital-bank': { logo: '/logos/uno.svg', affiliateUrl: 'https://www.uno.bank/' },
   'gotyme-bank': { logo: '/logos/gotyme.svg', affiliateUrl: 'https://www.gotyme.com.ph/' },
-  maribank: { logo: '/logos/maribank.svg', affiliateUrl: 'https://www.maribank.ph/' },
+  maribank: { logo: '/logos/maribank.svg', affiliateUrl: 'https://maribank.ph/c/earnfreemoney?referralCode=AA799662' },
   'uniondigital-bank': { logo: '/logos/uniondigital.svg', affiliateUrl: 'https://uniondigitalbank.io/' },
   ofbank: { logo: '/logos/ofbank.svg', affiliateUrl: 'https://www.ofbank.com.ph/' },
   'cimb-gcash': { logo: '/logos/cimb.svg', affiliateUrl: 'https://www.gcash.com/services/gsave' },
   'cimb-bank': { logo: '/logos/cimb.svg', affiliateUrl: 'https://www.cimbbank.com.ph/' },
   'salmon-bank': { logo: '/logos/salmon.svg', affiliateUrl: 'https://salmon.ph/salmonbank-deposits' },
   netbank: { logo: '/logos/netbank.svg', affiliateUrl: 'https://netbank.ph/netbank-mobile/' },
-  ownbank: { logo: '/logos/ownbank.svg', affiliateUrl: 'https://www.ownbank.com/' },
+  ownbank: { logo: '/logos/ownbank.svg', affiliateUrl: 'https://s.ownbank.com.ph/cjZct3' },
   komo: { logo: '/logos/komo.svg', affiliateUrl: 'https://www.komo.ph/' },
   diskartech: { logo: '/logos/diskartech.svg', affiliateUrl: 'https://diskartech.ph/' },
   banko: { logo: '/logos/banko.svg', affiliateUrl: 'https://www.banko.com.ph/' },

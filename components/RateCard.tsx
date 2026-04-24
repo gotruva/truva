@@ -7,6 +7,7 @@ import { AffiliateButton } from './AffiliateButton';
 import { Lock, ShieldCheck, AlertTriangle, Calendar, ChevronDown, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatRate, formatPHP, computeEffectiveGrossRate } from '@/utils/yieldEngine';
+import { trackAffiliateProviderExpanded } from '@/lib/affiliate-analytics';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
@@ -122,7 +123,13 @@ function ProductRow({ product, amount, months, isBest }: {
 
       {/* Expandable detail */}
       <button
-        onClick={() => setShowDetail(!showDetail)}
+        onClick={() => {
+          const isExpanding = !showDetail;
+          setShowDetail(isExpanding);
+          if (isExpanding && product.category === 'banks') {
+            trackAffiliateProviderExpanded(product.provider, 'rate_card');
+          }
+        }}
         className="inline-flex items-center gap-1.5 mt-2.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1.5 text-[11px] font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white"
       >
         <span>{showDetail ? 'Hide extra info' : 'Click for more info'}</span>
@@ -233,7 +240,13 @@ function ProductRow({ product, amount, months, isBest }: {
               {/* CTA */}
               <div className="flex justify-end pt-1">
                 <div onClick={(e) => e.stopPropagation()}>
-                  <AffiliateButton amount={product.payoutAmount} productId={product.id} />
+                  <AffiliateButton
+                    amount={product.payoutAmount}
+                    productId={product.id}
+                    provider={product.provider}
+                    category={product.category}
+                    placement="rate_card"
+                  />
                 </div>
               </div>
             </div>
@@ -439,7 +452,13 @@ export function RateCard({ rate }: { rate: RateProduct }) {
       </div>
       <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1 font-bold">Net Return</div>
       <div className="mt-4">
-        <AffiliateButton amount={rate.payoutAmount} productId={rate.id} />
+        <AffiliateButton
+          amount={rate.payoutAmount}
+          productId={rate.id}
+          provider={rate.provider}
+          category={rate.category}
+          placement="rate_card"
+        />
       </div>
     </div>
   );
