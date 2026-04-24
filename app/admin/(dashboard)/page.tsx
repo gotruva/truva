@@ -3,26 +3,69 @@ import { getAdminClient } from '@/lib/supabase-admin-server';
 
 export const dynamic = 'force-dynamic';
 
+type AffiliateProviderSummary = {
+  provider: string;
+  expansions: number;
+  impressions: number;
+  clicks: number;
+  ctr: number;
+};
+
+type AffiliateCtaSummary = {
+  totals?: {
+    expansions?: number;
+    impressions?: number;
+    clicks?: number;
+    ctr?: number;
+  };
+  providers?: AffiliateProviderSummary[];
+};
+
+function formatPercent(value: number) {
+  return `${value.toFixed(2)}%`;
+}
+
 export default async function AdminOverview() {
   const supabase = getAdminClient('staging');
   const publicSupabase = getAdminClient('public');
 
   console.log('[AdminOverview] Fetching dashboard data...');
   const todayStr = new Date().toISOString().split('T')[0];
+  const affiliateSummaryPromise = publicSupabase
+    .rpc('get_affiliate_cta_summary', { days_back: 7 })
+    .then(({ data, error }) => {
+      if (error) {
+        console.error('[AdminOverview] Failed to load affiliate CTA summary:', error.message);
+        return null;
+      }
+
+      return (data ?? null) as AffiliateCtaSummary | null;
+    });
   const [
     { count: pendingReviewsCount },
     { count: activeProductsCount },
     { data: recentChanges },
     { data: lastPublished },
-    { data: mmfHealth }
+    { data: mmfHealth },
+    affiliateSummary,
   ] = await Promise.all([
     supabase.from('review_queue').select('*', { count: 'exact', head: true }).eq('status', 'queued'),
     supabase.from('products').select('*', { count: 'exact', head: true }).eq('active_public', true),
     supabase.from('change_events').select('id, product_id, summary, created_at, review_status').order('created_at', { ascending: false }).limit(5),
     publicSupabase.from('product_snapshots').select('captured_at').order('captured_at', { ascending: false }).limit(1),
-    publicSupabase.rpc('get_mmf_health_report', { check_date: todayStr })
+    publicSupabase.rpc('get_mmf_health_report', { check_date: todayStr }),
+    affiliateSummaryPromise,
   ]);
   const healthIssueCount = mmfHealth?.length || 0;
+  const affiliateTotals = {
+    expansions: affiliateSummary?.totals?.expansions ?? 0,
+    impressions: affiliateSummary?.totals?.impressions ?? 0,
+    clicks: affiliateSummary?.totals?.clicks ?? 0,
+    ctr: affiliateSummary?.totals?.ctr ?? 0,
+  };
+  const affiliateProviders = Array.isArray(affiliateSummary?.providers)
+    ? affiliateSummary.providers
+    : [];
   console.log('[AdminOverview] Data fetched successfully.');
 
 
@@ -31,7 +74,7 @@ export default async function AdminOverview() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Admin Overview</h1>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-          Monitor your rate extraction pipeline and manage Truva's public catalog.
+          Monitor your rate extraction pipeline and manage Truva&apos;s public catalog.
         </p>
       </div>
 
@@ -136,6 +179,67 @@ export default async function AdminOverview() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      <div className="mt-10">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Bank CTA Funnel (Last 7 Days)</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Provider expansions, CTA impressions, and open-account clicks tracked on public bank CTAs.
+          </p>
+        </div>
+
+        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Provider Expansions</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{affiliateTotals.expansions}</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">CTA Impressions</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{affiliateTotals.impressions}</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">CTA Clicks</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{affiliateTotals.clicks}</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">CTR</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{formatPercent(affiliateTotals.ctr)}</p>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          {affiliateProviders.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+                <thead className="bg-slate-50 dark:bg-slate-950">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Bank</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Expands</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Impressions</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Clicks</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">CTR</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                  {affiliateProviders.map((provider) => (
+                    <tr key={provider.provider}>
+                      <td className="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">{provider.provider}</td>
+                      <td className="px-4 py-3 text-right text-sm tabular-nums text-slate-700 dark:text-slate-300">{provider.expansions}</td>
+                      <td className="px-4 py-3 text-right text-sm tabular-nums text-slate-700 dark:text-slate-300">{provider.impressions}</td>
+                      <td className="px-4 py-3 text-right text-sm tabular-nums text-slate-700 dark:text-slate-300">{provider.clicks}</td>
+                      <td className="px-4 py-3 text-right text-sm tabular-nums text-slate-700 dark:text-slate-300">{formatPercent(provider.ctr)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-8 text-center text-sm text-slate-500 dark:text-slate-400">
+              No bank CTA funnel data recorded yet.
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -19,6 +19,7 @@ import { RateProduct } from '@/types';
 import { AffiliateButton } from './AffiliateButton';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { trackAffiliateProviderExpanded } from '@/lib/affiliate-analytics';
 import {
   Tooltip,
   TooltipContent,
@@ -160,12 +161,27 @@ interface RateTableProps {
   recommendedIds?: string[];
 }
 
+function SortIcon({
+  col,
+  sortCol,
+  sortDir,
+}: {
+  col: SortCol;
+  sortCol: SortCol;
+  sortDir: 'asc' | 'desc';
+}) {
+  if (sortCol !== col) return <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />;
+
+  return sortDir === 'asc'
+    ? <ChevronUp className="h-3.5 w-3.5 text-brand-primary" />
+    : <ChevronDown className="h-3.5 w-3.5 text-brand-primary" />;
+}
+
 export function RateTable({
   rates,
   amount,
   months,
   onAmountChange,
-  onMonthsChange,
   recommendedIds = [],
 }: RateTableProps) {
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
@@ -180,13 +196,6 @@ export function RateTable({
     onAmountChange(value ? parseInt(value, 10) : 0);
   };
 
-  const monthOptions = [
-    { label: '3 Months', value: 3 },
-    { label: '6 Months', value: 6 },
-    { label: '1 Year', value: 12 },
-    { label: '2 Years', value: 24 },
-  ];
-
   function handleSort(col: SortCol) {
     if (sortCol === col) {
       setSortDir((current) => current === 'asc' ? 'desc' : 'asc');
@@ -195,14 +204,6 @@ export function RateTable({
 
     setSortCol(col);
     setSortDir(col === 'provider' ? 'asc' : 'desc');
-  }
-
-  function SortIcon({ col }: { col: SortCol }) {
-    if (sortCol !== col) return <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />;
-
-    return sortDir === 'asc'
-      ? <ChevronUp className="h-3.5 w-3.5 text-brand-primary" />
-      : <ChevronDown className="h-3.5 w-3.5 text-brand-primary" />;
   }
 
   const bankGroups: BankGroup[] = useMemo(() => {
@@ -320,7 +321,7 @@ export function RateTable({
                 onClick={() => handleSort('provider')}
                 className="inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
               >
-                Bank / Provider <SortIcon col="provider" />
+                Bank / Provider <SortIcon col="provider" sortCol={sortCol} sortDir={sortDir} />
               </button>
             </th>
             {showGross && (
@@ -329,7 +330,7 @@ export function RateTable({
                   onClick={() => handleSort('rate')}
                   className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
                 >
-                  Marketed Rate <SortIcon col="rate" />
+                  Marketed Rate <SortIcon col="rate" sortCol={sortCol} sortDir={sortDir} />
                 </button>
               </th>
             )}
@@ -346,7 +347,7 @@ export function RateTable({
                   >
                     Net Return
                     <AlertCircle className="h-3.5 w-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
-                    <SortIcon col="effective" />
+                    <SortIcon col="effective" sortCol={sortCol} sortDir={sortDir} />
                   </TooltipTrigger>
                   <TooltipContent
                     side="top"
@@ -372,7 +373,7 @@ export function RateTable({
                     )}
                   >
                     Projected Return
-                    <SortIcon col="return" />
+                    <SortIcon col="return" sortCol={sortCol} sortDir={sortDir} />
                   </TooltipTrigger>
                   <TooltipContent
                     side="top"
@@ -401,7 +402,13 @@ export function RateTable({
             return (
               <React.Fragment key={group.provider}>
                 <tr
-                  onClick={() => setExpandedProvider(isExpanded ? null : group.provider)}
+                  onClick={() => {
+                    const nextProvider = isExpanded ? null : group.provider;
+                    setExpandedProvider(nextProvider);
+                    if (nextProvider && group.bestProduct.category === 'banks') {
+                      trackAffiliateProviderExpanded(group.provider, 'rate_table_expanded');
+                    }
+                  }}
                   className={`group h-[72px] cursor-pointer transition-colors ${
                     isExpanded
                       ? 'bg-brand-primaryLight/30 dark:bg-blue-950/20'
@@ -639,7 +646,13 @@ export function RateTable({
                                   </div>
 
                                   <div className="flex shrink-0 items-center" onClick={(e) => e.stopPropagation()}>
-                                    <AffiliateButton amount={product.payoutAmount} productId={product.id} />
+                                    <AffiliateButton
+                                      amount={product.payoutAmount}
+                                      productId={product.id}
+                                      provider={product.provider}
+                                      category={product.category}
+                                      placement="rate_table_expanded"
+                                    />
                                   </div>
                                 </div>
                               );

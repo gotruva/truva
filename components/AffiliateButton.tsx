@@ -1,45 +1,105 @@
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 import { sendGAEvent } from '@next/third-parties/google';
+
+import { buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { buildTrackedAffiliateHref, trackAffiliateImpression } from '@/lib/affiliate-analytics';
+import { cn } from '@/lib/utils';
+import type { AffiliatePlacement } from '@/types';
 
 interface AffiliateButtonProps {
   amount: number;
   productId: string;
+  provider: string;
+  category: string;
+  placement: AffiliatePlacement;
+  label?: string;
+  className?: string;
 }
 
-export function AffiliateButton({ amount, productId }: AffiliateButtonProps) {
+export function AffiliateButton({
+  amount,
+  productId,
+  provider,
+  category,
+  placement,
+  label = 'Open Account',
+  className,
+}: AffiliateButtonProps) {
+  const anchorRef = useRef<HTMLAnchorElement | null>(null);
+  const [href, setHref] = useState(`/go/${productId}`);
+
+  useEffect(() => {
+    setHref(buildTrackedAffiliateHref(productId, placement));
+  }, [placement, productId]);
+
+  useEffect(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          trackAffiliateImpression({
+            productId,
+            provider,
+            category,
+            placement,
+          });
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.5,
+      },
+    );
+
+    observer.observe(anchor);
+    return () => observer.disconnect();
+  }, [category, placement, productId, provider]);
+
   return (
     <TooltipProvider delay={150}>
       <Tooltip>
         <TooltipTrigger
           render={
-            <a 
-              href={`/go/${productId}`}
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              ref={anchorRef}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => {
-                sendGAEvent({ event: 'affiliate_link_clicked', product: productId });
+                sendGAEvent({
+                  event: 'affiliate_link_clicked',
+                  product: productId,
+                  provider,
+                  placement,
+                });
               }}
               className={cn(
                 buttonVariants(),
-                "w-full md:w-auto min-w-[140px] rounded-[6px] text-[14px] font-semibold bg-brand-primary hover:bg-brand-primaryDark text-white transition-colors border-none" 
+                'w-full min-w-[140px] rounded-[6px] border-none bg-brand-primary text-[14px] font-semibold text-white transition-colors hover:bg-brand-primaryDark md:w-auto',
+                className,
               )}
             />
           }
         >
-          Open Account &rarr;
+          {label} &rarr;
         </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[200px] text-center bg-brand-textPrimary text-white shadow-md border-none p-2 rounded-md">
+        <TooltipContent side="top" className="max-w-[200px] rounded-md border-none bg-brand-textPrimary p-2 text-center text-white shadow-md">
           <p className="text-xs">
             {amount > 0
-              ? `We earn ₱${amount} if you open this account. This doesn't affect the rates we show.`
-              : "No referral fee — we're not paid by this bank. Rate shown is unbiased."}
+              ? 'This link may earn Truva a referral fee if you open an account. That does not affect the rates we show.'
+              : 'We may not earn a referral fee from this bank. The rate shown is still unbiased.'}
           </p>
         </TooltipContent>
       </Tooltip>

@@ -68,6 +68,23 @@ export interface RateProduct {
   trueValueScore: number;              // 1–5 (placeholder = 3 until Week 7)
 }
 
+export const AFFILIATE_PLACEMENTS = [
+  'rate_table_expanded',
+  'rate_card',
+  'quick_match_results',
+  'yield_calculator',
+  'bank_pick_card',
+] as const;
+
+export type AffiliatePlacement = (typeof AFFILIATE_PLACEMENTS)[number];
+
+export interface AffiliateTrackingPayload {
+  productId: string;
+  provider: string;
+  category: string;
+  placement: AffiliatePlacement;
+}
+
 export interface AffiliateLink {
   bank: string;
   referralCode: string;

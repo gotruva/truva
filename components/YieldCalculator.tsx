@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertTriangle,
@@ -23,6 +23,7 @@ import {
 import { ComparisonState, RateProduct } from '@/types';
 import { Input } from '@/components/ui/input';
 import { AffiliateButton } from '@/components/AffiliateButton';
+import { trackAffiliateProviderExpanded } from '@/lib/affiliate-analytics';
 import {
   formatPHP,
   formatRate,
@@ -55,13 +56,13 @@ export function YieldCalculator({
   onComparisonStateChange,
 }: YieldCalculatorProps) {
   const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
-  const [hasMounted, setHasMounted] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  const hasMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   useEffect(() => {
     if (!infoOpen) return;
@@ -453,6 +454,9 @@ export function YieldCalculator({
                           const isExpanding = expandedResultId !== result.id;
                           setExpandedResultId(isExpanding ? result.id : null);
                           if (isExpanding) {
+                            if (result.category === 'banks') {
+                              trackAffiliateProviderExpanded(result.provider, 'yield_calculator');
+                            }
                             sendGAEvent({ event: 'calculator_more_info_clicked', bank: result.provider });
                           }
                         }}
@@ -545,7 +549,13 @@ export function YieldCalculator({
                               />
 
                               <div className="border-t border-brand-border/40 pt-2 dark:border-white/5">
-                                <AffiliateButton amount={result.payoutAmount} productId={result.id} />
+                                <AffiliateButton
+                                  amount={result.payoutAmount}
+                                  productId={result.id}
+                                  provider={result.provider}
+                                  category={result.category}
+                                  placement="yield_calculator"
+                                />
                               </div>
                             </div>
                           </motion.div>

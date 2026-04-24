@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { getLiveRates } from '@/lib/rates';
-import { createClient } from '@supabase/supabase-js';
 import { getClientIp } from '@/lib/apiSecurity';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 
 export const dynamic = 'force-dynamic';
 
-// Simple in-memory dedup: track (ip+slug) -> last click timestamp
-// Prevents trivial click fraud from a single IP hammering the same product.
+// Simple in-memory dedup to suppress accidental double-clicks and obvious click spam.
 const recentClicks = new Map<string, number>();
-const CLICK_DEDUP_WINDOW_MS = 60 * 1000; // 1 click per IP per product per minute
+const CLICK_DEDUP_WINDOW_MS = 5 * 1000;
 
-function isDuplicateClick(ip: string, slug: string): boolean {
-  const key = `${ip}:${slug}`;
-  const last = recentClicks.get(key);
+function isDuplicateClick(dedupeKey: string): boolean {
+  const last = recentClicks.get(dedupeKey);
   const now = Date.now();
   if (last && now - last < CLICK_DEDUP_WINDOW_MS) return true;
-  recentClicks.set(key, now);
+  recentClicks.set(dedupeKey, now);
   return false;
 }
 
@@ -24,6 +23,9 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const pagePath = req.nextUrl.searchParams.get('page_path');
+  const placement = req.nextUrl.searchParams.get('placement');
+  const pageViewId = req.nextUrl.searchParams.get('page_view_id');
 
   const rates = await getLiveRates();
   const product = rates.find((r) => r.id === slug);
@@ -39,24 +41,28 @@ export async function GET(
   }
 
   // Log the click — skip duplicates to reduce fraud noise in metrics
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabase = createSupabaseAdminClient('public');
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!supabase) {
     console.error('Affiliate click logging skipped: missing env vars', { slug });
   } else {
     const ip = getClientIp(req);
-    const duplicate = isDuplicateClick(ip, slug);
+    const dedupeKey = pageViewId && placement
+      ? `${pageViewId}:${slug}:${placement}`
+      : `${ip}:${slug}`;
+    const duplicate = isDuplicateClick(dedupeKey);
 
     if (duplicate) {
-      console.info('Affiliate click deduped (same IP+product within 1m)', { slug, ip });
+      console.info('Affiliate click deduped', { slug, ip, pageViewId, placement });
     } else {
       try {
-        const supabase = createClient(supabaseUrl, serviceRoleKey);
         const { error: dbError } = await supabase.from('affiliate_clicks').insert({
           product_id: product.id,
           provider: product.provider,
           category: product.category,
+          page_path: pagePath,
+          placement,
+          page_view_id: pageViewId,
           referrer: req.headers.get('referer') ?? null,
         });
         if (dbError) {
