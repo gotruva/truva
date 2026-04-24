@@ -12,6 +12,8 @@ interface ProductRow {
   active_public: boolean;
   review_status: string;
   latest_rate?: number | string | null;
+  days_since_verified?: number | null;
+  is_stale?: boolean;
 }
 
 export function CatalogTabs({ products }: { products: ProductRow[] }) {
@@ -88,6 +90,9 @@ export function CatalogTabs({ products }: { products: ProductRow[] }) {
               <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Published
               </th>
+              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Freshness
+              </th>
               <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Actions
               </th>
@@ -137,6 +142,19 @@ export function CatalogTabs({ products }: { products: ProductRow[] }) {
                         }`}
                       />
                     </button>
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-center text-sm">
+                    {product.days_since_verified != null ? (
+                      <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                        product.is_stale 
+                          ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300' 
+                          : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                      }`}>
+                        {product.days_since_verified}d ago
+                      </span>
+                    ) : (
+                      <span className="text-slate-300 dark:text-slate-700">—</span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                     <Link

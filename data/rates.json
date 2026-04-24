@@ -2666,7 +2666,7 @@
       }
     ],
     "taxExempt": false,
-    "payoutFrequency": "daily",
+    "payoutFrequency": "monthly",
     "lockInDays": 0,
     "riskLevel": "Low",
     "pdic": true,

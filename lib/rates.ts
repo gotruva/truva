@@ -55,6 +55,24 @@ const DENIED_SNAPSHOT_PRODUCT_IDS = new Set([
   'ownbank:ownbank-time-deposit',
 ]);
 
+export const STALE_THRESHOLD_DAYS = 21;
+
+export function getDaysSinceVerified(verifiedDate: string | null | undefined): number | null {
+  if (!verifiedDate) return null;
+  const verified = new Date(verifiedDate);
+  if (Number.isNaN(verified.getTime())) return null;
+
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - verified.getTime());
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+export function isFresh(verifiedDate: string | null | undefined) {
+  const days = getDaysSinceVerified(verifiedDate);
+  if (days === null) return false;
+  return days <= STALE_THRESHOLD_DAYS;
+}
+
 function bankDefaults(
   provider: string,
   providerKey: string,
@@ -249,6 +267,20 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
     publicId: 'salmon-savings',
     defaults: bankDefaults('Salmon Bank', 'salmon-bank', { name: 'Salmon Savings', tierType: 'flat' }),
   },
+  'salmon-bank:salmon-td-6mo': { publicId: 'salmon-td-6mo', defaults: salmonTermDefaults(6) },
+  'salmon-td-6mo': { publicId: 'salmon-td-6mo', preferSeedName: true, defaults: salmonTermDefaults(6) },
+  'salmon-bank:salmon-td-9mo': { publicId: 'salmon-td-9mo', defaults: salmonTermDefaults(9) },
+  'salmon-td-9mo': { publicId: 'salmon-td-9mo', preferSeedName: true, defaults: salmonTermDefaults(9) },
+  'salmon-bank:salmon-td-12mo': { publicId: 'salmon-td-12mo', defaults: salmonTermDefaults(12) },
+  'salmon-td-12mo': { publicId: 'salmon-td-12mo', preferSeedName: true, defaults: salmonTermDefaults(12) },
+  'salmon-bank:salmon-td-24mo': { publicId: 'salmon-td-24mo', defaults: salmonTermDefaults(24) },
+  'salmon-td-24mo': { publicId: 'salmon-td-24mo', preferSeedName: true, defaults: salmonTermDefaults(24) },
+  'salmon-bank:salmon-td-36mo': { publicId: 'salmon-td-36mo', defaults: salmonTermDefaults(36) },
+  'salmon-td-36mo': { publicId: 'salmon-td-36mo', defaults: salmonTermDefaults(36) },
+  'salmon-bank:salmon-td-48mo': { publicId: 'salmon-td-48mo', defaults: salmonTermDefaults(48) },
+  'salmon-td-48mo': { publicId: 'salmon-td-48mo', defaults: salmonTermDefaults(48) },
+  'salmon-bank:salmon-td-60mo': { publicId: 'salmon-td-60mo', defaults: salmonTermDefaults(60) },
+  'salmon-td-60mo': { publicId: 'salmon-td-60mo', defaults: salmonTermDefaults(60) },
   'salmon-bank:salmon-bank-on-eight': {
     publicId: 'salmon-td-12mo',
     preferSeedName: true,
@@ -279,20 +311,6 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
       }],
     }),
   },
-  'salmon-bank:salmon-td-6mo': { publicId: 'salmon-td-6mo', defaults: salmonTermDefaults(6) },
-  'salmon-td-6mo': { publicId: 'salmon-td-6mo', defaults: salmonTermDefaults(6) },
-  'salmon-bank:salmon-td-9mo': { publicId: 'salmon-td-9mo', defaults: salmonTermDefaults(9) },
-  'salmon-td-9mo': { publicId: 'salmon-td-9mo', defaults: salmonTermDefaults(9) },
-  'salmon-bank:salmon-td-12mo': { publicId: 'salmon-td-12mo', defaults: salmonTermDefaults(12) },
-  'salmon-td-12mo': { publicId: 'salmon-td-12mo', defaults: salmonTermDefaults(12) },
-  'salmon-bank:salmon-td-24mo': { publicId: 'salmon-td-24mo', defaults: salmonTermDefaults(24) },
-  'salmon-td-24mo': { publicId: 'salmon-td-24mo', defaults: salmonTermDefaults(24) },
-  'salmon-bank:salmon-td-36mo': { publicId: 'salmon-td-36mo', defaults: salmonTermDefaults(36) },
-  'salmon-td-36mo': { publicId: 'salmon-td-36mo', defaults: salmonTermDefaults(36) },
-  'salmon-bank:salmon-td-48mo': { publicId: 'salmon-td-48mo', defaults: salmonTermDefaults(48) },
-  'salmon-td-48mo': { publicId: 'salmon-td-48mo', defaults: salmonTermDefaults(48) },
-  'salmon-bank:salmon-td-60mo': { publicId: 'salmon-td-60mo', defaults: salmonTermDefaults(60) },
-  'salmon-td-60mo': { publicId: 'salmon-td-60mo', defaults: salmonTermDefaults(60) },
   'salmon-td-12m-5000': { publicId: 'salmon-td-12mo', preferSeedName: true, defaults: salmonTermDefaults(12) },
   'salmon-td-60m-5000': { publicId: 'salmon-td-60mo', preferSeedName: true, defaults: salmonTermDefaults(60) },
   'salmon-td-12m-500000': { publicId: 'salmon-td-12mo', preferSeedName: true, defaults: salmonTermDefaults(12) },
@@ -440,6 +458,10 @@ function isTierType(value: unknown): value is RateProduct['tierType'] {
   return value === 'flat' || value === 'blended' || value === 'threshold';
 }
 
+function isPayoutFrequency(value: unknown): value is RateProduct['payoutFrequency'] {
+  return value === 'daily' || value === 'monthly' || value === 'quarterly' || value === 'annually' || value === 'at_maturity';
+}
+
 function resolveTiers(
   raw: SnapshotRecord,
   seed: RateProduct | undefined,
@@ -508,7 +530,8 @@ function resolveConditions(
 function mergeManualPublicRates(rates: RateProduct[], localRates: RateProduct[]) {
   const existingIds = new Set(rates.map((rate) => rate.id));
   const manualRates = localRates.filter((rate) => (
-    MANUAL_PUBLIC_RATE_IDS.has(rate.id) && !existingIds.has(rate.id)
+    (MANUAL_PUBLIC_RATE_IDS.has(rate.id) || (rate.category === 'banks' && isFresh(rate.lastVerified)))
+    && !existingIds.has(rate.id)
   ));
   return [...rates, ...manualRates];
 }
@@ -566,7 +589,9 @@ function hydrateSnapshotRate(
   const tiers = resolveTiers(raw, seed, grossRate, afterTaxRate);
   const validUntil = getString(raw.validUntil) ?? getString(raw.valid_until);
   const lockInDays = seed?.lockInDays ?? mappingDefaults?.lockInDays ?? inferLockInDays(id, productName);
-  const payoutFrequency = seed?.payoutFrequency
+  const rawPayoutFreq = raw.payoutFrequency;
+  const payoutFrequency = (isPayoutFrequency(rawPayoutFreq) ? rawPayoutFreq : null)
+    ?? seed?.payoutFrequency
     ?? mappingDefaults?.payoutFrequency
     ?? (isTermProduct(id, productName) ? 'at_maturity' : 'daily');
 

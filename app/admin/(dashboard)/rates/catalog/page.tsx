@@ -1,5 +1,7 @@
 import { getAdminClient } from '@/lib/supabase-admin-server';
 import { CatalogTabs } from '@/components/admin/CatalogTabs';
+import { loadSeedRates } from '@/lib/rate-pipeline';
+import { getDaysSinceVerified, STALE_THRESHOLD_DAYS } from '@/lib/rates';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,6 +51,8 @@ export default async function RateCatalogPage() {
 
   // Maps the nested structure: products -> snapshots[] -> facts[]
   const typedProducts = (products ?? []) as CatalogProductRow[];
+  const seedRates = loadSeedRates();
+  const seedMap = new Map(seedRates.map((r) => [r.id, r]));
 
   const formattedProducts = typedProducts.map((product) => {
     let latestRate = null;
@@ -65,6 +69,10 @@ export default async function RateCatalogPage() {
       }
     }
 
+    const seed = seedMap.get(product.id);
+    const daysSinceVerified = getDaysSinceVerified(seed?.lastVerified);
+    const isStale = daysSinceVerified !== null && daysSinceVerified > STALE_THRESHOLD_DAYS;
+
     return {
       id: product.id,
       provider_display_name: product.provider_display_name,
@@ -73,6 +81,9 @@ export default async function RateCatalogPage() {
       active_public: Boolean(product.active_public),
       review_status: product.review_status || 'unknown',
       latest_rate: latestRate,
+      last_verified: seed?.lastVerified,
+      days_since_verified: daysSinceVerified,
+      is_stale: isStale,
     };
   });
 
