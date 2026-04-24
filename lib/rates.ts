@@ -667,6 +667,20 @@ export function formatVerifiedDate(value: string): string {
   return `${monthNames[Number.parseInt(month, 10) - 1]} ${Number.parseInt(day, 10)}, ${year}`;
 }
 
+export async function getLastScrapedAt(): Promise<string | null> {
+  const client = createSupabaseAdminClient('public');
+  if (!client) return null;
+
+  const { data, error } = await client
+    .from('scrape_metadata')
+    .select('ran_at')
+    .eq('key', 'deposit_banks')
+    .single();
+
+  if (error || !data) return null;
+  return (data as { ran_at: string }).ran_at;
+}
+
 export async function getLiveRates(): Promise<RateProduct[]> {
   const baseRates = await getRatesCatalog();
   const defiRate = await fetchAaveBaseUSDC();

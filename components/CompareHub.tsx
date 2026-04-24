@@ -114,11 +114,21 @@ function normalizeComparisonState(value: unknown): ComparisonState {
   };
 }
 
+let _persistedCacheRaw: string | null | undefined = undefined;
+let _persistedCacheResult: PersistedCompareHubState | null = null;
+
 function readPersistedState(): PersistedCompareHubState | null {
   if (typeof window === 'undefined') return null;
 
   const raw = window.sessionStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
+  if (raw === _persistedCacheRaw) return _persistedCacheResult;
+
+  _persistedCacheRaw = raw;
+
+  if (!raw) {
+    _persistedCacheResult = null;
+    return null;
+  }
 
   try {
     const parsed = JSON.parse(raw) as Partial<PersistedCompareHubState>;
@@ -127,12 +137,14 @@ function readPersistedState(): PersistedCompareHubState | null {
       ? parsed.topSection
       : 'quick-match-wizard';
 
-    return {
+    _persistedCacheResult = {
       topSection: quickMatchAnswers ? topSection : (topSection === 'quick-match-results' ? 'quick-match-wizard' : topSection),
       quickMatchAnswers,
       comparisonState: normalizeComparisonState(parsed.comparisonState),
     };
+    return _persistedCacheResult;
   } catch {
+    _persistedCacheResult = null;
     return null;
   }
 }

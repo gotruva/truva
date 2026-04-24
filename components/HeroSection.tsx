@@ -1,9 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Calculator, ShieldCheck, Layers } from 'lucide-react';
 
-export function HeroSection() {
+const TRUST_FEATURES = [
+  {
+    icon: Calculator,
+    title: 'After-tax comparisons',
+    desc: "Cut through advertised rates and see what you'll really earn after tax.",
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Conditions upfront',
+    desc: 'Know the lock-in, balance, and payout rules before you choose.',
+  },
+  {
+    icon: Layers,
+    title: 'Easy side-by-side view',
+    desc: 'Compare savings accounts, time deposits, and money market funds in one view.',
+  },
+];
+
+interface HeroSectionProps {
+  verifiedDate?: string;
+}
+
+export function HeroSection({ verifiedDate }: HeroSectionProps) {
   const [rawAmount, setRawAmount] = useState('100000');
 
   const displayValue = rawAmount
@@ -46,6 +68,13 @@ export function HeroSection() {
 
       <div className="relative max-w-3xl mx-auto flex flex-col items-center text-center z-10">
 
+        {/* Trust verification pill */}
+        {verifiedDate && (
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-[13px] font-semibold text-blue-100 backdrop-blur-md">
+            <span className="text-[#12B76A]">✓</span>
+            Rates verified {verifiedDate}
+          </div>
+        )}
 
         <h1 className="mb-4 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.25rem]">
           Find the best place for your{' '}
@@ -61,7 +90,7 @@ export function HeroSection() {
         {/* Amount input */}
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-lg mb-6"
+          className="w-full max-w-lg mb-8"
         >
           <div className="flex flex-col gap-3 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md p-4 shadow-lg shadow-black/10 dark:bg-white/[0.07]">
             <div className="text-left">
@@ -82,20 +111,40 @@ export function HeroSection() {
                 />
               </div>
             </div>
-            <button
-              type="submit"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-[15px] font-bold text-brand-primary shadow-md shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
-            >
-              Check my earnings
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                type="submit"
+                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-[15px] font-bold text-brand-primary shadow-md shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
+              >
+                Check my earnings
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <a
+                href="#deposit-rates"
+                className="inline-flex h-12 items-center justify-center px-6 rounded-xl bg-white/10 border border-white/25 backdrop-blur-md text-white text-[15px] font-semibold transition-all hover:-translate-y-0.5 hover:bg-white/15 active:scale-[0.98] whitespace-nowrap"
+              >
+                Compare all rates
+              </a>
+            </div>
           </div>
         </form>
 
-        <p className="text-sm font-medium text-blue-100/60 transition-colors dark:text-gray-400">
-          <CheckCircle2 className="inline-block w-4 h-4 mb-0.5 mr-1" />
-          Transparent rates and conditions, updated weekly
-        </p>
+        {/* Trust feature cards */}
+        <div className="grid grid-cols-1 gap-3 w-full max-w-[800px] sm:grid-cols-3">
+          {TRUST_FEATURES.map((feat) => (
+            <div
+              key={feat.title}
+              className="rounded-2xl border border-white/15 bg-white/10 p-4 text-left backdrop-blur-md"
+            >
+              <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+                <feat.icon className="h-4 w-4 text-white" />
+              </div>
+              <p className="mb-1 text-[14px] font-semibold text-white">{feat.title}</p>
+              <p className="text-[13px] leading-snug text-blue-100/85">{feat.desc}</p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

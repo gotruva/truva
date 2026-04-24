@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import nextDynamic from 'next/dynamic';
-import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
+import { formatVerifiedDate, getLastScrapedAt, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
 import { HeroSection } from '@/components/HeroSection';
 import { CompareHub } from '@/components/CompareHub';
 
@@ -126,13 +126,15 @@ export default async function HomePage() {
   const latestVerifiedDate = getLatestVerifiedDate(rates);
   const formattedDate = formatVerifiedDate(latestVerifiedDate);
 
-  // Get current date in PHT for the "Live Sync" indicator
-  const nowPht = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Manila',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date());
+  const lastScrapedAt = await getLastScrapedAt();
+  const displayDate = lastScrapedAt
+    ? new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Manila',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }).format(new Date(lastScrapedAt))
+    : formattedDate;
 
   const jsonLdScripts = [
     { id: 'home-rate-list-jsonld', content: rateListJsonLd },
@@ -152,12 +154,12 @@ export default async function HomePage() {
         />
       ))}
 
-      <HeroSection />
+      <HeroSection verifiedDate={displayDate} />
 
       {/* Wrapping content with generic surface bg */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 pb-24 border-b border-brand-border dark:border-white/10 transition-colors duration-300">
         <div className="max-w-7xl mx-auto scroll-mt-28 pt-10" id="calculator">
-          <CompareHub rates={rates} formattedDate={formattedDate} lastCheckDate={nowPht} />
+          <CompareHub rates={rates} formattedDate={displayDate} />
         </div>
       </div>
       
