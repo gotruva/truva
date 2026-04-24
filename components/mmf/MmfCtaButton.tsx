@@ -11,14 +11,19 @@ export function MmfCtaButton({ url, provider, compact = false }: Props) {
 
   if (compact) {
     return (
-      <a
-        href={affiliateUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center justify-center rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-primaryDark"
-      >
-        Open
-      </a>
+      <div className="flex flex-col items-center gap-1">
+        <a
+          href={affiliateUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-primaryDark"
+        >
+          Open
+        </a>
+        <p className="max-w-[96px] truncate text-center text-[10px] text-brand-textSecondary/50 dark:text-white/35">
+          via {provider}
+        </p>
+      </div>
     );
   }
 

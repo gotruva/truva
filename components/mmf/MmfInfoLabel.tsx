@@ -25,6 +25,10 @@ export const MMF_HELP_TEXT = {
     'Net yield minus the 91-day Treasury Bill rate after 20% Final Withholding Tax. Positive means the fund is ahead of the after-tax T-Bill benchmark.',
   trustFee:
     "The annual fee charged by the fund provider. Published NAV-based mutual-fund returns already reflect fund fees.",
+  grossYield:
+    "The fund's 1-year return before the 20% Final Withholding Tax and trust fees are deducted. Net yield is what you actually keep.",
+  estimatedEarnings:
+    "Annual estimate only — uses the latest net yield and your entered amount. Actual daily returns will vary and are not guaranteed.",
 } as const;
 
 export function MmfInfoLabel({

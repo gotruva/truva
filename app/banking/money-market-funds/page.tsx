@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AlertTriangle, ArrowRight, BarChart2, Shield, Zap } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BarChart2, Info, Shield, Zap } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { MmfView } from '@/components/mmf/MmfView';
 import { BenchmarkRate, MoneyMarketFund } from '@/types';
@@ -179,15 +179,29 @@ export default async function MoneyMarketFundsPage() {
         </div>
       )}
 
-      {/* Section header above the table */}
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-            Ranked by net yield
-          </h2>
-          <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-            {phpFunds.length} PHP funds ranked by performance
-          </p>
-        </div>
+      {/* Risk disclosure banner */}
+      <div className="mb-6 flex gap-3 rounded-2xl border border-warning/25 bg-warning/10 px-4 py-3.5 text-sm dark:border-warning/20 dark:bg-warning/[0.06]">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden="true" />
+        <p className="break-words leading-relaxed text-brand-textSecondary dark:text-gray-300">
+          <strong className="font-semibold text-brand-textPrimary dark:text-white">UITFs and mutual funds are not PDIC-insured.</strong>{' '}
+          Bank deposits are insured up to{' '}
+          <span className="whitespace-nowrap">₱1,000,000</span>{' '}
+          per depositor per bank by the{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/Philippine_Deposit_Insurance_Corporation"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-brand-primary"
+          >
+            PDIC
+          </a>
+          . If capital preservation is your priority, consider a{' '}
+          <Link href="/" className="underline underline-offset-2 hover:text-brand-primary">
+            high-yield savings account
+          </Link>{' '}
+          instead.
+        </p>
+      </div>
 
       <div id="mmf-table">
         <MmfView phpFunds={phpFunds} usdFunds={usdFunds} />
