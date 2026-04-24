@@ -25,8 +25,20 @@ interface PersistedCompareHubState {
   comparisonState: ComparisonState;
 }
 
+const HUB_STATE_EVENT = 'truva:hub-state-update';
 const STORAGE_KEY = 'truva.compare-hub-state.v1';
-const emptySubscribe = () => () => {};
+
+function subscribeToHubState(callback: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  
+  window.addEventListener(HUB_STATE_EVENT, callback);
+  window.addEventListener('storage', callback);
+  
+  return () => {
+    window.removeEventListener(HUB_STATE_EVENT, callback);
+    window.removeEventListener('storage', callback);
+  };
+}
 
 function PanelSkeleton({ rows = 3 }: { rows?: number }) {
   return (
@@ -151,7 +163,7 @@ function readPersistedState(): PersistedCompareHubState | null {
 
 export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubProps) {
   const persistedState = useSyncExternalStore(
-    emptySubscribe,
+    subscribeToHubState,
     readPersistedState,
     () => null,
   );
@@ -179,8 +191,11 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
   }, [clearStoredState]);
 
   const updateState = useCallback((updater: (current: PersistedCompareHubState) => PersistedCompareHubState) => {
-    setClientState((current) => updater(current ?? currentState));
-  }, [currentState]);
+    setClientState((current) => {
+      const base = current ?? readPersistedState() ?? DEFAULT_PERSISTED_STATE;
+      return updater(base);
+    });
+  }, []);
 
   const handleHashNavigation = useCallback((hash: string) => {
     if (typeof window === 'undefined') return;

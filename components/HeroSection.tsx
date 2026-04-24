@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Calculator, ShieldCheck, Layers } from 'lucide-react';
 
 const TRUST_FEATURES = [
@@ -27,6 +27,18 @@ interface HeroSectionProps {
 
 export function HeroSection({ verifiedDate }: HeroSectionProps) {
   const [rawAmount, setRawAmount] = useState('100000');
+
+  useEffect(() => {
+    try {
+      const STORAGE_KEY = 'truva.compare-hub-state.v1';
+      const existing = JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || '{}');
+      if (existing?.comparisonState?.amount) {
+        setRawAmount(String(existing.comparisonState.amount));
+      }
+    } catch {
+      // Storage unavailable
+    }
+  }, []);
 
   const displayValue = rawAmount
     ? Number(rawAmount).toLocaleString('en-PH')
@@ -55,6 +67,8 @@ export function HeroSection({ verifiedDate }: HeroSectionProps) {
             },
           })
         );
+        // Notify other components (CompareHub)
+        window.dispatchEvent(new CustomEvent('truva:hub-state-update'));
       } catch {
         // sessionStorage unavailable — scroll still works
       }
