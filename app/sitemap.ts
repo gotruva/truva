@@ -3,6 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { BASE_URL } from '@/lib/constants';
 
+const APP_ROOT = path.join(process.cwd(), 'app');
+const DATA_ROOT = path.join(process.cwd(), 'data');
+
 function addRoute(
   routes: MetadataRoute.Sitemap,
   url: string,
@@ -27,9 +30,8 @@ function addStaticRoute(routes: MetadataRoute.Sitemap, route: string, filePath: 
   addRoute(routes, `${BASE_URL}${route}`, filePath, changeFrequency, priority);
 }
 
-function addMDXRoutes(routes: MetadataRoute.Sitemap, folderPath: string, routePrefix: string) {
+function addMDXRoutes(routes: MetadataRoute.Sitemap, fullPath: string, routePrefix: string) {
   try {
-    const fullPath = path.join(process.cwd(), folderPath);
     if (!fs.existsSync(fullPath)) {
       return;
     }
@@ -57,34 +59,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes: MetadataRoute.Sitemap = [];
   const now = new Date();
 
-  addStaticRoute(routes, '/', path.join(process.cwd(), 'app', 'page.tsx'), 'daily', 1);
-  addStaticRoute(routes, '/articles', path.join(process.cwd(), 'app', 'articles', 'page.tsx'), 'weekly', 0.95);
-  addStaticRoute(routes, '/calculator', path.join(process.cwd(), 'app', 'calculator', 'page.tsx'), 'weekly', 0.8);
-  addStaticRoute(routes, '/banking', path.join(process.cwd(), 'app', 'banking', 'page.tsx'), 'weekly', 0.9);
-  addStaticRoute(routes, '/banking/rates', path.join(process.cwd(), 'app', 'banking', 'rates', 'page.tsx'), 'weekly', 0.9);
-  addStaticRoute(routes, '/banking/reviews', path.join(process.cwd(), 'app', 'banking', 'reviews', 'page.tsx'), 'weekly', 0.9);
-  addStaticRoute(routes, '/banking/compare', path.join(process.cwd(), 'app', 'banking', 'compare', 'page.tsx'), 'weekly', 0.9);
-  addStaticRoute(routes, '/credit-cards', path.join(process.cwd(), 'app', 'credit-cards', 'page.tsx'), 'weekly', 0.85);
-  addStaticRoute(routes, '/credit-cards/reviews', path.join(process.cwd(), 'app', 'credit-cards', 'reviews', 'page.tsx'), 'weekly', 0.85);
-  addStaticRoute(routes, '/loans', path.join(process.cwd(), 'app', 'loans', 'page.tsx'), 'monthly', 0.7);
-  addStaticRoute(routes, '/guides', path.join(process.cwd(), 'app', 'guides', 'page.tsx'), 'weekly', 0.9);
-  addStaticRoute(routes, '/guides/taxation', path.join(process.cwd(), 'app', 'guides', 'taxation', 'page.tsx'), 'weekly', 0.8);
-  addStaticRoute(routes, '/guides/safety', path.join(process.cwd(), 'app', 'guides', 'safety', 'page.tsx'), 'weekly', 0.8);
-  addStaticRoute(routes, '/guides/mechanics', path.join(process.cwd(), 'app', 'guides', 'mechanics', 'page.tsx'), 'weekly', 0.8);
-  addStaticRoute(routes, '/methodology', path.join(process.cwd(), 'app', 'methodology', 'page.tsx'), 'monthly', 0.7);
-  addStaticRoute(routes, '/methodology/banking', path.join(process.cwd(), 'app', 'methodology', 'banking', 'page.tsx'), 'monthly', 0.65);
-  addStaticRoute(routes, '/methodology/credit-cards', path.join(process.cwd(), 'app', 'methodology', 'credit-cards', 'page.tsx'), 'monthly', 0.65);
-  addStaticRoute(routes, '/methodology/loans', path.join(process.cwd(), 'app', 'methodology', 'loans', 'page.tsx'), 'monthly', 0.6);
-  addStaticRoute(routes, '/methodology/editorial-integrity', path.join(process.cwd(), 'app', 'methodology', 'editorial-integrity', 'page.tsx'), 'monthly', 0.65);
-  addStaticRoute(routes, '/authors/beto', path.join(process.cwd(), 'app', 'authors', 'beto', 'page.tsx'), 'monthly', 0.6);
+  addStaticRoute(routes, '/', path.join(APP_ROOT, 'page.tsx'), 'daily', 1);
+  addStaticRoute(routes, '/articles', path.join(APP_ROOT, 'articles', 'page.tsx'), 'weekly', 0.95);
+  addStaticRoute(routes, '/calculator', path.join(APP_ROOT, 'calculator', 'page.tsx'), 'weekly', 0.8);
+  addStaticRoute(routes, '/banking', path.join(APP_ROOT, 'banking', 'page.tsx'), 'weekly', 0.9);
+  addStaticRoute(routes, '/banking/rates', path.join(APP_ROOT, 'banking', 'rates', 'page.tsx'), 'weekly', 0.9);
+  addStaticRoute(routes, '/banking/reviews', path.join(APP_ROOT, 'banking', 'reviews', 'page.tsx'), 'weekly', 0.9);
+  addStaticRoute(routes, '/banking/compare', path.join(APP_ROOT, 'banking', 'compare', 'page.tsx'), 'weekly', 0.9);
+  addStaticRoute(routes, '/credit-cards', path.join(APP_ROOT, 'credit-cards', 'page.tsx'), 'weekly', 0.85);
+  addStaticRoute(routes, '/credit-cards/reviews', path.join(APP_ROOT, 'credit-cards', 'reviews', 'page.tsx'), 'weekly', 0.85);
+  addStaticRoute(routes, '/loans', path.join(APP_ROOT, 'loans', 'page.tsx'), 'monthly', 0.7);
+  addStaticRoute(routes, '/guides', path.join(APP_ROOT, 'guides', 'page.tsx'), 'weekly', 0.9);
+  addStaticRoute(routes, '/guides/taxation', path.join(APP_ROOT, 'guides', 'taxation', 'page.tsx'), 'weekly', 0.8);
+  addStaticRoute(routes, '/guides/safety', path.join(APP_ROOT, 'guides', 'safety', 'page.tsx'), 'weekly', 0.8);
+  addStaticRoute(routes, '/guides/mechanics', path.join(APP_ROOT, 'guides', 'mechanics', 'page.tsx'), 'weekly', 0.8);
+  addStaticRoute(routes, '/methodology', path.join(APP_ROOT, 'methodology', 'page.tsx'), 'monthly', 0.7);
+  addStaticRoute(routes, '/methodology/banking', path.join(APP_ROOT, 'methodology', 'banking', 'page.tsx'), 'monthly', 0.65);
+  addStaticRoute(routes, '/methodology/credit-cards', path.join(APP_ROOT, 'methodology', 'credit-cards', 'page.tsx'), 'monthly', 0.65);
+  addStaticRoute(routes, '/methodology/loans', path.join(APP_ROOT, 'methodology', 'loans', 'page.tsx'), 'monthly', 0.6);
+  addStaticRoute(routes, '/methodology/editorial-integrity', path.join(APP_ROOT, 'methodology', 'editorial-integrity', 'page.tsx'), 'monthly', 0.65);
+  addStaticRoute(routes, '/authors/beto', path.join(APP_ROOT, 'authors', 'beto', 'page.tsx'), 'monthly', 0.6);
 
-  addMDXRoutes(routes, 'app/banking/reviews', 'banking/reviews');
-  addMDXRoutes(routes, 'app/banking/rates', 'banking/rates');
-  addMDXRoutes(routes, 'app/banking/compare', 'banking/compare');
-  addMDXRoutes(routes, 'app/guides', 'guides');
+  addMDXRoutes(routes, path.join(APP_ROOT, 'banking', 'reviews'), 'banking/reviews');
+  addMDXRoutes(routes, path.join(APP_ROOT, 'banking', 'rates'), 'banking/rates');
+  addMDXRoutes(routes, path.join(APP_ROOT, 'banking', 'compare'), 'banking/compare');
+  addMDXRoutes(routes, path.join(APP_ROOT, 'guides'), 'guides');
 
   try {
-    const dataPath = path.join(process.cwd(), 'data', 'credit-cards.json');
+    const dataPath = path.join(DATA_ROOT, 'credit-cards.json');
     if (fs.existsSync(dataPath)) {
       const cards = JSON.parse(fs.readFileSync(dataPath, 'utf-8')) as { id: string }[];
 
