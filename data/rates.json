@@ -2320,18 +2320,18 @@
     "provider": "Bureau of Treasury",
     "logo": "/logos/btr.svg",
     "category": "govt",
-    "headlineRate": 0.057,
+    "headlineRate": 0.04542,
     "baseRate": {
-      "grossRate": 0.057,
-      "afterTaxRate": 0.0456
+      "grossRate": 0.04542,
+      "afterTaxRate": 0.036336
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.057,
-        "afterTaxRate": 0.0456
+        "grossRate": 0.04542,
+        "afterTaxRate": 0.036336
       }
     ],
     "conditions": [
@@ -2347,7 +2347,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Bureau of Treasury",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-25",
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2359,18 +2359,18 @@
     "provider": "Bureau of Treasury",
     "logo": "/logos/btr.svg",
     "category": "govt",
-    "headlineRate": 0.058,
+    "headlineRate": 0.04649,
     "baseRate": {
-      "grossRate": 0.058,
-      "afterTaxRate": 0.0464
+      "grossRate": 0.04649,
+      "afterTaxRate": 0.037192
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.058,
-        "afterTaxRate": 0.0464
+        "grossRate": 0.04649,
+        "afterTaxRate": 0.037192
       }
     ],
     "conditions": [
@@ -2386,7 +2386,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Bureau of Treasury",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-25",
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2398,18 +2398,18 @@
     "provider": "Bureau of Treasury",
     "logo": "/logos/btr.svg",
     "category": "govt",
-    "headlineRate": 0.059,
+    "headlineRate": 0.05052,
     "baseRate": {
-      "grossRate": 0.059,
-      "afterTaxRate": 0.0472
+      "grossRate": 0.05052,
+      "afterTaxRate": 0.040416
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.059,
-        "afterTaxRate": 0.0472
+        "grossRate": 0.05052,
+        "afterTaxRate": 0.040416
       }
     ],
     "conditions": [
@@ -2425,7 +2425,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Bureau of Treasury",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-25",
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2515,18 +2515,18 @@
     "provider": "BDO Unibank",
     "logo": "/logos/bdo.svg",
     "category": "uitfs",
-    "headlineRate": 0.045,
+    "headlineRate": 0.036998,
     "baseRate": {
-      "grossRate": 0.045,
-      "afterTaxRate": 0.036
+      "grossRate": 0.036998,
+      "afterTaxRate": 0.029598
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.045,
-        "afterTaxRate": 0.036
+        "grossRate": 0.036998,
+        "afterTaxRate": 0.029598
       }
     ],
     "conditions": [
@@ -2542,7 +2542,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Not Insured",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-25",
     "affiliateUrl": "https://www.bdo.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2554,18 +2554,18 @@
     "provider": "Bank of the Philippine Islands",
     "logo": "/logos/bpi.svg",
     "category": "uitfs",
-    "headlineRate": 0.044,
+    "headlineRate": 0.038083,
     "baseRate": {
-      "grossRate": 0.044,
-      "afterTaxRate": 0.0352
+      "grossRate": 0.038083,
+      "afterTaxRate": 0.030466
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.044,
-        "afterTaxRate": 0.0352
+        "grossRate": 0.038083,
+        "afterTaxRate": 0.030466
       }
     ],
     "conditions": [
@@ -2581,7 +2581,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Not Insured",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-04-25",
     "affiliateUrl": "https://www.bpi.com.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2634,8 +2634,8 @@
     "category": "banks",
     "headlineRate": 0.05,
     "baseRate": {
-      "grossRate": 0,
-      "afterTaxRate": 0
+      "grossRate": 0.05,
+      "afterTaxRate": 0.04
     },
     "tierType": "threshold",
     "tiers": [
