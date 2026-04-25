@@ -119,7 +119,7 @@ export function RateSection({
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Ranked by Net Return
+              Ranked by after-tax return
             </h2>
             <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
               {bankGroups.length} provider{bankGroups.length !== 1 ? 's' : ''} compared

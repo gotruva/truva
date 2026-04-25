@@ -296,7 +296,7 @@ export function RateTable({
                     : 'text-brand-textSecondary hover:bg-brand-surface dark:text-gray-500'
                 }`}
               >
-                Net Return
+                After-tax return
               </button>
               <button
                 onClick={() => setShowGross(true)}
@@ -346,7 +346,7 @@ export function RateTable({
                       />
                     )}
                   >
-                    Net Return
+                    After-tax return
                     <AlertCircle className="h-3.5 w-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
                     <SortIcon col="effective" sortCol={sortCol} sortDir={sortDir} />
                   </TooltipTrigger>
@@ -355,7 +355,7 @@ export function RateTable({
                     className="max-w-[300px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
                   >
                     <p>
-                      The Net Return is what you actually keep on PHP {numAmount.toLocaleString()}
+                      Your after-tax return is what you actually keep on ₱{numAmount.toLocaleString()}
                       {' '}after the 20% Final Withholding Tax is applied.
                     </p>
                   </TooltipContent>

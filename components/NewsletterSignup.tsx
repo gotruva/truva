@@ -56,7 +56,7 @@ export function NewsletterSignup() {
       suppressHydrationWarning
     >
       <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary dark:text-gray-100 mb-3">
-        Be the First to Know
+        Stay ahead of rate changes
       </h3>
       <p className="text-brand-textSecondary dark:text-gray-400 mb-8 text-[16px]">
         New banks, new features, rate changes — get notified when something on Truva updates. No fluff, just the signal.
@@ -92,7 +92,7 @@ export function NewsletterSignup() {
             suppressHydrationWarning
             className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-colors"
           >
-            {status === 'loading' ? 'Subscribing...' : 'Notify me'}
+            {status === 'loading' ? 'Subscribing...' : 'Get rate alerts'}
           </Button>
         </form>
       ) : (

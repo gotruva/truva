@@ -98,8 +98,8 @@ export function AffiliateButton({
         <TooltipContent side="top" className="max-w-[200px] rounded-md border-none bg-brand-textPrimary p-2 text-center text-white shadow-md">
           <p className="text-xs">
             {amount > 0
-              ? 'This link may earn Truva a referral fee if you open an account. That does not affect the rates we show.'
-              : 'We may not earn a referral fee from this bank. The rate shown is still unbiased.'}
+              ? "We earn a referral fee if you open this account — it doesn't change the rates we show. We compare all options equally."
+              : "We don't earn a referral fee from this bank — we include them because the rate is worth knowing."}
           </p>
         </TooltipContent>
       </Tooltip>

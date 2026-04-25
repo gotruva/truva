@@ -97,7 +97,7 @@ function ProductRow({ product, amount, months, isBest }: {
             </span>
             {hasConditions && (
               <span className="inline-flex items-center text-[10px] text-red-600 dark:text-red-400 font-semibold">
-                <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Rate has requirements
+                <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Conditions apply
               </span>
             )}
             {product.limits?.maxDepositPerProduct && (
@@ -117,7 +117,7 @@ function ProductRow({ product, amount, months, isBest }: {
             </div>
           )}
           <div className="text-[10px] font-medium text-brand-textSecondary dark:text-gray-500 uppercase tracking-wider mt-0.5">
-            Net Return
+            After-tax return
           </div>
         </div>
       </div>
@@ -133,7 +133,7 @@ function ProductRow({ product, amount, months, isBest }: {
         }}
         className="inline-flex items-center gap-1.5 mt-2.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1.5 text-[11px] font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary hover:text-white hover:shadow-md hover:shadow-brand-primary/20 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white"
       >
-        <span>{showDetail ? 'Hide extra info' : 'Click for more info'}</span>
+        <span>{showDetail ? 'Hide details' : 'See rate breakdown'}</span>
         <ChevronDown className={`w-3 h-3 transition-transform ${showDetail ? 'rotate-180' : ''}`} />
       </button>
 
@@ -155,7 +155,7 @@ function ProductRow({ product, amount, months, isBest }: {
                       ? 'Flat Rate'
                       : product.tierType === 'threshold'
                         ? 'Rate by Deposit Amount'
-                        : 'How Your Balance Earns'}
+                        : 'How your deposit earns'}
                   </h4>
                   <div className="space-y-0.5">
                     {product.tiers.map((tier, i) => {
@@ -368,7 +368,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
                 {formatRate(bestEffectiveRate)}
               </div>
               <div className="text-[12px] font-bold text-brand-textSecondary dark:text-gray-400 mt-1">
-                Net Return · {best.lockInDays === 0 ? 'withdraw anytime' : `${formatLockIn(best.lockInDays)} lock`}
+                After-tax return · {best.lockInDays === 0 ? 'withdraw anytime' : `${formatLockIn(best.lockInDays)} lock`}
               </div>
             </div>
             {amount > 0 && (
@@ -451,7 +451,7 @@ export function RateCard({ rate }: { rate: RateProduct }) {
       <div className="text-[32px] font-bold text-positive tabular-nums leading-none">
         {(bestAfterTax * 100).toFixed(2)}%
       </div>
-      <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1 font-bold">Net Return</div>
+      <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1 font-bold">After-tax return</div>
       <div className="mt-4">
         <AffiliateButton
           amount={rate.payoutAmount}

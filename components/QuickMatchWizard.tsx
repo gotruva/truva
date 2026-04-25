@@ -166,7 +166,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
               Find your best savings rate – just answer 3 questions.
             </h2>
             <p className="mt-2 max-w-lg text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400">
-              We&apos;ll rank every bank account by your real Net Return.
+              We&apos;ll rank every bank account by what you actually keep after tax.
             </p>
           </div>
           <button
@@ -231,7 +231,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                   How much will you deposit?
                 </h3>
                 <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-400">
-                  We use your amount to show your real Net Return.
+                  We use your amount to calculate your actual after-tax earnings.
                 </p>
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                   {AMOUNT_PRESETS.map((preset) => (
