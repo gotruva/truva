@@ -336,11 +336,11 @@ const SCRAPER_PRODUCT_MAPPINGS: Record<string, SnapshotProductMapping> = {
   'banko-todo-savings': { publicId: 'bpi-banko-savings' },
   'landbank:landbank-passbook-savings': {
     publicId: 'landbank-passbook-savings',
-    defaults: bankDefaults('Landbank', 'landbank', { name: 'LANDBANK Regular Passbook Savings', tierType: 'threshold' }),
+    defaults: bankDefaults('Landbank of the Philippines', 'landbank', { name: 'LANDBANK Regular Passbook Savings', tierType: 'threshold' }),
   },
   'landbank-passbook-savings': {
     publicId: 'landbank-passbook-savings',
-    defaults: bankDefaults('Landbank', 'landbank', { name: 'LANDBANK Regular Passbook Savings', tierType: 'threshold' }),
+    defaults: bankDefaults('Landbank of the Philippines', 'landbank', { name: 'LANDBANK Regular Passbook Savings', tierType: 'threshold' }),
   },
   'dbp:dbp-savings': { publicId: 'dbp-savings' },
 };
