@@ -88,7 +88,7 @@ export default async function MoneyMarketFundsPage() {
             We&apos;ve done the math — taxes and fees are already deducted. What you see is what you actually keep.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 w-full max-w-md">
+          <div className="flex justify-center mb-8 w-full max-w-md">
             <a
               href="#mmf-table"
               className="inline-flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-white px-6 text-[15px] font-semibold text-brand-primary shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-xl"
@@ -96,12 +96,6 @@ export default async function MoneyMarketFundsPage() {
               Compare funds
               <ArrowRight className="w-4 h-4" />
             </a>
-            <Link
-              href="/guides"
-              className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-xl border border-white/25 bg-white/10 px-6 text-[15px] font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
-            >
-              What is a money market fund?
-            </Link>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
