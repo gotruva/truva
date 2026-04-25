@@ -186,7 +186,7 @@ function FundSection({
 
       {isPrimary ? (
         <p className="text-xs leading-relaxed text-brand-textSecondary/60 dark:text-white/35">
-          Estimated yearly earnings use each fund&apos;s latest one-year net yield. Actual fund returns can move daily and are not guaranteed.
+          Estimated yearly earnings are based on each fund&apos;s latest net yield. Actual returns change daily and are not guaranteed.
         </p>
       ) : null}
     </section>
@@ -269,13 +269,13 @@ export function MmfView({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
               <Calculator className="h-3.5 w-3.5" />
-              Quick earnings estimate
+              Earnings calculator
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Type an amount and the table updates instantly.
+              How much could you earn?
             </h2>
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              This is an annual estimate using the latest source-aware net yield. UITFs use published ROI-YOY less tax and trust fees; mutual funds use published one-year NAV return. For USD rows, the same number is treated as USD.
+              Enter an amount below — every fund in the table updates instantly to show your estimated yearly earnings after taxes and fees.
             </p>
           </div>
 
@@ -315,16 +315,16 @@ export function MmfView({
       </section>
 
       <FundSection
-        title="Philippine Peso (PHP)"
-        description="Primary comparison set. Sorted by net yield so the amount you can actually keep stays first."
+        title="🇵🇭 Peso Funds (PHP)"
+        description="Sorted by net yield — what you keep after the 20% tax and management fees."
         funds={phpFunds}
         amount={amount}
         isPrimary
       />
 
       <FundSection
-        title="US Dollar (USD)"
-        description="Secondary set for dollar liquidity. Estimates use the same typed number as USD."
+        title="💵 Dollar Funds (USD)"
+        description="For dollar liquidity. The entered amount is treated as USD for these rows."
         funds={usdFunds}
         amount={amount}
       />

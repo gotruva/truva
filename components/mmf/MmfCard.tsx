@@ -42,9 +42,14 @@ export function MmfCard({
               <p className="truncate text-sm font-semibold leading-tight text-brand-textPrimary dark:text-white">
                 {fund.name}
               </p>
-              <p className="mt-1 truncate text-xs text-brand-textSecondary/60 dark:text-white/40">
-                {fund.provider} | {fund.fund_type}
-              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                <span className="inline-flex items-center rounded-full bg-brand-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand-primary dark:bg-brand-primary/20">
+                  {fund.fund_type}
+                </span>
+                <span className="text-xs text-brand-textSecondary/60 dark:text-white/40">
+                  {fund.provider}
+                </span>
+              </div>
               <p className="mt-1 text-[10px] font-medium text-brand-textSecondary/50 dark:text-white/35">
                 {getFundSourceDateLabel(fund)}
               </p>
