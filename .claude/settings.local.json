@@ -23,7 +23,16 @@
       "Bash(vercel deploy *)",
       "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_teams",
       "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_projects",
-      "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_deployments"
+      "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_deployments",
+      "Bash(npx tsc *)",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "PowerShell(netstat -ano)",
+      "Bash(mkdir -p \"C:/Users/betoa/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/0513d165-4248-4844-b99f-58774b8664ea/5456f251-969c-421b-b5c3-605f12d828b9/truva-copy-optimizer-workspace/iteration-1/eval-1-newsletter-copy/with_skill/run-1\")",
+      "Bash(mkdir -p \"C:/Users/betoa/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/0513d165-4248-4844-b99f-58774b8664ea/5456f251-969c-421b-b5c3-605f12d828b9/truva-copy-optimizer-workspace/iteration-1/eval-1-newsletter-copy/without_skill/run-1\")",
+      "Bash(mkdir -p \"C:/Users/betoa/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/0513d165-4248-4844-b99f-58774b8664ea/5456f251-969c-421b-b5c3-605f12d828b9/truva-copy-optimizer-workspace/iteration-1/eval-2-affiliate-disclosure/with_skill/run-1\")",
+      "Bash(mkdir -p \"C:/Users/betoa/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/0513d165-4248-4844-b99f-58774b8664ea/5456f251-969c-421b-b5c3-605f12d828b9/truva-copy-optimizer-workspace/iteration-1/eval-2-affiliate-disclosure/without_skill/run-1\")",
+      "Bash(mkdir -p \"C:/Users/betoa/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/0513d165-4248-4844-b99f-58774b8664ea/5456f251-969c-421b-b5c3-605f12d828b9/truva-copy-optimizer-workspace/iteration-1/eval-3-ratecard-labels/with_skill/run-1\")"
     ]
   }
 }
