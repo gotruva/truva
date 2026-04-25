@@ -13,7 +13,17 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(grep -o \"CIMB[^;]\\\\{0,50\\\\}\" /Users/albertoaldaba/truva-scraping/fixtures/deposits/cimb-gcash/gsave.sample.html)",
-      "Bash(grep -o \"gsave-bank shade-0\\\\\">2\\\\.[0-9]*%\\\\|Annual Interest Rate[^<]\\\\{0,200\\\\}CIMB\\\\|CIMB[^<]\\\\{0,80\\\\}Annual\\\\|popup-feature-card-value-7 gsave-bank shade-0\\\\\">[0-9.]*%\" /Users/albertoaldaba/truva-scraping/fixtures/deposits/cimb-gcash/gsave.sample.html)"
+      "Bash(grep -o \"gsave-bank shade-0\\\\\">2\\\\.[0-9]*%\\\\|Annual Interest Rate[^<]\\\\{0,200\\\\}CIMB\\\\|CIMB[^<]\\\\{0,80\\\\}Annual\\\\|popup-feature-card-value-7 gsave-bank shade-0\\\\\">[0-9.]*%\" /Users/albertoaldaba/truva-scraping/fixtures/deposits/cimb-gcash/gsave.sample.html)",
+      "WebSearch",
+      "WebFetch(domain:www.treasury.gov.ph)",
+      "mcp__b9125881-34b3-4dd6-a075-36f764b72d03__list_projects",
+      "mcp__b9125881-34b3-4dd6-a075-36f764b72d03__execute_sql",
+      "Bash(node --input-type=module -e ' *)",
+      "mcp__88763f19-66ae-4920-8b4a-70039c67812b__deploy_to_vercel",
+      "Bash(vercel deploy *)",
+      "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_teams",
+      "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_projects",
+      "mcp__88763f19-66ae-4920-8b4a-70039c67812b__list_deployments"
     ]
   }
 }
