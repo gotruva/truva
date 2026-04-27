@@ -104,9 +104,19 @@ const QUICK_PILLS: QuickPill[] = [
   },
 ];
 
-export function CreditCardCatalog({ cards }: { cards: CreditCardType[] }) {
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
-  const [activePill, setActivePill] = useState<string>('all');
+export function CreditCardCatalog({
+  cards,
+  initialPill = 'all',
+}: {
+  cards: CreditCardType[];
+  initialPill?: string;
+}) {
+  const [filters, setFilters] = useState<FilterState>(() => {
+    if (initialPill === 'all') return DEFAULT_FILTERS;
+    const pill = QUICK_PILLS.find((p) => p.id === initialPill);
+    return pill ? { ...DEFAULT_FILTERS, ...pill.filter } : DEFAULT_FILTERS;
+  });
+  const [activePill, setActivePill] = useState<string>(initialPill);
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
 
