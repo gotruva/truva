@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { CreditCardProduct, RateProduct } from '@/types';
+import type { RateProduct } from '@/types';
 import type { BaselineManifest, PublishedRateSnapshot } from '@/types/rate-pipeline';
 
 import { getSeedProductClassification } from './rate-pipeline-config';
@@ -32,9 +32,6 @@ export function loadSeedRates(): RateProduct[] {
   return readJsonFile<RateProduct[]>(RATES_PATH, []);
 }
 
-export function loadSeedCreditCards(): CreditCardProduct[] {
-  return readJsonFile<CreditCardProduct[]>(CREDIT_CARDS_PATH, []);
-}
 
 export function ensureDirectory(dirPath: string) {
   fs.mkdirSync(dirPath, { recursive: true });

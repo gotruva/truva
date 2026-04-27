@@ -14,29 +14,60 @@ export const metadata: Metadata = {
 
 const pillars = [
   {
-    title: 'Annual-fee economics',
+    abbrev: 'NPV',
+    weight: '30%',
+    title: 'Net Peso Value',
     description:
-      'A card should be judged on net value after annual fees, not on a welcome-promo screenshot that disappears after a quarter.',
+      'Three-year peso value after fees, FX costs, and rewards — computed across four Filipino spending profiles. Welcome bonus attainability is folded in. The single most impactful pillar for most card decisions.',
   },
   {
-    title: 'Waiver realism',
+    abbrev: 'EEQ',
+    weight: '18%',
+    title: 'Earn Engine Quality',
     description:
-      'Fee-waiver rules matter only if normal users can actually meet them. Unrealistic waiver thresholds deserve less credit.',
+      'How cleanly the earn structure maps to everyday Filipino spend: category breadth, earn-rate consistency, caps, MCC exclusions, and whether e-wallet loads earn anything at all.',
   },
   {
-    title: 'Rewards usefulness',
+    abbrev: 'FSS',
+    weight: '15%',
+    title: 'Fee Structure Score',
     description:
-      'Rewards should map to something clear and valuable: cashback, transferable points, miles, or a redemption path that is easy to explain.',
+      'Waiver realism, first-year fee treatment, cash-advance and late-payment mechanics, and FX fee competitiveness. A low sticker fee that is impossible to waive scores worse than a higher fee with a realistic threshold.',
   },
   {
-    title: 'Redemption friction',
+    abbrev: 'PLF',
+    weight: '10%',
+    title: 'Philippine Lifestyle Fit',
     description:
-      'A high earn rate can still underperform if the rewards are hard to use, opaque, or buried behind thresholds that most cardholders never reach.',
+      'How well the card aligns with the realities of everyday spending in the Philippines: GCash/Maya compatibility, acceptance network (Visa/MC/JCB), co-brand utility, and diaspora/OFW applicability.',
   },
   {
-    title: 'Approval fit',
+    abbrev: 'WBA',
+    weight: '10%',
+    title: 'Welcome Bonus Attainability',
     description:
-      'Eligibility, minimum-income fit, and issuer positioning belong in the comparison because the best card on paper is useless if the reader is a poor fit.',
+      'Welcome bonuses are only valuable if the spend requirement is achievable. Truva scores attainability against Profile A (young professional, PHP 20K/month) and flags unrealistic thresholds as a catch.',
+  },
+  {
+    abbrev: 'PS',
+    weight: '8%',
+    title: 'Protection Shield',
+    description:
+      'Travel insurance quality (full medical vs. accident-only), purchase protection breadth, and claims friction by underwriter. Chubb-backed policies score higher than generic accident-only coverage.',
+  },
+  {
+    abbrev: 'IES',
+    weight: '5%',
+    title: 'Issuer Experience Score',
+    description:
+      'App quality, customer service responsiveness, and digital-first access. Weighted lower because experience data is harder to verify objectively — but a chronic service problem can override a good points rate.',
+  },
+  {
+    abbrev: 'AA',
+    weight: '4%',
+    title: 'Approval Accessibility',
+    description:
+      'Minimum income requirements, document burden, and whether the card is realistically accessible to the income segment most likely to apply. Income ineligibility filters the card from view; AA penalizes extreme exclusivity.',
   },
 ];
 
@@ -79,20 +110,28 @@ export default function CreditCardsMethodologyPage() {
             Core inputs
           </p>
           <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-            What the future card True Value Score will care about
+            Eight pillars, weighted by what actually moves the decision
           </h2>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2">
           {pillars.map((pillar) => (
             <div
-              key={pillar.title}
+              key={pillar.abbrev}
               className="rounded-[1.6rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]"
             >
-              <h3 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-lg bg-brand-primary/10 px-2.5 py-1 text-xs font-bold tracking-wider text-brand-primary dark:bg-brand-primary/15">
+                  {pillar.abbrev}
+                </span>
+                <span className="text-sm font-semibold tabular-nums text-brand-textSecondary dark:text-gray-400">
+                  {pillar.weight}
+                </span>
+              </div>
+              <h3 className="mt-3 text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
                 {pillar.title}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
                 {pillar.description}
               </p>
             </div>

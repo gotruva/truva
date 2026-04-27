@@ -124,37 +124,80 @@ export interface QuickMatchCoreAnswers {
 
 // ─── Credit Cards ───
 
-export interface CreditCardProduct {
-  id: string;
-  name: string;
-  provider: string; // The bank
-  logo: string; // path to logo
-  category: 'credit-cards';
-  
-  annualFee: number;
-  annualFeeWaiverCondition: string | null;
-  monthlyInterestRate: number; // e.g. 0.03 for 3%
-  rewardType: 'cashback' | 'miles' | 'points' | 'none';
-  minimumMonthlyIncome: number;
-  
-  welcomePromo: string | null;
-  perks: string[]; // e.g. ['Lounge access', 'Free travel insurance']
-  
-  // --- SEO & Editorial ---
-  bestFor: string;
-  pros: string[];
-  cons: string[];
-  faqs: { question: string, answer: string }[];
-  eligibilitySummary: string;
-  editorVerdict: string;
-  
-  // --- SPONSORED / AFFILIATE ---
-  isSponsored: boolean;
-  sponsoredDisclosure?: string;
-  
-  affiliateUrl: string;
-  trueValueScore: number;
+/** Fine-print surface badges — computed by data manager, stored in web_weaver.credit_cards.badge_inputs */
+export interface BadgeInputs {
+  earn_cap: boolean;              // catch:   rewards have a monthly/annual earn cap
+  low_fx_fee: boolean;            // badge:   FX fee ≤ 1.85%
+  narrow_mcc: boolean;            // catch:   bonus category restricted to narrow MCCs
+  true_naffl: boolean;            // badge:   no annual fee for life, no spend threshold
+  high_fx_fee: boolean;           // catch:   FX fee ≥ 2.75%
+  partner_card: boolean;          // neutral: Truva has affiliate relationship with issuer
+  no_ewallet_earn: boolean;       // info:    GCash/Maya loads earn ₱0 (universal in PH)
+  rewards_devalued: boolean;      // catch:   points/miles program devalued in past 12 months
+  full_medical_coverage: boolean; // badge:   travel insurance covers illness abroad
+  accident_only_insurance: boolean; // catch: travel insurance covers on-aircraft accidents only
 }
+
+/** Credit card product — maps 1:1 to public.credit_card_listings view */
+export interface CreditCard {
+  id: string;
+  bank: string;
+  card_name: string;
+  card_tier: string | null;
+  card_network: string | null;
+  normalized_card_key: string;
+  logo: string;                        // derived in lib/credit-cards.ts, not from DB
+
+  // Fees
+  annual_fee_first_year: number | null;
+  annual_fee_recurring: number | null;
+  annual_fee_currency: string | null;
+  naffl: boolean | null;
+  annual_fee_waiver_condition: string | null;
+  annual_fee_waiver_threshold: number | null;
+
+  // Interest (BPS already divided by 100 in the view — 3.00 means 3%)
+  interest_rate_pct: number | null;
+  interest_rate_effective_annual: number | null;
+
+  // Rewards
+  rewards_type: string | null;
+  rewards_formula: Record<string, unknown> | null;
+
+  // Income eligibility (null → display "No Public Data")
+  min_income_monthly: number | null;
+  min_income_annual: number | null;
+  min_income_period: string | null;
+  min_income_source_text: string | null;
+
+  // Detailed fees
+  foreign_transaction_fee_pct: number | null;
+  cash_advance_fee_amount: number | null;
+  cash_advance_fee_pct: number | null;
+  late_payment_fee_amount: number | null;
+  overlimit_fee_amount: number | null;
+  minimum_amount_due_formula: string | null;
+
+  // Methodology readiness gates
+  methodology_ready: boolean;
+  income_filter_ready: boolean;
+  score_ready: boolean;
+  score_suppressed_reason: string | null;
+  methodology_capture_score: number | null;
+
+  // Fine-print badges
+  badge_inputs: BadgeInputs | null;
+
+  // Active promos
+  active_promo_count: number;
+
+  // Provenance
+  source_url: string;
+  last_scraped_at: string;
+}
+
+/** @deprecated Use CreditCard — kept temporarily for any remaining reference sites */
+export type CreditCardProduct = CreditCard;
 
 export interface EditorialCta {
   label: string;

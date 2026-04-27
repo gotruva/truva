@@ -3,9 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
+  AlertTriangle,
   BadgeDollarSign,
+  CheckCircle,
   CreditCard,
   FileSearch,
+  Info,
   Plane,
   ShieldCheck,
   Sparkles,
@@ -17,7 +20,9 @@ import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { BASE_URL } from '@/lib/constants';
 import { getCreditCards } from '@/lib/credit-cards';
 import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
-import type { CreditCardProduct } from '@/types';
+import type { BadgeInputs, CreditCard as CreditCardType } from '@/types';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Best Credit Cards in the Philippines (2026 Comparison)',
@@ -32,18 +37,15 @@ type SegmentDefinition = {
   title: string;
   description: string;
   icon: LucideIcon;
-  card: CreditCardProduct | null;
+  card: CreditCardType | null;
   fallback: string;
 };
 
 export default async function CreditCardsHub() {
   const cards = await getCreditCards();
-  const cashbackCard = cards.find((card) => card.rewardType === 'cashback') ?? cards[0] ?? null;
-  const rewardsCard = cards.find((card) => card.rewardType === 'points') ?? cards[0] ?? null;
-  const noAnnualFeeCard =
-    cards.find((card) =>
-      normalizeCopy(card.annualFeeWaiverCondition ?? '').toLowerCase().includes('no annual fee')
-    ) ?? rewardsCard;
+  const cashbackCard = cards.find((card) => card.rewards_type === 'cashback') ?? cards[0] ?? null;
+  const rewardsCard = cards.find((card) => card.rewards_type === 'points') ?? cards[0] ?? null;
+  const noAnnualFeeCard = cards.find((card) => card.naffl === true) ?? rewardsCard;
 
   const itemListJsonLd = {
     '@context': 'https://schema.org',
@@ -53,12 +55,12 @@ export default async function CreditCardsHub() {
       position: index + 1,
       item: {
         '@type': 'FinancialProduct',
-        name: card.name,
+        name: card.card_name,
         brand: {
           '@type': 'Brand',
-          name: card.provider,
+          name: card.bank,
         },
-        url: `${BASE_URL}/credit-cards/reviews/${card.id}`,
+        url: `${BASE_URL}/credit-cards/reviews/${card.normalized_card_key}`,
       },
     })),
   };
@@ -410,43 +412,41 @@ function SegmentCard({ segment }: { segment: SegmentDefinition }) {
         <>
           <div className="mt-5 rounded-[1.35rem] border border-brand-border bg-brand-surface/80 p-4 dark:border-white/10 dark:bg-white/[0.03]">
             <p className="text-lg font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              {segment.card.name}
+              {segment.card.card_name}
             </p>
             <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">
-              {segment.card.provider}
+              {segment.card.bank}
             </p>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <MetricBlock
                 label="Annual fee"
-                value={
-                  segment.card.annualFee === 0
-                    ? 'PHP 0'
-                    : formatPhpAmount(segment.card.annualFee)
-                }
-                detail={normalizeCopy(segment.card.annualFeeWaiverCondition ?? 'Check issuer waiver rules')}
+                value={formatAnnualFee(segment.card)}
+                detail={segment.card.annual_fee_waiver_condition ?? 'Check issuer waiver rules'}
               />
               <MetricBlock
                 label="Reward type"
-                value={formatRewardType(segment.card.rewardType)}
-                detail={`Best for ${cleanBestFor(segment.card.bestFor)}`}
+                value={formatRewardType(segment.card.rewards_type)}
+                detail={formatMonthlyRate(segment.card.interest_rate_pct)}
               />
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              {normalizeCopy(segment.card.editorVerdict)}
-            </p>
+            {segment.card.badge_inputs ? (
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                <BadgeChips badges={segment.card.badge_inputs} limit={4} />
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Link
-              href={`/credit-cards/reviews/${segment.card.id}`}
+              href={`/credit-cards/reviews/${segment.card.normalized_card_key}`}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
             >
               Read review
             </Link>
             <a
-              href={segment.card.affiliateUrl || '#'}
+              href={segment.card.source_url}
               target="_blank"
               rel="nofollow noopener noreferrer"
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
@@ -539,23 +539,25 @@ function DecisionSupportCard({
   );
 }
 
-function CardOverviewItem({ card }: { card: CreditCardProduct }) {
+function CardOverviewItem({ card }: { card: CreditCardType }) {
+  const isPartnerCard = card.badge_inputs?.partner_card === true;
+
   return (
     <div
       className={`relative overflow-hidden rounded-[1.9rem] border bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-white/[0.03] ${
-        card.isSponsored
+        isPartnerCard
           ? 'border-amber-400 dark:border-amber-500/50'
           : 'border-brand-border dark:border-white/10'
       }`}
     >
-      {card.isSponsored ? (
+      {isPartnerCard ? (
         <div className="flex w-full items-center justify-between border-b border-amber-400/20 bg-amber-400/10 px-6 py-2 text-xs font-semibold text-amber-700 dark:text-amber-400">
           <span className="flex items-center gap-2">
             <Sparkles className="h-3.5 w-3.5" />
-            Sponsored placement
+            Partner placement
           </span>
           <span className="hidden font-normal opacity-80 sm:block">
-            {normalizeCopy(card.sponsoredDisclosure ?? 'Partner-supported card listing')}
+            Truva has an affiliate relationship with this issuer
           </span>
         </div>
       ) : null}
@@ -566,7 +568,7 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
             {card.logo ? (
               <Image
                 src={card.logo}
-                alt={`${card.provider} logo`}
+                alt={`${card.bank} logo`}
                 fill
                 className="object-contain p-4"
                 sizes="(max-width: 640px) 100vw, 33vw"
@@ -574,16 +576,16 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
             ) : (
               <div className="flex h-full w-full items-center justify-center">
                 <span className="text-sm font-medium tracking-widest text-slate-400">
-                  {card.provider.toUpperCase()}
+                  {card.bank.toUpperCase()}
                 </span>
               </div>
             )}
           </div>
 
-          {card.bestFor ? (
+          {card.naffl ? (
             <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-brand-primary/10 px-3 py-1.5 text-xs font-medium text-brand-primary">
               <ShieldCheck className="h-3.5 w-3.5" />
-              Best for {cleanBestFor(card.bestFor)}
+              No annual fee for life
             </div>
           ) : null}
 
@@ -592,23 +594,23 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
 
         <div className="flex w-full flex-col sm:w-2/3">
           <h2 className="mb-1 text-2xl font-bold text-brand-textPrimary dark:text-white">
-            {card.name}
+            {card.card_name}
           </h2>
-          <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-300">
-            {card.provider}
+          <p className="mb-4 text-sm text-brand-textSecondary dark:text-gray-300">
+            {card.bank}
           </p>
 
-          <div className="mb-6 grid grid-cols-2 gap-4 rounded-[1.25rem] border border-brand-border bg-slate-50 p-4 dark:border-white/5 dark:bg-slate-900/50">
+          <div className="mb-4 grid grid-cols-2 gap-4 rounded-[1.25rem] border border-brand-border bg-slate-50 p-4 dark:border-white/5 dark:bg-slate-900/50">
             <div>
               <p className="mb-1 text-xs font-medium uppercase tracking-wider text-brand-textSecondary">
                 Annual fee
               </p>
               <p className="text-lg font-semibold tabular-nums text-brand-textPrimary dark:text-white">
-                {card.annualFee === 0 ? 'Free' : formatPhpAmount(card.annualFee)}
+                {formatAnnualFee(card)}
               </p>
-              {card.annualFeeWaiverCondition ? (
+              {card.annual_fee_waiver_condition ? (
                 <p className="mt-0.5 text-xs text-brand-textSecondary dark:text-gray-400">
-                  {normalizeCopy(card.annualFeeWaiverCondition)}
+                  {card.annual_fee_waiver_condition}
                 </p>
               ) : null}
             </div>
@@ -617,35 +619,39 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
                 Reward type
               </p>
               <p className="text-lg font-semibold text-brand-success">
-                {formatRewardType(card.rewardType)}
+                {formatRewardType(card.rewards_type)}
               </p>
               <p className="mt-0.5 text-xs text-brand-textSecondary dark:text-gray-400">
-                {formatMonthlyRate(card.monthlyInterestRate)}
+                {formatMonthlyRate(card.interest_rate_pct)}
               </p>
             </div>
           </div>
 
-          <ul className="mb-8 flex-1 space-y-2">
-            {card.perks.slice(0, 3).map((perk) => (
-              <li
-                key={`${card.id}-${perk}`}
-                className="flex items-start gap-2 text-sm text-brand-textSecondary dark:text-gray-300"
-              >
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-success" />
-                <span>{normalizeCopy(perk)}</span>
-              </li>
-            ))}
-          </ul>
+          {card.min_income_monthly !== null ? (
+            <p className="mb-4 text-xs text-brand-textSecondary dark:text-gray-400">
+              Min. income: {formatPhpAmount(card.min_income_monthly)}/mo
+            </p>
+          ) : (
+            <p className="mb-4 text-xs text-brand-textSecondary dark:text-gray-400">
+              Min. income: No public data
+            </p>
+          )}
+
+          {card.badge_inputs ? (
+            <div className="mb-6 flex flex-wrap gap-1.5">
+              <BadgeChips badges={card.badge_inputs} limit={5} />
+            </div>
+          ) : null}
 
           <div className="mt-auto flex flex-col gap-3 sm:flex-row">
             <Link
-              href={`/credit-cards/reviews/${card.id}`}
+              href={`/credit-cards/reviews/${card.normalized_card_key}`}
               className="flex flex-1 items-center justify-center rounded-xl bg-brand-primary/10 px-4 py-3 font-medium text-brand-primary transition-colors hover:bg-brand-primary/20"
             >
               Read review
             </Link>
             <a
-              href={card.affiliateUrl || '#'}
+              href={card.source_url}
               target="_blank"
               rel="nofollow noopener noreferrer"
               className="flex flex-1 items-center justify-center rounded-xl bg-brand-primary px-4 py-3 font-medium text-white shadow-sm shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
@@ -660,14 +666,88 @@ function CardOverviewItem({ card }: { card: CreditCardProduct }) {
   );
 }
 
-function cleanBestFor(value: string) {
-  const normalized = normalizeCopy(value);
-  return normalized.toLowerCase().includes('best for')
-    ? normalized.replace(/^Best for /i, '')
-    : normalized;
+type BadgeEntry = {
+  key: keyof BadgeInputs;
+  label: string;
+  type: 'positive' | 'catch' | 'info' | 'neutral';
+};
+
+const BADGE_DEFINITIONS: BadgeEntry[] = [
+  { key: 'true_naffl', label: 'True NAFFL', type: 'positive' },
+  { key: 'low_fx_fee', label: 'Low FX fee', type: 'positive' },
+  { key: 'full_medical_coverage', label: 'Full medical coverage', type: 'positive' },
+  { key: 'partner_card', label: 'Partner card', type: 'neutral' },
+  { key: 'high_fx_fee', label: 'High FX fee', type: 'catch' },
+  { key: 'earn_cap', label: 'Earn cap', type: 'catch' },
+  { key: 'narrow_mcc', label: 'Narrow earn categories', type: 'catch' },
+  { key: 'rewards_devalued', label: 'Rewards devalued', type: 'catch' },
+  { key: 'accident_only_insurance', label: 'Accident-only insurance', type: 'catch' },
+  { key: 'no_ewallet_earn', label: 'No e-wallet earn', type: 'info' },
+];
+
+function BadgeChips({ badges, limit }: { badges: BadgeInputs; limit?: number }) {
+  const active = BADGE_DEFINITIONS.filter((def) => badges[def.key]);
+  const shown = limit ? active.slice(0, limit) : active;
+
+  return (
+    <>
+      {shown.map((def) => {
+        const iconClass = 'h-3 w-3 shrink-0';
+        if (def.type === 'positive') {
+          return (
+            <span
+              key={def.key}
+              className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400"
+            >
+              <CheckCircle className={iconClass} />
+              {def.label}
+            </span>
+          );
+        }
+        if (def.type === 'catch') {
+          return (
+            <span
+              key={def.key}
+              className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-700 dark:bg-amber-900/20 dark:text-amber-400"
+            >
+              <AlertTriangle className={iconClass} />
+              {def.label}
+            </span>
+          );
+        }
+        if (def.type === 'info') {
+          return (
+            <span
+              key={def.key}
+              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:bg-white/10 dark:text-gray-400"
+            >
+              <Info className={iconClass} />
+              {def.label}
+            </span>
+          );
+        }
+        return (
+          <span
+            key={def.key}
+            className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:bg-white/10 dark:text-gray-400"
+          >
+            {def.label}
+          </span>
+        );
+      })}
+    </>
+  );
 }
 
-function formatRewardType(rewardType: CreditCardProduct['rewardType']) {
+function formatAnnualFee(card: CreditCardType): string {
+  if (card.naffl) return 'Free';
+  if (card.annual_fee_recurring === 0) return 'Free';
+  if (card.annual_fee_recurring !== null) return formatPhpAmount(card.annual_fee_recurring);
+  if (card.annual_fee_first_year !== null) return formatPhpAmount(card.annual_fee_first_year);
+  return 'Not disclosed';
+}
+
+function formatRewardType(rewardType: CreditCardType['rewards_type']) {
   switch (rewardType) {
     case 'cashback':
       return 'Cashback';
@@ -680,8 +760,9 @@ function formatRewardType(rewardType: CreditCardProduct['rewardType']) {
   }
 }
 
-function formatMonthlyRate(rate: number) {
-  return `${(rate * 100).toFixed(1)}% / mo`;
+function formatMonthlyRate(rate: number | null) {
+  if (rate === null) return 'Rate not disclosed';
+  return `${rate.toFixed(2)}% / mo`;
 }
 
 function formatPhpAmount(amount: number) {
@@ -690,17 +771,4 @@ function formatPhpAmount(amount: number) {
     currency: 'PHP',
     maximumFractionDigits: 0,
   }).format(amount);
-}
-
-function normalizeCopy(value: string) {
-  return [
-    ['â‚±', 'PHP '],
-    ['â€“', '-'],
-    ['â€”', '-'],
-    ['â€˜', "'"],
-    ['â€™', "'"],
-    ['â€œ', '"'],
-    ['â€\u009d', '"'],
-    ['âœ“', 'Check'],
-  ].reduce((output, [before, after]) => output.split(before).join(after), value);
 }
