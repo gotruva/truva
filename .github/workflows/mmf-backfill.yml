@@ -1,0 +1,44 @@
+name: Truva MMF Daily Backfill
+
+on:
+  schedule:
+    # 11:00 UTC = 7:00 PM PHT
+    # Runs after n8n UITF windows (6:30–6:45 PM PHT) and before the n8n health check (8:00 PM PHT).
+    # Covers PIFA mutual funds (ALFM, FAMI) and fills any gaps left by n8n UITF scrapers.
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+jobs:
+  mmf-backfill:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run MMF backfill
+        run: npm run mmf:backfill -- --apply
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Verify freshness
+        run: npm run mmf:verify
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Heartbeat ping
+        if: success() && env.MMF_HEARTBEAT_URL != ''
+        env:
+          MMF_HEARTBEAT_URL: ${{ secrets.MMF_HEARTBEAT_URL }}
+        run: curl -sS -m 10 --retry 3 "${MMF_HEARTBEAT_URL}" > /dev/null
