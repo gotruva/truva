@@ -93,7 +93,10 @@ export function CreditCardQuiz() {
             We've found the best cards for your {INCOME_OPTIONS.find(o => o.id === answers.income)?.label} income and focus on {GOAL_OPTIONS.find(o => o.id === answers.goal)?.label}.
           </p>
           <Button
-            onClick={() => setIsCompleted(false) || setStep(0)}
+            onClick={() => {
+              setIsCompleted(false);
+              setStep(0);
+            }}
             variant="outline"
             className="mt-8 rounded-xl"
           >
