@@ -1,202 +1,318 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { AlertTriangle, CheckCircle, ChevronLeft, Info, Sparkles } from 'lucide-react';
+import type { ReactNode } from 'react';
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle,
+  ChevronLeft,
+  ExternalLink,
+  Info,
+  Sparkles,
+} from 'lucide-react';
+import { CreditCardTrustBadges, ScorePendingNotice, TheCatchPanel } from '@/components/credit-cards/CreditCardTrustBadges';
+import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
+import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { getCreditCardBySlug } from '@/lib/credit-cards';
 import type { BadgeInputs, CreditCard } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
-  props: { params: Promise<{ slug: string }> | { slug: string } }
+  props: { params: Promise<{ slug: string }> | { slug: string } },
 ): Promise<Metadata> {
   const params = await props.params;
-  const card = await getCreditCardBySlug(params?.slug ?? '');
+  const slug = decodeCardSlug(params?.slug ?? '');
+  const card = await getCreditCardBySlug(slug);
   if (!card) return {};
 
   return {
-    title: `${card.card_name} Review | Truva`,
-    description: `Full breakdown of the ${card.card_name} by ${card.bank} — annual fee, interest rate, rewards, income requirements, and fine-print flags.`,
+    title: `${card.card_name} Details`,
+    description: `Plain-English details for the ${card.card_name} by ${card.bank}: fees, rewards, income notes, source links, and missing data.`,
     alternates: { canonical: `/credit-cards/reviews/${card.normalized_card_key}` },
   };
 }
 
 export default async function CreditCardReviewPage(
-  props: { params: Promise<{ slug: string }> | { slug: string } }
+  props: { params: Promise<{ slug: string }> | { slug: string } },
 ) {
   const params = await props.params;
-  const card = await getCreditCardBySlug(params?.slug ?? '');
+  const slug = decodeCardSlug(params?.slug ?? '');
+  const card = await getCreditCardBySlug(slug);
 
   if (!card) notFound();
 
-  const reviewJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: `${card.card_name} Review`,
-    description: `Annual fee, rewards, and income requirements for the ${card.card_name}.`,
-    author: { '@type': 'Person', name: 'Beto' },
-    publisher: { '@type': 'Organization', name: 'Truva', url: 'https://www.gotruva.com' },
-  };
-
   const isPartnerCard = card.badge_inputs?.partner_card === true;
+  const coverage = getFieldCoverage(card);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewJsonLd) }}
-      />
-
-      <div className="bg-brand-surface dark:bg-slate-950 min-h-screen pb-24">
-        <div className="bg-brand-primary text-white py-12 px-4 relative overflow-hidden">
+      <div className="min-h-screen bg-brand-surface pb-32 dark:bg-slate-950 sm:pb-24">
+        <header className="relative overflow-hidden bg-brand-primary px-4 py-10 text-white">
           <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
-          <div className="max-w-4xl mx-auto relative z-10">
+          <div className="relative z-10 mx-auto max-w-5xl">
             <Link
               href="/credit-cards"
-              className="inline-flex items-center text-sm text-white/80 hover:text-white mb-6 transition-colors"
+              className="mb-6 inline-flex items-center text-sm text-white/80 transition-colors hover:text-white"
             >
-              <ChevronLeft className="w-4 h-4 mr-1" /> Back to Cards
+              <ChevronLeft className="mr-1 h-4 w-4" />
+              Back to card desk
             </Link>
 
-            {isPartnerCard ? (
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/90 backdrop-blur-sm text-xs font-bold text-white mb-4 border border-amber-400">
-                <Sparkles className="w-3 h-3 mr-2" /> Partner Placement
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <div className="flex flex-wrap gap-2">
+                  {isPartnerCard ? (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/60 bg-amber-400/20 px-3 py-1.5 text-xs font-bold text-white">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Partner disclosure applies
+                    </span>
+                  ) : null}
+                  <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90">
+                    {formatCardMeta(card)}
+                  </span>
+                </div>
+
+                <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl">
+                  {card.card_name}
+                </h1>
+                <p className="mt-2 text-lg text-white/80">{card.bank}</p>
               </div>
-            ) : null}
 
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
-              {card.card_name}
-            </h1>
-            <p className="text-xl text-white/80">{card.bank}</p>
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
+                <TrueValueScoreBadge showReason className="text-white" />
+              </div>
+            </div>
           </div>
-        </div>
+        </header>
 
-        <div className="max-w-4xl mx-auto px-4 -mt-8 relative z-20">
-          <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-xl shadow-black/5 border border-brand-border dark:border-white/10 p-6 md:p-10 mb-8">
+        <main className="relative z-20 mx-auto max-w-5xl space-y-6 px-4 pt-6 sm:-mt-8">
+          <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#111827] sm:p-6">
+            <div className="grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+              <CreditCardVisual card={card} />
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
+                    Card facts
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+                    Fees, rewards, and missing fields in one place
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+                    This page shows what Truva has captured and marks what still needs checking with the bank.
+                  </p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <FactTile label="Annual fee" value={formatAnnualFee(card)} detail={card.annual_fee_waiver_condition ?? 'Waiver data incomplete'} />
+                  <FactTile label="Rewards" value={formatRewardType(card.rewards_type)} detail={formatRewardFormula(card.rewards_formula)} />
+                  <FactTile label="Interest" value={formatMonthlyRate(card.interest_rate_pct)} detail="Monthly rate when disclosed" />
+                  <FactTile label="Foreign fee" value={formatPercent(card.foreign_transaction_fee_pct)} detail="Fee for non-PHP or overseas transactions" />
+                </div>
+                <CreditCardTrustBadges card={card} limit={6} />
+              </div>
+            </div>
+          </section>
 
-            {card.badge_inputs ? (
-              <section className="mb-10">
-                <h2 className="text-lg font-bold mb-4 text-brand-textPrimary dark:text-white">
-                  Fine-print surface
+          <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:p-6">
+            <div className="flex items-start gap-3">
+              <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+                  Scores are coming later for this card
                 </h2>
+                <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+                  Truva can show the card details below, but this row is not ready for scoring yet.
+                </p>
+                {card.score_suppressed_reason ? (
+                  <p className="mt-3 rounded-xl border border-brand-border bg-brand-surface p-3 text-xs leading-relaxed text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400">
+                    {card.score_suppressed_reason}
+                  </p>
+                ) : null}
+                <div className="mt-3">
+                  <ScorePendingNotice />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
+            <div className="space-y-6">
+              <FactSection title="Fees to check" description="Known public fields stay visible. Missing fields are preserved instead of collapsed.">
+                <DetailRow label="Annual fee" value={formatAnnualFee(card)} />
+                <DetailRow label="Waiver condition" value={card.annual_fee_waiver_condition ?? 'No public data'} muted={card.annual_fee_waiver_condition === null} />
+                <DetailRow label="Waiver threshold" value={formatWaiverThreshold(card.annual_fee_waiver_threshold)} muted={card.annual_fee_waiver_threshold === null} />
+                <DetailRow label="Interest rate" value={formatMonthlyRate(card.interest_rate_pct)} muted={card.interest_rate_pct === null} />
+                <DetailRow label="Effective annual rate" value={formatPercent(card.interest_rate_effective_annual)} muted={card.interest_rate_effective_annual === null} />
+                <DetailRow label="Foreign fee" value={formatPercent(card.foreign_transaction_fee_pct)} muted={card.foreign_transaction_fee_pct === null} />
+                <DetailRow label="Cash advance fee" value={formatCashAdvance(card)} muted={card.cash_advance_fee_amount === null && card.cash_advance_fee_pct === null} />
+                <DetailRow label="Late payment fee" value={formatPhpNullable(card.late_payment_fee_amount)} muted={card.late_payment_fee_amount === null} />
+                <DetailRow label="Overlimit fee" value={formatPhpNullable(card.overlimit_fee_amount)} muted={card.overlimit_fee_amount === null} />
+                <DetailRow label="Minimum amount due" value={card.minimum_amount_due_formula ?? 'Not disclosed'} muted={card.minimum_amount_due_formula === null} />
+              </FactSection>
+
+              <FactSection title="Rewards and benefits" description="Rewards are shown in the bank's own terms. Peso value is not ready yet.">
+                <DetailRow label="Reward type" value={formatRewardType(card.rewards_type)} />
+                <DetailRow label="Formula summary" value={formatRewardFormula(card.rewards_formula)} />
+                <DetailRow label="Peso value" value="Not yet verified" muted />
+              </FactSection>
+
+              <FactSection title="Requirements" description="Income filters wait until minimum income details are complete.">
+                <DetailRow label="Minimum monthly income" value={formatIncome(card)} muted={card.min_income_monthly === null && card.min_income_annual === null} />
+                <DetailRow label="Income source text" value={card.min_income_source_text ?? 'No public data'} muted={card.min_income_source_text === null} />
+                <DetailRow label="Income filter" value={card.income_filter_ready ? 'Ready' : 'Not yet verified'} muted={!card.income_filter_ready} />
+              </FactSection>
+            </div>
+
+            <aside className="space-y-6">
+              <TheCatchPanel card={card} />
+
+              <FactSection title="Fine-print badges" description="Badges are computed upstream and only shown when active.">
                 <BadgeGrid badges={card.badge_inputs} />
-              </section>
-            ) : null}
+              </FactSection>
 
-            <h2 className="text-2xl font-bold mb-6 text-brand-textPrimary dark:text-white">
-              Rates &amp; Fees
-            </h2>
-            <div className="border border-brand-border dark:border-white/10 rounded-xl overflow-hidden mb-10">
-              <table className="w-full text-left text-sm">
-                <tbody className="divide-y divide-brand-border dark:divide-white/10">
-                  <tr className="bg-slate-50/50 dark:bg-slate-900/20">
-                    <th className="py-4 px-6 font-semibold text-brand-textSecondary w-2/5">
-                      Annual Fee
-                    </th>
-                    <td className="py-4 px-6 font-medium text-brand-textPrimary dark:text-gray-100">
-                      {formatAnnualFee(card)}
-                      {card.annual_fee_waiver_condition ? (
-                        <span className="block text-xs font-normal text-brand-textSecondary mt-1">
-                          {card.annual_fee_waiver_condition}
-                        </span>
-                      ) : null}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                      Interest Rate
-                    </th>
-                    <td className="py-4 px-6 font-medium text-brand-success">
-                      {card.interest_rate_pct !== null
-                        ? `${card.interest_rate_pct.toFixed(2)}% / month`
-                        : 'Not disclosed'}
-                    </td>
-                  </tr>
-                  <tr className="bg-slate-50/50 dark:bg-slate-900/20">
-                    <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                      Reward Type
-                    </th>
-                    <td className="py-4 px-6 font-medium capitalize">
-                      {card.rewards_type ?? 'None'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                      Minimum Income
-                    </th>
-                    <td className="py-4 px-6 font-medium">
-                      {card.min_income_monthly !== null
-                        ? `₱${card.min_income_monthly.toLocaleString()} / month`
-                        : 'No public data'}
-                    </td>
-                  </tr>
-                  {card.foreign_transaction_fee_pct !== null ? (
-                    <tr className="bg-slate-50/50 dark:bg-slate-900/20">
-                      <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                        FX Fee
-                      </th>
-                      <td className="py-4 px-6 font-medium">
-                        {card.foreign_transaction_fee_pct}%
-                      </td>
-                    </tr>
-                  ) : null}
-                  {card.cash_advance_fee_pct !== null ? (
-                    <tr>
-                      <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                        Cash Advance Fee
-                      </th>
-                      <td className="py-4 px-6 font-medium">
-                        {card.cash_advance_fee_pct}%
-                        {card.cash_advance_fee_amount !== null
-                          ? ` or ₱${card.cash_advance_fee_amount.toLocaleString()} (whichever is higher)`
-                          : ''}
-                      </td>
-                    </tr>
-                  ) : null}
-                  {card.late_payment_fee_amount !== null ? (
-                    <tr className="bg-slate-50/50 dark:bg-slate-900/20">
-                      <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                        Late Payment Fee
-                      </th>
-                      <td className="py-4 px-6 font-medium">
-                        ₱{card.late_payment_fee_amount.toLocaleString()}
-                      </td>
-                    </tr>
-                  ) : null}
-                  {card.overlimit_fee_amount !== null ? (
-                    <tr>
-                      <th className="py-4 px-6 font-semibold text-brand-textSecondary">
-                        Overlimit Fee
-                      </th>
-                      <td className="py-4 px-6 font-medium">
-                        ₱{card.overlimit_fee_amount.toLocaleString()}
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            </div>
+              <FactSection title="Promos" description="Promos are helpful context, but check the regular fees and rewards too.">
+                <div className="rounded-xl border border-brand-border bg-brand-surface/70 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+                  <p className="text-sm font-bold text-brand-textPrimary dark:text-white">
+                    {card.active_promo_count > 0
+                      ? `${card.active_promo_count} active linked promo`
+                      : 'No active linked promo in Truva data'}
+                  </p>
+                  <p className="mt-2 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
+                    Promos can change. Use them as extra context, not the only reason to choose a card.
+                  </p>
+                </div>
+              </FactSection>
 
-            <div className="mt-10 pt-8 border-t border-brand-border dark:border-white/10 flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <span className="text-xs text-brand-textSecondary max-w-xs text-center">
-                {isPartnerCard
-                  ? 'Truva has an affiliate relationship with this issuer. This may affect placement, not editorial assessment.'
-                  : 'Truva is an independent comparison platform.'}
-              </span>
-              <a
-                href={card.source_url}
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="inline-flex w-full sm:w-auto justify-center items-center py-4 px-8 rounded-xl bg-brand-primary text-white hover:bg-brand-primary/90 transition-colors font-bold text-lg shadow-lg shadow-brand-primary/20"
-              >
-                Apply on {card.bank}&apos;s website
-                <span className="ml-2" aria-hidden="true">→</span>
-              </a>
-            </div>
+              <FactSection title="Source and freshness" description="Bank site links leave Truva and open the public source.">
+                <div className="space-y-3">
+                  <DetailPill label="Source checked" value="Bank source linked" />
+                  <DetailPill label="Source updated" value={formatDate(card.last_scraped_at)} />
+                  <DetailPill label="Fields visible" value={`${coverage.known}/${coverage.total}`} />
+                  <DetailPill label="Fields missing" value={`${coverage.missing}/${coverage.total}`} />
+                  <DetailPill label="Partner status" value={isPartnerCard ? 'Partner disclosure applies' : 'No partner badge on this row'} />
+                  <a
+                    href={card.source_url}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-bold text-white shadow-lg shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
+                  >
+                    Visit bank site
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </div>
+              </FactSection>
+            </aside>
+          </section>
+        </main>
+
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-border bg-white/95 px-4 py-3 shadow-[0_-18px_60px_-40px_rgba(15,23,42,0.55)] backdrop-blur dark:border-white/10 dark:bg-slate-950/95 sm:hidden">
+          <div className="flex gap-2">
+            <Link
+              href="/credit-cards"
+              className="inline-flex flex-1 items-center justify-center rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm font-bold text-brand-textPrimary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
+            >
+              Card desk
+            </Link>
+            <a
+              href={card.source_url}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-bold text-white"
+            >
+              Visit bank site
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </div>
     </>
+  );
+}
+
+function decodeCardSlug(slug: string) {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+}
+
+function getFieldCoverage(card: CreditCard) {
+  const fields = [
+    card.annual_fee_recurring,
+    card.annual_fee_waiver_condition,
+    card.annual_fee_waiver_threshold,
+    card.rewards_type,
+    card.rewards_formula,
+    card.interest_rate_pct,
+    card.foreign_transaction_fee_pct,
+    card.min_income_monthly ?? card.min_income_annual,
+    card.min_income_source_text,
+    card.last_scraped_at,
+  ];
+  const known = fields.filter((field) => field !== null && field !== undefined && field !== '').length;
+
+  return {
+    total: fields.length,
+    known,
+    missing: fields.length - known,
+  };
+}
+
+function FactSection({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">{title}</h2>
+        <p className="mt-1 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">{description}</p>
+      </div>
+      <div className="space-y-3">{children}</div>
+    </section>
+  );
+}
+
+function FactTile({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <div className="min-h-[6.5rem] rounded-xl border border-brand-border bg-brand-surface/80 p-4 dark:border-white/10 dark:bg-slate-950/40">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+        {label}
+      </p>
+      <p className="mt-2 text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">{value}</p>
+      <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">{detail}</p>
+    </div>
+  );
+}
+
+function DetailRow({ label, value, muted = false }: { label: string; value: string; muted?: boolean }) {
+  return (
+    <div className="grid gap-1 rounded-xl border border-brand-border bg-brand-surface/70 p-3 dark:border-white/10 dark:bg-white/[0.03] sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+        {label}
+      </p>
+      <p className={muted ? 'text-sm font-medium text-brand-textSecondary dark:text-gray-400' : 'text-sm font-semibold text-brand-textPrimary dark:text-gray-100'}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function DetailPill({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-brand-border bg-brand-surface/70 p-3 dark:border-white/10 dark:bg-white/[0.03]">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-semibold text-brand-textPrimary dark:text-gray-100">{value}</p>
+    </div>
   );
 }
 
@@ -208,51 +324,51 @@ type BadgeEntry = {
 };
 
 const BADGE_GRID: BadgeEntry[] = [
-  { key: 'true_naffl', label: 'True NAFFL', type: 'positive', detail: 'No annual fee for life — no spend threshold, no first-year-only waiver.' },
-  { key: 'low_fx_fee', label: 'Low FX Fee', type: 'positive', detail: 'Foreign transaction fee is 1.85% or lower.' },
-  { key: 'full_medical_coverage', label: 'Full Medical Coverage', type: 'positive', detail: 'Travel insurance covers medical expenses abroad, not just accidents.' },
-  { key: 'high_fx_fee', label: 'High FX Fee', type: 'catch', detail: 'Foreign transaction fee is 2.75% or higher — meaningful drag on overseas spend.' },
-  { key: 'earn_cap', label: 'Earn Cap', type: 'catch', detail: 'Rewards have a monthly or annual earn cap.' },
-  { key: 'narrow_mcc', label: 'Narrow MCC', type: 'catch', detail: 'Bonus category earn rate is restricted to specific merchant category codes.' },
-  { key: 'rewards_devalued', label: 'Rewards Devalued', type: 'catch', detail: 'This card\'s rewards program has been devalued in the past 12 months.' },
-  { key: 'accident_only_insurance', label: 'Accident-Only Insurance', type: 'catch', detail: 'Travel insurance covers only on-aircraft accidents — not medical emergencies abroad.' },
-  { key: 'no_ewallet_earn', label: 'No E-Wallet Earn', type: 'info', detail: 'GCash and Maya loads earn ₱0. This is standard across Philippine cards.' },
-  { key: 'partner_card', label: 'Partner Card', type: 'info', detail: 'Truva has an affiliate relationship with this issuer.' },
+  { key: 'true_naffl', label: 'True NAFFL', type: 'positive', detail: 'No annual fee for life with no spend threshold captured.' },
+  { key: 'low_fx_fee', label: 'Low foreign fee', type: 'positive', detail: 'Fee for non-PHP or overseas transactions is 1.85% or lower.' },
+  { key: 'full_medical_coverage', label: 'Full medical coverage', type: 'positive', detail: 'Travel insurance covers medical expenses abroad.' },
+  { key: 'high_fx_fee', label: 'High foreign fee', type: 'catch', detail: 'Fee for non-PHP or overseas transactions is 2.75% or higher.' },
+  { key: 'earn_cap', label: 'Earn cap', type: 'catch', detail: 'Rewards have a monthly or annual earn cap.' },
+  { key: 'narrow_mcc', label: 'Narrow earn categories', type: 'catch', detail: 'Bonus earn is restricted to narrow merchant categories.' },
+  { key: 'rewards_devalued', label: 'Rewards devalued', type: 'catch', detail: 'Rewards program was devalued in the past 12 months.' },
+  { key: 'accident_only_insurance', label: 'Accident-only insurance', type: 'catch', detail: 'Travel insurance covers accidents only, not medical emergencies abroad.' },
+  { key: 'no_ewallet_earn', label: 'No e-wallet earn', type: 'info', detail: 'GCash and Maya loads earn no rewards in the current interpretation.' },
+  { key: 'partner_card', label: 'Partner card', type: 'info', detail: 'Truva has an affiliate relationship with this bank.' },
 ];
 
-function BadgeGrid({ badges }: { badges: BadgeInputs }) {
-  const active = BADGE_GRID.filter((b) => badges[b.key]);
-  if (active.length === 0) return null;
+function BadgeGrid({ badges }: { badges: BadgeInputs | null }) {
+  const active = badges ? BADGE_GRID.filter((badge) => badges[badge.key]) : [];
+
+  if (active.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-brand-border bg-brand-surface/70 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+        <p className="text-sm font-semibold text-brand-textPrimary dark:text-white">No fine-print badges yet</p>
+        <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
+          This does not mean the card has no catches. It means no badge input is active in the current public row.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      {active.map((b) => {
-        const base = 'flex items-start gap-3 rounded-xl border p-4';
+    <div className="grid gap-3">
+      {active.map((badge) => {
+        const Icon = badge.type === 'positive' ? CheckCircle : badge.type === 'catch' ? AlertTriangle : Info;
         const classes =
-          b.type === 'positive'
-            ? `${base} border-emerald-100 bg-emerald-50/60 dark:border-emerald-800/30 dark:bg-emerald-900/10`
-            : b.type === 'catch'
-              ? `${base} border-amber-100 bg-amber-50/60 dark:border-amber-800/30 dark:bg-amber-900/10`
-              : `${base} border-brand-border bg-slate-50/60 dark:border-white/10 dark:bg-white/[0.03]`;
-        const Icon =
-          b.type === 'positive' ? CheckCircle : b.type === 'catch' ? AlertTriangle : Info;
-        const iconColor =
-          b.type === 'positive'
-            ? 'text-emerald-600 dark:text-emerald-400'
-            : b.type === 'catch'
-              ? 'text-amber-600 dark:text-amber-400'
-              : 'text-slate-500 dark:text-gray-400';
+          badge.type === 'positive'
+            ? 'border-emerald-100 bg-emerald-50/60 text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-900/10 dark:text-emerald-300'
+            : badge.type === 'catch'
+              ? 'border-amber-100 bg-amber-50/60 text-amber-700 dark:border-amber-800/30 dark:bg-amber-900/10 dark:text-amber-300'
+              : 'border-brand-border bg-brand-surface text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300';
 
         return (
-          <div key={b.key} className={classes}>
-            <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${iconColor}`} />
-            <div>
-              <p className="text-sm font-semibold text-brand-textPrimary dark:text-white">
-                {b.label}
-              </p>
-              <p className="mt-0.5 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-                {b.detail}
-              </p>
+          <div key={badge.key} className={`rounded-xl border p-4 ${classes}`}>
+            <div className="flex items-start gap-3">
+              <Icon className="mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-sm font-bold">{badge.label}</p>
+                <p className="mt-1 text-xs leading-relaxed">{badge.detail}</p>
+              </div>
             </div>
           </div>
         );
@@ -261,12 +377,85 @@ function BadgeGrid({ badges }: { badges: BadgeInputs }) {
   );
 }
 
+function formatCardMeta(card: CreditCard) {
+  return [card.card_network, card.card_tier].filter(Boolean).join(' / ') || 'Card details';
+}
+
 function formatAnnualFee(card: CreditCard): string {
-  if (card.naffl) return '₱0 (No annual fee for life)';
-  if (card.annual_fee_recurring === 0) return '₱0';
-  if (card.annual_fee_recurring !== null)
-    return `₱${card.annual_fee_recurring.toLocaleString()}`;
-  if (card.annual_fee_first_year !== null)
-    return `₱${card.annual_fee_first_year.toLocaleString()}`;
+  if (card.naffl) return 'PHP 0 NAFFL';
+  if (card.annual_fee_recurring === 0) return 'PHP 0';
+  if (card.annual_fee_recurring !== null) return formatPhpAmount(card.annual_fee_recurring);
+  if (card.annual_fee_first_year !== null) return `${formatPhpAmount(card.annual_fee_first_year)} first year`;
   return 'Not disclosed';
+}
+
+function formatRewardType(rewardType: CreditCard['rewards_type']) {
+  switch (rewardType) {
+    case 'cashback':
+      return 'Cashback';
+    case 'miles':
+      return 'Miles';
+    case 'points':
+      return 'Points';
+    default:
+      return 'None captured';
+  }
+}
+
+function formatRewardFormula(formula: CreditCard['rewards_formula']) {
+  if (!formula) return 'No public data';
+  const earnUnit = typeof formula.earn_unit === 'string' ? formula.earn_unit : '';
+  if (earnUnit.trim()) return earnUnit;
+  return 'Formula captured; peso value not ready';
+}
+
+function formatMonthlyRate(rate: number | null) {
+  if (rate === null) return 'Not disclosed';
+  return `${rate.toFixed(2)}% / mo`;
+}
+
+function formatPercent(value: number | null) {
+  if (value === null) return 'Not disclosed';
+  return `${value.toFixed(2)}%`;
+}
+
+function formatPhpNullable(value: number | null) {
+  if (value === null) return 'Not disclosed';
+  return formatPhpAmount(value);
+}
+
+function formatWaiverThreshold(value: number | null) {
+  if (value === null) return 'No public data';
+  return formatPhpAmount(value);
+}
+
+function formatCashAdvance(card: CreditCard) {
+  const pieces = [
+    card.cash_advance_fee_pct !== null ? `${card.cash_advance_fee_pct.toFixed(2)}%` : null,
+    card.cash_advance_fee_amount !== null ? formatPhpAmount(card.cash_advance_fee_amount) : null,
+  ].filter(Boolean);
+  return pieces.length > 0 ? pieces.join(' or ') : 'Not disclosed';
+}
+
+function formatIncome(card: CreditCard) {
+  if (card.min_income_monthly !== null) return `${formatPhpAmount(card.min_income_monthly)} / mo`;
+  if (card.min_income_annual !== null) return `${formatPhpAmount(card.min_income_annual)} / yr`;
+  return 'No public data';
+}
+
+function formatDate(value: string | null) {
+  if (!value) return 'No public data';
+  return new Intl.DateTimeFormat('en-PH', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(value));
+}
+
+function formatPhpAmount(amount: number) {
+  return new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    maximumFractionDigits: 0,
+  }).format(amount).replace('PHP', 'PHP ');
 }

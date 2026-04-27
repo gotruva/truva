@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best No Annual Fee Credit Cards in the Philippines 2026',
+  title: 'No Annual Fee Credit Card Facts Philippines',
   description:
-    'True no-annual-fee credit cards in the Philippines — verified NAFFL cards with no hidden spend thresholds or first-year-only waivers.',
-  alternates: { canonical: '/credit-cards/no-annual-fee' },
+    'Browse no-fee and low-fee credit card facts from the Truva card desk. Public score lists are locked until waiver rules are complete.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function NoAnnualFeeCardsPage() {

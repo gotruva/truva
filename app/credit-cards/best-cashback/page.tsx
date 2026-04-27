@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best Cashback Credit Cards in the Philippines 2026',
+  title: 'Cashback Credit Card Facts Philippines',
   description:
-    'Top cashback credit cards in the Philippines ranked by net peso value — factoring in earn rates, category caps, annual fees, and waiver realism.',
-  alternates: { canonical: '/credit-cards/best-cashback' },
+    'Browse cashback credit card facts from the Truva card desk. Public score lists are locked until reward valuation and score inputs are ready.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestCashbackCardsPage() {

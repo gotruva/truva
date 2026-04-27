@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best Credit Cards in the Philippines 2026',
+  title: 'Credit Card Desk Philippines',
   description:
-    'The top-ranked credit cards in the Philippines by True Value Score — scored on net peso value, fee structure, rewards quality, and approval fit.',
-  alternates: { canonical: '/credit-cards/best' },
+    'Browse current Philippine credit card facts. Public score lists are locked until Truva has enough methodology-ready card data.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestCreditCardsPage() {
