@@ -2,15 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { AlertTriangle, CheckCircle, ChevronLeft, Info, Sparkles } from 'lucide-react';
-import { getCreditCards, getCreditCardBySlug } from '@/lib/credit-cards';
+import { getCreditCardBySlug } from '@/lib/credit-cards';
 import type { BadgeInputs, CreditCard } from '@/types';
 
 export const dynamic = 'force-dynamic';
-
-export async function generateStaticParams() {
-  const cards = await getCreditCards();
-  return cards.map((c) => ({ slug: c.normalized_card_key }));
-}
 
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> | { slug: string } }

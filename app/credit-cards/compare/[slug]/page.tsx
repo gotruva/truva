@@ -2,23 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { getCreditCards, getCreditCardBySlug } from '@/lib/credit-cards';
+import { getCreditCardBySlug } from '@/lib/credit-cards';
 import type { CreditCard } from '@/types';
 
 export const dynamic = 'force-dynamic';
-
-export async function generateStaticParams() {
-  const cards = await getCreditCards();
-  const paths: { slug: string }[] = [];
-
-  for (let i = 0; i < cards.length; i++) {
-    for (let j = i + 1; j < cards.length; j++) {
-      paths.push({ slug: `${cards[i].normalized_card_key}-vs-${cards[j].normalized_card_key}` });
-    }
-  }
-
-  return paths;
-}
 
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> | { slug: string } }
