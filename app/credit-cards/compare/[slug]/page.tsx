@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { ChevronLeft, ExternalLink, Info } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ExternalLink, Info, Minus } from 'lucide-react';
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
@@ -73,42 +73,55 @@ export default async function CreditCardComparePage(
         </header>
 
         <main className="relative z-20 mx-auto max-w-6xl space-y-6 px-4 pt-6 sm:-mt-8">
+          {/* Card header: full-size visuals + best-for labels */}
           <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#111827]">
             <div className="grid grid-cols-1 divide-y divide-brand-border bg-slate-50 dark:divide-white/10 dark:bg-slate-900/70 md:grid-cols-2 md:divide-x md:divide-y-0">
-              {[card1, card2].map((card) => (
-                <div key={card.id} className="p-5 md:p-7">
-                  <div className="grid gap-4 sm:grid-cols-[12rem_minmax(0,1fr)]">
-                    <CreditCardVisual card={card} compact />
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-                        {formatCardMeta(card)}
-                      </p>
-                      <h2 className="mt-2 text-2xl font-bold leading-tight text-brand-textPrimary dark:text-white">
-                        {card.card_name}
-                      </h2>
-                      <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">{card.bank}</p>
-                      <CreditCardTrustBadges card={card} limit={3} className="mt-4" />
+              {[card1, card2].map((card) => {
+                const bestFor = computeBestFor(card);
+                return (
+                  <div key={card.id} className="p-6 md:p-8">
+                    <div className="grid gap-5 sm:grid-cols-[13rem_minmax(0,1fr)]">
+                      <CreditCardVisual card={card} />
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
+                          {formatCardMeta(card)}
+                        </p>
+                        <h2 className="mt-2 text-2xl font-bold leading-tight text-brand-textPrimary dark:text-white">
+                          {card.card_name}
+                        </h2>
+                        <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">
+                          {card.bank}
+                        </p>
+                        {bestFor && (
+                          <span
+                            className={`mt-3 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${bestFor.color}`}
+                          >
+                            Best for: {bestFor.label}
+                          </span>
+                        )}
+                        <CreditCardTrustBadges card={card} limit={3} className="mt-4" />
+                      </div>
+                    </div>
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                      <Link
+                        href={`/credit-cards/reviews/${card.normalized_card_key}`}
+                        className="inline-flex flex-1 items-center justify-center rounded-full border border-brand-border bg-white px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
+                      >
+                        View card details
+                      </Link>
+                      <a
+                        href={card.source_url}
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
+                      >
+                        Visit bank site
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
                     </div>
                   </div>
-                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                    <Link
-                      href={`/credit-cards/reviews/${card.normalized_card_key}`}
-                      className="inline-flex flex-1 items-center justify-center rounded-xl border border-brand-border bg-white px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
-                    >
-                      View card details
-                    </Link>
-                    <a
-                      href={card.source_url}
-                      target="_blank"
-                      rel="nofollow noopener noreferrer"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
-                    >
-                      Visit bank site
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="border-t border-brand-border p-5 dark:border-white/10 md:p-7">
@@ -128,6 +141,9 @@ export default async function CreditCardComparePage(
               </div>
             </div>
           </section>
+
+          {/* Key Differences summary block — PH-tuned fields */}
+          <KeyDiffsBlock card1={card1} card2={card2} />
 
           <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
             <CompareSectionTitle title="Basic details" />
@@ -222,6 +238,195 @@ export default async function CreditCardComparePage(
         </main>
       </div>
     </>
+  );
+}
+
+function computeBestFor(card: CreditCard): { label: string; color: string } | null {
+  if (card.naffl || card.annual_fee_recurring === 0)
+    return {
+      label: 'No Annual Fee',
+      color:
+        'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-500/20',
+    };
+  if (card.min_income_monthly !== null && card.min_income_monthly <= 21000)
+    return {
+      label: 'First Card',
+      color:
+        'bg-brand-primaryLight text-brand-primary border-brand-primary/15 dark:bg-brand-primary/10 dark:border-brand-primary/25',
+    };
+  if (
+    card.rewards_type === 'miles' ||
+    card.card_tier === 'signature' ||
+    card.card_tier === 'infinite'
+  )
+    return {
+      label: 'Travel',
+      color:
+        'bg-sky-50 text-sky-700 border-sky-100 dark:bg-sky-900/20 dark:text-sky-300 dark:border-sky-500/20',
+    };
+  if (card.rewards_type === 'cashback')
+    return {
+      label: 'Cashback',
+      color:
+        'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-500/20',
+    };
+  if (card.rewards_type === 'points')
+    return {
+      label: 'Points Rewards',
+      color:
+        'bg-violet-50 text-violet-700 border-violet-100 dark:bg-violet-900/20 dark:text-violet-300 dark:border-violet-500/20',
+    };
+  return null;
+}
+
+type WinnerSide = 'left' | 'right' | 'neutral';
+
+function KeyDiffsBlock({ card1, card2 }: { card1: CreditCard; card2: CreditCard }) {
+  function annualFeeWinner(): WinnerSide {
+    const l = card1.naffl ? 0 : (card1.annual_fee_recurring ?? null);
+    const r = card2.naffl ? 0 : (card2.annual_fee_recurring ?? null);
+    if (l === null && r === null) return 'neutral';
+    if (l === null) return 'right';
+    if (r === null) return 'left';
+    if (l < r) return 'left';
+    if (r < l) return 'right';
+    return 'neutral';
+  }
+
+  function incomeWinner(): WinnerSide {
+    const l = card1.min_income_monthly ?? (card1.min_income_annual ? Math.round(card1.min_income_annual / 12) : null);
+    const r = card2.min_income_monthly ?? (card2.min_income_annual ? Math.round(card2.min_income_annual / 12) : null);
+    if (l === null && r === null) return 'neutral';
+    if (l === null) return 'neutral';
+    if (r === null) return 'neutral';
+    if (l < r) return 'left';
+    if (r < l) return 'right';
+    return 'neutral';
+  }
+
+  function fxWinner(): WinnerSide {
+    const l = card1.foreign_transaction_fee_pct;
+    const r = card2.foreign_transaction_fee_pct;
+    if (l === null && r === null) return 'neutral';
+    if (l === null) return 'neutral';
+    if (r === null) return 'neutral';
+    if (l < r) return 'left';
+    if (r < l) return 'right';
+    return 'neutral';
+  }
+
+  const rows: Array<{
+    label: string;
+    leftValue: string;
+    rightValue: string;
+    winner: WinnerSide;
+    note?: string;
+  }> = [
+    {
+      label: 'Annual fee',
+      leftValue: formatAnnualFee(card1),
+      rightValue: formatAnnualFee(card2),
+      winner: annualFeeWinner(),
+      note: 'Lower is better',
+    },
+    {
+      label: 'Min. income / mo',
+      leftValue: formatIncome(card1),
+      rightValue: formatIncome(card2),
+      winner: incomeWinner(),
+      note: 'Lower = more accessible',
+    },
+    {
+      label: 'Rewards',
+      leftValue: `${formatRewardType(card1.rewards_type)} — ${formatRewardFormula(card1.rewards_formula)}`,
+      rightValue: `${formatRewardType(card2.rewards_type)} — ${formatRewardFormula(card2.rewards_formula)}`,
+      winner: 'neutral',
+    },
+    {
+      label: 'Foreign fee',
+      leftValue: formatPercent(card1.foreign_transaction_fee_pct),
+      rightValue: formatPercent(card2.foreign_transaction_fee_pct),
+      winner: fxWinner(),
+      note: 'Lower is better for overseas use',
+    },
+    {
+      label: 'GCash / Maya earn',
+      leftValue: card1.badge_inputs?.no_ewallet_earn ? 'No earn on e-wallets' : 'No restriction noted',
+      rightValue: card2.badge_inputs?.no_ewallet_earn ? 'No earn on e-wallets' : 'No restriction noted',
+      winner: (() => {
+        const l = card1.badge_inputs?.no_ewallet_earn;
+        const r = card2.badge_inputs?.no_ewallet_earn;
+        if (l && !r) return 'right';
+        if (!l && r) return 'left';
+        return 'neutral';
+      })(),
+    },
+  ];
+
+  return (
+    <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+      <div className="border-b border-brand-border bg-brand-surface px-5 py-4 dark:border-white/10 dark:bg-white/[0.03]">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-primary">
+          Key Differences
+        </p>
+        <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
+          The five fields that matter most for a Philippine card comparison.{' '}
+          <CheckCircle2 className="inline h-3.5 w-3.5 text-emerald-500" /> marks a clear advantage
+          where public data allows.
+        </p>
+      </div>
+
+      {rows.map((row) => (
+        <div
+          key={row.label}
+          className="grid border-b border-brand-border last:border-b-0 dark:border-white/10 md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)]"
+        >
+          <div className="border-b border-brand-border bg-slate-50/70 px-4 py-3 dark:border-white/10 dark:bg-slate-900/40 md:border-b-0 md:border-r">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+              {row.label}
+            </p>
+            {row.note && (
+              <p className="mt-0.5 text-[10px] text-brand-textSecondary/70 dark:text-gray-500">
+                {row.note}
+              </p>
+            )}
+          </div>
+          <KeyDiffCell value={row.leftValue} winner={row.winner === 'left'} />
+          <KeyDiffCell value={row.rightValue} winner={row.winner === 'right'} last />
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function KeyDiffCell({
+  value,
+  winner,
+  last = false,
+}: {
+  value: string;
+  winner: boolean;
+  last?: boolean;
+}) {
+  return (
+    <div
+      className={`flex min-h-[3.5rem] items-start gap-2 border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'md:border-r'}`}
+    >
+      {winner ? (
+        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+      ) : (
+        <Minus className="mt-0.5 h-4 w-4 shrink-0 text-brand-border dark:text-white/20" />
+      )}
+      <p
+        className={
+          winner
+            ? 'text-sm font-semibold text-emerald-700 dark:text-emerald-300'
+            : 'text-sm font-medium text-brand-textSecondary dark:text-gray-400'
+        }
+      >
+        {value}
+      </p>
+    </div>
   );
 }
 

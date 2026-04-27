@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  Star,
   WalletCards,
   type LucideIcon,
 } from 'lucide-react';
@@ -165,6 +166,7 @@ export default async function CreditCardsHub() {
         containerClassName="max-w-7xl"
       >
         <DataReadinessCard cards={cards} />
+        <FirstCardSpotlight cards={cards} />
         <CreditCardCatalog cards={cards} />
 
         <section id="editorial" className="space-y-5 scroll-mt-32">
@@ -300,5 +302,97 @@ function DecisionSupportCard({
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
       </span>
     </Link>
+  );
+}
+
+function FirstCardSpotlight({ cards }: { cards: CreditCardType[] }) {
+  const spotlightCards = cards
+    .filter(
+      (card) =>
+        card.naffl === true ||
+        card.annual_fee_recurring === 0 ||
+        (card.min_income_monthly !== null && card.min_income_monthly <= 21000),
+    )
+    .slice(0, 3);
+
+  if (spotlightCards.length === 0) return null;
+
+  return (
+    <section className="space-y-4 rounded-[1.8rem] border border-emerald-100 bg-emerald-50/60 p-5 dark:border-emerald-500/15 dark:bg-emerald-900/10 sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+          <Star className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700 dark:text-emerald-400">
+            Starting with credit cards?
+          </p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+            These cards have lower barriers to entry
+          </h2>
+          <p className="mt-1 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+            No annual fee for life, or income requirements at entry level — common starting points in
+            the Philippines.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {spotlightCards.map((card) => (
+          <Link
+            key={card.id}
+            href={`/credit-cards/reviews/${card.normalized_card_key}`}
+            className="group flex w-64 shrink-0 flex-col gap-3 rounded-[1.2rem] border border-emerald-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 dark:border-emerald-500/15 dark:bg-white/[0.04] dark:hover:border-emerald-500/30"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-brand-textPrimary group-hover:text-brand-primary dark:text-white">
+                {card.card_name}
+              </p>
+              <p className="mt-0.5 truncate text-xs text-brand-textSecondary dark:text-gray-400">
+                {card.bank}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-lg border border-brand-border bg-brand-surface p-2 dark:border-white/10 dark:bg-white/[0.03]">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-brand-textSecondary dark:text-gray-500">
+                  Annual fee
+                </p>
+                <p className="mt-0.5 text-xs font-bold text-brand-textPrimary dark:text-white">
+                  {card.naffl
+                    ? 'PHP 0 NAFFL'
+                    : card.annual_fee_recurring === 0
+                      ? 'PHP 0'
+                      : card.annual_fee_recurring !== null
+                        ? `PHP ${card.annual_fee_recurring.toLocaleString('en-PH')}`
+                        : 'Not disclosed'}
+                </p>
+              </div>
+              <div className="rounded-lg border border-brand-border bg-brand-surface p-2 dark:border-white/10 dark:bg-white/[0.03]">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-brand-textSecondary dark:text-gray-500">
+                  Min. income
+                </p>
+                <p className="mt-0.5 text-xs font-bold text-brand-textPrimary dark:text-white">
+                  {card.min_income_monthly !== null
+                    ? `PHP ${card.min_income_monthly.toLocaleString('en-PH')} / mo`
+                    : 'No data'}
+                </p>
+              </div>
+            </div>
+
+            {card.naffl && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                No annual fee for life
+              </span>
+            )}
+
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary">
+              View details
+              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }

@@ -1,4 +1,4 @@
-import { CreditCard, FileCheck2, PhilippinePeso } from 'lucide-react';
+import { CreditCard, FileCheck2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CreditCard as CreditCardType } from '@/types';
 
@@ -52,9 +52,15 @@ export function CreditCardVisual({
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/18 backdrop-blur">
             <CreditCard className="h-4 w-4" />
           </span>
-          <span className="rounded-full bg-white/18 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur">
-            Fact card
-          </span>
+          {card.naffl ? (
+            <span className="rounded-full bg-emerald-500/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] backdrop-blur">
+              NAFFL
+            </span>
+          ) : (
+            <span className="rounded-full bg-white/18 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur">
+              {card.card_network ?? 'Fact card'}
+            </span>
+          )}
         </div>
 
         <div>
@@ -68,10 +74,6 @@ export function CreditCardVisual({
               </p>
               <p className="text-lg font-black tabular-nums">{formatAnnualFee(card)}</p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/18 px-2.5 py-1 text-[10px] font-semibold backdrop-blur">
-              <PhilippinePeso className="h-3 w-3" />
-              PH
-            </span>
           </div>
         </div>
       </div>
