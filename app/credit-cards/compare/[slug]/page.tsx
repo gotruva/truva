@@ -26,7 +26,7 @@ export async function generateMetadata(
   if (!card1 || !card2) return {};
 
   return {
-    title: `${card1.card_name} vs ${card2.card_name} | Truva`,
+    title: `${card1.card_name} vs ${card2.card_name}`,
     description: `Side-by-side comparison of the ${card1.card_name} and ${card2.card_name}: fees, rewards, income notes, foreign fees, and source status.`,
     alternates: { canonical: `/credit-cards/compare/${params?.slug ?? ''}` },
   };

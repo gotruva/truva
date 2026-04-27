@@ -25,7 +25,7 @@ import type { CreditCard as CreditCardType } from '@/types';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Compare Credit Cards in the Philippines | Truva',
+  title: 'Compare Credit Cards in the Philippines',
   description:
     'Compare Philippine credit-card fees, rewards, interest, and things to check in plain English before you visit a bank site.',
   alternates: {

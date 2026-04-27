@@ -28,7 +28,7 @@ export async function generateMetadata(
   if (!card) return {};
 
   return {
-    title: `${card.card_name} Details | Truva`,
+    title: `${card.card_name} Details`,
     description: `Plain-English details for the ${card.card_name} by ${card.bank}: fees, rewards, income notes, source links, and missing data.`,
     alternates: { canonical: `/credit-cards/reviews/${card.normalized_card_key}` },
   };
