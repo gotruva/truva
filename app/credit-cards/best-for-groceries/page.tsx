@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best Credit Cards for Groceries in the Philippines 2026',
+  title: 'Grocery Credit Card Facts Philippines | Truva',
   description:
-    'Top grocery credit cards in the Philippines — ranked by cashback and points earn rates at supermarkets, with real annual-fee math included.',
-  alternates: { canonical: '/credit-cards/best-for-groceries' },
+    'Browse grocery-relevant credit card facts from the Truva card desk. Category score lists are locked until reward valuation is ready.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestForGroceriesPage() {

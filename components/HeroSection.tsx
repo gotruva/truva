@@ -34,11 +34,15 @@ export function HeroSection({ verifiedDate }: HeroSectionProps) {
       const STORAGE_KEY = 'truva.compare-hub-state.v1';
       const existing = JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || '{}');
       if (existing?.comparisonState?.amount) {
-        setRawAmount(String(existing.comparisonState.amount));
+        const frame = window.requestAnimationFrame(() => {
+          setRawAmount(String(existing.comparisonState.amount));
+        });
+        return () => window.cancelAnimationFrame(frame);
       }
     } catch {
       // Storage unavailable
     }
+    return undefined;
   }, []);
 
   const displayValue = rawAmount

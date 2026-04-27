@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Calculator, Sparkles, X } from 'lucide-react';
 import { ComparisonState, QuickMatchAnswers, RateProduct } from '@/types';
 import {

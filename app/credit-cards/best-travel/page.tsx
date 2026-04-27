@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best Travel Credit Cards in the Philippines 2026',
+  title: 'Travel Credit Card Facts Philippines | Truva',
   description:
-    'Top travel credit cards in the Philippines ranked by miles value, lounge access, FX fees, and protection coverage.',
-  alternates: { canonical: '/credit-cards/best-travel' },
+    'Browse travel-relevant credit card facts from the Truva card desk. Travel score lists are locked until miles, lounge, FX, and protection data are complete.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestTravelCardsPage() {

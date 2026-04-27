@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best Premium Credit Cards in the Philippines 2026',
+  title: 'Premium Credit Card Facts Philippines | Truva',
   description:
-    'Top premium credit cards in the Philippines — signature and infinite tier cards ranked by lounge value, protection shield, and whether the annual fee is justified.',
-  alternates: { canonical: '/credit-cards/best-premium' },
+    'Browse premium credit card facts from the Truva card desk. Premium score lists are locked until lounge, protection, and reward valuation are complete.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestPremiumCardsPage() {

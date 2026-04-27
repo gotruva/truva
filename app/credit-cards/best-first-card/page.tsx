@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best First Credit Cards in the Philippines 2026',
+  title: 'Starter Credit Card Facts Philippines | Truva',
   description:
-    'Best starter credit cards in the Philippines for beginners — low income requirements, low fees, and straightforward rewards with no redemption traps.',
-  alternates: { canonical: '/credit-cards/best-first-card' },
+    'Browse starter-card facts from the Truva card desk. Income matching is locked until minimum income data is populated.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestFirstCardPage() {

@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Best Credit Cards for Online Shopping in the Philippines 2026',
+  title: 'Online Shopping Credit Card Facts Philippines | Truva',
   description:
-    'Top online shopping credit cards in the Philippines — cashback and points on Shopee, Lazada, and overseas purchases, with FX fee and acceptance network in view.',
-  alternates: { canonical: '/credit-cards/best-for-online-shopping' },
+    'Browse online-shopping credit card facts from the Truva card desk. Category score lists are locked until reward and fee data are complete.',
+  alternates: { canonical: '/credit-cards' },
 };
 
 export default function BestForOnlineShoppingPage() {
