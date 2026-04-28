@@ -615,12 +615,30 @@ function CompareModal({ entries, onClose }: { entries: RankedEntry[]; onClose: (
 // ── Email capture ─────────────────────────────────────────────────────────────
 
 function EmailCapture() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: wire to newsletter endpoint when ready
-    setSent(true);
+    const email = (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json() as { success?: boolean; error?: string };
+      if (!res.ok) {
+        setErrorMsg(data.error ?? 'Something went wrong — please try again.');
+        setStatus('error');
+      } else {
+        setStatus('done');
+      }
+    } catch {
+      setErrorMsg('Could not connect — please try again.');
+      setStatus('error');
+    }
   };
 
   return (
@@ -634,25 +652,34 @@ function EmailCapture() {
             We&apos;ll send these results to your email so you can come back any time. No spam, promise.
           </p>
         </div>
-        {sent ? (
+        {status === 'done' ? (
           <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-900/20 dark:text-emerald-300">
             <Check className="h-4 w-4" /> Sent — check your inbox
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex shrink-0 gap-2">
-            <input
-              type="email"
-              placeholder="you@email.com"
-              required
-              className="rounded-xl border border-brand-border bg-brand-surface px-4 py-2.5 text-sm text-brand-textPrimary placeholder:text-brand-textSecondary/60 focus:border-brand-primary focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500"
-            />
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-bold text-white hover:opacity-90"
-            >
-              <Mail className="h-4 w-4" /> Email my matches
-            </button>
-          </form>
+          <div className="flex shrink-0 flex-col gap-1.5">
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <input
+                type="email"
+                name="email"
+                placeholder="you@email.com"
+                required
+                disabled={status === 'loading'}
+                className="rounded-xl border border-brand-border bg-brand-surface px-4 py-2.5 text-sm text-brand-textPrimary placeholder:text-brand-textSecondary/60 focus:border-brand-primary focus:outline-none disabled:opacity-60 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500"
+              />
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-60"
+              >
+                <Mail className="h-4 w-4" />
+                {status === 'loading' ? 'Sending…' : 'Email my matches'}
+              </button>
+            </form>
+            {status === 'error' && (
+              <p className="text-xs text-red-500 dark:text-red-400">{errorMsg}</p>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -57,17 +57,25 @@ export function CreditCardQuiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
+  // Goals where spend category doesn't meaningfully change results —
+  // NAFFL filters on fee flag, first-card filters on income tier.
+  const SKIP_SPEND_GOALS = new Set(['no-annual-fee', 'first-card']);
+
   const handleSelect = (stepId: string, optionId: string) => {
     const newAnswers = { ...answers, [stepId]: optionId };
     setAnswers(newAnswers);
 
-    if (step < STEPS.length - 1) {
+    const isLastStep = step === STEPS.length - 1;
+    // After income step (step 1), skip spend step for certain goals
+    const skipSpend = step === 1 && SKIP_SPEND_GOALS.has(newAnswers.goal ?? '');
+
+    if (!isLastStep && !skipSpend) {
       setStep(step + 1);
     } else {
       const params = new URLSearchParams({
         goal:     newAnswers.goal     ?? '',
         income:   newAnswers.income   ?? '',
-        spending: newAnswers.spending ?? '',
+        spending: newAnswers.spending ?? 'groceries',
       });
       router.push(`/credit-cards/results?${params.toString()}`);
     }

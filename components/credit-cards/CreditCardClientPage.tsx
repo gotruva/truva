@@ -7,6 +7,9 @@ import { CreditCardCategoryChips } from './CreditCardCategoryChips';
 import { CreditCardCatalog } from './CreditCardCatalog';
 import { CreditCardLabelExplainer } from './CreditCardLabelExplainer';
 import { CreditCardMethodologySection } from './CreditCardMethodologySection';
+import { CreditCardHowItWorks } from './CreditCardHowItWorks';
+import { CreditCardStatsStrip } from './CreditCardStatsStrip';
+import { CreditCardTrustGrid } from './CreditCardTrustGrid';
 import { EducationalGuidesSection } from './EducationalGuidesSection';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
@@ -32,6 +35,9 @@ export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
         <Breadcrumbs items={[{ label: 'Credit Cards', href: '/credit-cards' }]} />
       </div>
 
+      {/* How it works — sets expectations before the quiz */}
+      <CreditCardHowItWorks />
+
       {/* Quiz Section */}
       <section className="bg-brand-surface/30 dark:bg-white/5 py-12">
         <div className="mx-auto max-w-3xl text-center px-4 mb-8">
@@ -39,22 +45,30 @@ export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
             Not sure where to start?
           </h2>
           <p className="mt-4 text-lg text-brand-textSecondary dark:text-gray-400">
-            Answer 3 quick questions and we'll show you the best matches for your lifestyle.
+            Answer a few quick questions and we&apos;ll show you the best matches for your lifestyle.
           </p>
         </div>
         <CreditCardQuiz />
       </section>
 
       {/* Category Chips */}
-      <section className="py-12 border-b border-brand-border dark:border-white/10">
+      <section className="py-8 border-b border-brand-border dark:border-white/10">
         <CreditCardCategoryChips activeId={activePill} onSelect={handleSelectCategory} />
       </section>
+
+      {/* Stats strip — honest numbers from live data */}
+      <CreditCardStatsStrip cards={cards} />
 
       {/* Main Catalog Table */}
       <div className="bg-[#F8F9FB] dark:bg-slate-950 py-16">
         <div className="mx-auto max-w-7xl px-4">
           <CreditCardCatalog cards={cards} initialPill={activePill} key={activePill} />
         </div>
+      </div>
+
+      {/* Trust grid — addresses Filipino user anxieties */}
+      <div className="border-t border-brand-border dark:border-white/10">
+        <CreditCardTrustGrid />
       </div>
 
       {/* Fee Explainer / Label */}
