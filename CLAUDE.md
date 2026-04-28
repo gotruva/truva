@@ -13,7 +13,7 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 
 ---
 
-## Current state (April 20, 2026)
+## Current state (April 28, 2026)
 
 - Public bank-rate source of truth is the approved Supabase `production` snapshot, not only `data/rates.json`.
 - Latest production snapshot: `526fd854-1678-428c-b029-369285baf674`, promoted April 20, 2026. It contains 67 raw snapshot products and hydrates to 57 public API products after canonical-ID dedupe.
@@ -43,17 +43,17 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 
 ---
 
-## Expansion roadmap (DO NOT build ahead of schedule)
+## Expansion roadmap
 
-| Phase | Timing | Category | Gate to unlock |
+Build order is driven by what the market and target users find important — not arbitrary gates. Phases are a guide, not a lock.
+
+| Phase | Status | Category | Notes |
 |---|---|---|---|
-| 1 | Now → Month 5 | Savings, DeFi, govt bonds, UITFs, cooperatives | — |
-| 2 | Month 6+ | **Credit cards** | 3k subs + affiliate revenue + 2 bank partnerships |
-| 3 | Year 2 | Personal loans, home loans | SEO authority + bank relationships |
-| 4 | Year 2+ | Investing (stocks, UITFs expanded) | Phase 3 complete |
-| 5 | Year 3+ | Insurance | Full team + IC broker license + capital |
-
-**Phase 2+ is locked.** Do not build credit card, loan, or insurance UI features ahead of schedule unless instructed.
+| 1 | ✅ Live | Savings, DeFi, govt bonds, UITFs, cooperatives | Core banking rates |
+| 2 | 🔨 Active | **Credit cards** | Phase 1 shipped 2026-04-28; Phase 2 + 3 next |
+| 3 | Upcoming | Personal loans, home loans | Build when CC feature is stable |
+| 4 | Future | Investing (stocks, UITFs expanded) | After Phase 3 |
+| 5 | Future | Insurance | Needs full team + IC broker license |
 
 ---
 
@@ -61,7 +61,7 @@ Truva is the world's best **all-in-one Financial and Lifestyle comparison app**.
 
 - **After-tax always:** `taxExempt ? grossRate : grossRate * 0.80` (dollar TDs: `* 0.925`)
 - **Mobile first:** Everything works at 375px, no horizontal scroll
-- **No scope creep:** If it's not in the current week's sprint tasks, don't build it
+- **Market-driven scope:** Build what users need. Confirm intent before starting large features, but don't let an old roadmap gate block real user value.
 - **Affiliate disclosure on every CTA:** Required for trust and compliance
 - **No fund custody features:** Ever. We compare, we don't hold money.
 
