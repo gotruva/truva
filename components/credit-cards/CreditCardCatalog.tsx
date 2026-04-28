@@ -17,6 +17,7 @@ import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrust
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
+import editorial from '@/lib/creditCardEditorial';
 import { cn } from '@/lib/utils';
 import type { BadgeInputs, CreditCard as CreditCardType } from '@/types';
 
@@ -172,8 +173,8 @@ export function CreditCardCatalog({
     .filter((card): card is CreditCardType => Boolean(card));
 
   const compareHref =
-    selectedCards.length === 2
-      ? `/credit-cards/compare/${encodeURIComponent(selectedCards[0].normalized_card_key)}-vs-${encodeURIComponent(selectedCards[1].normalized_card_key)}`
+    selectedCards.length >= 2
+      ? `/credit-cards/compare/${selectedCards.map((c) => encodeURIComponent(c.normalized_card_key)).join('-vs-')}`
       : '#';
 
   function selectPill(pill: QuickPill) {
@@ -195,7 +196,7 @@ export function CreditCardCatalog({
       if (current.includes(card.normalized_card_key)) {
         return current.filter((key) => key !== card.normalized_card_key);
       }
-      if (current.length >= 2) return current;
+      if (current.length >= 3) return current;
       return [...current, card.normalized_card_key];
     });
   }
@@ -388,7 +389,7 @@ export function CreditCardCatalog({
               card={card}
               selected={selected.includes(card.normalized_card_key)}
               compareDisabled={
-                !selected.includes(card.normalized_card_key) && selected.length >= 2
+                !selected.includes(card.normalized_card_key) && selected.length >= 3
               }
               onToggleCompare={() => toggleCompare(card)}
             />
@@ -478,6 +479,7 @@ function CatalogCard({
   compareDisabled: boolean;
   onToggleCompare: () => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
   const isPartnerCard = card.badge_inputs?.partner_card === true;
   const bestFor = computeBestFor(card);
 
@@ -601,13 +603,72 @@ function CatalogCard({
           <BadgeChips badges={card.badge_inputs} limit={4} />
         </div>
 
-        {/* Source date */}
-        <p className="mt-3 text-xs text-brand-textSecondary dark:text-gray-400">
-          Source updated:{' '}
-          <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
-            {formatDate(card.last_scraped_at)}
-          </span>
-        </p>
+        {/* Inline expand toggle */}
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          className="mt-4 flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline"
+        >
+          {expanded ? (
+            <>Hide details <ChevronUp className="h-3.5 w-3.5" /></>
+          ) : (
+            <>More details <ChevronDown className="h-3.5 w-3.5" /></>
+          )}
+        </button>
+
+        {expanded && (
+          <div className="mt-3 space-y-3 border-t border-brand-border pt-3 dark:border-white/10">
+            {editorial[card.normalized_card_key]?.why && (
+              <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+                {editorial[card.normalized_card_key].why}
+              </p>
+            )}
+            <div className="grid grid-cols-3 gap-2">
+              <FactTile
+                label="Waiver condition"
+                value={card.annual_fee_waiver_condition ?? 'No public data'}
+                detail={
+                  card.annual_fee_waiver_threshold
+                    ? `Spend ₱${card.annual_fee_waiver_threshold.toLocaleString('en-PH')}+`
+                    : ''
+                }
+              />
+              <FactTile
+                label="Cash advance"
+                value={formatCashAdvanceFee(card)}
+                detail="Per transaction"
+              />
+              <FactTile
+                label="Late payment"
+                value={
+                  card.late_payment_fee_amount !== null
+                    ? formatPhpAmount(card.late_payment_fee_amount)
+                    : 'Not disclosed'
+                }
+                detail="Per missed payment"
+              />
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <BadgeChips badges={card.badge_inputs} />
+            </div>
+            <p className="text-xs text-brand-textSecondary dark:text-gray-400">
+              Source updated:{' '}
+              <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
+                {formatDate(card.last_scraped_at)}
+              </span>
+            </p>
+          </div>
+        )}
+
+        {/* Source date (collapsed state only) */}
+        {!expanded && (
+          <p className="mt-3 text-xs text-brand-textSecondary dark:text-gray-400">
+            Source updated:{' '}
+            <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
+              {formatDate(card.last_scraped_at)}
+            </span>
+          </p>
+        )}
 
         {/* CTAs */}
         <div className="mt-5 flex flex-col gap-2 sm:flex-row">
@@ -699,11 +760,18 @@ function CompareTray({
                 </button>
               </span>
             ))}
-            {selectedCards.length === 1 ? (
+            {selectedCards.length === 1 && (
+              <>
+                <span className="inline-flex items-center rounded-full border border-dashed border-brand-border px-3 py-1.5 text-xs text-brand-textSecondary dark:border-white/10">
+                  Select 1 or 2 more cards
+                </span>
+              </>
+            )}
+            {selectedCards.length === 2 && (
               <span className="inline-flex items-center rounded-full border border-dashed border-brand-border px-3 py-1.5 text-xs text-brand-textSecondary dark:border-white/10">
-                Select one more card
+                Add a 3rd card (optional)
               </span>
-            ) : null}
+            )}
           </div>
         </div>
 
@@ -717,15 +785,15 @@ function CompareTray({
           </button>
           <Link
             href={compareHref}
-            aria-disabled={selectedCards.length !== 2}
+            aria-disabled={selectedCards.length < 2}
             className={cn(
               'inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold',
-              selectedCards.length === 2
+              selectedCards.length >= 2
                 ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20'
                 : 'pointer-events-none bg-brand-primary/30 text-white',
             )}
           >
-            Compare two cards
+            Compare {selectedCards.length >= 2 ? selectedCards.length : ''} cards
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -886,4 +954,12 @@ function formatPhpAmount(amount: number) {
   })
     .format(amount)
     .replace('PHP', 'PHP ');
+}
+
+function formatCashAdvanceFee(card: CreditCardType) {
+  const pieces = [
+    card.cash_advance_fee_pct !== null ? `${card.cash_advance_fee_pct.toFixed(2)}%` : null,
+    card.cash_advance_fee_amount !== null ? formatPhpAmount(card.cash_advance_fee_amount) : null,
+  ].filter(Boolean);
+  return pieces.length > 0 ? pieces.join(' or ') : 'Not disclosed';
 }
