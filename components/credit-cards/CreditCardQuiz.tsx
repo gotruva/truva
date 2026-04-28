@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronLeft, Sparkles, CreditCard, Wallet, Plane, ShoppingCart, Utensils, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -52,9 +53,9 @@ const SPENDING_OPTIONS = [
 ];
 
 export function CreditCardQuiz() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [isCompleted, setIsCompleted] = useState(false);
 
   const handleSelect = (stepId: string, optionId: string) => {
     const newAnswers = { ...answers, [stepId]: optionId };
@@ -63,9 +64,12 @@ export function CreditCardQuiz() {
     if (step < STEPS.length - 1) {
       setStep(step + 1);
     } else {
-      setIsCompleted(true);
-      // In a real app, this would trigger a filter on the catalog
-      console.log('Quiz completed:', newAnswers);
+      const params = new URLSearchParams({
+        goal:     newAnswers.goal     ?? '',
+        income:   newAnswers.income   ?? '',
+        spending: newAnswers.spending ?? '',
+      });
+      router.push(`/credit-cards/results?${params.toString()}`);
     }
   };
 
@@ -76,36 +80,6 @@ export function CreditCardQuiz() {
   };
 
   const currentStep = STEPS[step];
-
-  if (isCompleted) {
-    return (
-      <div id="quiz" className="scroll-mt-24 mx-auto max-w-2xl text-center py-12 px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="rounded-[2.5rem] border border-emerald-100 bg-emerald-50/50 p-8 dark:border-emerald-500/20 dark:bg-emerald-500/5"
-        >
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/20">
-            <Check className="h-8 w-8" />
-          </div>
-          <h2 className="text-2xl font-bold text-brand-textPrimary dark:text-white">Results are ready!</h2>
-          <p className="mt-2 text-brand-textSecondary dark:text-gray-400">
-            We've found the best cards for your {INCOME_OPTIONS.find(o => o.id === answers.income)?.label} income and focus on {GOAL_OPTIONS.find(o => o.id === answers.goal)?.label}.
-          </p>
-          <Button
-            onClick={() => {
-              setIsCompleted(false);
-              setStep(0);
-            }}
-            variant="outline"
-            className="mt-8 rounded-xl"
-          >
-            Retake Quiz
-          </Button>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div id="quiz" className="scroll-mt-24 mx-auto max-w-3xl px-4 py-12">
@@ -198,7 +172,7 @@ function QuizOption({
 }: {
   label: string;
   sub?: string;
-  icon?: any;
+  icon?: React.ComponentType<{ className?: string }>;
   selected?: boolean;
   onClick: () => void;
 }) {

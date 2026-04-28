@@ -14,7 +14,8 @@ import {
 import { CreditCardTrustBadges, ScorePendingNotice, TheCatchPanel } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
-import { getCreditCardBySlug } from '@/lib/credit-cards';
+import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
+import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
 import type { BadgeInputs, CreditCard } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -45,6 +46,8 @@ export default async function CreditCardReviewPage(
 
   const isPartnerCard = card.badge_inputs?.partner_card === true;
   const coverage = getFieldCoverage(card);
+  const annualEst = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
+  const editorial = getEditorialFor(card);
 
   return (
     <>
@@ -80,8 +83,21 @@ export default async function CreditCardReviewPage(
                 <p className="mt-2 text-lg text-white/80">{card.bank}</p>
               </div>
 
-              <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
-                <TrueValueScoreBadge showReason className="text-white" />
+              <div className="space-y-3">
+                <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/70">
+                    You could keep / year
+                  </p>
+                  <p className="mt-1 text-3xl font-black tabular-nums text-white">
+                    {'₱' + Math.round(annualEst.netAnnual).toLocaleString('en-PH')}
+                  </p>
+                  <p className="mt-1 text-[11px] text-white/60">
+                    Based on ₱25,000/mo income · grocery spending
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
+                  <TrueValueScoreBadge showReason className="text-white" />
+                </div>
               </div>
             </div>
           </div>
@@ -104,10 +120,10 @@ export default async function CreditCardReviewPage(
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <FactTile label="Annual fee" value={formatAnnualFee(card)} detail={card.annual_fee_waiver_condition ?? 'Waiver data incomplete'} />
+                  <FactTile label="Yearly fee" value={formatAnnualFee(card)} detail={card.annual_fee_waiver_condition ?? 'Waiver data incomplete'} />
                   <FactTile label="Rewards" value={formatRewardType(card.rewards_type)} detail={formatRewardFormula(card.rewards_formula)} />
                   <FactTile label="Interest" value={formatMonthlyRate(card.interest_rate_pct)} detail="Monthly rate when disclosed" />
-                  <FactTile label="Foreign fee" value={formatPercent(card.foreign_transaction_fee_pct)} detail="Fee for non-PHP or overseas transactions" />
+                  <FactTile label="Foreign card fee" value={formatPercent(card.foreign_transaction_fee_pct)} detail="Fee for non-PHP or overseas transactions" />
                 </div>
                 <CreditCardTrustBadges card={card} limit={6} />
               </div>
@@ -132,6 +148,43 @@ export default async function CreditCardReviewPage(
                 <div className="mt-3">
                   <ScorePendingNotice />
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Editorial: why / pros / cons */}
+          <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:p-6">
+            <div className="mb-4 flex items-center gap-2 text-sm font-bold text-brand-primary">
+              <Sparkles className="h-4 w-4" />
+              What you should know about this card
+            </div>
+            <p className="mb-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              {editorial.why}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  <CheckCircle className="h-3.5 w-3.5" /> What&apos;s good
+                </h4>
+                <ul className="space-y-1.5">
+                  {editorial.pros.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-brand-textSecondary dark:text-gray-300">
+                      <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />{p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+                  <AlertTriangle className="h-3.5 w-3.5" /> Things to know
+                </h4>
+                <ul className="space-y-1.5">
+                  {editorial.cons.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-brand-textSecondary dark:text-gray-300">
+                      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />{p}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </section>

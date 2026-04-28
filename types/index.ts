@@ -199,6 +199,16 @@ export interface CreditCard {
 /** @deprecated Use CreditCard — kept temporarily for any remaining reference sites */
 export type CreditCardProduct = CreditCard;
 
+// Re-export quiz/scoring types so consumers can import from '@/types'
+export type {
+  CardMatchAnswers,
+  CardValueEstimate,
+  CardScore,
+  SpendingCategory,
+  GoalId,
+  IncomeBracketId,
+} from '@/lib/creditCardValue';
+
 export interface EditorialCta {
   label: string;
   href: string;

@@ -16,6 +16,7 @@ import {
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
+import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
 import { cn } from '@/lib/utils';
 import type { BadgeInputs, CreditCard as CreditCardType } from '@/types';
 
@@ -126,7 +127,7 @@ export function CreditCardCatalog({
   );
 
   const filteredCards = useMemo(() => {
-    return cards.filter((card) => {
+    const filtered = cards.filter((card) => {
       if (filters.issuer !== 'all' && card.bank !== filters.issuer) return false;
       if (filters.reward !== 'all' && (card.rewards_type ?? 'none') !== filters.reward)
         return false;
@@ -152,6 +153,12 @@ export function CreditCardCatalog({
       if (filters.promo === 'linked' && card.active_promo_count <= 0) return false;
       if (filters.promo === 'none' && card.active_promo_count > 0) return false;
       return true;
+    });
+    // Default sort: highest net annual value first
+    return filtered.sort((a, b) => {
+      const va = estimateAnnualValue(a, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY).netAnnual;
+      const vb = estimateAnnualValue(b, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY).netAnnual;
+      return vb - va;
     });
   }, [cards, filters]);
 
@@ -521,10 +528,25 @@ function CatalogCard({
               )}
             </div>
 
-            {/* 3 primary fact tiles: Annual Fee · Min. Income · Rewards */}
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            {/* ₱/year hero estimate */}
+            {(() => {
+              const est = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
+              return (
+                <div className="mt-3 flex items-center gap-2">
+                  <span className="text-xl font-black tabular-nums text-brand-textPrimary dark:text-white">
+                    {'₱' + Math.round(est.netAnnual).toLocaleString('en-PH')}
+                  </span>
+                  <span className="text-xs text-brand-textSecondary dark:text-gray-400">
+                    you could keep / year
+                  </span>
+                </div>
+              );
+            })()}
+
+            {/* 3 primary fact tiles: Yearly Fee · Min. Income · Rewards */}
+            <div className="mt-3 grid grid-cols-3 gap-2">
               <FactTile
-                label="Annual fee"
+                label="Yearly fee"
                 value={formatAnnualFee(card)}
                 detail={card.annual_fee_waiver_condition ?? 'Waiver data incomplete'}
               />
@@ -540,9 +562,9 @@ function CatalogCard({
               />
             </div>
 
-            {/* Secondary line: Foreign fee + Interest */}
+            {/* Secondary line: Foreign card fee + Interest */}
             <p className="mt-3 text-xs text-brand-textSecondary dark:text-gray-400">
-              Foreign fee:{' '}
+              Foreign card fee:{' '}
               <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
                 {formatPercent(card.foreign_transaction_fee_pct)}
               </span>
