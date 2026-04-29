@@ -759,19 +759,53 @@ export function CreditCardResults({ answers, ranked }: Props) {
         </div>
 
         {/* Methodology callout */}
-        <div className="flex gap-4 rounded-[1.25rem] border border-brand-border bg-white p-5 dark:border-white/10 dark:bg-white/[0.04]">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
-          <div>
-            <h4 className="text-sm font-bold text-brand-textPrimary dark:text-white">How did we choose these?</h4>
-            <p className="mt-1 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400">
-              We never accept money to push a card higher. We score every card on three things:{' '}
-              <strong>1.</strong> can you actually qualify based on your income,{' '}
-              <strong>2.</strong> how much money you get to keep after the yearly fee is taken out, and{' '}
-              <strong>3.</strong> how good the rewards are for how you spend.
+        <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-brand-primary to-blue-700 p-6 text-white shadow-lg shadow-brand-primary/20 md:p-8">
+          {/* Decorative circles */}
+          <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/5" />
+          <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/5" />
+
+          <div className="relative z-10">
+            {/* Header */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+                <ShieldCheck className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">Our promise</p>
+                <h4 className="text-base font-bold text-white">How did we choose these?</h4>
+              </div>
+            </div>
+
+            <p className="mt-4 text-sm leading-relaxed text-white/80">
+              We never accept money to push a card higher. Every ranking is based purely on the math.
             </p>
-            <Link href="/credit-cards#methodology" className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-brand-primary hover:underline">
+
+            {/* 3 criteria pills */}
+            <div className="mt-4 grid gap-2 sm:grid-cols-3">
+              {[
+                { n: '1', label: 'You can qualify', detail: 'Income check first' },
+                { n: '2', label: 'Money you keep', detail: 'After fees are taken out' },
+                { n: '3', label: 'Reward fit', detail: 'For how you actually spend' },
+              ].map((item) => (
+                <div
+                  key={item.n}
+                  className="flex items-start gap-2.5 rounded-xl bg-white/10 px-3 py-2.5 backdrop-blur-sm"
+                >
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[10px] font-black text-brand-primary">
+                    {item.n}
+                  </span>
+                  <div>
+                    <p className="text-xs font-bold text-white">{item.label}</p>
+                    <p className="text-[11px] text-white/60">{item.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              href="/methodology/credit-cards"
+              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/25"
+            >
               Read our full methodology <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
