@@ -479,11 +479,12 @@ function resolveTiers(
   }
 
   // Scraper has 1 capped tier but seed defines a multi-tier blended structure.
-  // Take the scraper's fresh rate for tier 1; preserve seed's remaining tiers.
+  // Take the scraper's fresh promo tier and use the scraper base rate for any
+  // preserved overflow tiers, so stale seed fallback rates do not leak publicly.
   if (rawTiers?.length === 1 && rawTiers[0]?.maxBalance !== null && seed && seed.tiers.length > 1) {
     return [
       { ...seed.tiers[0], grossRate: rawTiers[0].grossRate, afterTaxRate: rawTiers[0].afterTaxRate },
-      ...seed.tiers.slice(1),
+      ...seed.tiers.slice(1).map((tier) => ({ ...tier, grossRate, afterTaxRate })),
     ];
   }
 
