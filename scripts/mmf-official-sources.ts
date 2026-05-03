@@ -37,6 +37,7 @@ export interface DailyRatePayload {
   gross_yield_1y: number;
   after_tax_yield: number;
   net_yield: number;
+  benchmark_date: string | null;
   benchmark_rate: number | null;
   vs_benchmark: number | null;
   data_source: string;
@@ -57,15 +58,16 @@ interface ParsedUitfRow {
 }
 
 const UITF_BASE_URL = 'https://www.uitf.com.ph/daily_navpu.php';
+const BTR_TREASURY_BILLS_URL = 'https://www.treasury.gov.ph/?cat=15';
 const PIFA_URL = 'https://pifa.com.ph/facts-figures/';
 const BPI_MONITOR_URL = 'https://www.bpi.com.ph/group/bpiwealth/analyst-insights/investment-funds-monitor';
 
-export const BTR_91D_OFFICIAL_RATE: OfficialBenchmarkRate = {
+export const BTR_91D_LAST_VERIFIED_RATE: OfficialBenchmarkRate = {
   key: 'BTR_91D',
   label: '91-day T-Bill (BTr auction)',
-  date: '2026-04-20',
-  rate: 0.04542,
-  source_url: 'https://www.treasury.gov.ph/wp-content/uploads/2026/04/Treasury-Bills-Auction-Results-on-20-April-2026-.pdf',
+  date: '2026-04-27',
+  rate: 0.04558,
+  source_url: 'https://www.treasury.gov.ph/wp-content/uploads/2026/04/Treasury-Bills-Auction-Results-on-27-April-2026.pdf',
 };
 
 export const UITF_SOURCE_CONFIG: Record<string, UitfSourceConfig> = {
@@ -235,6 +237,26 @@ function parseSourceDate(value: string) {
   return `${match[3]}-${month}-${match[2].padStart(2, '0')}`;
 }
 
+function formatSourceDateFromParts(day: string, monthName: string, year: string) {
+  const monthByName: Record<string, string> = {
+    january: '01',
+    february: '02',
+    march: '03',
+    april: '04',
+    may: '05',
+    june: '06',
+    july: '07',
+    august: '08',
+    september: '09',
+    october: '10',
+    november: '11',
+    december: '12',
+  };
+  const month = monthByName[monthName.toLowerCase()];
+  if (!month) throw new Error(`Could not parse benchmark month ${monthName}.`);
+  return `${year}-${month}-${day.padStart(2, '0')}`;
+}
+
 function parsePifaDate(text: string) {
   const match = text.match(/As of\s+(\d{2})\/(\d{2})\/(\d{4})/i);
   if (!match) throw new Error('Could not find PIFA source date.');
@@ -243,7 +265,10 @@ function parsePifaDate(text: string) {
 
 async function fetchText(url: string) {
   const response = await fetch(url, {
-    headers: { 'user-agent': 'Mozilla/5.0 (compatible; TruvaMMF/1.0)' },
+    headers: {
+      accept: 'text/html,application/pdf,*/*;q=0.8',
+      'user-agent': 'Mozilla/5.0 (compatible; TruvaMMF/1.0)',
+    },
   });
 
   if (!response.ok) {
@@ -251,6 +276,89 @@ async function fetchText(url: string) {
   }
 
   return response.text();
+}
+
+function assertNotBlockedByWaf(text: string, url: string) {
+  if (/incapsula|request unsuccessful|_Incapsula_Resource|noindex,nofollow/i.test(text)) {
+    throw new Error(`Official source blocked automated fetch for ${url}.`);
+  }
+}
+
+function buildBtrPdfUrl(path: string) {
+  if (path.startsWith('http')) return path;
+  return new URL(path, BTR_TREASURY_BILLS_URL).toString();
+}
+
+function extractLatestBtrPdfFromArchive(html: string) {
+  assertNotBlockedByWaf(html, BTR_TREASURY_BILLS_URL);
+
+  const directPdf = html.match(/href=["']([^"']*Treasury-Bills-Auction-Results-on-(\d{1,2})-([A-Za-z]+)-(\d{4})-?\.pdf)["']/i);
+  if (directPdf) {
+    return {
+      date: formatSourceDateFromParts(directPdf[2], directPdf[3], directPdf[4]),
+      sourceUrl: buildBtrPdfUrl(directPdf[1]),
+    };
+  }
+
+  const archiveLink = html.match(/href=["']([^"']+)["'][^>]*>\s*Treasury Bills Auction Results on (\d{1,2}) ([A-Za-z]+) (\d{4})\s*</i);
+  if (!archiveLink) throw new Error('Could not find latest BTr Treasury Bills auction link.');
+
+  return {
+    date: formatSourceDateFromParts(archiveLink[2], archiveLink[3], archiveLink[4]),
+    sourceUrl: buildBtrPdfUrl(archiveLink[1]),
+  };
+}
+
+function extractBtr91DayAverageRate(text: string) {
+  assertNotBlockedByWaf(text, 'BTr Treasury Bills PDF');
+  const normalized = stripHtml(text);
+  const sectionMatch = normalized.match(/91\s*days[\s\S]*?(?=182\s*days|364\s*days|THIS IS A COMPUTER GENERATED REPORT|$)/i);
+  const section = sectionMatch ? sectionMatch[0] : normalized;
+  const tableMatch = section.match(/Annual\s+Rate\s+Average\s+Low\s+High\s+Comp\.?\s+Stop[-\s]?Out\s+N-C\s+Awarded\s+([0-9.,]+)\s+([0-9.,]+)\s+([0-9.,]+)\s+([0-9.,]+)\s+([0-9.,]+)\s+([0-9.,]+)/i);
+  if (tableMatch) {
+    const parsed = parseNumber(tableMatch[4]);
+    if (parsed !== null) return parsed > 1 ? parsed / 100 : parsed;
+  }
+
+  const numbers = [...section.matchAll(/\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b/g)]
+    .map((match) => parseNumber(match[0]))
+    .filter((value): value is number => value !== null);
+  const annualRateIndex = numbers.findIndex((value, index) =>
+    value > 80 &&
+    (numbers[index + 1] ?? 0) > 80 &&
+    (numbers[index + 2] ?? 0) > 80 &&
+    (numbers[index + 3] ?? 0) > 0 &&
+    (numbers[index + 3] ?? 0) < 20,
+  );
+  if (annualRateIndex !== -1) return numbers[annualRateIndex + 3] / 100;
+
+  throw new Error(`Could not parse 91-day BTr annual average rate. Sample: ${normalized.slice(0, 700)}`);
+}
+
+export async function fetchOfficialBtr91DayBenchmark() {
+  try {
+    const archiveHtml = await fetchText(BTR_TREASURY_BILLS_URL);
+    const latest = extractLatestBtrPdfFromArchive(archiveHtml);
+    const pdfText = await fetchText(latest.sourceUrl);
+    const rate = extractBtr91DayAverageRate(pdfText);
+
+    if (rate <= 0 || rate > 0.2) {
+      throw new Error(`Parsed BTr 91-day rate looks wrong: ${rate}`);
+    }
+
+    return {
+      key: 'BTR_91D',
+      label: '91-day T-Bill (BTr auction)',
+      date: latest.date,
+      rate: roundRate(rate),
+      source_url: latest.sourceUrl,
+    } satisfies OfficialBenchmarkRate;
+  } catch (error) {
+    console.warn(
+      `[mmf] Falling back to last verified BTr 91D benchmark because the official source could not be fetched: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    return BTR_91D_LAST_VERIFIED_RATE;
+  }
 }
 
 function parseUitfProviderPage(html: string, bankId: number) {
@@ -466,7 +574,7 @@ export async function fetchOfficialBenchmarks() {
   }
 
   return [
-    BTR_91D_OFFICIAL_RATE,
+    await fetchOfficialBtr91DayBenchmark(),
     {
       key: 'US_TBILL_90D',
       label: '90-Day SOFR Average (Proxy for US T-Bill)',
@@ -517,6 +625,7 @@ export function computeDailyRatePayload(
     gross_yield_1y: roundRate(official.grossYield),
     after_tax_yield: roundRate(afterTaxYield),
     net_yield: roundRate(netYield),
+    benchmark_date: benchmark?.date ?? null,
     benchmark_rate: benchmarkRate === null ? null : roundRate(benchmarkRate),
     vs_benchmark: vsBenchmark === null ? null : roundRate(vsBenchmark),
     data_source: dataSource,

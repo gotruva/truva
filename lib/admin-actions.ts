@@ -114,17 +114,21 @@ export async function upsertMMFDailyRate(fundId: string, payload: MmfDailyRateUp
     .single();
 
   let benchmark_rate = null;
+  let benchmark_date = null;
   let vs_benchmark = null;
-  if (fund?.benchmark_key) {
+  const rateDate = typeof payload.date === 'string' ? payload.date : null;
+  if (fund?.benchmark_key && rateDate) {
     const { data: bench } = await supabase
       .from('benchmark_rates')
-      .select('rate')
+      .select('date, rate')
       .eq('key', fund.benchmark_key)
+      .lte('date', rateDate)
       .order('date', { ascending: false })
       .limit(1)
       .single();
 
     if (bench) {
+      benchmark_date = bench.date;
       benchmark_rate = bench.rate;
       const afterTaxBench = fund.currency === 'USD' ? bench.rate : bench.rate * 0.80;
       vs_benchmark = payload.net_yield - afterTaxBench;
@@ -136,6 +140,7 @@ export async function upsertMMFDailyRate(fundId: string, payload: MmfDailyRateUp
     .upsert({
       fund_id: fundId,
       ...payload,
+      benchmark_date,
       benchmark_rate,
       vs_benchmark,
       data_source: 'manual',
@@ -172,18 +177,21 @@ export async function copyLastMMFRate(fundId: string, targetDate: string) {
   if (fetchError || !lastRate) throw new Error('Could not find a previous rate to copy.');
 
   let benchmark_rate = lastRate.benchmark_rate;
+  let benchmark_date = lastRate.benchmark_date;
   let vs_benchmark = lastRate.vs_benchmark;
 
-  if ((benchmark_rate === null || benchmark_rate === undefined) && fund?.benchmark_key) {
+  if ((benchmark_rate === null || benchmark_rate === undefined || benchmark_date === null || benchmark_date === undefined) && fund?.benchmark_key) {
     const { data: bench } = await supabase
       .from('benchmark_rates')
-      .select('rate')
+      .select('date, rate')
       .eq('key', fund.benchmark_key)
+      .lte('date', targetDate)
       .order('date', { ascending: false })
       .limit(1)
       .single();
 
     if (bench) {
+      benchmark_date = bench.date;
       benchmark_rate = bench.rate;
       const afterTaxBench = fund.currency === 'USD' ? bench.rate : bench.rate * 0.80;
       vs_benchmark = lastRate.net_yield - afterTaxBench;
@@ -199,6 +207,7 @@ export async function copyLastMMFRate(fundId: string, targetDate: string) {
       gross_yield_1y: lastRate.gross_yield_1y,
       after_tax_yield: lastRate.after_tax_yield,
       net_yield: lastRate.net_yield,
+      benchmark_date,
       benchmark_rate,
       vs_benchmark,
       data_source: 'manual_verification',

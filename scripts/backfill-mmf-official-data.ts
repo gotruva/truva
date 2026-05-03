@@ -38,6 +38,7 @@ function formatPayloadForLog(payload: ReturnType<typeof computeDailyRatePayload>
     navpu: payload.navpu,
     gross: formatPercent(payload.gross_yield_1y),
     net: formatPercent(payload.net_yield),
+    benchmarkDate: payload.benchmark_date,
     benchmark: payload.benchmark_rate === null ? null : formatPercent(payload.benchmark_rate),
     vsBenchmark: payload.vs_benchmark === null ? null : formatPercent(payload.vs_benchmark),
     source: payload.data_source,
