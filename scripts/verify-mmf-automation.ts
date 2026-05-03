@@ -27,6 +27,7 @@ type CurrentRow = FundRow & {
   gross_yield_1y: number | null;
   after_tax_yield: number | null;
   net_yield: number | null;
+  benchmark_date: string | null;
   benchmark_rate: number | null;
   vs_benchmark: number | null;
   data_source: string | null;
@@ -76,6 +77,10 @@ function compareRateFields(row: CurrentRow, expected: DailyRatePayload) {
 
   if (!isCloseTo(row.net_yield, expected.net_yield)) {
     issues.push(`net ${row.net_yield ?? 'missing'} should be ${expected.net_yield}`);
+  }
+
+  if (row.benchmark_date !== expected.benchmark_date) {
+    issues.push(`benchmark date ${row.benchmark_date ?? 'missing'} should be ${expected.benchmark_date ?? 'null'}`);
   }
 
   if (!isCloseTo(row.benchmark_rate, expected.benchmark_rate)) {
@@ -146,7 +151,7 @@ async function main() {
       .returns<FundRow[]>(),
     client
       .from('mmf_current')
-      .select('id, slug, name, provider, fund_type, currency, trust_fee_pct, benchmark_key, rate_date, navpu, gross_yield_1y, after_tax_yield, net_yield, benchmark_rate, vs_benchmark, data_source')
+      .select('id, slug, name, provider, fund_type, currency, trust_fee_pct, benchmark_key, rate_date, navpu, gross_yield_1y, after_tax_yield, net_yield, benchmark_date, benchmark_rate, vs_benchmark, data_source')
       .returns<CurrentRow[]>(),
   ]);
 
@@ -200,6 +205,7 @@ async function main() {
       expected_net: formatPercent(expected.net_yield),
       db_date: current.rate_date,
       db_net: current.net_yield === null ? null : formatPercent(current.net_yield),
+      benchmark_date: current.benchmark_date,
       data_source: current.data_source,
     });
   }

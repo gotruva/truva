@@ -282,6 +282,7 @@ export interface MoneyMarketFund {
   gross_yield_1y: number | null;
   after_tax_yield: number | null;
   net_yield: number | null;
+  benchmark_date?: string | null;
   benchmark_rate: number | null;
   vs_benchmark: number | null;
   data_source?: string | null;
