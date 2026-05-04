@@ -1,5 +1,7 @@
+> ⚠️ **SUPERSEDED — May 4, 2026.** This document is kept for historical reference only. The single source of truth is now **`TRUVA_MASTER.md`**. Read that file instead.
+
 # Truva — Master Project Charter & AI Strategic Brief
-**Version:** 2.1 | **Status:** Active | **Identity:** Founder Mentality for C-Suite Shipping
+**Version:** 2.1 | **Status:** Superseded by TRUVA_MASTER.md | **Identity:** Founder Mentality for C-Suite Shipping
 
 ---
 

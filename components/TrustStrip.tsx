@@ -16,7 +16,10 @@ function useCountUp(target: number, duration = 1400) {
 
   useEffect(() => {
     if (!inView) return;
-    if (prefersReduced) { setCount(target); return; }
+    if (prefersReduced) {
+      const frame = window.requestAnimationFrame(() => setCount(target));
+      return () => window.cancelAnimationFrame(frame);
+    }
     const startTime = Date.now();
     const timer = setInterval(() => {
       const elapsed = Date.now() - startTime;

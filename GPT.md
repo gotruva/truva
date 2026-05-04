@@ -1,71 +1,59 @@
 # Truva — GPT/Codex Alignment Document
-**Role:** Principal Full-Stack Engineer
+
+> **Read `TRUVA_MASTER.md` first.** That is the single source of truth for vision, brand, roadmap, personas, voice rules, and tech anchors. This file is a short session reference only.
+> Last updated: May 4, 2026
 
 ---
 
-## 🚀 The Mission
+## Non-Negotiable Rules (Quick Reference)
 
-**Truva** is the world's best all-in-one **Financial and Lifestyle comparison app**. We consolidate fragmented data across banking, investments, loans, and health into a high-trust optimization engine.
-
----
-
-## 🛠️ The Global Product Scope
-
-You are building the "Mastery Pillar" engine for:
-1.  **Financial Mastery**: Digital/Traditional Banking, T-Bills, RTBs, MP2, SSS, DeFi, Stocks, Crypto, **PERA**, and all **BSP/SEC initiatives**.
-2.  **Lifestyle Mastery**: Credit Cards, Car/Student/Home Loans, and SME/Business Credit.
-3.  **Health & Experience**: HMOs, Health/Travel/Life Insurance, and Asset Safety.
+1. **Mobile-first — 375px base.** No horizontal scroll on mobile. Ever.
+2. **Plain language always.** Grade 6–8 reading level. No jargon without an immediate plain-English explanation.
+3. **No after-tax calculations shown to users.** Show rates exactly as banks and companies advertise them. `lib/tax.ts` and after-tax logic in `yieldEngine.ts` must NOT be called by user-facing components.
+4. **No fund custody — ever.** Truva compares. It never holds or moves money.
+5. **Affiliate disclosure on every CTA.** Non-negotiable.
 
 ---
 
-## 📋 Core Directives for ChatGPT/GPT-4
+## Key Files
 
-### 1. Mobile-First logic (Strict)
-- Use **Tailwind CSS** for layout.
-- Viewport target: **375px**.
-- Mobile experience IS the product. Assume 80% traffic.
-
-### 2. After-Tax Engineering
-- Single source of truth for math: `lib/tax.ts`.
-- Always show after-tax equivalents for savings/yields.
-
-### 3. Institutional Aesthetics
-- **Typography:** Space Grotesk (Headers), Inter (Body).
-- **Design:** Dark mode focused, premium, glassmorphism, subtle micro-animations (Framer Motion).
-
-### 4. Code Quality
-- **Framework:** Next.js 14 (App Router).
-- **State:** Prefer Server Components; use `use client` sparingly.
-- **Type Safety:** Strict TypeScript models from `types/index.ts`.
+| File | Purpose |
+|---|---|
+| `TRUVA_MASTER.md` | Full strategy, brand, roadmap, personas, voice rules — read this |
+| `types/index.ts` | TypeScript interfaces for all data models |
+| `lib/rates.ts` | Supabase → public `RateProduct[]` hydration |
+| `data/rates.json` | Manual/seed catalog (metadata fallback, non-scraper products) |
+| `utils/yieldEngine.ts` | Rate calculation logic (do not surface after-tax outputs in UI) |
 
 ---
 
-## 🔗 Critical References
+## Current Phase
 
-- **[Master Project Charter](file:///c:/Users/betoa/Documents/truva/PROJECT_CHARTER.md)**: Your primary strategic source.
-- **[yieldEngine.ts](file:///c:/Users/betoa/Documents/truva/utils/yieldEngine.ts)**: Core math.
-- **[tax.ts](file:///c:/Users/betoa/Documents/truva/lib/tax.ts)**: Core tax regimes.
-
----
-
-## Current Operating Memory (April 20, 2026)
-
-Use this section to avoid re-discovering the rate pipeline:
-
-- Production bank rates now come from Supabase `production` snapshots. Latest promoted snapshot: `bd3fb21c-a136-42b5-9386-8c96bfb635a5` (46 raw products, 36 public API products after hydration/dedupe).
-- Live `https://www.gotruva.com/api/rates` was verified after promotion: 200 response, no duplicate public IDs, key products present (`tonik-td-12mo` at 8%, Netbank TDs, OwnBank savings/TD, Salmon savings/TDs, `pagibig-mp2`).
-- `lib/rates.ts` hydrates Supabase payloads into public `RateProduct`s. Identity precedence is `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping.
-- Hydration dedupes public IDs and prefers rows with canonical `structured_payload.id` over older generic scraper rows. This prevents pairs like `tonik-time-deposit` and `tonik-td-12mo` from both rendering as `tonik-td-12mo`.
-- Manual seed products are still important: they preserve metadata and keep public/manual products like `pagibig-mp2` available when the scraper does not own them.
-- `tierType` is now `flat | blended | threshold`; flat products should not be labeled as deposit-amount tiers, and threshold products must reject amounts outside a tier range.
-- Scraper repo `/Users/albertoaldaba/truva-scraping` has live parser hardening on `main` at `d566c16` plus Salmon TD normalization from April 20, 2026.
-- MVP repo `/Users/albertoaldaba/truva-mvp` has hydration dedupe on `main` at `ba82640`.
-- Admin Rate Catalog: Fixed category filtering mismatch between staging schema (`savings`, `time_deposit`) and UI (`digital_bank`).
-- Category Normalization: Catalog now uses inclusive filtering to handle both granular and aggregate categories (`banks`, `govt`, `uitf`, `defi`, `credit-card`).
-- Last queue decision: approved Salmon effective/compounded TD tiers for `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`. Previous rejects remain stale Tonik 12-month 6%, Netbank existing-user savings collision, and pre-normalization Salmon TD variants.
-- Salmon scraper emits `salmon-savings`, `salmon-td-6mo`, `salmon-td-12mo`, and `salmon-td-60mo`; the TD products aggregate balance tiers under seed-backed public IDs. At PHP 500,000, `salmon-td-60mo` must use 7.41% gross / 5.928% after tax, not the PHP 1M+ 9.40% tier. Legacy one-tier Salmon IDs are mapped/deduped into canonical IDs.
-- Admin Catalog filtering logic hardened to handle `savings`, `time_deposit`, `banks`, `digital_bank`, and `traditional_bank` under a unified 'Banks' view. Similar normalization applied to `govt`, `uitf`, and `defi` categories.
+- **Phase 1** ✅ Live — Savings, Bonds, DeFi, Govt products
+- **Phase 2** 🔨 Active — Credit Cards
+- **Phase 3** 🔜 Next — Insurance (Travel → Health → Auto → Life)
+- **Phase 4** Future — Loans
 
 ---
 
-**"Build the bridge between what people earn and what they could earn. Close the gap."**
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS
+- **Typography:** Space Grotesk (headers), Inter (body)
+- **State:** Prefer Server Components; `use client` only when needed
+- **Type Safety:** Strict TypeScript — models in `types/index.ts`
+- **Database:** Supabase (auth + rate snapshots)
+- **Deploy:** Vercel
+
+---
+
+## Rate Pipeline Quick Facts
+
+- Scraper repo: `/Users/albertoaldaba/truva-scraping`
+- MVP repo: `/Users/albertoaldaba/truva-mvp`
+- Production snapshot: `526fd854-1678-428c-b029-369285baf674` (67 raw → 57 public products after dedupe)
+- Dynamic pages: `/`, `/banking/rates`, `/calculator`, `/api/rates`
+- `pagibig-mp2` present in API/home/calculator; intentionally absent from `/banking/rates`
+- `RateProduct.tierType`: `flat | blended | threshold` — threshold products only qualify deposits inside the tier range
+- Hydration dedupes public IDs; canonical `structured_payload.id` beats older generic scraper rows

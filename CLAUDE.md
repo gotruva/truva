@@ -1,77 +1,45 @@
 # Truva — Claude Code Context
 
-> Read `gemini.md` for the full strategy doc. This file is a quick-reference for Claude Code sessions.
+> **Read `TRUVA_MASTER.md` first.** That is the single source of truth for vision, brand, roadmap, personas, voice, and tech anchors. This file is a short session reference only.
 
 ---
 
-## What we're building
+## Non-Negotiable Rules (Quick Reference)
 
-Truva is the world's best **all-in-one Financial and Lifestyle comparison app**. We consolidate siloed data across banking, investments (Stocks/Crypto/PERA), loans (Car, Student, SME), and health (HMOs, Insurance, Travel) into a single optimization platform, including all **BSP & SEC financial initiatives**.
-
-**Core Differentiator:** After-tax yield engineering. Every competitor shows gross; we show reality.
-**Revenue model:** Affiliate fees per account/card/loan/policy opened. Free to users, always.
-
----
-
-## Current state (April 28, 2026)
-
-- Public bank-rate source of truth is the approved Supabase `production` snapshot, not only `data/rates.json`.
-- Latest production snapshot: `526fd854-1678-428c-b029-369285baf674`, promoted April 20, 2026. It contains 67 raw snapshot products and hydrates to 57 public API products after canonical-ID dedupe.
-- Live validation passed for `https://www.gotruva.com/api/rates`, `/`, `/banking/rates`, and `/calculator`. API has no duplicate public product IDs. `pagibig-mp2` remains present in API/home/calculator; it is intentionally absent from the bank-only `/banking/rates` page.
-- Supabase hydration in `lib/rates.ts` prefers `structured_payload.id`, then `source_product_ids[index]` mapping, then provider-prefix stripping. It dedupes hydrated public IDs and prefers canonical structured IDs over older generic scraper rows.
-- `RateProduct.tierType` supports `flat | blended | threshold`; `flat` products use single-tier flat-rate math and labels. Threshold calculations must only qualify a deposit when it falls inside the tier min/max range.
-- Dynamic public surfaces: `/`, `/banking/rates`, `/calculator`, and `/api/rates` are forced dynamic for fresh rate reads.
-- Yield Calculator + mobile pre-qual flow working.
-- Newsletter + affiliate CTAs wired.
-- `/optimizer` and `/tracker` routes are stubs (not built yet).
-- Supabase auth skeleton in place, tables not fully productized.
-
-### Bank-rate pipeline memory
-
-- Scraper repo: `/Users/albertoaldaba/truva-scraping`.
-- MVP repo: `/Users/albertoaldaba/truva-mvp`.
-- Scraper `main` includes parser hardening commit `d566c16` for Tonik, Netbank, OwnBank, DiskarTech, and Salmon live-page drift, plus Salmon TD normalization from April 20, 2026.
-- MVP `main` includes hydration dedupe commit `ba82640`.
-- Admin Rate Catalog: Fixed category filtering mismatch between staging schema (`savings`, `time_deposit`) and UI (`digital_bank`).
-- Category Normalization: Catalog now uses inclusive filtering to handle both granular and aggregate categories (`banks`, `govt`, `uitf`, `defi`, `credit-card`).
-- Approved in the latest review pass: all official Salmon TD terms, OwnBank TD terms, UNO #UNOearn term-specific products, and UNO #UNOboost terms. UNO #UNOboost publishes `uno-boost-3mo` through `uno-boost-12mo` at 4.00%/4.25%/4.50%/5.50% by term group. UNO #UNOearn publishes 4.75% for 12 months (`uno-td-365`) and 5.00% for 24 months (`uno-td-730`); keep #UNOboost and #UNOearn parsing scoped separately.
-- Rejected intentionally in the previous production pass: stale duplicate Tonik 12-month at 6%, Netbank existing-user savings because it collides with public `netbank-savings`, and pre-normalization Salmon TD variants.
-- MVP hydration preserves scraper `validUntil` by attaching it to promo conditions; Salmon 12- and 60-month TDs carry `expiresAt: 2026-06-01`. Salmon canonical TDs now use the official effective/compounded rate table: at PHP 500,000, `salmon-td-60mo` uses 7.41% gross / 5.928% after tax. Legacy one-tier Salmon IDs map into canonical public IDs and should not render separately.
-- Maya TD OCR cleanup on April 20, 2026: `/Users/albertoaldaba/truva-scraping` intentionally removed the broken hero-image OCR/vision source. Tesseract was unreliable on Maya's stylized coin graphic; the scraper keeps HTML extraction for the 6-month/max-rate signal, while 3-month and 12-month Maya TD terms stay seed/public-catalog plus manual-review items.
-
-**Active sprint target:** 8-week build. See `🗓️ Truva 8-Week Sprint Plan*.md` for current tasks.
+1. **Mobile-first — 375px base.** No horizontal scroll on mobile. Ever.
+2. **Plain language always.** Grade 6–8 reading level. No jargon without an immediate plain-English explanation.
+3. **No after-tax calculations shown to users.** Show rates exactly as banks and companies advertise them. `lib/tax.ts` and after-tax logic in `yieldEngine.ts` must NOT be called by user-facing components.
+4. **No fund custody — ever.** Truva compares. It never holds or moves money.
+5. **Affiliate disclosure on every CTA.** Non-negotiable.
 
 ---
 
-## Expansion roadmap
+## Key Files
 
-Build order is driven by what the market and target users find important — not arbitrary gates. Phases are a guide, not a lock.
-
-| Phase | Status | Category | Notes |
-|---|---|---|---|
-| 1 | ✅ Live | Savings, DeFi, govt bonds, UITFs, cooperatives | Core banking rates |
-| 2 | 🔨 Active | **Credit cards** | Phase 1 shipped 2026-04-28; Phase 2 + 3 next |
-| 3 | Upcoming | Personal loans, home loans | Build when CC feature is stable |
-| 4 | Future | Investing (stocks, UITFs expanded) | After Phase 3 |
-| 5 | Future | Insurance | Needs full team + IC broker license |
+| File | Purpose |
+|---|---|
+| `TRUVA_MASTER.md` | Full strategy, brand, roadmap, personas, voice rules — read this |
+| `types/index.ts` | TypeScript interfaces for all data models |
+| `lib/rates.ts` | Supabase → public `RateProduct[]` hydration |
+| `data/rates.json` | Manual/seed catalog (metadata fallback, non-scraper products) |
+| `utils/yieldEngine.ts` | Rate calculation logic (do not surface after-tax outputs in UI) |
 
 ---
 
-## Non-negotiable rules
+## Current Phase
 
-- **After-tax always:** `taxExempt ? grossRate : grossRate * 0.80` (dollar TDs: `* 0.925`)
-- **Mobile first:** Everything works at 375px, no horizontal scroll
-- **Market-driven scope:** Build what users need. Confirm intent before starting large features, but don't let an old roadmap gate block real user value.
-- **Affiliate disclosure on every CTA:** Required for trust and compliance
-- **No fund custody features:** Ever. We compare, we don't hold money.
+- **Phase 1** ✅ Live — Savings, Bonds, DeFi, Govt products
+- **Phase 2** 🔨 Active — Credit Cards
+- **Phase 3** 🔜 Next — Insurance (Travel → Health → Auto → Life)
+- **Phase 4** Future — Loans
 
 ---
 
-## Key files
+## Rate Pipeline Quick Facts
 
-- `gemini.md` — full strategy, roadmap, and AI alignment doc
-- `truva-antigravity-briefing.md` — complete product spec and design constraints
-- `data/rates.json` — manual/seed public catalog used as metadata fallback and for non-scraper products
-- `types/index.ts` — TypeScript interfaces
-- `utils/yieldEngine.ts` — after-tax math engine (handle with care)
-- `lib/tax.ts` — 3 tax regimes (20% FWT, tax-exempt, 7.5% FCD)
+- Scraper repo: `/Users/albertoaldaba/truva-scraping`
+- MVP repo: `/Users/albertoaldaba/truva-mvp`
+- Production snapshot: `526fd854-1678-428c-b029-369285baf674` (67 raw → 57 public products after dedupe)
+- Dynamic pages: `/`, `/banking/rates`, `/calculator`, `/api/rates`
+- `pagibig-mp2` present in API/home/calculator; intentionally absent from `/banking/rates`
+- `RateProduct.tierType`: `flat | blended | threshold` — threshold products only qualify deposits inside the tier range

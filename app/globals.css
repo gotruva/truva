@@ -10,9 +10,26 @@ html {
   html { scroll-behavior: auto; }
 }
 
+@keyframes truva-logo-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-33.333%, 0, 0);
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .truva-logo-marquee {
+    animation: truva-logo-marquee 34s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .truva-logo-marquee {
+      animation: none;
+    }
   }
   .text-gradient-premium {
     @apply bg-gradient-to-r from-brand-textPrimary via-brand-primary/80 to-brand-textPrimary bg-clip-text text-transparent;

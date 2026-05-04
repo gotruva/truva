@@ -29,13 +29,13 @@ export function Footer() {
         <div className="space-y-3">
           <p>{verificationCopy}</p>
           <p className="font-semibold text-brand-textPrimary dark:text-gray-200">
-            Truva may receive compensation from partners when readers click through or take action on partner sites. That can affect advertisements and partner-supported placements. It should not change editorial opinions or future True Value Score methodology.
+            Truva may receive compensation from partners when readers click through or take action on partner sites. That can affect advertisements and partner-supported placements, but it does not change which product details we show or how we explain the tradeoffs.
           </p>
         </div>
 
         <PartnerCTA />
 
-        <div className="grid w-full gap-6 text-left sm:grid-cols-3">
+        <div className="grid w-full gap-6 text-left sm:grid-cols-2">
           <FooterGroup
             title="Products"
             links={[
@@ -45,20 +45,10 @@ export function Footer() {
             ]}
           />
           <FooterGroup
-            title="Methodology"
-            links={[
-              { href: '/methodology', label: 'Trust Hub' },
-              { href: '/methodology/banking', label: 'Banking Methodology' },
-              { href: '/methodology/credit-cards', label: 'Card Methodology' },
-              { href: '/methodology/loans', label: 'Loans Methodology' },
-              { href: '/methodology/editorial-integrity', label: 'Editorial Integrity' },
-            ]}
-          />
-          <FooterGroup
             title="Company"
             links={[
-              { href: '/articles', label: 'Articles' },
-              { href: '/guides', label: 'Guides' },
+              { href: '/about', label: 'About' },
+              { href: '/articles', label: 'Blog' },
               { href: '/terms', label: 'Terms & Conditions' },
             ]}
           />

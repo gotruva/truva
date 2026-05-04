@@ -34,13 +34,13 @@ export function CreditCardLabelExplainer() {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full bg-brand-primary/10 px-4 py-1.5 text-sm font-bold text-brand-primary">
               <HelpCircle className="h-4 w-4" />
-              Understanding the "Label"
+              Understanding the label
             </div>
             <h2 className="text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white md:text-4xl">
-              Don't let the fine print surprise you
+              Do not let the fine print surprise you
             </h2>
             <p className="text-lg leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              Credit card fees can be confusing. We break down the most common ones so you know exactly what you're signing up for.
+              Credit card fees can be confusing. We break down the most common ones so you know exactly what you are signing up for.
             </p>
             
             <div className="space-y-8 pt-4">
@@ -79,7 +79,7 @@ export function CreditCardLabelExplainer() {
                 
                 <div className="h-4 bg-slate-900 dark:bg-slate-800 mt-6" />
                 <p className="text-[10px] leading-tight text-slate-500 mt-2 dark:text-gray-500 italic">
-                  * Values shown are illustrative averages. Always check the Specific Terms & Conditions of your chosen bank.
+                  * Values shown are illustrative averages. Always check the Specific Terms and Conditions of your chosen bank.
                 </p>
               </div>
             </div>

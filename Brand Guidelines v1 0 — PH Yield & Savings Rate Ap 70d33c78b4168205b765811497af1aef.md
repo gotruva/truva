@@ -1,3 +1,5 @@
+> ⚠️ **SUPERSEDED — May 4, 2026.** This document is kept for historical reference only. Brand voice, personas, and rules have been updated. The single source of truth is now **`TRUVA_MASTER.md`**. Read that file instead.
+
 # Brand Guidelines v1.0 — PH Yield & Savings Rate App
 
 # Brand Overview

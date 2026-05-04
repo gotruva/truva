@@ -1,3 +1,5 @@
+> ⚠️ **SUPERSEDED — May 4, 2026.** This document is kept for historical reference only. Vision, brand, and roadmap have been updated. The single source of truth is now **`TRUVA_MASTER.md`**. Read that file instead.
+
 # 💰 Truva — PH Yield & Savings Rate App | Founder Brief v2.0
 
 # The One-Line Pitch

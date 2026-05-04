@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { CreditCard } from '@/types';
 import editorial, { type CardEditorial } from '@/lib/creditCardEditorial';
 import { deriveCategoryMatch } from '@/lib/creditCardValue';
@@ -20,7 +21,7 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
 }
 
 export async function getCreditCards(): Promise<CreditCard[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient('public') ?? await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('credit_card_listings')
     .select('*')
@@ -36,7 +37,7 @@ export async function getCreditCards(): Promise<CreditCard[]> {
 }
 
 export async function getCreditCardBySlug(slug: string): Promise<CreditCard | null> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient('public') ?? await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('credit_card_listings')
     .select('*')

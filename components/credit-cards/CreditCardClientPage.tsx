@@ -15,7 +15,6 @@ import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import type { CreditCard as CreditCardType } from '@/types';
 import Link from 'next/link';
-import { ArrowRight, FileSearch, ShieldCheck } from 'lucide-react';
 
 export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
   const [activePill, setActivePill] = useState('all');
