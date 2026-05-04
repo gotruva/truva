@@ -17,16 +17,18 @@ import { BASE_URL } from '@/lib/constants';
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'Best Savings & Time Deposit Rates Philippines | Truva',
+    default: "Truva — Philippines' Financial Comparison Platform",
     template: '%s | Truva',
   },
-  description: 'Compare savings and time deposit rates from Philippine banks. See after-tax returns, important account conditions, and the latest verified rates in one place.',
+  description:
+    'The free comparison platform for Filipino savers. Compare savings, money market funds, credit cards, and more — all after-tax.',
   openGraph: {
     type: 'website',
     siteName: 'Truva',
     url: BASE_URL,
-    title: 'Truva | Compare Savings Rates in the Philippines',
-    description: 'Compare savings and time deposit rates from Philippine banks with after-tax returns and clear account conditions.',
+    title: "Truva — Philippines' Financial Comparison Platform",
+    description:
+      'The free comparison platform for Filipino savers. Compare savings, funds, credit cards, and more — all after-tax.',
     images: [
       {
         url: '/og-image.png',
@@ -38,8 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Truva | Compare Savings Rates in the Philippines',
-    description: 'See after-tax savings yields from every major Philippine digital bank, T-Bill, and UITF - all in one place.',
+    title: "Truva — Philippines' Financial Comparison Platform",
+    description:
+      'Compare savings, funds, credit cards, and more after-tax. The free comparison platform for Filipino savers.',
     images: ['/og-image.png'],
   },
   robots: {

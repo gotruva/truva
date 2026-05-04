@@ -6,6 +6,7 @@ import { getClientIp, isAllowedOrigin, checkRateLimit, isBodyTooLarge } from '@/
 
 const emailSchema = z.object({
   email: z.string().email('Invalid email address').max(254),
+  source: z.string().max(64).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -51,12 +52,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
-    const { email } = parsed.data;
+    const { email, source } = parsed.data;
 
     const supabase = await createSupabaseServerClient();
     const { error: dbError } = await supabase
       .from('subscribers')
-      .insert({ email });
+      .insert({ email, ...(source ? { source } : {}) });
 
     if (dbError) {
       if (dbError.code === '23505') {
