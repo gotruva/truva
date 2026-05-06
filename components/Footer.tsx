@@ -4,7 +4,7 @@ import { PartnerCTA } from '@/components/PartnerCTA';
 
 export function Footer() {
   const verificationCopy =
-    'Rates are checked regularly. Banking returns are shown after 20% Final Withholding Tax unless marked tax-exempt. Nothing on Truva is personal financial advice.';
+    'Rates are checked regularly. Nothing on Truva is personal financial advice.';
 
   return (
     <footer className="mt-auto border-t border-brand-border bg-white px-4 pb-8 pt-12 text-center text-[13px] text-brand-textSecondary transition-colors duration-300 dark:border-white/10 dark:bg-slate-950 dark:text-gray-400 md:px-8">

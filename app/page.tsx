@@ -7,7 +7,7 @@ import {
 } from '@/components/landing/LandingExperience';
 import { BASE_URL } from '@/lib/constants';
 import { getCreditCards } from '@/lib/credit-cards';
-import { formatVerifiedDate, getLatestVerifiedDate, getPublicRates } from '@/lib/rates';
+import { getPublicRates } from '@/lib/rates';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { MoneyMarketFund, RateProduct } from '@/types';
 
@@ -147,12 +147,9 @@ export default async function HomePage() {
     getMmfSummaryForLanding(),
   ]);
 
-  const latestVerified = formatVerifiedDate(getLatestVerifiedDate(rates)) || 'May 2026';
-
   return (
     <LandingExperience
       rates={rates}
-      verifiedDate={latestVerified}
       mmfSummary={mmfSummary}
       creditCardSummary={creditCardSummary}
     />
