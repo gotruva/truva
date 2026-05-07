@@ -21,14 +21,14 @@ export const metadata: Metadata = {
     template: '%s | Truva',
   },
   description:
-    'The free comparison platform for Filipino savers. Compare savings, money market funds, credit cards, and more — all after-tax.',
+    'The free comparison platform for Filipinos comparing savings, money market funds, credit cards, loans, and more in plain words.',
   openGraph: {
     type: 'website',
     siteName: 'Truva',
     url: BASE_URL,
     title: "Truva — Philippines' Financial Comparison Platform",
     description:
-      'The free comparison platform for Filipino savers. Compare savings, funds, credit cards, and more — all after-tax.',
+      'The free comparison platform for Filipinos comparing savings, funds, credit cards, loans, and more in plain words.',
     images: [
       {
         url: '/og-image.png',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Truva — Philippines' Financial Comparison Platform",
     description:
-      'Compare savings, funds, credit cards, and more after-tax. The free comparison platform for Filipino savers.',
+      'Compare savings, funds, credit cards, loans, and more with plain-language product details from Truva.',
     images: ['/og-image.png'],
   },
   robots: {

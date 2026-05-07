@@ -16,7 +16,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Truva - Philippines' Financial Comparison Platform",
   description:
-    'Find the right Philippine financial product with the math already done. Compare savings, money market funds, credit cards, and loans by tax, fees, conditions, and methodology.',
+    'Compare Philippine savings, money market funds, credit cards, loans, and insurance in plain words, with rates, fees, conditions, and requirements surfaced clearly.',
   alternates: {
     canonical: '/',
   },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     url: BASE_URL,
     title: "Truva - Philippines' Financial Comparison Platform",
     description:
-      'Compare Philippine savings, funds, credit cards, and loans with after-tax math, transparent methodology, and product-specific decision tools.',
+      'Compare Philippine savings, funds, credit cards, loans, and insurance with plain-language product details, transparent methodology, and clear decision tools.',
     images: [
       {
         url: '/og-image.png',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Truva - Philippines' Financial Comparison Platform",
     description:
-      'Find the right Philippine financial product with after-tax math, fee context, and transparent methodology.',
+      'Find the right Philippine financial product with plain-language rates, fees, conditions, and transparent methodology.',
     images: ['/og-image.png'],
   },
 };

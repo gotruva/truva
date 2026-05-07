@@ -29,7 +29,7 @@ export function NewsletterSignup() {
       
       if (res.ok) {
         setStatus('success');
-        setMessage(data.message || 'Subscribed successfully!');
+        setMessage(data.message || 'Subscribed successfully.');
         setEmail('');
         sendGAEvent({ event: 'newsletter_signup_success' });
       } else {
@@ -90,7 +90,7 @@ export function NewsletterSignup() {
             data-lpignore="true"
             data-1p-ignore="true"
             suppressHydrationWarning
-            className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-colors"
+            className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:translate-y-0 disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-70 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100"
           >
             {status === 'loading' ? 'Subscribing...' : 'Get rate alerts'}
           </Button>
