@@ -6,8 +6,6 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { BookOpenText, ChevronDown, Landmark, BarChart2, GraduationCap, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { useHasMounted } from '@/lib/use-has-mounted';
 
 const READ_LINKS = [
@@ -51,7 +49,6 @@ const FeedbackModal = dynamic(
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
-  const pathname = usePathname();
   const hasMounted = useHasMounted();
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -94,13 +91,6 @@ export function Navbar() {
     return () => window.removeEventListener('keydown', handler);
   }, [isMobileMenuOpen]);
 
-  const navLinkClass = (href: string) => {
-    const isActive = pathname === href || pathname.startsWith(href + '/');
-    return isActive
-      ? 'relative px-3 py-2 text-[14px] font-bold text-brand-primary dark:text-blue-400 after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-brand-primary dark:after:bg-blue-400 after:rounded-full transition-colors'
-      : 'px-3 py-2 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 transition-colors';
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-2xl bg-white/80 dark:bg-slate-950/80 border-b border-brand-border/60 dark:border-white/5 h-[76px] flex items-center px-4 md:px-8 shrink-0 transition-colors duration-300 shadow-sm dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-4">
@@ -126,13 +116,6 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          <Link href="/" className={pathname === '/' ? 'relative px-3 py-2 text-[14px] font-bold text-brand-primary dark:text-blue-400 after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-brand-primary dark:after:bg-blue-400 after:rounded-full transition-colors' : 'px-3 py-2 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-100 transition-colors'}>
-            Savings
-          </Link>
-          <Link href="/banking/money-market-funds" className={navLinkClass('/banking/money-market-funds')}>
-            Funds
-          </Link>
-
           <div
             className="relative -mb-3 pb-3"
             onMouseEnter={openReadMenu}
@@ -236,21 +219,6 @@ export function Navbar() {
 
           <div className="fixed left-4 right-4 top-[88px] z-50 rounded-2xl border border-brand-border bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 lg:hidden">
             <nav className="flex flex-col gap-2">
-              <Link
-                href="/"
-                onClick={closeMobileMenu}
-                className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
-              >
-                Savings
-              </Link>
-              <Link
-                href="/banking/money-market-funds"
-                onClick={closeMobileMenu}
-                className="rounded-xl px-3 py-2.5 text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
-              >
-                Funds
-              </Link>
-
               <div className="rounded-xl border border-brand-border/70 bg-brand-surface/50 dark:border-white/10 dark:bg-white/[0.03]">
                 <button
                   type="button"

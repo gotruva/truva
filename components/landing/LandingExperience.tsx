@@ -68,46 +68,31 @@ const heroImage = {
   alt: 'Filipino woman comparing financial products on a phone and laptop',
 };
 
-const fallbackProviderLogos = [
-  { provider: 'Maya', logo: '/logos/maya-mark.jpg' },
-  { provider: 'GoTyme Bank', logo: '/logos/gotyme-mark.png' },
-  { provider: 'Tonik', logo: '/logos/tonik.svg' },
-  { provider: 'CIMB', logo: '/logos/cimb-mark.png' },
-  { provider: 'OwnBank', logo: '/logos/ownbank-mark.png' },
+// Comprehensive static list — interleaved digital/traditional so even/odd split
+// produces two visually balanced, non-overlapping rows in the marquee.
+const ALL_MARQUEE_LOGOS: Array<{ provider: string; logo: string }> = [
+  { provider: 'Maya Bank',        logo: '/logos/maya-mark.jpg' },
+  { provider: 'BPI',              logo: '/logos/bpi-mark.png' },
+  { provider: 'GoTyme Bank',      logo: '/logos/gotyme-mark.png' },
+  { provider: 'RCBC',             logo: '/logos/rcbc-mark.png' },
+  { provider: 'Tonik',            logo: '/logos/tonik.svg' },
+  { provider: 'Metrobank',        logo: '/logos/metrobank-mark.png' },
+  { provider: 'CIMB',             logo: '/logos/cimb-mark.png' },
+  { provider: 'Security Bank',    logo: '/logos/securitybank-mark.png' },
+  { provider: 'OwnBank',          logo: '/logos/ownbank-mark.png' },
+  { provider: 'BDO Unibank',      logo: '/logos/bdo-mark.jpg' },
   { provider: 'UNO Digital Bank', logo: '/logos/uno-mark.jpg' },
-  { provider: 'UnionDigital Bank', logo: '/logos/uniondigital-mark.jpg' },
-  { provider: 'Landbank', logo: '/logos/landbank-mark.jpg' },
-  { provider: 'Salmon', logo: '/logos/salmon.svg' },
-  { provider: 'Netbank', logo: '/logos/netbank-mark.webp' },
+  { provider: 'PNB',              logo: '/logos/pnb-mark.png' },
+  { provider: 'UnionDigital',     logo: '/logos/uniondigital-mark.jpg' },
+  { provider: 'Landbank',         logo: '/logos/landbank-mark.jpg' },
+  { provider: 'MariBank',         logo: '/logos/maribank-mark.png' },
+  { provider: 'DBP',              logo: '/logos/dbp-mark.png' },
+  { provider: 'Netbank',          logo: '/logos/netbank-mark.webp' },
+  { provider: 'OFBank',           logo: '/logos/ofbank-mark.jpg' },
+  { provider: 'Salmon',           logo: '/logos/salmon.svg' },
+  { provider: 'Komo',             logo: '/logos/komo-mark.jpg' },
 ];
 
-const creditCardIssuers = [
-  { provider: 'BPI', logo: '/logos/bpi-mark.png' },
-  { provider: 'RCBC', logo: '/logos/rcbc-mark.png' },
-  { provider: 'Metrobank', logo: '/logos/metrobank-mark.png' },
-  { provider: 'Security Bank', logo: '/logos/securitybank-mark.png' },
-  { provider: 'PNB', logo: '/logos/pnb-mark.png' },
-];
-
-const logoDisplayOverrides: Record<string, string> = {
-  '/logos/maya.svg': '/logos/maya-mark.jpg',
-  '/logos/gotyme.svg': '/logos/gotyme-mark.png',
-  '/logos/cimb.svg': '/logos/cimb-mark.png',
-  '/logos/bpi.svg': '/logos/bpi-mark.png',
-  '/logos/bdo.svg': '/logos/bdo-mark.jpg',
-  '/logos/ownbank.svg': '/logos/ownbank-mark.png',
-  '/logos/uno.svg': '/logos/uno-mark.jpg',
-  '/logos/uniondigital.svg': '/logos/uniondigital-mark.jpg',
-  '/logos/netbank.svg': '/logos/netbank-mark.webp',
-  '/logos/komo.svg': '/logos/komo-mark.jpg',
-  '/logos/diskartech.svg': '/logos/diskartech-mark.png',
-  '/logos/banko.svg': '/logos/banko-mark.png',
-  '/logos/landbank.svg': '/logos/landbank-mark.jpg',
-  '/logos/dbp.svg': '/logos/dbp-mark.png',
-  '/logos/maribank.svg': '/logos/maribank-mark.png',
-  '/logos/btr.svg': '/logos/btr-mark.jpg',
-  '/logos/hdmf.svg': '/logos/hdmf-mark.jpg',
-};
 
 const focusRing =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950';
@@ -115,27 +100,9 @@ const focusRing =
 const surfaceInteraction =
   'transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100';
 
-function uniqueProviderLogos(rates: RateProduct[]) {
-  const seen = new Set<string>();
-  const logos: Array<{ provider: string; logo: string }> = [];
-
-  for (const rate of rates) {
-    if (!rate.logo || seen.has(rate.provider)) continue;
-    seen.add(rate.provider);
-    logos.push({ provider: rate.provider, logo: logoDisplayOverrides[rate.logo] ?? rate.logo });
-    if (logos.length >= 10) break;
-  }
-
-  const base = logos.length ? logos : fallbackProviderLogos.slice();
-
-  for (const issuer of creditCardIssuers) {
-    if (!seen.has(issuer.provider)) {
-      seen.add(issuer.provider);
-      base.push(issuer);
-    }
-  }
-
-  return base;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function uniqueProviderLogos(_rates: RateProduct[]) {
+  return ALL_MARQUEE_LOGOS;
 }
 
 function getTopBankRate(rates: RateProduct[]) {
@@ -441,8 +408,12 @@ function StatusBadge({
 }
 
 function BrandMarqueeSection({ logos }: { logos: Array<{ provider: string; logo: string }> }) {
-  const row1 = [...logos, ...logos, ...logos];
-  const row2 = [...logos.slice().reverse(), ...logos.slice().reverse(), ...logos.slice().reverse()];
+  // Split into two non-overlapping groups by index — even indices → row1, odd → row2.
+  // This guarantees the same provider never appears in both rows at the same time.
+  const groupA = logos.filter((_, i) => i % 2 === 0);
+  const groupB = logos.filter((_, i) => i % 2 !== 0);
+  const row1 = [...groupA, ...groupA, ...groupA];
+  const row2 = [...groupB, ...groupB, ...groupB];
 
   const LogoChip = ({ item, index }: { item: { provider: string; logo: string }; index: number }) => (
     <div
