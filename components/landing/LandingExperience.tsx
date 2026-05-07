@@ -196,15 +196,15 @@ function buildCategories({
       title: 'Credit cards',
       summary: 'Match cards to your spending, annual fees, and approval requirements.',
       detail: 'Start with plain comparisons for rewards, fees, eligibility, and the catch.',
-      href: '/credit-cards',
-      cta: 'Compare cards',
-      statusLabel: creditCardSummary.hasLiveData ? 'Live' : 'Active build',
-      statusTone: 'active',
+      href: '#truva-brief',
+      cta: 'Get updates',
+      statusLabel: 'Coming soon',
+      statusTone: 'soon',
       icon: CreditCard,
       image: '/images/home/cards-category.png',
       imageAlt: 'Filipino woman comparing credit card options on a phone and laptop',
-      metric: creditCardSummary.hasLiveData ? `${creditCardSummary.totalCards}+` : 'Cards',
-      metricLabel: creditCardSummary.hasLiveData ? 'cards in catalog' : 'catalog in progress',
+      metric: 'Next',
+      metricLabel: 'after savings & funds',
       priority: 'standard',
     },
     {
@@ -226,8 +226,8 @@ function buildCategories({
       title: 'Loans',
       summary: 'Compare borrowing by total cost, fees, speed, and flexibility.',
       detail: 'The preview explains how Truva will compare borrowing without hiding the painful parts.',
-      href: '/loans',
-      cta: 'See preview',
+      href: '#truva-brief',
+      cta: 'Get updates',
       statusLabel: 'Coming soon',
       statusTone: 'soon',
       icon: HandCoins,
@@ -804,22 +804,20 @@ function NewsletterBlock() {
   return (
     <section
       id="truva-brief"
-      className="border-t border-brand-border bg-brand-surface px-4 py-14 dark:border-white/10 dark:bg-slate-950 md:px-8 md:py-20"
+      className="border-t border-brand-border bg-brand-surface px-4 py-16 dark:border-white/10 dark:bg-slate-950 md:px-8 md:py-24"
     >
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-primary">
-            The Truva Brief
-          </p>
-          <h2 className="mt-2 max-w-md text-2xl font-black leading-tight tracking-tight text-brand-textPrimary dark:text-white sm:text-[30px]">
-            Get the useful update after you know what to compare.
-          </h2>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-            One short email when Truva adds categories, updates coverage, or finds product changes
-            worth checking.
-          </p>
-        </div>
-        <div className="rounded-2xl border border-brand-border bg-white shadow-[0_22px_58px_-48px_rgba(15,23,42,0.45)] dark:border-white/10 dark:bg-white/[0.04]">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-primary">
+          The Truva Brief
+        </p>
+        <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
+          Stay in the loop on all things Truva.
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
+          New products, new providers, coverage updates — one short email when something
+          on Truva is worth your attention.
+        </p>
+        <div className="mt-8">
           <NewsletterSignup />
         </div>
       </div>

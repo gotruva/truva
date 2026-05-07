@@ -49,23 +49,15 @@ export function NewsletterSignup() {
   };
 
   return (
-    <section
-      className="max-w-xl mx-auto py-16 px-4 text-center"
+    <div
       data-lpignore="true"
       data-1p-ignore="true"
       suppressHydrationWarning
     >
-      <h3 className="text-[28px] leading-tight font-bold text-brand-textPrimary dark:text-gray-100 mb-3">
-        Stay ahead of rate changes
-      </h3>
-      <p className="text-brand-textSecondary dark:text-gray-400 mb-8 text-[16px]">
-        New banks, new features, rate changes — get notified when something on Truva updates. No fluff, just the signal.
-      </p>
-
       {hasMounted ? (
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative"
+          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
           autoComplete="off"
           data-lpignore="true"
           data-1p-ignore="true"
@@ -73,7 +65,7 @@ export function NewsletterSignup() {
         >
           <Input
             type="email"
-            placeholder="Enter your email address"
+            placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -92,7 +84,7 @@ export function NewsletterSignup() {
             suppressHydrationWarning
             className="h-12 px-8 bg-brand-primary hover:bg-brand-primaryDark text-white font-semibold rounded-md transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:translate-y-0 disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-70 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100"
           >
-            {status === 'loading' ? 'Subscribing...' : 'Get rate alerts'}
+            {status === 'loading' ? 'Subscribing...' : 'Join the brief'}
           </Button>
         </form>
       ) : (
@@ -101,12 +93,12 @@ export function NewsletterSignup() {
         </div>
       )}
 
-      {status === 'success' && <p className="text-positive text-sm mt-4 font-medium">{message}</p>}
-      {status === 'error' && <p className="text-danger text-sm mt-4 font-medium">{message}</p>}
+      {status === 'success' && <p className="text-positive text-sm mt-4 font-medium text-center">{message}</p>}
+      {status === 'error' && <p className="text-danger text-sm mt-4 font-medium text-center">{message}</p>}
 
-      <p className="text-xs text-brand-textSecondary dark:text-gray-400 mt-6">
+      <p className="text-xs text-brand-textSecondary dark:text-gray-400 mt-5 text-center">
         Free. No spam. Unsubscribe anytime.
       </p>
-    </section>
+    </div>
   );
 }
