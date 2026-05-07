@@ -48,3 +48,10 @@ next-env.d.ts
 scratch/
 scratch.js
 scratch-approve.ts
+
+# python cache
+__pycache__/
+*.pyc
+
+# script/tool output
+output/
