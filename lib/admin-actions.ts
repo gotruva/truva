@@ -4,6 +4,14 @@ import { z } from 'zod';
 import { getAdminClient } from '@/lib/supabase-admin-server';
 import { revalidatePath } from 'next/cache';
 import { rollbackToSnapshot } from '@/lib/rate-review';
+import { createClient } from '@/utils/supabase/server';
+import { requireAdmin } from '@/lib/admin-auth';
+
+async function assertAdmin() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  requireAdmin(user?.id);
+}
 
 const rateEditPayloadSchema = z.object({
   headlineRate: z.number().min(0).max(1).nullable().optional(),
@@ -28,6 +36,7 @@ const mmfMetadataSchema = z.object({
 const RATE_SURFACE_PATHS = ['/', '/banking', '/banking/rates', '/calculator', '/api/rates'];
 
 export async function toggleProductPublish(productId: string, field: string, value: boolean) {
+  await assertAdmin();
   const supabase = getAdminClient('staging');
 
   // We are toggling `active_public` on the staging.products table.
@@ -51,6 +60,7 @@ export async function toggleProductPublish(productId: string, field: string, val
 }
 
 export async function saveManualRateEdit(productId: string, payload: Record<string, unknown>, autoApprove: boolean = false) {
+  await assertAdmin();
   const validatedPayload = rateEditPayloadSchema.parse(payload);
   const supabase = getAdminClient('staging');
 
@@ -96,6 +106,7 @@ export async function saveManualRateEdit(productId: string, payload: Record<stri
 }
 
 export async function saveMMFMetadata(fundId: string, payload: Record<string, unknown>) {
+  await assertAdmin();
   const validatedPayload = mmfMetadataSchema.parse(payload);
   const supabase = getAdminClient('public');
 
@@ -113,6 +124,7 @@ export async function saveMMFMetadata(fundId: string, payload: Record<string, un
 }
 
 export async function rollbackSnapshot(snapshotId: string) {
+  await assertAdmin();
   await rollbackToSnapshot(snapshotId);
   
   // Revalidate public surfaces
@@ -128,6 +140,7 @@ type MmfDailyRateUpsertPayload = Record<string, unknown> & {
 };
 
 export async function upsertMMFDailyRate(fundId: string, payload: MmfDailyRateUpsertPayload) {
+  await assertAdmin();
   const supabase = getAdminClient('public');
 
   const { data: fund } = await supabase
@@ -179,6 +192,7 @@ export async function upsertMMFDailyRate(fundId: string, payload: MmfDailyRateUp
 }
 
 export async function copyLastMMFRate(fundId: string, targetDate: string) {
+  await assertAdmin();
   const supabase = getAdminClient('public');
 
   const [{ data: lastRate, error: fetchError }, { data: fund }] = await Promise.all([

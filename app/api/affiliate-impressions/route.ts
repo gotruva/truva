@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { checkRateLimit, getClientIp, isAllowedOrigin, isBodyTooLarge } from '@/lib/apiSecurity';
-import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { createClient } from '@/utils/supabase/server';
 import { AFFILIATE_PLACEMENTS } from '@/types';
 
 const impressionSchema = z.object({
@@ -46,14 +46,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
 
-    const supabase = createSupabaseAdminClient('public');
-    if (!supabase) {
-      return NextResponse.json(
-        { error: 'Affiliate impression tracking is not configured in this environment.' },
-        { status: 503 },
-      );
-    }
-
+    const supabase = await createClient();
     const { error } = await supabase.from('affiliate_impressions').insert({
       ...parsed.data,
       referrer: req.headers.get('referer') ?? null,

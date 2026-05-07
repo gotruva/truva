@@ -2,11 +2,13 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { SignOutButton } from '@/components/admin/SignOutButton';
 import { createClient } from '@/utils/supabase/server';
+import { isAdminUser } from '@/lib/admin-auth';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/admin/login');
+  if (!isAdminUser(user.id)) redirect('/');
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
       {/* Sidebar */}
