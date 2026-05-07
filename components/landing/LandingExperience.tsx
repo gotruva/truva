@@ -87,7 +87,6 @@ const creditCardIssuers = [
   { provider: 'Metrobank', logo: '/logos/metrobank-mark.png' },
   { provider: 'Security Bank', logo: '/logos/securitybank-mark.png' },
   { provider: 'PNB', logo: '/logos/pnb-mark.png' },
-  { provider: 'EastWest Bank', logo: '/logos/eastwest-mark.png' },
 ];
 
 const logoDisplayOverrides: Record<string, string> = {
@@ -217,6 +216,8 @@ function buildCategories({
       statusLabel: 'Coming soon',
       statusTone: 'soon',
       icon: ShieldHalf,
+      image: '/images/home/insurance-category.jpg',
+      imageAlt: 'Filipino family — the reason to protect what matters',
       metric: 'Next',
       metricLabel: 'after cards',
       priority: 'future',
@@ -231,6 +232,8 @@ function buildCategories({
       statusLabel: 'Coming soon',
       statusTone: 'soon',
       icon: HandCoins,
+      image: '/images/home/loans-category.jpg',
+      imageAlt: 'Filipino family in front of their new home',
       metric: 'Preview',
       metricLabel: 'methodology ready',
       priority: 'future',
@@ -309,13 +312,10 @@ function HeroSection({
           </div>
 
           <div className="mt-8">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-brand-textSecondary dark:text-gray-400">
                 What do you want to compare?
               </p>
-              <span className="hidden text-xs font-medium text-brand-textSecondary dark:text-gray-400 sm:inline">
-                Live tools first
-              </span>
             </div>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
               {categories.map((category) => (
@@ -441,46 +441,53 @@ function StatusBadge({
 }
 
 function BrandMarqueeSection({ logos }: { logos: Array<{ provider: string; logo: string }> }) {
-  const marqueeLogos = [...logos, ...logos, ...logos];
+  const row1 = [...logos, ...logos, ...logos];
+  const row2 = [...logos.slice().reverse(), ...logos.slice().reverse(), ...logos.slice().reverse()];
+
+  const LogoChip = ({ item, index }: { item: { provider: string; logo: string }; index: number }) => (
+    <div
+      key={`${item.provider}-${index}`}
+      className="flex h-[68px] min-w-[176px] items-center gap-3 rounded-xl border border-brand-border bg-white px-4 shadow-[0_16px_36px_-30px_rgba(15,23,42,0.3)] dark:border-white/10 dark:bg-white/[0.05]"
+    >
+      <Image
+        src={item.logo}
+        alt={`${item.provider} logo`}
+        width={40}
+        height={40}
+        loading="eager"
+        className="h-10 w-10 rounded-lg object-contain"
+      />
+      <span className="max-w-28 truncate text-sm font-bold text-brand-textPrimary dark:text-white">
+        {item.provider}
+      </span>
+    </div>
+  );
 
   return (
-    <section className="overflow-hidden border-b border-brand-border bg-brand-surface px-4 py-8 dark:border-white/10 dark:bg-slate-950 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-primary">
-              Providers we track
-            </p>
-            <h2 className="mt-1 text-xl font-black leading-tight text-brand-textPrimary dark:text-white sm:text-2xl">
-              From your savings app to your credit card.
-            </h2>
-          </div>
-          <p className="max-w-md text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-            Digital banks, government banks, and credit card issuers — Truva covers the providers Filipinos already use, in one place.
-          </p>
-        </div>
+    <section className="overflow-hidden border-b border-brand-border bg-brand-surface px-4 py-12 dark:border-white/10 dark:bg-slate-950 md:px-8 md:py-14">
+      <div className="mx-auto max-w-7xl text-center">
+        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-primary">
+          Providers we track
+        </p>
+        <h2 className="mt-2 text-2xl font-black leading-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+          Banks, funds, and card issuers — in one place.
+        </h2>
       </div>
 
-      <div className="mt-6 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
-        <div className="truva-logo-marquee flex w-max gap-3 motion-reduce:animate-none">
-          {marqueeLogos.map((item, index) => (
-            <div
-              key={`${item.provider}-${index}`}
-              className="flex h-14 min-w-36 items-center gap-3 rounded-lg border border-brand-border bg-white px-4 shadow-[0_16px_36px_-30px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/[0.04]"
-            >
-              <Image
-                src={item.logo}
-                alt={`${item.provider} logo`}
-                width={30}
-                height={30}
-                loading="eager"
-                className="h-7 w-7 rounded-md object-contain"
-              />
-              <span className="max-w-24 truncate text-sm font-bold text-brand-textPrimary dark:text-white">
-                {item.provider}
-              </span>
-            </div>
-          ))}
+      <div className="mt-8 space-y-3">
+        <div className="[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+          <div className="truva-logo-marquee flex w-max gap-3 motion-reduce:animate-none">
+            {row1.map((item, index) => (
+              <LogoChip key={`r1-${item.provider}-${index}`} item={item} index={index} />
+            ))}
+          </div>
+        </div>
+        <div className="[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+          <div className="truva-logo-marquee-reverse flex w-max gap-3 motion-reduce:animate-none">
+            {row2.map((item, index) => (
+              <LogoChip key={`r2-${item.provider}-${index}`} item={item} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -636,6 +643,48 @@ function CategoryImageCard({ category }: { category: CategoryItem }) {
 
 function FutureCategoryCard({ category }: { category: CategoryItem }) {
   const Icon = category.icon;
+
+  if (category.image) {
+    return (
+      <Link
+        href={category.href}
+        className={`${focusRing} ${surfaceInteraction} group grid min-h-[252px] overflow-hidden rounded-2xl border border-dashed border-brand-border bg-white shadow-[0_18px_48px_-40px_rgba(15,23,42,0.35)] hover:border-warning/40 hover:shadow-[0_22px_52px_-38px_rgba(247,144,9,0.28)] dark:border-white/15 dark:bg-white/[0.04] sm:grid-cols-[0.95fr_1.05fr]`}
+      >
+        <div className="relative min-h-[200px] sm:min-h-full">
+          <Image
+            src={category.image}
+            alt={category.imageAlt ?? category.title}
+            fill
+            sizes="(min-width: 1024px) 38vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="flex flex-col p-5">
+          <div className="flex items-start justify-between gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-warning/12 text-warning">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <StatusBadge tone={category.statusTone}>{category.statusLabel}</StatusBadge>
+          </div>
+          <h3 className="mt-5 text-xl font-black leading-tight text-brand-textPrimary dark:text-white">
+            {category.title}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
+            {category.summary}
+          </p>
+          <div className="mt-auto pt-5">
+            <span className="inline-flex items-center gap-2 text-sm font-black text-brand-primary">
+              {category.cta}
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                aria-hidden="true"
+              />
+            </span>
+          </div>
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <Link
