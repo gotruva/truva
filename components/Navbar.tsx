@@ -140,13 +140,13 @@ export function Navbar() {
           >
             <button
               type="button"
-              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary transition-colors hover:bg-gray-100 hover:text-brand-textPrimary dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-gray-100"
+              className="inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-[14px] font-semibold text-brand-primary border border-brand-primary/20 bg-brand-primary/[0.07] hover:bg-brand-primary/[0.13] dark:text-blue-400 dark:border-blue-500/20 dark:bg-blue-500/10 dark:hover:bg-blue-500/[0.18] transition-colors"
               aria-expanded={isReadOpen}
               aria-haspopup="true"
               onFocus={openReadMenu}
             >
               <BookOpenText className="h-4 w-4" />
-              + Read
+              Articles
               <ChevronDown className={`h-4 w-4 transition-transform ${isReadOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -188,25 +188,25 @@ export function Navbar() {
             href="https://invite.viber.com/?g2=AQAVVY5OHy%2FfvlZdu7vUh%2FIkJ5fqL16B58XFTULkk1mS4%2BUU9O8ZAwYKbEqW4TCX"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors group"
           >
-            <ViberIcon className="w-5 h-5" />
+            <ViberIcon className="w-5 h-5 transition-colors group-hover:text-[#7360F2]" />
             <span className="hidden md:inline">Community</span>
           </a>
 
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
             onClick={() => setIsFeedbackOpen(true)}
-            className="hidden sm:flex items-center gap-1.5 text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200"
+            className="hidden sm:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[14px] font-semibold text-brand-textSecondary dark:text-gray-400 hover:text-brand-textPrimary dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
           >
             <MessageSquare className="w-4 h-4" />
-          </Button>
+            <span className="hidden md:inline">Feedback</span>
+          </button>
 
           {hasMounted && (
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"
               aria-label="Toggle dark mode"
             >
               {theme === 'dark' ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
@@ -260,7 +260,7 @@ export function Navbar() {
                 >
                   <span className="inline-flex items-center gap-2">
                     <BookOpenText className="h-4 w-4 text-brand-primary" />
-                    + Read
+                    Articles
                   </span>
                   <ChevronDown className={`h-4 w-4 text-brand-textSecondary transition-transform dark:text-gray-400 ${isMobileReadOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -306,6 +306,15 @@ export function Navbar() {
                 <MessageSquare className="h-4 w-4" />
                 Send feedback
               </button>
+              {hasMounted && (
+                <button
+                  onClick={() => { closeMobileMenu(); setTheme(theme === 'dark' ? 'light' : 'dark'); }}
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
+                >
+                  {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                </button>
+              )}
             </div>
           </div>
         </>
