@@ -396,13 +396,17 @@ function HeroImagePanel() {
           fill
           priority
           sizes="(min-width: 1280px) 44vw, (min-width: 1024px) 46vw, 100vw"
-          className="object-cover object-[58%_center]"
+          className="object-cover object-[58%_8%]"
         />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-white via-white/60 to-transparent dark:from-slate-950 dark:via-slate-950/60 sm:w-36"
         />
-        <div className="absolute bottom-5 left-5 max-w-[270px] rounded-xl border border-white/70 bg-white/92 px-4 py-3 shadow-[0_18px_44px_-28px_rgba(0,82,255,0.75)] backdrop-blur-md dark:border-white/15 dark:bg-slate-950/88">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-white/85 to-transparent dark:from-slate-950/75"
+        />
+        <div className="absolute bottom-5 left-5 max-w-[270px] rounded-xl border border-white/80 bg-white/95 px-4 py-3 shadow-[0_18px_44px_-28px_rgba(0,82,255,0.75)] backdrop-blur-sm dark:border-white/15 dark:bg-slate-950/90">
           <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand-textSecondary dark:text-gray-400">
             Start with the need
           </p>
