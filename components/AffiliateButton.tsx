@@ -68,41 +68,48 @@ export function AffiliateButton({
   }, [category, placement, productId, provider]);
 
   return (
-    <TooltipProvider delay={150}>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <a
-              ref={anchorRef}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                sendGAEvent({
-                  event: 'affiliate_link_clicked',
-                  product: productId,
-                  provider,
-                  placement,
-                });
-              }}
-              className={cn(
-                buttonVariants(),
-                'w-full min-w-[140px] rounded-[6px] border-none bg-brand-primary text-[14px] font-semibold text-white transition-colors hover:bg-brand-primaryDark md:w-auto',
-                className,
-              )}
-            />
-          }
-        >
-          {label} &rarr;
-        </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[200px] rounded-md border-none bg-brand-textPrimary p-2 text-center text-white shadow-md">
-          <p className="text-xs">
-            {amount > 0
-              ? "We earn a referral fee if you open this account — it doesn't change the rates we show. We compare all options equally."
-              : "We don't earn a referral fee from this bank — we include them because the rate is worth knowing."}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <div className="flex flex-col items-center gap-1">
+      <TooltipProvider delay={150}>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <a
+                ref={anchorRef}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  sendGAEvent({
+                    event: 'affiliate_link_clicked',
+                    product: productId,
+                    provider,
+                    placement,
+                  });
+                }}
+                className={cn(
+                  buttonVariants(),
+                  'w-full min-w-[140px] rounded-[6px] border-none bg-brand-primary text-[14px] font-semibold text-white transition-colors hover:bg-brand-primaryDark md:w-auto',
+                  className,
+                )}
+              />
+            }
+          >
+            {label} &rarr;
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[200px] rounded-md border-none bg-brand-textPrimary p-2 text-center text-white shadow-md">
+            <p className="text-xs">
+              {amount > 0
+                ? "We earn a referral fee if you open this account — it doesn't change the rates we show. We compare all options equally."
+                : "We don't earn a referral fee from this bank — we include them because the rate is worth knowing."}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      {amount > 0 && (
+        <span className="text-[10px] text-brand-textSecondary dark:text-gray-500">
+          Affiliate link
+        </span>
+      )}
+    </div>
   );
 }

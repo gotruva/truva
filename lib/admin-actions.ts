@@ -1,8 +1,29 @@
 'use server';
 
+import { z } from 'zod';
 import { getAdminClient } from '@/lib/supabase-admin-server';
 import { revalidatePath } from 'next/cache';
 import { rollbackToSnapshot } from '@/lib/rate-review';
+
+const rateEditPayloadSchema = z.object({
+  headlineRate: z.number().min(0).max(1).nullable().optional(),
+  tierType: z.enum(['flat', 'blended', 'threshold']).nullable().optional(),
+  sourceUrl: z.string().url().max(500).nullable().optional(),
+  baseRate: z.object({
+    grossRate: z.number().min(0).max(1).nullable().optional(),
+    afterTaxRate: z.number().min(0).max(1).nullable().optional(),
+  }).nullable().optional(),
+}).passthrough(); // allow additional product fields (tiers, conditions, etc.) stored in JSONB snapshot
+
+const mmfMetadataSchema = z.object({
+  trust_fee_pct: z.number().min(0).max(100).nullable(),
+  min_initial: z.number().min(0).nullable(),
+  min_additional: z.number().min(0).nullable(),
+  redemption_days: z.number().int().min(0).nullable(),
+  fund_page_url: z.string().url().max(500).nullable(),
+  navpu_url: z.string().url().max(500).nullable(),
+  is_active: z.boolean(),
+});
 
 const RATE_SURFACE_PATHS = ['/', '/banking', '/banking/rates', '/calculator', '/api/rates'];
 
@@ -30,6 +51,7 @@ export async function toggleProductPublish(productId: string, field: string, val
 }
 
 export async function saveManualRateEdit(productId: string, payload: Record<string, unknown>, autoApprove: boolean = false) {
+  const validatedPayload = rateEditPayloadSchema.parse(payload);
   const supabase = getAdminClient('staging');
 
   // Insert the new product_snapshot
@@ -38,7 +60,7 @@ export async function saveManualRateEdit(productId: string, payload: Record<stri
     .insert({
       product_id: productId,
       source_mode: 'manual_annual',
-      structured_payload: payload,
+      structured_payload: validatedPayload,
       review_status: autoApprove ? 'approved' : 'pending_review',
       approved_at: autoApprove ? new Date().toISOString() : null,
       captured_at: new Date().toISOString(),
@@ -74,11 +96,12 @@ export async function saveManualRateEdit(productId: string, payload: Record<stri
 }
 
 export async function saveMMFMetadata(fundId: string, payload: Record<string, unknown>) {
+  const validatedPayload = mmfMetadataSchema.parse(payload);
   const supabase = getAdminClient('public');
-  
+
   const { error } = await supabase
     .from('money_market_funds')
-    .update(payload)
+    .update(validatedPayload)
     .eq('id', fundId);
 
   if (error) {

@@ -174,7 +174,7 @@ export function BankPickCard({
         {hasRequirements && (
           <div className="rounded-xl border border-red-200/60 bg-red-50 px-3 py-2 text-[12px] font-semibold leading-relaxed text-red-700 dark:border-red-800/30 dark:bg-red-950/20 dark:text-red-300">
             <span className="block">
-              Base rate (no conditions): {formatRate(pick.baseAfterTaxRate)} after tax
+              Base rate (no conditions): {formatRate(pick.baseGrossRate)}
             </span>
             {pick.requirementSummary && (
               <details className="mt-1">

@@ -11,6 +11,7 @@ export interface BankPick {
   effectiveRate: number;
   projectedReturn: number;
   baseAfterTaxRate: number;
+  baseGrossRate: number;
   hasRequirements: boolean;
   requirementSummary: string | null;
 }
@@ -70,6 +71,7 @@ export function getProductPicksFromRates(
       effectiveRate: best.effectiveRate,
       projectedReturn: best.projectedReturn,
       baseAfterTaxRate: getBaseAfterTaxRate(best.product),
+      baseGrossRate: best.product.baseRate.grossRate,
       hasRequirements: Boolean(summarizeRequirements(best.product)),
       requirementSummary: summarizeRequirements(best.product),
     });

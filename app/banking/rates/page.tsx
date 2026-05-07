@@ -138,7 +138,7 @@ export default async function BankingRatesHub() {
               Rate desk
             </p>
             <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-              Compare digital bank rates (after tax)
+              Compare digital bank rates
             </h2>
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
               Start here for the real numbers. Expand each bank to see tiers, lock-ins, and conditions.

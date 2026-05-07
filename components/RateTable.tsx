@@ -28,7 +28,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { computeEffectiveGrossRate, computeEffectiveRate, computeReturn, formatPHP, formatRate } from '@/utils/yieldEngine';
-import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
 
@@ -188,7 +187,7 @@ export function RateTable({
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [sortCol, setSortCol] = useState<SortCol>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
-  const [showGross, setShowGross] = useState(false);
+  const [showGross, setShowGross] = useState(true);
 
   const numAmount = amount || 0;
 
@@ -285,31 +284,6 @@ export function RateTable({
               />
             </div>
           </div>
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="text-sm font-semibold text-brand-textSecondary dark:text-gray-400">View:</span>
-            <div className="flex rounded-lg border border-brand-border bg-white p-1 dark:border-white/10 dark:bg-slate-950">
-              <button
-                onClick={() => setShowGross(false)}
-                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
-                  !showGross
-                    ? 'bg-brand-primary text-white shadow-sm'
-                    : 'text-brand-textSecondary hover:bg-brand-surface dark:text-gray-500'
-                }`}
-              >
-                After-tax return
-              </button>
-              <button
-                onClick={() => setShowGross(true)}
-                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
-                  showGross
-                    ? 'bg-brand-primary text-white shadow-sm'
-                    : 'text-brand-textSecondary hover:bg-brand-surface dark:text-gray-500'
-                }`}
-              >
-                Gross vs Net
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -346,7 +320,7 @@ export function RateTable({
                       />
                     )}
                   >
-                    After-tax return
+                    Effective rate
                     <AlertCircle className="h-3.5 w-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
                     <SortIcon col="effective" sortCol={sortCol} sortDir={sortDir} />
                   </TooltipTrigger>
@@ -355,8 +329,7 @@ export function RateTable({
                     className="max-w-[300px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
                   >
                     <p>
-                      Your after-tax return is what you actually keep on ₱{numAmount.toLocaleString()}
-                      {' '}after the 20% Final Withholding Tax is applied.
+                      Estimated return on ₱{numAmount.toLocaleString()} based on the advertised rate.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -381,7 +354,7 @@ export function RateTable({
                     className="max-w-[280px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
                   >
                     <p>
-                      How much interest you&apos;d earn on PHP {numAmount.toLocaleString()} over {months} month{months > 1 ? 's' : ''}, after tax.
+                      How much interest you&apos;d earn on PHP {numAmount.toLocaleString()} over {months} month{months > 1 ? 's' : ''} at the advertised rate.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -574,9 +547,6 @@ export function RateTable({
                                     {tierCount > 1 && (
                                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
                                         {product.tiers.map((tier, tierIndex) => {
-                                          const tierAfterTax = product.taxExempt
-                                            ? calcTaxExempt(tier.grossRate)
-                                            : calcAfterTaxPhp(tier.grossRate);
                                           const isLastTier = tierIndex === product.tiers.length - 1;
                                           const isActiveThreshold = product.tierType === 'threshold'
                                             && numAmount >= tier.minBalance
@@ -594,8 +564,7 @@ export function RateTable({
                                               {tier.maxBalance !== null
                                                 ? `PHP ${tier.minBalance.toLocaleString()}-PHP ${tier.maxBalance.toLocaleString()}`
                                                 : `PHP ${tier.minBalance.toLocaleString()}+`}
-                                              : {(tier.grossRate * 100).toFixed(1)}%{' '}
-                                              <span className="text-[11px]">→ {(tierAfterTax * 100).toFixed(2)}%</span>
+                                              : {(tier.grossRate * 100).toFixed(2)}%
                                               {isActiveThreshold && <span className="ml-1 text-[10px]">✓ your tier</span>}
                                             </span>
                                           );

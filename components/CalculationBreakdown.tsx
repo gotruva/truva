@@ -6,7 +6,6 @@ import { RateProduct } from '@/types';
 
 interface CalculationScenarioCardProps {
   label: string;
-  taxLabel: string;
   lines: ReturnType<typeof getCalculationBreakdown>['primary']['lines'];
   effectiveRate: number;
   projectedReturn: number;
@@ -14,19 +13,15 @@ interface CalculationScenarioCardProps {
 
 function CalculationScenarioCard({
   label,
-  taxLabel,
   lines,
   effectiveRate,
   projectedReturn,
 }: CalculationScenarioCardProps) {
   return (
     <div className="rounded-xl border border-brand-border/60 bg-white p-3 dark:border-white/10 dark:bg-slate-900">
-      <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-3">
         <div className="text-[11px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
           {label}
-        </div>
-        <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">
-          {taxLabel}
         </div>
       </div>
 
@@ -39,8 +34,7 @@ function CalculationScenarioCard({
             <div className="font-medium text-brand-textPrimary dark:text-gray-200">{line.label}</div>
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-brand-textSecondary dark:text-gray-400">
               <span>Deposit slice: {formatPHP(line.amount)}</span>
-              <span>Gross rate: {formatRate(line.grossRate)}</span>
-              <span>After tax: {formatRate(line.afterTaxRate)}</span>
+              <span>Rate: {formatRate(line.grossRate)}</span>
             </div>
           </div>
         ))}
@@ -48,7 +42,7 @@ function CalculationScenarioCard({
 
       <div className="mt-3 grid gap-2 border-t border-brand-border/50 pt-3 text-[12px] dark:border-white/10 sm:grid-cols-2">
         <div>
-          <div className="text-brand-textSecondary dark:text-gray-500">Effective after-tax rate</div>
+          <div className="text-brand-textSecondary dark:text-gray-500">Effective rate</div>
           <div className="text-sm font-bold text-brand-textPrimary dark:text-gray-100">{formatRate(effectiveRate)}</div>
         </div>
         <div>
@@ -89,8 +83,8 @@ export function CalculationBreakdownDetails({
           Deposit used: <span className="font-semibold text-brand-textPrimary dark:text-gray-100">{formatPHP(breakdown.amount)}</span>
           {' '}over {breakdown.months} month{breakdown.months > 1 ? 's' : ''}
         </div>
-        <CalculationScenarioCard {...breakdown.primary} />
-        {breakdown.base && <CalculationScenarioCard {...breakdown.base} />}
+        <CalculationScenarioCard label={breakdown.primary.label} lines={breakdown.primary.lines} effectiveRate={breakdown.primary.effectiveRate} projectedReturn={breakdown.primary.projectedReturn} />
+        {breakdown.base && <CalculationScenarioCard label={breakdown.base.label} lines={breakdown.base.lines} effectiveRate={breakdown.base.effectiveRate} projectedReturn={breakdown.base.projectedReturn} />}
       </div>
     </details>
   );

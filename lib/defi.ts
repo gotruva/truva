@@ -1,4 +1,18 @@
+import { z } from 'zod';
 import { DefiRate } from '@/types';
+
+const llamaPoolSchema = z.object({
+  project: z.string(),
+  chain: z.string(),
+  symbol: z.string(),
+  apy: z.number().finite().nonnegative(),
+  apyMean30d: z.number().finite().nonnegative(),
+  tvlUsd: z.number().finite().nonnegative(),
+});
+
+const llamaResponseSchema = z.object({
+  data: z.array(llamaPoolSchema.passthrough()),
+});
 
 export async function fetchAaveBaseUSDC(): Promise<DefiRate | null> {
   try {
@@ -9,10 +23,9 @@ export async function fetchAaveBaseUSDC(): Promise<DefiRate | null> {
     if (!res.ok) {
       throw new Error(`DeFi upstream returned ${res.status}`);
     }
-    const { data } = await res.json();
-    const pool = data.find(
-      (p: { project: string; chain: string; symbol: string; apy: number; apyMean30d: number; tvlUsd: number }) => p.project === 'aave-v3' && p.chain === 'Base' && p.symbol === 'USDC'
-    );
+    const raw = await res.json();
+    const { data } = llamaResponseSchema.parse(raw);
+    const pool = data.find((p) => p.project === 'aave-v3' && p.chain === 'Base' && p.symbol === 'USDC');
     if (!pool) return null;
     return { apy: pool.apy, apyMean30d: pool.apyMean30d, tvlUsd: pool.tvlUsd };
   } catch (error) {

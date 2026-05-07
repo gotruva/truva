@@ -315,7 +315,7 @@ export function YieldCalculator({
           <div className="flex h-full flex-col rounded-2xl border border-brand-border bg-[#F8F9FB] p-6 dark:border-white/10 dark:bg-slate-950 lg:p-8">
             <div className="mb-4 flex flex-col gap-3 border-b border-brand-border/60 pb-4 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-[13px] font-bold uppercase tracking-widest text-brand-textSecondary dark:text-gray-400">
-                Estimated After-Tax Earnings
+                Estimated Earnings
               </span>
             </div>
 
@@ -482,7 +482,7 @@ export function YieldCalculator({
                             <div className="mt-2 space-y-3 rounded-xl border border-brand-border/60 bg-white p-3.5 shadow-inner dark:border-white/10 dark:bg-slate-900">
                               <div>
                                 <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-400">
-                                  Rate Tiers (After Tax)
+                                  Rate Tiers
                                 </h4>
                                 <div className="space-y-1.5">
                                   {result.tiers.map((tier, tierIndex) => (
@@ -493,10 +493,7 @@ export function YieldCalculator({
                                           : `₱${tier.minBalance.toLocaleString()}+`}
                                       </span>
                                       <span className="font-bold tabular-nums text-brand-textPrimary dark:text-gray-200">
-                                        {formatRate(tier.afterTaxRate)}
-                                        <span className="ml-1.5 font-normal text-brand-textSecondary dark:text-gray-500">
-                                          ({formatRate(tier.grossRate)} gross)
-                                        </span>
+                                        {formatRate(tier.grossRate)}
                                       </span>
                                     </div>
                                   ))}

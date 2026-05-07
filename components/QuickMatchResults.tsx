@@ -78,7 +78,7 @@ function getTradeoffs(product: RateProduct): string[] {
 function buildReasons(product: TopProduct, answers: QuickMatchAnswers): string[] {
   const reasons: string[] = [];
 
-  reasons.push(`${formatRate(product.effectiveRate > 0 ? product.effectiveRate : product.baseRate.afterTaxRate)} after-tax effective rate`);
+  reasons.push(`${formatRate(product.headlineRate)} advertised rate`);
 
   if (answers.lockFlexibility === 'no-lock' && product.lockInDays === 0) {
     reasons.push('Fully liquid and matches your need to access funds anytime');
@@ -187,7 +187,7 @@ function RecommendationCard({
             <div className={`text-2xl font-bold tabular-nums ${isTop ? 'text-positive' : 'text-brand-textPrimary dark:text-gray-100'}`}>
               {formatRate(product.effectiveRate)}
             </div>
-            <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">after tax / yr</div>
+            <div className="text-[11px] text-brand-textSecondary dark:text-gray-500">p.a.</div>
           </div>
         </div>
 
@@ -234,7 +234,7 @@ function RecommendationCard({
         {product.tiers.length > 1 && (
           <div className="mb-4">
             <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-textSecondary dark:text-gray-500">
-              Rate Tiers (After Tax)
+              Rate Tiers
             </div>
             <div className="space-y-1">
               {product.tiers.map((tier, index) => (
@@ -245,10 +245,7 @@ function RecommendationCard({
                       : `PHP ${tier.minBalance.toLocaleString()}+`}
                   </span>
                   <span className="font-semibold tabular-nums text-brand-textPrimary dark:text-gray-200">
-                    {formatRate(tier.afterTaxRate)}
-                    <span className="ml-1 text-[11px] font-normal text-brand-textSecondary dark:text-gray-500">
-                      ({formatRate(tier.grossRate)} gross)
-                    </span>
+                    {formatRate(tier.grossRate)}
                   </span>
                 </div>
               ))}

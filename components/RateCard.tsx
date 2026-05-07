@@ -9,7 +9,6 @@ import { Lock, ShieldCheck, AlertTriangle, Calendar, ChevronDown, Trophy } from 
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatRate, formatPHP, computeEffectiveGrossRate } from '@/utils/yieldEngine';
 import { trackAffiliateProviderExpanded } from '@/lib/affiliate-analytics';
-import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
 
@@ -117,7 +116,7 @@ function ProductRow({ product, amount, months, isBest }: {
             </div>
           )}
           <div className="text-[10px] font-medium text-brand-textSecondary dark:text-gray-500 uppercase tracking-wider mt-0.5">
-            After-tax return
+            Projected return
           </div>
         </div>
       </div>
@@ -159,9 +158,6 @@ function ProductRow({ product, amount, months, isBest }: {
                   </h4>
                   <div className="space-y-0.5">
                     {product.tiers.map((tier, i) => {
-                      const tierAfterTax = product.taxExempt
-                        ? calcTaxExempt(tier.grossRate)
-                        : calcAfterTaxPhp(tier.grossRate);
                       const isLastTier = i === product.tiers.length - 1;
                       const isActiveTier = product.tierType === 'threshold' &&
                         (amount >= tier.minBalance && (tier.maxBalance === null || amount <= tier.maxBalance || (isLastTier && amount >= tier.minBalance)));
@@ -177,7 +173,7 @@ function ProductRow({ product, amount, months, isBest }: {
                             }
                           </span>
                           <span className="tabular-nums">
-                            {(tier.grossRate * 100).toFixed(1)}% → {(tierAfterTax * 100).toFixed(2)}%
+                            {(tier.grossRate * 100).toFixed(2)}%
                             {isActiveTier && <span className="ml-1 text-[11px] font-bold">✓ your tier</span>}
                           </span>
                         </div>
@@ -357,18 +353,15 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
           {/* Rate display */}
           <div className="flex items-end justify-between mt-2">
             <div>
-              <div className="text-[11px] text-brand-textSecondary dark:text-gray-500 font-medium">
-                Effective rate: {(headlineGross * 100).toFixed(2)}% gross
-              </div>
               <div className={`text-[32px] font-extrabold tabular-nums leading-none tracking-tight mt-1 ${
                 rank === 1
                   ? 'text-transparent bg-clip-text bg-gradient-to-br from-[#4ADE80] to-[#12B76A]'
                   : 'text-brand-textPrimary dark:text-gray-100'
               }`}>
-                {formatRate(bestEffectiveRate)}
+                {(headlineGross * 100).toFixed(2)}%
               </div>
               <div className="text-[12px] font-bold text-brand-textSecondary dark:text-gray-400 mt-1">
-                After-tax return · {best.lockInDays === 0 ? 'withdraw anytime' : `${formatLockIn(best.lockInDays)} lock`}
+                {best.lockInDays === 0 ? 'Withdraw anytime' : `${formatLockIn(best.lockInDays)} lock`}
               </div>
             </div>
             {amount > 0 && (
@@ -427,10 +420,6 @@ function InsurerLabel({ insurer }: { insurer: string }) {
 
 /* ─── Legacy single card export for backward compat ─── */
 export function RateCard({ rate }: { rate: RateProduct }) {
-  const bestAfterTax = rate.taxExempt
-    ? calcTaxExempt(rate.headlineRate)
-    : calcAfterTaxPhp(rate.headlineRate);
-
   return (
     <div className="bg-white dark:bg-slate-900 border border-brand-border dark:border-white/10 rounded-lg p-5 mb-4 block md:hidden shadow-sm">
       <div className="flex items-center gap-3 mb-3">
@@ -449,9 +438,9 @@ export function RateCard({ rate }: { rate: RateProduct }) {
         </div>
       </div>
       <div className="text-[32px] font-bold text-positive tabular-nums leading-none">
-        {(bestAfterTax * 100).toFixed(2)}%
+        {(rate.headlineRate * 100).toFixed(2)}%
       </div>
-      <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1 font-bold">After-tax return</div>
+      <div className="text-[12px] text-brand-textSecondary dark:text-gray-500 mt-1 font-bold">p.a.</div>
       <div className="mt-4">
         <AffiliateButton
           amount={rate.payoutAmount}
