@@ -14,24 +14,16 @@ html {
   from { transform: translate3d(0, 0, 0); }
   to   { transform: translate3d(-33.333%, 0, 0); }
 }
-@keyframes truva-logo-marquee-reverse {
-  from { transform: translate3d(-33.333%, 0, 0); }
-  to   { transform: translate3d(0, 0, 0); }
-}
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
   .truva-logo-marquee {
-    animation: truva-logo-marquee 36s linear infinite;
-  }
-  .truva-logo-marquee-reverse {
-    animation: truva-logo-marquee-reverse 42s linear infinite;
+    animation: truva-logo-marquee 70s linear infinite;
   }
   @media (prefers-reduced-motion: reduce) {
-    .truva-logo-marquee,
-    .truva-logo-marquee-reverse {
+    .truva-logo-marquee {
       animation: none;
     }
   }

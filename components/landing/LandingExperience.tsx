@@ -94,6 +94,11 @@ const ALL_MARQUEE_LOGOS: Array<{ provider: string; logo: string }> = [
 ];
 
 
+function scrollToNewsletter(e: React.MouseEvent) {
+  e.preventDefault();
+  document.getElementById('truva-brief')?.scrollIntoView({ behavior: 'smooth' });
+}
+
 const focusRing =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950';
 
@@ -314,40 +319,52 @@ function HeroStat({ value, label }: { value: string; label: string }) {
 function HeroCategoryTile({ category }: { category: CategoryItem }) {
   const Icon = category.icon;
   const isPrimary = category.priority === 'primary';
+  const isSoon = category.statusTone === 'soon';
 
   return (
     <Link
       href={category.href}
-      className={`${focusRing} ${surfaceInteraction} group relative flex min-h-[104px] items-start gap-3 rounded-xl border bg-white p-4 shadow-[0_18px_46px_-36px_rgba(15,23,42,0.42)] hover:border-brand-primary/30 hover:shadow-[0_20px_48px_-34px_rgba(0,82,255,0.42)] dark:bg-white/[0.04] ${
+      onClick={isSoon ? scrollToNewsletter : undefined}
+      className={`${focusRing} ${surfaceInteraction} group relative flex items-start gap-3 rounded-xl border bg-white p-4 shadow-[0_18px_46px_-36px_rgba(15,23,42,0.42)] dark:bg-white/[0.04] ${
         isPrimary
           ? 'border-brand-primary/25 bg-brand-primaryLight/65 dark:bg-brand-primary/15'
-          : 'border-brand-border dark:border-white/10'
-      }`}
+          : isSoon
+            ? 'border-dashed border-brand-border opacity-60 hover:opacity-90 dark:border-white/10'
+            : 'border-brand-border hover:border-brand-primary/30 hover:shadow-[0_20px_48px_-34px_rgba(0,82,255,0.42)] dark:border-white/10'
+      } ${!isSoon ? 'min-h-[104px]' : ''}`}
     >
       <span
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-          isPrimary ? 'bg-brand-primary text-white' : 'bg-brand-primaryLight text-brand-primary dark:bg-brand-primary/20'
+        className={`flex shrink-0 items-center justify-center rounded-lg ${
+          isSoon
+            ? 'h-8 w-8 bg-brand-surface text-brand-textSecondary dark:bg-white/[0.06]'
+            : isPrimary
+              ? 'h-10 w-10 bg-brand-primary text-white'
+              : 'h-10 w-10 bg-brand-primaryLight text-brand-primary dark:bg-brand-primary/20'
         }`}
       >
-        <Icon className="h-5 w-5" aria-hidden="true" />
+        <Icon className={isSoon ? 'h-4 w-4' : 'h-5 w-5'} aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex items-start justify-between gap-2">
-          <span className="text-sm font-black leading-tight text-brand-textPrimary dark:text-white">
+          <span className={`font-black leading-tight text-brand-textPrimary dark:text-white ${isSoon ? 'text-[13px]' : 'text-sm'}`}>
             {category.title}
           </span>
           <StatusBadge tone={category.statusTone}>{category.statusLabel}</StatusBadge>
         </span>
-        <span className="mt-1 block text-[12px] leading-relaxed text-brand-textSecondary dark:text-gray-300">
-          {category.summary}
-        </span>
-        <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-bold text-brand-primary">
-          {category.cta}
-          <ArrowRight
-            className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-            aria-hidden="true"
-          />
-        </span>
+        {!isSoon && (
+          <>
+            <span className="mt-1 block text-[12px] leading-relaxed text-brand-textSecondary dark:text-gray-300">
+              {category.summary}
+            </span>
+            <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-bold text-brand-primary">
+              {category.cta}
+              <ArrowRight
+                className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                aria-hidden="true"
+              />
+            </span>
+          </>
+        )}
       </span>
     </Link>
   );
@@ -364,14 +381,6 @@ function HeroImagePanel() {
           priority
           sizes="(min-width: 1280px) 44vw, (min-width: 1024px) 46vw, 100vw"
           className="object-cover object-[58%_8%]"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-white via-white/60 to-transparent dark:from-slate-950 dark:via-slate-950/60 sm:w-36"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-white/85 to-transparent dark:from-slate-950/75"
         />
         <div className="absolute bottom-5 left-5 max-w-[270px] rounded-xl border border-white/80 bg-white/95 px-4 py-3 shadow-[0_18px_44px_-28px_rgba(0,82,255,0.75)] backdrop-blur-sm dark:border-white/15 dark:bg-slate-950/90">
           <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand-textSecondary dark:text-gray-400">
@@ -408,12 +417,7 @@ function StatusBadge({
 }
 
 function BrandMarqueeSection({ logos }: { logos: Array<{ provider: string; logo: string }> }) {
-  // Split into two non-overlapping groups by index — even indices → row1, odd → row2.
-  // This guarantees the same provider never appears in both rows at the same time.
-  const groupA = logos.filter((_, i) => i % 2 === 0);
-  const groupB = logos.filter((_, i) => i % 2 !== 0);
-  const row1 = [...groupA, ...groupA, ...groupA];
-  const row2 = [...groupB, ...groupB, ...groupB];
+  const row1 = [...logos, ...logos, ...logos];
 
   const LogoChip = ({ item, index }: { item: { provider: string; logo: string }; index: number }) => (
     <div
@@ -445,18 +449,11 @@ function BrandMarqueeSection({ logos }: { logos: Array<{ provider: string; logo:
         </h2>
       </div>
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-8">
         <div className="[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
           <div className="truva-logo-marquee flex w-max gap-3 motion-reduce:animate-none">
             {row1.map((item, index) => (
               <LogoChip key={`r1-${item.provider}-${index}`} item={item} index={index} />
-            ))}
-          </div>
-        </div>
-        <div className="[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-          <div className="truva-logo-marquee-reverse flex w-max gap-3 motion-reduce:animate-none">
-            {row2.map((item, index) => (
-              <LogoChip key={`r2-${item.provider}-${index}`} item={item} index={index} />
             ))}
           </div>
         </div>
@@ -521,12 +518,8 @@ function FeaturedCategoryCard({ category }: { category: CategoryItem }) {
           className="object-cover"
         />
       )}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-white via-white/70 to-white/0 dark:from-slate-950 dark:via-slate-950/65"
-      />
       <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-        <div className="max-w-xl rounded-xl border border-white/80 bg-white/92 p-5 shadow-[0_18px_44px_-28px_rgba(0,82,255,0.7)] backdrop-blur-md dark:border-white/15 dark:bg-slate-950/90">
+        <div className="max-w-xl rounded-xl border border-brand-border bg-white p-5 shadow-[0_18px_44px_-28px_rgba(0,82,255,0.7)] dark:border-white/15 dark:bg-slate-950">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-primary text-white">
@@ -568,6 +561,7 @@ function CategoryImageCard({ category }: { category: CategoryItem }) {
   return (
     <Link
       href={category.href}
+      onClick={category.statusTone === 'soon' ? scrollToNewsletter : undefined}
       className={`${focusRing} ${surfaceInteraction} group grid min-h-[252px] overflow-hidden rounded-2xl border border-brand-border bg-white shadow-[0_22px_58px_-44px_rgba(15,23,42,0.45)] hover:border-brand-primary/30 hover:shadow-[0_26px_62px_-44px_rgba(0,82,255,0.48)] dark:border-white/10 dark:bg-white/[0.04] sm:grid-cols-[0.95fr_1.05fr]`}
     >
       <div className="relative min-h-[220px] sm:min-h-full">
@@ -619,6 +613,7 @@ function FutureCategoryCard({ category }: { category: CategoryItem }) {
     return (
       <Link
         href={category.href}
+        onClick={scrollToNewsletter}
         className={`${focusRing} ${surfaceInteraction} group grid min-h-[252px] overflow-hidden rounded-2xl border border-dashed border-brand-border bg-white shadow-[0_18px_48px_-40px_rgba(15,23,42,0.35)] hover:border-warning/40 hover:shadow-[0_22px_52px_-38px_rgba(247,144,9,0.28)] dark:border-white/15 dark:bg-white/[0.04] sm:grid-cols-[0.95fr_1.05fr]`}
       >
         <div className="relative min-h-[200px] sm:min-h-full">
@@ -660,6 +655,7 @@ function FutureCategoryCard({ category }: { category: CategoryItem }) {
   return (
     <Link
       href={category.href}
+      onClick={scrollToNewsletter}
       className={`${focusRing} ${surfaceInteraction} group flex items-start justify-between gap-4 rounded-2xl border border-dashed border-brand-border bg-brand-surface p-5 hover:border-brand-primary/30 hover:bg-white hover:shadow-[0_18px_48px_-38px_rgba(15,23,42,0.42)] dark:border-white/15 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]`}
     >
       <span className="flex min-w-0 items-start gap-4">
