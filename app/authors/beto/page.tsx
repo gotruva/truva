@@ -4,7 +4,7 @@ import { getBankingArticles, getGuideArticles } from '@/lib/editorial';
 
 export const metadata: Metadata = {
   title: 'Beto - Founder',
-  description: 'Meet the solo builder behind Truva, the Philippines\' dedicated after-tax personal finance platform.',
+  description: 'Meet the solo builder behind Truva, the Philippines\' plain-English personal finance comparison platform.',
   alternates: {
     canonical: '/authors/beto',
   },
@@ -41,11 +41,11 @@ export default function AuthorPage() {
                 how much their savings were actually earning.
               </p>
               <p>
-                Between hidden promo conditions, lock-in periods, and the standard 20% Final Withholding Tax,
+                Between hidden promo conditions, lock-in periods, and tax reminders most comparison pages bury,
                 comparing a digital bank against a tax-exempt government product felt like a math exam.
               </p>
               <p>
-                My goal is straightforward: make the comparison layer transparent, fast, and mathematically honest.
+                My goal is straightforward: make the comparison layer transparent, fast, and easy to understand.
                 I write the code, verify the rates, and design the calculators you use here.
               </p>
               <p>
@@ -67,9 +67,9 @@ export default function AuthorPage() {
                 What I work on
               </p>
               <ul className="mt-4 space-y-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                <li>After-tax rate comparisons for Philippine savers</li>
+                <li>Advertised-rate comparisons for Philippine savers</li>
                 <li>Guide pages for taxes, PDIC, and product mechanics</li>
-                <li>Banking and credit-card decision tools</li>
+          <li>Savings, deposits, and credit-card decision tools</li>
               </ul>
             </div>
 

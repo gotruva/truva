@@ -14,7 +14,7 @@ export const revalidate = 0;
 export const metadata = {
   title: 'Best Money Market Funds Philippines 2026 | Truva',
   description:
-    'Compare money market funds in the Philippines. See the actual yield you keep after taxes and fees, sorted from highest to lowest. PHP and USD funds.',
+    'Compare money market funds in the Philippines. See published yields, redemption timing, minimums, and provider context in one place.',
 };
 
 export default async function MoneyMarketFundsPage() {
@@ -85,7 +85,7 @@ export default async function MoneyMarketFundsPage() {
           </h1>
 
           <p className="mb-8 max-w-xl text-lg font-medium text-blue-100/90 dark:text-gray-300">
-            We&apos;ve done the math — taxes and fees are already deducted. What you see is what you actually keep.
+            Compare published fund yields, redemption timing, and minimums before you choose.
           </p>
 
           <div className="flex justify-center mb-8 w-full max-w-md">
@@ -102,7 +102,7 @@ export default async function MoneyMarketFundsPage() {
             {[
               { icon: Zap, label: 'Withdraw in 1–5 days' },
               { icon: Shield, label: 'Not PDIC-insured' },
-              { icon: BarChart2, label: 'Yields shown after tax' },
+              { icon: BarChart2, label: 'Published yields shown' },
             ].map((pill) => {
               const Icon = pill.icon;
               return (

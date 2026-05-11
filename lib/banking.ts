@@ -1,6 +1,5 @@
 import type { RateProduct } from '@/types';
-import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
-import { computeEffectiveRate, computeReturn } from '@/utils/yieldEngine';
+import { computeEffectiveGrossRate, computeGrossEarnings } from '@/utils/yieldEngine';
 
 export interface BankPick {
   provider: string;
@@ -10,16 +9,9 @@ export interface BankPick {
   bestProduct: RateProduct;
   effectiveRate: number;
   projectedReturn: number;
-  baseAfterTaxRate: number;
   baseGrossRate: number;
   hasRequirements: boolean;
   requirementSummary: string | null;
-}
-
-function getBaseAfterTaxRate(product: RateProduct): number {
-  return product.taxExempt
-    ? calcTaxExempt(product.baseRate.grossRate)
-    : calcAfterTaxPhp(product.baseRate.grossRate);
 }
 
 function summarizeRequirements(product: RateProduct): string | null {
@@ -49,8 +41,8 @@ export function getProductPicksFromRates(
     const enriched = products
       .map((product) => ({
         product,
-        effectiveRate: computeEffectiveRate(amount, product),
-        projectedReturn: computeReturn(amount, product, months),
+        effectiveRate: computeEffectiveGrossRate(amount, product),
+        projectedReturn: computeGrossEarnings(amount, product, months),
       }))
       .sort((left, right) => right.effectiveRate - left.effectiveRate);
 
@@ -70,7 +62,6 @@ export function getProductPicksFromRates(
       bestProduct: best.product,
       effectiveRate: best.effectiveRate,
       projectedReturn: best.projectedReturn,
-      baseAfterTaxRate: getBaseAfterTaxRate(best.product),
       baseGrossRate: best.product.baseRate.grossRate,
       hasRequirements: Boolean(summarizeRequirements(best.product)),
       requirementSummary: summarizeRequirements(best.product),

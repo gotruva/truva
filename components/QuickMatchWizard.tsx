@@ -16,7 +16,7 @@ interface QuickMatchWizardProps {
 
 const AMOUNT_PRESETS = [
   { label: 'PHP 10,000', value: 10000 },
-  { label: 'PHP 100,000', value: 100000 },
+  { label: 'PHP 50,000', value: 50000 },
   { label: 'PHP 500,000', value: 500000 },
   { label: 'Custom', value: -1 },
 ];
@@ -166,7 +166,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
               Find your best savings rate – just answer 3 questions.
             </h2>
             <p className="mt-2 max-w-lg text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400">
-              We&apos;ll rank every bank account by what you actually keep after tax.
+              We&apos;ll rank bank accounts by the advertised rate and your savings timeline.
             </p>
           </div>
           <button
@@ -231,7 +231,7 @@ export function QuickMatchWizard({ onComplete, onSkip, initialAnswers }: QuickMa
                   How much will you deposit?
                 </h3>
                 <p className="mb-6 text-sm text-brand-textSecondary dark:text-gray-400">
-                  We use your amount to calculate your actual after-tax earnings.
+                  We use your amount to estimate gross interest before tax.
                 </p>
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                   {AMOUNT_PRESETS.map((preset) => (

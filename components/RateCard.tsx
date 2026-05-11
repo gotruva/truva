@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { AffiliateButton } from './AffiliateButton';
 import { Lock, ShieldCheck, AlertTriangle, Calendar, ChevronDown, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatRate, formatPHP, computeEffectiveGrossRate } from '@/utils/yieldEngine';
+import { formatRate, formatPHP } from '@/utils/yieldEngine';
 import { trackAffiliateProviderExpanded } from '@/lib/affiliate-analytics';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
@@ -79,7 +79,7 @@ function ProductRow({ product, amount, months, isBest }: {
             </span>
             {isBest && (
               <Badge className="bg-positive/10 text-positive border-positive/20 text-[10px] font-bold py-0.5 px-2">
-                Best
+                Top fit
               </Badge>
             )}
           </div>
@@ -116,7 +116,7 @@ function ProductRow({ product, amount, months, isBest }: {
             </div>
           )}
           <div className="text-[10px] font-medium text-brand-textSecondary dark:text-gray-500 uppercase tracking-wider mt-0.5">
-            Projected return
+            Estimated gross interest
           </div>
         </div>
       </div>
@@ -224,11 +224,11 @@ function ProductRow({ product, amount, months, isBest }: {
                   </span>
                   {amount > 0 && product.payoutFrequency !== 'at_maturity' ? (
                     <span className="font-semibold text-brand-textPrimary dark:text-gray-200 tabular-nums">
-                      ~{formatPHP(getPeriodicPayout(amount, product.effectiveRate, product.payoutFrequency))} / {getPayoutPeriodLabel(product.payoutFrequency)}
+                      ~{formatPHP(getPeriodicPayout(amount, product.effectiveRate, product.payoutFrequency))} gross / {getPayoutPeriodLabel(product.payoutFrequency)}
                     </span>
                   ) : amount > 0 ? (
                     <span className="font-semibold text-positive tabular-nums">
-                      +{formatPHP(product.projectedReturn)} after {months} month{months !== 1 ? 's' : ''}
+                      +{formatPHP(product.projectedReturn)} gross over {months} month{months !== 1 ? 's' : ''}
                     </span>
                   ) : null}
                 </div>
@@ -274,7 +274,6 @@ interface BankCardProps {
 export function BankCard({ provider, logo, products, bestEffectiveRate, bestReturn, rank, amount, months, insurer, isExpanded, onToggle, isRecommended }: BankCardProps) {
 
   const best = products[0];
-  const headlineGross = computeEffectiveGrossRate(amount, best);
 
   return (
     <div
@@ -294,10 +293,10 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
           {rank <= 3 ? (
             <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white ${
               rank === 1
-                ? 'bg-gradient-to-br from-[#FBBF24] to-[#F59E0B] shadow-[0_0_12px_rgba(255,215,0,0.5)]'
+                ? 'bg-brand-primary shadow-sm'
                 : rank === 2
-                ? 'bg-gradient-to-br from-[#D1D5DB] to-[#9CA3AF] shadow-md text-gray-700'
-                : 'bg-gradient-to-br from-[#D97706] to-[#B45309] shadow-md'
+                ? 'bg-blue-400 shadow-sm text-white'
+                : 'bg-slate-400 shadow-sm'
             }`}>
               {rank === 1 ? <Trophy className="w-3.5 h-3.5" /> : rank}
             </span>
@@ -358,7 +357,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
                   ? 'text-transparent bg-clip-text bg-gradient-to-br from-[#4ADE80] to-[#12B76A]'
                   : 'text-brand-textPrimary dark:text-gray-100'
               }`}>
-                {(headlineGross * 100).toFixed(2)}%
+                {formatRate(bestEffectiveRate)}
               </div>
               <div className="text-[12px] font-bold text-brand-textSecondary dark:text-gray-400 mt-1">
                 {best.lockInDays === 0 ? 'Withdraw anytime' : `${formatLockIn(best.lockInDays)} lock`}
@@ -367,7 +366,7 @@ export function BankCard({ provider, logo, products, bestEffectiveRate, bestRetu
             {amount > 0 && (
               <div className="text-right">
                 <div className="text-[18px] font-bold text-positive tabular-nums">+{formatPHP(bestReturn)}</div>
-                <div className="text-[12px] font-medium text-brand-textSecondary dark:text-gray-500">estimated over {months} month{months !== 1 ? 's' : ''}</div>
+                <div className="text-[12px] font-medium text-brand-textSecondary dark:text-gray-500">estimated gross over {months} month{months !== 1 ? 's' : ''}</div>
               </div>
             )}
           </div>

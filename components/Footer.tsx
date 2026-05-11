@@ -39,7 +39,7 @@ export function Footer() {
           <FooterGroup
             title="Products"
             links={[
-              { href: '/banking', label: 'Banking' },
+              { href: '/banking', label: 'Savings & Deposits' },
               { href: '/credit-cards', label: 'Credit Cards' },
               { href: '/loans', label: 'Loans' },
             ]}

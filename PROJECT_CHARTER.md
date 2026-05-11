@@ -1,4 +1,6 @@
 > ⚠️ **SUPERSEDED — May 4, 2026.** This document is kept for historical reference only. The single source of truth is now **`TRUVA_MASTER.md`**. Read that file instead.
+>
+> **May 11, 2026 clarification:** Any older after-tax banking language below is superseded. Public savings/deposit UI shows advertised rates and gross estimates only, with a bottom reminder that tax and bank charges are not deducted.
 
 # Truva — Master Project Charter & AI Strategic Brief
 **Version:** 2.1 | **Status:** Superseded by TRUVA_MASTER.md | **Identity:** Founder Mentality for C-Suite Shipping
@@ -51,10 +53,10 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 - No horizontal scrolling on mobile, ever.
 
 ### 💰 Net-Value Engineering ("The Moat")
-- Never display a headline rate or reward in isolation. Our core value is showing the **bottom line** after all deductions (taxes, fees, or hidden conditions).
-- **Banking (After-Tax)**: Standard Bank Interest (PHP): `grossRate * 0.80`, Dollar TDs: `grossRate * 0.925`.
+- Never display a headline rate or reward without the context that changes the decision.
+- **Banking (Advertised/Gross)**: Public savings and deposit UI shows the bank-advertised rate and gross peso estimates only. Taxes and bank charges are disclosed as not deducted.
 - **Credit Cards (Net Reward)**: Real Value = `(Reward Value - Annual Fee)`.
-- **Single Source of Truth**: Always import calculation logic from the relevant utility (e.g., `lib/tax.ts` for banking).
+- **Single Source of Truth**: Banking UI should use gross helpers from `utils/yieldEngine.ts`; `lib/tax.ts` must not be called by user-facing banking components.
 
 ### ⚡ Performance & UX
 - **Lighthouse Mobile Score: ≥90.** No exceptions.
@@ -76,7 +78,7 @@ Truva follows a strict phased approach to build trust, SEO authority, and regula
 ## 5. Critical Technical Anchors
 
 - **Rate Engine**: [yieldEngine.ts](file:///c:/Users/betoa/Documents/truva/utils/yieldEngine.ts) (Core calculation logic).
-- **Tax Logic**: [tax.ts](file:///c:/Users/betoa/Documents/truva/lib/tax.ts) (Centralized tax rules).
+- **Tax Logic**: [tax.ts](file:///c:/Users/betoa/Documents/truva/lib/tax.ts) (Internal tax rules only; not called by public banking UI).
 - **Data Schemas**: [types/index.ts](file:///c:/Users/betoa/Documents/truva/types/index.ts) (Base models for all products).
 - **Current Data**: Supabase `production` rate snapshots are the live source of truth for bank rates. [rates.json](file:///c:/Users/betoa/Documents/truva/data/rates.json) remains the manual/seed catalog for metadata fallbacks and non-scraper products.
 

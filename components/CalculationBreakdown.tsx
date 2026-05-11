@@ -42,11 +42,11 @@ function CalculationScenarioCard({
 
       <div className="mt-3 grid gap-2 border-t border-brand-border/50 pt-3 text-[12px] dark:border-white/10 sm:grid-cols-2">
         <div>
-          <div className="text-brand-textSecondary dark:text-gray-500">Effective rate</div>
+          <div className="text-brand-textSecondary dark:text-gray-500">Amount-fit advertised rate</div>
           <div className="text-sm font-bold text-brand-textPrimary dark:text-gray-100">{formatRate(effectiveRate)}</div>
         </div>
         <div>
-          <div className="text-brand-textSecondary dark:text-gray-500">Projected return</div>
+          <div className="text-brand-textSecondary dark:text-gray-500">Estimated gross interest</div>
           <div className="text-sm font-bold text-positive">+{formatPHP(projectedReturn)}</div>
         </div>
       </div>

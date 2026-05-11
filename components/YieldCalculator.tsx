@@ -26,10 +26,11 @@ import { Input } from '@/components/ui/input';
 import { AffiliateButton } from '@/components/AffiliateButton';
 import { trackAffiliateProviderExpanded } from '@/lib/affiliate-analytics';
 import {
+  computeEffectiveGrossRate,
+  computeGrossEarnings,
   formatPHP,
   formatRate,
 } from '@/utils/yieldEngine';
-import { computeDualScenario } from '@/utils/yieldEngine';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
 
@@ -128,13 +129,12 @@ export function YieldCalculator({
 
     return filteredRates
       .map((rate) => {
-        const dual = computeDualScenario(amount, rate, comparisonState.months);
-
         return {
           ...rate,
-          projectedReturn: dual.withConditions.return,
-          effectiveRate: dual.withConditions.effectiveRate,
-          dual,
+          projectedReturn: computeGrossEarnings(amount, rate, comparisonState.months),
+          effectiveRate: computeEffectiveGrossRate(amount, rate),
+          hasConditions: rate.conditions.some((condition) => condition.type !== 'none' && condition.type !== 'time_limited'),
+          baseGrossReturn: (amount * rate.baseRate.grossRate / 12) * comparisonState.months,
         };
       })
       .sort((left, right) => right.projectedReturn - left.projectedReturn)
@@ -315,7 +315,7 @@ export function YieldCalculator({
           <div className="flex h-full flex-col rounded-2xl border border-brand-border bg-[#F8F9FB] p-6 dark:border-white/10 dark:bg-slate-950 lg:p-8">
             <div className="mb-4 flex flex-col gap-3 border-b border-brand-border/60 pb-4 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-[13px] font-bold uppercase tracking-widest text-brand-textSecondary dark:text-gray-400">
-                Estimated Earnings
+                Estimated gross interest
               </span>
             </div>
 
@@ -377,7 +377,7 @@ export function YieldCalculator({
                     }
                   }
 
-                  const conditionBadge = result.dual.hasConditions ? (
+                  const conditionBadge = result.hasConditions ? (
                     <span className="ml-1 inline-flex items-center rounded border border-amber-200/60 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-600 dark:border-amber-800/40 dark:bg-amber-900/30 dark:text-amber-400">
                       <AlertTriangle className="mr-0.5 h-2.5 w-2.5" />
                       Conditions
@@ -404,7 +404,7 @@ export function YieldCalculator({
                       <div className="mb-2.5 flex items-center justify-between">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ${
-                            index === 0 ? 'bg-[#FFD700]' : index === 1 ? 'bg-[#C0C0C0]' : 'bg-[#CD7F32]'
+                            index === 0 ? 'bg-brand-primary' : index === 1 ? 'bg-blue-400' : 'bg-slate-400'
                           }`}>
                             {index + 1}
                           </span>
@@ -427,14 +427,14 @@ export function YieldCalculator({
                         </div>
                       </div>
 
-                      {result.dual.hasConditions && result.dual.conditionBoost > 0 && (
+                      {result.hasConditions && result.projectedReturn > result.baseGrossReturn && (
                         <div className="mb-2 flex items-center gap-2 text-[11px]">
                           <span className="text-brand-textSecondary dark:text-gray-500">
                             Without conditions:{' '}
                             <span className="font-semibold text-amber-600 dark:text-amber-400">
-                              {formatPHP(result.dual.withoutConditions.return)}
+                              {formatPHP(result.baseGrossReturn)}
                             </span>{' '}
-                            ({formatRate(result.dual.withoutConditions.effectiveRate)})
+                            ({formatRate(result.baseRate.grossRate)} advertised)
                           </span>
                         </div>
                       )}

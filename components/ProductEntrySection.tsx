@@ -5,11 +5,11 @@ const PRODUCTS = [
   {
     icon: Landmark,
     title: 'Digital Bank Savings',
-    subtitle: 'PDIC-insured · After-tax rates · Monthly payout',
+    subtitle: 'PDIC-insured · Advertised rates · Monthly payout',
     description:
-      'Compare savings accounts and time deposits across Philippine digital banks. See what you actually keep after the 20% final withholding tax.',
+      'Compare savings accounts and time deposits across Philippine digital banks. See rates, lock-ins, minimums, and conditions before you choose.',
     cta: 'Compare savings rates',
-    href: '/banking/rates#rate-desk',
+    href: '/banking',
   },
   {
     icon: BarChart2,

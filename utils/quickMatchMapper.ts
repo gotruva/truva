@@ -1,5 +1,5 @@
 import { QuickMatchAnswers, QuickMatchCoreAnswers, LiquidityFilter, PayoutFilter, RateProduct } from '@/types';
-import { computeDualScenario, computeEffectiveRate, computeReturn } from '@/utils/yieldEngine';
+import { computeEffectiveGrossRate, computeGrossEarnings } from '@/utils/yieldEngine';
 
 export interface CalculatorPrefill {
   amount: number;
@@ -12,7 +12,9 @@ export interface CalculatorPrefill {
 export interface QuickMatchRecommendation extends RateProduct {
   effectiveRate: number;
   projectedReturn: number;
-  dual: ReturnType<typeof computeDualScenario>;
+  hasConditions: boolean;
+  baseGrossReturn: number;
+  conditionBoost: number;
 }
 
 export function deriveQuickMatchAnswers(core: QuickMatchCoreAnswers): QuickMatchAnswers {
@@ -141,12 +143,20 @@ export function getQuickMatchRecommendations(
   }
 
   return filtered
-    .map((rate) => ({
-      ...rate,
-      effectiveRate: computeEffectiveRate(filters.amount, rate),
-      projectedReturn: computeReturn(filters.amount, rate, filters.months),
-      dual: computeDualScenario(filters.amount, rate, filters.months),
-    }))
+    .map((rate) => {
+      const projectedReturn = computeGrossEarnings(filters.amount, rate, filters.months);
+      const baseGrossReturn = (filters.amount * rate.baseRate.grossRate / 12) * filters.months;
+      const hasConditions = rate.conditions.some((condition) => condition.type !== 'none' && condition.type !== 'time_limited');
+
+      return {
+        ...rate,
+        effectiveRate: computeEffectiveGrossRate(filters.amount, rate),
+        projectedReturn,
+        hasConditions,
+        baseGrossReturn,
+        conditionBoost: projectedReturn - baseGrossReturn,
+      };
+    })
     .sort((a, b) => b.projectedReturn - a.projectedReturn)
     .slice(0, limit);
 }

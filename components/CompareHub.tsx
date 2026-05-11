@@ -79,7 +79,7 @@ const DynamicRateSection = dynamic(
 );
 
 const DEFAULT_COMPARISON_STATE: ComparisonState = {
-  amount: 100000,
+  amount: 50000,
   months: 12,
   liquidityFilter: 'all',
   payoutFilter: 'all',
@@ -307,8 +307,8 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
             }`}
           >
             <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            <span className="sm:hidden">Best Match</span>
-            <span className="hidden sm:inline">Find My Best Rate</span>
+            <span className="sm:hidden">Match</span>
+            <span className="hidden sm:inline">Find My Rate Match</span>
           </button>
           <button
             onClick={handleAdvancedTab}
@@ -329,10 +329,10 @@ export function CompareHub({ rates, formattedDate, lastCheckDate }: CompareHubPr
         <div className="mb-10 px-4">
           <div className="mx-auto mb-6 max-w-3xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-gray-100 sm:text-3xl">
-              Find your best savings rate in the Philippines&nbsp;— in 3&nbsp;taps
+              Find your savings rate match in the Philippines&nbsp;— in 3&nbsp;taps
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-400 sm:text-base">
-              Tell us your goal, your amount, and when you&apos;ll need it — we&apos;ll rank every savings account and time deposit from 19+ Philippine banks by your real after-tax return.
+              Tell us your goal, your amount, and when you&apos;ll need it — we&apos;ll rank savings accounts and time deposits from Philippine banks by advertised rate fit.
             </p>
           </div>
 

@@ -47,9 +47,9 @@ export function PortalHero({ verifiedDate }: PortalHeroProps) {
           {...fadeUp(0.1)}
           className="mb-4 text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl"
         >
-          See where every peso earns the most —{' '}
+          See where every peso could earn more -{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-300 dark:to-blue-500">
-            after tax, after conditions.
+            with the conditions clear.
           </span>
         </motion.h1>
 

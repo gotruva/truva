@@ -81,6 +81,7 @@ No existing bank account beyond a GCash wallet. May be a first-jobber, OFW famil
 
 ### What we never show or say
 - No post-tax or after-tax calculations — we show the rate exactly as the bank or company advertises it
+- Savings and deposit pages may include a bottom reminder that taxes and bank charges are not deducted from Truva's listed rates or peso estimates
 - No exclamation marks in data outputs or rate labels
 - No "This is amazing!" or "Great news!" tone
 - No Taglish in UI copy
@@ -89,6 +90,7 @@ No existing bank account beyond a GCash wallet. May be a first-jobber, OFW famil
 ### Disclaimers (always present)
 - *"This is not financial advice."*
 - *"Rates are updated regularly. Check with the bank or company before applying."*
+- Savings rate disclosure near the bottom of relevant pages: *"Rates and peso estimates are before tax. Banks may deduct final withholding tax or other charges before interest reaches your account. Check the bank's terms before opening."*
 - Affiliate disclosure on every CTA: *"We earn a fee if you apply through this link. This does not change what you are offered."*
 
 ---
@@ -176,7 +178,7 @@ These rules apply to every feature, every page, every line of copy and code:
 
 1. **Mobile-first — 375px base.** Every UI must work at 375px with no horizontal scroll. Desktop is secondary.
 2. **Plain language always.** Grade 6–8 reading level. No jargon without an immediate plain-English explanation.
-3. **No post-tax or after-tax calculations shown to users.** Show the rate as the bank or company advertises it. Tax math is removed from all user-facing surfaces.
+3. **No post-tax or after-tax calculations shown to users.** Show the rate as the bank or company advertises it. Tax math is removed from all user-facing surfaces. Add a calm bottom-of-page reminder that taxes and bank charges may still be deducted.
 4. **No fund custody — ever.** Truva compares. Truva never holds money, transfers money, or manages accounts.
 5. **Affiliate disclosure on every CTA.** Required for trust and legal compliance. Non-negotiable.
 6. **Every product page must answer three questions in plain words:**
@@ -218,7 +220,7 @@ These rules apply to every feature, every page, every line of copy and code:
 - Latest production snapshot: `526fd854-1678-428c-b029-369285baf674` (67 raw products → 57 public after dedupe)
 - Live pages verified: `/api/rates`, `/`, `/banking/rates`, `/calculator`
 - `pagibig-mp2` present in API/home/calculator; intentionally absent from bank-only `/banking/rates`
-- Personal Yield Calculator — dual scenarios, bar chart
+- Personal Yield Calculator — gross estimates, advertised-rate tiers, bar chart
 - Mobile pre-qual flow (3-step: amount → lock-in → risk tolerance)
 - Newsletter signup (Resend, rate-limited)
 - Affiliate CTAs with disclosure on every product
@@ -246,6 +248,8 @@ You are the **Principal Full-Stack Engineer** for Truva. Your job is to ship a p
 4. Confirm no after-tax calculations are surfaced in the UI.
 5. Test at 375px on mobile before declaring anything done.
 
-**Rate display rule:** Show the rate exactly as the bank or company advertises it. Do not apply tax deductions. Do not show "after-tax" numbers. The rate users see here is the rate they see on the bank's own website or app.
+**Rate display rule:** Show the rate exactly as the bank or company advertises it. Do not apply tax deductions. Do not show "after-tax" numbers. The rate users see here is the rate they see on the bank's own website or app. Savings pages should still remind users near the bottom that tax and bank charges are not deducted from listed rates or estimates.
+
+**Savings default amount:** Use PHP 50,000 as the default comparison amount for savings and deposit flows unless a user has already entered or saved a different amount.
 
 **The mission in one line:** Help every Filipino find the right product. Explain it simply. Get out of the way.

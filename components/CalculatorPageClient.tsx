@@ -9,7 +9,7 @@ interface CalculatorPageClientProps {
 }
 
 const DEFAULT_COMPARISON_STATE: ComparisonState = {
-  amount: 100000,
+  amount: 50000,
   months: 12,
   liquidityFilter: 'all',
   payoutFilter: 'all',

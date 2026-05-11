@@ -275,7 +275,7 @@ export function MmfView({
               How much could you earn?
             </h2>
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              Enter an amount below — every fund in the table updates instantly to show your estimated yearly earnings after taxes and fees.
+          Enter an amount below — every fund in the table updates instantly to show your estimated yearly earnings using the published yield.
             </p>
           </div>
 

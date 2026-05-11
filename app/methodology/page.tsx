@@ -13,7 +13,7 @@ import { SectionHub } from '@/components/layout/SectionHub';
 export const metadata: Metadata = {
   title: 'Methodology & Trust',
   description:
-    'See how Truva compares banking products, credit cards, and loans, how advertisements are labeled, and how editorial independence is protected.',
+    'See how Truva compares savings and deposit products, credit cards, and loans, how advertisements are labeled, and how editorial independence is protected.',
   alternates: {
     canonical: '/methodology',
   },
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
 
 const methodologyCards = [
   {
-    title: 'Banking methodology',
+    title: 'Savings & Deposits methodology',
     description:
-      'How Truva will weigh after-tax yield, liquidity, conditions complexity, insurance, and payout structure.',
+      'How Truva weighs advertised rates, liquidity, conditions complexity, insurance, and payout structure.',
     href: '/methodology/banking',
     icon: Landmark,
   },
@@ -148,7 +148,7 @@ export default function MethodologyHubPage() {
           </h2>
           <div className="mt-4 space-y-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
             <p>
-              Banking pages emphasize after-tax yield and liquidity. Credit-card pages emphasize fee drag, reward usefulness, and promo realism. Loan pages emphasize effective annual cost, net proceeds, and funding friction.
+              Savings & Deposits pages emphasize advertised rates, gross estimates, liquidity, and product conditions. Credit-card pages emphasize fee drag, reward usefulness, and promo realism. Loan pages emphasize effective annual cost, net proceeds, and funding friction.
             </p>
             <p>
               That category separation matters because the wrong comparison framework can make a mediocre product look great. The methodology pages exist to keep that from happening.

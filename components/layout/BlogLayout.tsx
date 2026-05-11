@@ -25,7 +25,7 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
 
   const getBrowseCta = (category: EditorialArticle['category']) => {
     const categoryBrowseMap: Record<EditorialArticle['category'], { label: string; href: string }> = {
-      banking: { label: 'Browse Banking', href: '/banking' },
+      banking: { label: 'Browse Savings & Deposits', href: '/banking' },
       'credit-cards': { label: 'Browse Credit Cards', href: '/credit-cards' },
       guides: { label: 'Browse Guides', href: '/guides' },
     };
@@ -34,7 +34,7 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
 
   const getMethodologyCta = (category: EditorialArticle['category']) => {
     const categoryMethodologyMap: Record<EditorialArticle['category'], { label: string; href: string }> = {
-      banking: { label: 'View banking methodology', href: '/methodology/banking' },
+      banking: { label: 'View savings methodology', href: '/methodology/banking' },
       'credit-cards': { label: 'View card methodology', href: '/methodology/credit-cards' },
       guides: { label: 'View trust hub', href: '/methodology' },
     };

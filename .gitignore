@@ -55,3 +55,4 @@ __pycache__/
 
 # script/tool output
 output/
+.design-bundle-tmp/

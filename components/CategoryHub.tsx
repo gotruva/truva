@@ -41,7 +41,7 @@ const TILES: CategoryTile[] = [
     icon: Building2,
     description: 'Digital banks, time deposits, T-Bills & MP2',
     stat: '57 products compared',
-    href: '/banking/rates',
+    href: '/banking',
   },
   {
     kind: 'live',

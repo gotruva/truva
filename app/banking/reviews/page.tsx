@@ -8,9 +8,9 @@ import { BASE_URL } from '@/lib/constants';
 import { buildItemListSchema, getBankingArticles, getFeaturedBankingArticle } from '@/lib/editorial';
 
 export const metadata: Metadata = {
-  title: 'Banking reviews and product deep dives',
+  title: 'Savings & Deposits reviews and product deep dives',
   description:
-    'Read practical Banking reviews from Truva before you pick a savings account or trust a promotional rate.',
+    'Read practical Savings & Deposits reviews from Truva before you pick a savings account or trust a promotional rate.',
   alternates: {
     canonical: '/banking/reviews',
   },
@@ -30,10 +30,10 @@ export default function BankingReviewsPage() {
       />
 
       <SectionHub
-        title="Banking reviews"
+        title="Savings & Deposits reviews"
         description="Read the product-level context before you decide whether a single bank really deserves your savings."
         breadcrumbItems={[
-          { label: 'Banking', href: '/banking' },
+          { label: 'Savings & Deposits', href: '/banking' },
           { label: 'Reviews', href: '/banking/reviews' },
         ]}
       >
@@ -54,7 +54,7 @@ export default function BankingReviewsPage() {
                 href="/banking/rates#rate-desk"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20"
               >
-                Compare live rates
+                Compare savings rates
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link

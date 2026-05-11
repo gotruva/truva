@@ -18,7 +18,7 @@ interface PreQualFlowProps {
 
 export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
   const [step, setStep] = useState(1);
-  const [amount, setAmount] = useState<string>('100000');
+  const [amount, setAmount] = useState<string>('50000');
   const [lockIn, setLockIn] = useState<'Liquid' | 'Short' | 'Long' | null>(null);
   const [risk, setRisk] = useState<'PDIC' | 'AllBanks' | null>(null);
 
@@ -56,7 +56,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
             </div>
             <div>
               <h3 className="font-semibold text-brand-textPrimary dark:text-gray-100 text-lg">How much are you saving?</h3>
-              <p className="text-sm text-brand-textSecondary dark:text-gray-400">We&apos;ll calculate your exact after-tax returns.</p>
+              <p className="text-sm text-brand-textSecondary dark:text-gray-400">We&apos;ll estimate gross interest before tax.</p>
             </div>
           </div>
           <div className="flex items-center gap-2 mb-6 text-xl">
@@ -66,7 +66,7 @@ export function PreQualFlow({ onComplete, onCancel }: PreQualFlowProps) {
               className="w-full text-2xl font-bold p-3 border border-brand-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder="100000"
+              placeholder="50000"
             />
           </div>
           <div className="flex gap-3">

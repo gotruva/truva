@@ -8,7 +8,7 @@
 
 1. **Mobile-first — 375px base.** No horizontal scroll on mobile. Ever.
 2. **Plain language always.** Grade 6–8 reading level. No jargon without an immediate plain-English explanation.
-3. **No after-tax calculations shown to users.** Show rates exactly as banks and companies advertise them. `lib/tax.ts` and after-tax logic in `yieldEngine.ts` must NOT be called by user-facing components.
+3. **No after-tax calculations shown to users.** Show rates exactly as banks and companies advertise them. `lib/tax.ts` and after-tax logic in `yieldEngine.ts` must NOT be called by user-facing components. Add a calm bottom disclosure that taxes and bank charges are not deducted from listed rates or estimates.
 4. **No fund custody — ever.** Truva compares. It never holds or moves money.
 5. **Affiliate disclosure on every CTA.** Non-negotiable.
 
@@ -24,6 +24,10 @@
 | `lib/rates.ts` | Supabase → public `RateProduct[]` hydration |
 | `data/rates.json` | Manual/seed catalog (metadata fallback, non-scraper products) |
 | `utils/yieldEngine.ts` | Rate calculation logic (do not surface after-tax outputs in UI) |
+
+---
+
+Savings default amount: use PHP 50,000 unless the user has already entered or saved a different amount.
 
 ---
 

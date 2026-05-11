@@ -16,7 +16,7 @@ interface SavingsRouterCardProps {
 
 const STORAGE_KEY = 'truva.compare-hub-state.v1';
 const HUB_STATE_EVENT = 'truva:hub-state-update';
-const DEFAULT_AMOUNT = 100000;
+const DEFAULT_AMOUNT = 50000;
 const DEFAULT_MONTHS = 12;
 
 function getBestSavingsPick(rates: RateProduct[]): SavingsPick | null {
@@ -61,7 +61,7 @@ export function SavingsRouterCard({ rates }: SavingsRouterCardProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     saveSavingsPrefill();
-    router.push('/banking/rates#rate-desk');
+    router.push('/banking');
   };
 
   const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -131,7 +131,7 @@ export function SavingsRouterCard({ rates }: SavingsRouterCardProps) {
               value={amount ? amount.toLocaleString('en-PH') : ''}
               onChange={handleAmountChange}
               className="h-full min-w-0 flex-1 bg-transparent text-sm font-bold tabular-nums text-brand-textPrimary outline-none placeholder:text-gray-400 dark:text-white"
-              placeholder="100,000"
+              placeholder="50,000"
             />
           </div>
         </div>

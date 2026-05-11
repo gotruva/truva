@@ -8,9 +8,9 @@ import { BASE_URL } from '@/lib/constants';
 import { buildItemListSchema, getBankingArticles } from '@/lib/editorial';
 
 export const metadata: Metadata = {
-  title: 'Banking comparisons and decision briefs',
+  title: 'Savings & Deposits comparisons and decision briefs',
   description:
-    'A comparison-first Banking index with head-to-head briefs for the most useful Philippine savings questions.',
+    'A comparison-first Savings & Deposits index with head-to-head briefs for the most useful Philippine savings questions.',
   alternates: {
     canonical: '/banking/compare',
   },
@@ -30,10 +30,10 @@ export default function BankingComparePage() {
       />
 
       <SectionHub
-        title="Banking comparisons"
+        title="Savings & Deposits comparisons"
         description="Use this index when you want the head-to-head answer instead of a single bank review."
         breadcrumbItems={[
-          { label: 'Banking', href: '/banking' },
+          { label: 'Savings & Deposits', href: '/banking' },
           { label: 'Compare', href: '/banking/compare' },
         ]}
       >
@@ -49,7 +49,7 @@ export default function BankingComparePage() {
                   Comparison briefs that answer the question, not just the query.
                 </h2>
                 <p className="max-w-2xl text-base leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                  These pages compare real banking choices by balance, behavior, and product mechanics so the
+                  These pages compare real savings and deposit choices by balance, behavior, and product mechanics so the
                   reader can move straight to a decision.
                 </p>
               </div>
@@ -58,7 +58,7 @@ export default function BankingComparePage() {
                   href="/banking/rates#rate-desk"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20"
                 >
-                  Compare live rates now
+                  Compare savings rates now
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link

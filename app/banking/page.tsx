@@ -7,7 +7,7 @@ import { SavingsFAQ } from '@/components/banking/SavingsFAQ';
 import { FAQ_ITEMS } from '@/components/banking/faq-data';
 
 export const metadata: Metadata = {
-  title: 'Best Savings Accounts & Time Deposits Philippines 2025 — Truva',
+  title: 'Best Savings Accounts & Time Deposits Philippines 2026 - Truva',
   description:
     'Find the highest-paying savings account or time deposit for your amount and timeline. Compare rates from Maya, GoTyme, Tonik, SeaBank, UNO, and more — plus Pag-IBIG MP2.',
   alternates: {
@@ -58,10 +58,10 @@ export default function BankingPage() {
                     id="form-heading"
                     className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl"
                   >
-                    Find your best savings home in 30 seconds.
+                    Find your savings match in 30 seconds.
                   </h1>
                   <p className="mt-2 text-sm text-brand-textSecondary dark:text-white/60">
-                    Three questions. We match you to the highest-paying option that fits.
+                    Three questions. We match your amount and timeline to the listed options.
                   </p>
                 </div>
                 <div className="h-48 rounded-xl bg-gray-100 dark:bg-white/5" />

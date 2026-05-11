@@ -187,7 +187,7 @@ export function RateTable({
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [sortCol, setSortCol] = useState<SortCol>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
-  const [showGross, setShowGross] = useState(true);
+  const showGross = true;
 
   const numAmount = amount || 0;
 

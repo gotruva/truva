@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const principles = [
-  'Show net returns and important conditions close to the decision.',
+  'Show advertised rates, gross estimates, and important conditions close to the decision.',
   'Separate live product data from preview frameworks.',
   'Make partner disclosure visible without turning the site into an ad wall.',
 ];
@@ -23,7 +23,7 @@ export default function AboutPage() {
           We are building the Philippine comparison desk we wanted to use ourselves.
         </h1>
         <p className="mt-6 max-w-3xl text-lg leading-relaxed text-brand-textSecondary dark:text-gray-300">
-          Truva helps people compare money products without opening five tabs, guessing whether a rate is gross or net, or losing the fine print that changes the decision.
+          Truva helps people compare money products without opening five tabs or losing the fine print that changes the decision.
         </p>
 
         <div className="mt-10 grid gap-3 md:grid-cols-3">

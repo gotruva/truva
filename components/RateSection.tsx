@@ -8,7 +8,7 @@ import { RateTable } from './RateTable';
 import { BankCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
 import { PreQualFlow, PreQualAnswers } from './PreQualFlow';
-import { computeEffectiveRate, computeReturn } from '@/utils/yieldEngine';
+import { computeEffectiveGrossRate, computeGrossEarnings } from '@/utils/yieldEngine';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -71,10 +71,10 @@ export function RateSection({
     return true;
   });
 
-  const sortAmount = (answers?.amount ?? numAmount) || 100000;
+  const sortAmount = (answers?.amount ?? numAmount) || 50000;
   const sortedRates = [...filteredRates].sort((rateA, rateB) => {
-    const effectiveRateA = computeEffectiveRate(sortAmount, rateA);
-    const effectiveRateB = computeEffectiveRate(sortAmount, rateB);
+    const effectiveRateA = computeEffectiveGrossRate(sortAmount, rateA);
+    const effectiveRateB = computeEffectiveGrossRate(sortAmount, rateB);
     return effectiveRateB - effectiveRateA;
   });
 
@@ -91,8 +91,8 @@ export function RateSection({
     for (const [provider, products] of groupMap) {
       const enriched = products.map((product) => ({
         ...product,
-        effectiveRate: computeEffectiveRate(numAmount, product),
-        projectedReturn: computeReturn(numAmount, product, comparisonState.months),
+        effectiveRate: computeEffectiveGrossRate(numAmount, product),
+        projectedReturn: computeGrossEarnings(numAmount, product, comparisonState.months),
       }));
       enriched.sort((left, right) => right.effectiveRate - left.effectiveRate);
 
@@ -119,7 +119,7 @@ export function RateSection({
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-              Ranked by effective rate
+              Ranked by advertised rate
             </h2>
             <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
               {bankGroups.length} provider{bankGroups.length !== 1 ? 's' : ''} compared

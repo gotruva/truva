@@ -9,7 +9,7 @@ import { getFeaturedBankingArticle, getGuideArticles } from '@/lib/editorial';
 export const metadata: Metadata = {
   title: 'Editorial index and guides',
   description:
-    'Browse Truva banking guides, comparison briefs, credit-card reviews, and the pages that explain the math behind each decision.',
+    'Browse Truva savings and deposits guides, comparison briefs, credit-card reviews, and the pages that explain the math behind each decision.',
   alternates: {
     canonical: '/articles',
   },
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 const indexCards = [
   {
-    title: 'Banking',
+    title: 'Savings & Deposits',
     description: 'Live rates, reviews, compare briefs, and savings math for Philippine depositors.',
     href: '/banking',
     icon: Landmark,

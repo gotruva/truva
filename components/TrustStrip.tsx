@@ -55,7 +55,7 @@ export function TrustStrip({ verifiedDate }: TrustStripProps) {
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
 
-          {/* After-tax card */}
+          {/* Advertised-rate card */}
           <motion.div
             custom={0}
             initial={prefersReduced ? false : 'hidden'}
@@ -68,13 +68,13 @@ export function TrustStrip({ verifiedDate }: TrustStripProps) {
               <Calculator className="w-5 h-5" />
             </div>
             <p className="text-2xl font-black text-brand-textPrimary dark:text-white tracking-tight">
-              After-tax always
+              Advertised rates
             </p>
             <p className="text-sm font-semibold text-brand-textPrimary dark:text-white mt-1">
-              No gross-rate tricks
+              Conditions in view
             </p>
             <p className="text-sm text-brand-textSecondary dark:text-gray-400 mt-2 leading-relaxed">
-              Every rate shown net of 20% Final Withholding Tax. What you see is what you keep.
+              We show bank-advertised rates and remind you that taxes may still be deducted.
             </p>
           </motion.div>
 

@@ -10,7 +10,7 @@ import { useHasMounted } from '@/lib/use-has-mounted';
 
 const READ_LINKS = [
   {
-    label: 'Banking',
+    label: 'Savings & Deposits',
     description: 'Rate guides, digital bank reviews, and account comparisons.',
     href: '/banking/articles',
     icon: Landmark,

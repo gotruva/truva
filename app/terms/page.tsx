@@ -50,9 +50,9 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-brand-textPrimary dark:text-gray-200 mb-2">Tax Calculation Disclaimer</h3>
+                <h3 className="font-semibold text-brand-textPrimary dark:text-gray-200 mb-2">Tax and Rate Display Disclaimer</h3>
                 <p className="text-brand-textSecondary dark:text-gray-400 text-sm leading-relaxed">
-                  The &quot;after-tax&quot; yield calculator and figures provided on Truva are purely estimates based on standard Philippine taxation assumptions (such as the standard 20% Final Withholding Tax on bank deposits or standard tax-exempt statuses). Your actual tax liability may vary depending on your personal financial circumstances and changes in national tax laws.
+                  Savings rates and peso estimates shown on Truva are before tax unless a page clearly says otherwise. Banks may deduct final withholding tax or other charges before interest reaches your account. Always check the bank&apos;s own terms before opening a product.
                 </p>
               </div>
             </div>

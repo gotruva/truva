@@ -186,7 +186,7 @@ export default function EditorialIntegrityPage() {
               className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-gray-100"
             >
               <FileSearch className="h-4 w-4 text-brand-primary" />
-              Banking methodology
+              Savings & Deposits methodology
             </Link>
             <Link
               href="/methodology/credit-cards"

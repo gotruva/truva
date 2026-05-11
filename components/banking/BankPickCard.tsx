@@ -114,7 +114,7 @@ export function BankPickCard({
               {pick.provider}
             </p>
             <p className="truncate text-xs font-medium text-brand-textSecondary dark:text-gray-300 sm:text-sm">
-              Best for PHP {amount.toLocaleString()} - {pick.bestProduct.name}
+              Top fit for PHP {amount.toLocaleString()} - {pick.bestProduct.name}
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export function BankPickCard({
       <div className="mt-5 flex items-end justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-primary">
-            After-tax rate
+            Advertised rate
           </p>
           <p className="mt-1 text-2xl font-extrabold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
             {formatRate(pick.effectiveRate)}
@@ -132,7 +132,7 @@ export function BankPickCard({
         </div>
         <div className="text-right">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-primary">
-            Est. earnings
+            Est. gross interest
           </p>
           <p className="mt-1 text-base font-bold tabular-nums text-positive sm:text-lg">
             +{formatPHP(pick.projectedReturn)}

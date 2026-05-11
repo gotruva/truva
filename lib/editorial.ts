@@ -28,7 +28,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     subtitle:
       'A snapshot-based guide for savers who want the current rates, the conditions behind them, and the peso math for common balances.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'rates',
     articleType: 'Rate Guide',
     eyebrow: 'Featured rate guide',
@@ -42,7 +42,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     keywords: ['digital bank philippines', 'best savings account philippines', 'digital bank rates'],
     verificationNote: 'Rates below are aligned to Truva verified snapshot.',
     disclosureNote:
-      'Returns shown in articles may be gross or after-tax depending on context. Truva highlights after-tax math wherever possible.',
+      'Rates and peso estimates in Truva savings articles are before tax unless a page clearly says otherwise.',
     toc: [
       { label: 'Digital bank rates Philippines 2026: the full picture' },
       { label: 'What you actually earn: peso math for PHP 100K, PHP 250K, and PHP 500K' },
@@ -76,7 +76,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       },
     ],
     primaryCta: {
-      label: 'Compare live banking rates',
+      label: 'Compare savings rates',
       href: '/#deposit-rates',
       description: 'Jump straight to Truva main comparison table and current live rates.',
     },
@@ -95,14 +95,14 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
   {
     slug: 'digital-bank-interest-rates-philippines-2026',
     path: '/banking/rates/digital-bank-interest-rates-philippines-2026',
-    title: 'Digital bank interest rates Philippines 2026: updated weekly with after-tax math',
+    title: 'Digital bank interest rates Philippines 2026: updated weekly with gross peso math',
     seoTitle: 'Digital bank interest rates Philippines 2026 | Truva',
     description:
-      'Maya 12% (9.6% after tax). Tonik 8%. GoTyme 3%. Full digital bank interest rate table for Philippines 2026, updated every week. See what your balance earns.',
+      'Maya 12%. Tonik 8%. GoTyme 3%. Full digital bank interest rate table for Philippines 2026, updated every week. See gross estimates for your balance.',
     subtitle:
       'A weekly-updated rate snapshot with real peso math for PHP 100K, PHP 250K, and PHP 500K balances, and a plain explanation of the 20% tax every saver needs to know.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'rates',
     articleType: 'Rate Guide',
     eyebrow: 'Rate guide',
@@ -117,17 +117,17 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       'digital bank interest rates Philippines 2026',
       'digital bank rates',
       'highest interest digital bank Philippines',
-      'after-tax savings rate Philippines',
+      'savings rate Philippines',
     ],
     verificationNote: 'Rates verified April 14, 2026 on gotruva.com.',
     disclosureNote:
-      'After-tax rates shown use the 20% Final Withholding Tax mandated under Philippine law. Rates subject to change; table updated weekly.',
+      'Rates and peso estimates are before tax. Banks may deduct final withholding tax or other charges before interest reaches your account.',
     sectionPath: '/banking/rates',
     toc: [
       { label: 'Digital bank interest rates Philippines 2026: full table' },
       { label: 'What you actually earn: peso math for PHP 100K, PHP 250K, and PHP 500K' },
       { label: 'Withdraw anytime vs time locked: which suits you?' },
-      { label: 'Why the after-tax number is smaller: the 20% FWT explained' },
+      { label: 'What tax means for interest earnings' },
       { label: 'Digital bank rate changes in early 2026: what you need to know' },
       { label: 'PDIC insurance: your money is protected up to PHP 1,000,000' },
       { label: 'Frequently asked questions' },
@@ -137,7 +137,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       {
         question: 'Which digital bank pays the highest interest right now?',
         answer:
-          'Maya pays 12% (9.6% after tax), the highest available anytime-access rate in the Philippines as of April 2026. For locked savings, Tonik pays 8% on a 1-year time deposit.',
+          'Maya pays 12%, the highest available anytime-access advertised rate in the Philippines as of April 2026. For locked savings, Tonik pays 8% on a 1-year time deposit.',
       },
       {
         question: 'Is 12% interest real or is there a catch?',
@@ -157,7 +157,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       {
         question: 'Do I pay taxes on digital bank interest?',
         answer:
-          'Yes. The 20% Final Withholding Tax (FWT) is automatically deducted before interest hits your account. The after-tax rates in the table above are what you actually receive.',
+          'Yes. The 20% Final Withholding Tax (FWT) is automatically deducted by banks before interest hits your account. Truva savings listings show advertised rates before that deduction.',
       },
       {
         question: 'How often do rates change?',
@@ -166,14 +166,14 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       },
     ],
     primaryCta: {
-      label: 'Compare live banking rates',
+      label: 'Compare savings rates',
       href: '/#deposit-rates',
       description: 'Jump straight to the Truva comparison table for current live rates.',
     },
     secondaryCta: {
       label: 'Use the savings calculator',
       href: '/calculator',
-      description: 'Model what your balance earns after tax before you move money.',
+      description: 'Model what your balance could earn before tax before you move money.',
     },
     relatedArticles: [
       'best-digital-bank-philippines',
@@ -193,7 +193,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     subtitle:
       'A practical review for users deciding whether Maya is a genuine savings home or just a strong first PHP 100,000 account.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'reviews',
     articleType: 'Review',
     eyebrow: 'Product review',
@@ -220,9 +220,9 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       description: 'Jump to Truva main comparison table to see whether Maya still wins.',
     },
     secondaryCta: {
-      label: 'Go back to Banking',
+      label: 'Go back to Savings & Deposits',
       href: '/banking',
-      description: 'Browse more banking tools, guides, and reviews.',
+      description: 'Browse more savings tools, guides, and reviews.',
     },
     relatedArticles: ['best-digital-bank-philippines', 'maya-vs-gotyme-vs-tonik', 'pdic-insurance-guide'],
   },
@@ -236,7 +236,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     subtitle:
       'A head-to-head brief for users choosing between a mission-based account, a no-conditions account, and a simple stash.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'compare',
     sectionPath: '/banking/compare',
     articleType: 'Comparison',
@@ -289,10 +289,10 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     title: 'Maya vs GoTyme Philippines 2026: which digital bank should you choose?',
     seoTitle: 'Maya vs GoTyme Philippines 2026: Which Pays More?',
     description:
-      'Comparing Maya and GoTyme Philippines in 2026? At ₱250,000 saved, Maya earns ₱10,200 more per year after tax. See full tables, boost guide, and the dual-bank strategy.',
-    subtitle: 'A peso-math comparison of Maya and GoTyme for 2026, with real after-tax earnings at three balance levels and a scenario guide for every saver type.',
+      'Comparing Maya and GoTyme Philippines in 2026? See gross peso estimates, boost rules, and the dual-bank strategy.',
+    subtitle: 'A peso-math comparison of Maya and GoTyme for 2026, with gross earnings at three balance levels and a scenario guide for every saver type.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'compare',
     sectionPath: '/banking/compare',
     articleType: 'Comparison',
@@ -306,10 +306,10 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     keywords: ['Maya vs GoTyme Philippines', 'Maya vs GoTyme Philippines 2026', 'which digital bank Philippines'],
     verificationNote: 'Rates verified April 15, 2026. Maya base rate is 3.5% (April 2026 promo); GoTyme Go Save is 3.0%. Both banks are PDIC-insured up to ₱1,000,000 per depositor.',
     disclosureNote:
-      'After-tax figures use the 20% Final Withholding Tax mandated under Philippine law. Rates subject to change.',
+      'Rates and peso estimates are before tax. Banks may deduct final withholding tax before interest reaches your account.',
     toc: [
       { label: 'Maya vs GoTyme at a glance' },
-      { label: 'The real peso math: what you actually earn after tax' },
+      { label: 'The gross peso math: what the advertised rates produce' },
       { label: "How Maya's savings rate actually works" },
       { label: 'How GoTyme Go Save actually works' },
       { label: 'Which bank fits your situation' },
@@ -345,14 +345,14 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       },
     ],
     primaryCta: {
-      label: 'Compare live banking rates',
+      label: 'Compare savings rates',
       href: '/#deposit-rates',
       description: 'See current Maya and GoTyme rates on the Truva comparison table.',
     },
     secondaryCta: {
       label: 'Use the savings calculator',
       href: '/calculator',
-      description: 'Model what your balance earns after tax before you move money.',
+      description: 'Model what your balance could earn before tax before you move money.',
     },
     relatedArticles: ['maya-savings-review', 'best-digital-bank-philippines', 'digital-bank-interest-rates-philippines-2026', 'pdic-insurance-guide'],
   },
@@ -365,7 +365,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       'Find the cleanest Philippine savings accounts when you want a solid rate without monthly spending chores or promo hoops.',
     subtitle: 'For savers who want a rate that is easy to keep, not just easy to market.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'compare',
     sectionPath: '/banking/compare',
     articleType: 'Comparison',
@@ -400,7 +400,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       },
     ],
     primaryCta: {
-      label: 'Compare live banking rates',
+      label: 'Compare savings rates',
       href: '/#deposit-rates',
       description: 'Confirm the current rates before you choose the simplest option.',
     },
@@ -417,10 +417,10 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
     title: 'Best digital bank for PHP 100K, PHP 250K, and PHP 500K balances',
     seoTitle: 'Best digital bank for PHP 100K, 250K, and 500K balances',
     description:
-      'Match your balance to the digital bank that gives you the best after-tax result without guessing from a headline rate.',
+      'Match your balance to the digital bank that gives you the clearest advertised-rate fit without guessing from a headline rate.',
     subtitle: 'A balance-first comparison that turns rate hunting into a simple decision.',
     category: 'banking',
-    categoryLabel: 'Banking',
+    categoryLabel: 'Savings & Deposits',
     section: 'compare',
     sectionPath: '/banking/compare',
     articleType: 'Comparison',
@@ -489,14 +489,14 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
     authorUrl: '/authors/beto',
     readingTime: '8 min read',
     featured: true,
-    keywords: ['final withholding tax philippines', '20% fwt', 'after tax savings philippines'],
+    keywords: ['final withholding tax philippines', '20% fwt', 'tax on savings philippines'],
     verificationNote: 'Tax treatment is aligned to current Philippine savings rules.',
     disclosureNote:
-      'Truva shows after-tax math first because the gross headline is not the amount you keep.',
+      'This guide explains withholding tax. Truva product listings still show advertised rates before tax.',
     toc: [
       { label: 'What the 20% Final Withholding Tax is' },
       { label: 'Which products are taxed' },
-      { label: 'After-tax examples' },
+      { label: 'Tax examples' },
       { label: 'Which products are exempt' },
       { label: 'Frequently asked questions' },
     ],
@@ -509,11 +509,11 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
       {
         question: 'Are all interest-bearing products taxed the same way?',
         answer:
-          'No. Standard bank deposits are taxed, but some government products and tax-exempt structures have different treatment. That is why after-tax comparison matters.',
+          'No. Standard bank deposits are taxed, but some government products and tax-exempt structures have different treatment. That is why tax context matters.',
       },
     ],
     primaryCta: {
-      label: 'Compare live banking rates',
+      label: 'Compare savings rates',
       href: '/#deposit-rates',
       description: 'See how the tax changes the real return across banks and products.',
     },
@@ -573,7 +573,7 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
       description: 'See which accounts are worth holding once you understand the coverage limit.',
     },
     secondaryCta: {
-      label: 'Compare live banking rates',
+      label: 'Compare savings rates',
       href: '/#deposit-rates',
       description: 'Cross-check the account returns before you move money.',
     },

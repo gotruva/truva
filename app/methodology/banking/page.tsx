@@ -4,9 +4,9 @@ import { ArrowRight, ShieldCheck, WalletCards } from 'lucide-react';
 import { SectionHub } from '@/components/layout/SectionHub';
 
 export const metadata: Metadata = {
-  title: 'Banking Methodology',
+  title: 'Savings & Deposits Methodology',
   description:
-    'See how Truva will compare banking products using after-tax yield, liquidity, condition complexity, insurance, and payout structure.',
+    'See how Truva compares savings and deposit products using advertised rates, liquidity, condition complexity, insurance, and payout structure.',
   alternates: {
     canonical: '/methodology/banking',
   },
@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 
 const pillars = [
   {
-    title: 'After-tax yield',
+    title: 'Advertised rate fit',
     description:
-      'Banking recommendations start with what the saver actually keeps after final tax, not with the gross headline alone.',
+      'Savings recommendations start with the rate the bank advertises, then adjust for the user amount, tiers, and conditions.',
   },
   {
     title: 'Liquidity',
@@ -41,7 +41,7 @@ const pillars = [
 ];
 
 const guardrails = [
-  'Partner compensation should not boost a banking product above a better after-tax alternative.',
+  'Partner compensation should not boost a savings product above a stronger user-fit alternative.',
   'A temporary promo should not outrank a durable product without an explicit caveat.',
   'Editorial articles can explain context, but they should not override the comparison logic.',
 ];
@@ -49,11 +49,11 @@ const guardrails = [
 export default function BankingMethodologyPage() {
   return (
     <SectionHub
-      title="Banking Methodology"
-      description="How Truva will score and compare savings accounts, digital banks, and time deposits once the banking True Value Score goes live."
+      title="Savings & Deposits Methodology"
+      description="How Truva will score and compare savings accounts, digital banks, and time deposits once the Savings & Deposits True Value Score goes live."
       breadcrumbItems={[
         { label: 'Methodology', href: '/methodology' },
-        { label: 'Banking', href: '/methodology/banking' },
+        { label: 'Savings & Deposits', href: '/methodology/banking' },
       ]}
       containerClassName="max-w-5xl"
       titleClassName="not-italic"
@@ -62,13 +62,13 @@ export default function BankingMethodologyPage() {
         <div className="space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-brand-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary dark:border-brand-primary/20 dark:bg-brand-primary/15">
             <WalletCards className="h-4 w-4" />
-            Banking methodology
+            Savings & Deposits methodology
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-            The first question is simple: what does the saver actually earn and how painful is it to keep earning it?
+            The first question is simple: what does the saver earn before tax and how painful is it to keep earning it?
           </h2>
           <p className="text-base leading-relaxed text-brand-textSecondary dark:text-gray-300">
-            Banking products often look deceptively easy to rank because the headline rate is visible. The actual saver outcome depends on tax, lock-in, insurance, payout timing, and whether the headline rate survives real-world behavior month after month.
+            Savings and deposit products often look deceptively easy to rank because the headline rate is visible. The actual saver outcome depends on amount tiers, lock-in, insurance, payout timing, and whether the headline rate survives real-world behavior month after month.
           </p>
         </div>
       </section>
@@ -79,7 +79,7 @@ export default function BankingMethodologyPage() {
             Core inputs
           </p>
           <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-            What the future banking True Value Score will care about
+            What the future Savings & Deposits True Value Score will care about
           </h2>
         </div>
 
@@ -107,7 +107,7 @@ export default function BankingMethodologyPage() {
           </p>
           <div className="mt-4 space-y-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
             <p>
-              A clean 4.0% after-tax account with no monthly behavior requirements may outrank a heavily conditional 4.2% account for many savers because the real-world keep rate is more reliable.
+              A clean 4.0% advertised account with no monthly behavior requirements may outrank a heavily conditional 4.2% account for many savers because the rate is easier to keep.
             </p>
             <p>
               A one-year time deposit may outrank a liquid account on return, but not for an emergency-fund use case. The methodology needs to reflect that context instead of flattening every product into one number.
@@ -145,7 +145,7 @@ export default function BankingMethodologyPage() {
               Pair the ranking rules with the disclosure rules
             </h2>
             <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              The methodology explains how banking products will be evaluated. The editorial-integrity page explains how commercial relationships are labeled and why they cannot buy favorable coverage.
+              The methodology explains how savings and deposit products will be evaluated. The editorial-integrity page explains how commercial relationships are labeled and why they cannot buy favorable coverage.
             </p>
           </div>
 
@@ -161,7 +161,7 @@ export default function BankingMethodologyPage() {
               href="/banking"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
             >
-              Open banking desk
+              Open savings desk
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

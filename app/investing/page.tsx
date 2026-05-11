@@ -8,7 +8,7 @@ import { buildItemListSchema, getGuideArticles } from '@/lib/editorial';
 export const metadata: Metadata = {
   title: 'Investing in the Philippines | Truva',
   description:
-    'Money market funds, T-Bills, UITFs, and time deposits explained. Make smarter investing decisions in the Philippines with real after-tax math.',
+    'Money market funds, T-Bills, UITFs, and time deposits explained. Make smarter investing decisions in the Philippines with clear rate and risk context.',
   alternates: {
     canonical: '/investing',
   },

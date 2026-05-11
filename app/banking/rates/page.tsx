@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Calculator, CheckCircle2, Sparkles } from 'lucide-react';
 import { BankingRateDesk } from '@/components/banking/BankingRateDesk';
+import { RateDisclosureNote } from '@/components/banking/RateDisclosureNote';
 import { SectionHub } from '@/components/layout/SectionHub';
 import { ArticleCard } from '@/components/editorial/ArticleCard';
 import { FeaturedArticleCard } from '@/components/editorial/FeaturedArticleCard';
@@ -14,7 +15,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Digital Bank Interest Rates Philippines 2026',
   description:
-    'Compare the highest digital bank savings rates in the Philippines and use Banking guides that help you interpret the fine print.',
+    'Compare the highest digital bank savings rates in the Philippines and use Savings & Deposits guides that help you interpret the fine print.',
   alternates: {
     canonical: '/banking/rates',
   },
@@ -28,7 +29,7 @@ const utilityActions = [
   },
   {
     title: 'See the methodology',
-    description: 'Understand how Truva verifies rates, taxes, and product conditions.',
+    description: 'Understand how Truva verifies rates, disclosures, and product conditions.',
     href: '/methodology',
   },
 ];
@@ -56,7 +57,7 @@ export default async function BankingRatesHub() {
         title="Digital Bank Rates"
         description="Lead with the rate desk, then move into the explainers and reviews that tell you whether the headline number is actually worth chasing."
         breadcrumbItems={[
-          { label: 'Banking', href: '/banking' },
+          { label: 'Savings & Deposits', href: '/banking' },
           { label: 'Rates', href: '/banking/rates' },
         ]}
         containerClassName="max-w-7xl"
@@ -141,7 +142,7 @@ export default async function BankingRatesHub() {
               Compare digital bank rates
             </h2>
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              Start here for the real numbers. Expand each bank to see tiers, lock-ins, and conditions.
+              Start here for advertised rates and gross estimates. Expand each bank to see tiers, lock-ins, and conditions.
             </p>
 
 
@@ -150,6 +151,7 @@ export default async function BankingRatesHub() {
           <div className="rounded-[1.75rem] border border-brand-border bg-brand-surface p-3 shadow-[0_18px_55px_-40px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-slate-950 sm:rounded-[2rem] sm:p-6">
             <BankingRateDesk rates={rates} />
           </div>
+          <RateDisclosureNote />
         </section>
 
         <section className="grid gap-5 md:grid-cols-2">
@@ -198,7 +200,7 @@ export default async function BankingRatesHub() {
           <div className="grid gap-4 md:grid-cols-3">
             {[
               'Rates are verified on a regular cadence so the guide layer stays tied to reality.',
-              'After-tax framing and product conditions stay visible so articles support decisions, not just rankings.',
+              'Tax reminders and product conditions stay visible so articles support decisions, not just rankings.',
               'The same system can expand into card content later without rebuilding the experience.',
             ].map((point) => (
               <div key={point} className="flex gap-3">

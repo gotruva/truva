@@ -16,8 +16,8 @@ export interface ProductNavigationItem {
 export const PRODUCT_NAVIGATION_ITEMS: ProductNavigationItem[] = [
   {
     id: 'banking',
-    title: 'Banking',
-    description: 'Compare savings and time deposit rates, calculators, and practical guides.',
+    title: 'Savings & Deposits',
+    description: 'Compare savings accounts, time deposits, calculators, and practical guides.',
     href: '/banking',
     methodologyHref: '/methodology/banking',
     editorialIntegrityHref: '/methodology/editorial-integrity',

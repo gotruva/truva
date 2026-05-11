@@ -7,8 +7,8 @@ import { ArrowRight, Calculator, ShieldCheck, Layers } from 'lucide-react';
 const TRUST_FEATURES = [
   {
     icon: Calculator,
-    title: 'After-tax comparisons',
-    desc: "Cut through advertised rates and see what you'll really earn after tax.",
+    title: 'Advertised-rate comparisons',
+    desc: "See current rates, conditions, and gross estimates before tax.",
   },
   {
     icon: ShieldCheck,
@@ -27,7 +27,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ verifiedDate }: HeroSectionProps) {
-  const [rawAmount, setRawAmount] = useState('100000');
+  const [rawAmount, setRawAmount] = useState('50000');
 
   useEffect(() => {
     try {
@@ -126,7 +126,7 @@ export function HeroSection({ verifiedDate }: HeroSectionProps) {
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
           className="mb-8 max-w-xl text-lg font-medium text-blue-100/90 md:text-xl dark:text-gray-300"
         >
-          We compare the latest bank rates and conditions so you see exactly what you actually keep.
+          We compare the latest bank rates and conditions so you can see the plain numbers before you choose.
         </motion.p>
 
         {/* Block 4 — Amount input + CTAs */}
@@ -153,7 +153,7 @@ export function HeroSection({ verifiedDate }: HeroSectionProps) {
                     inputMode="numeric"
                     value={displayValue}
                     onChange={handleInput}
-                    placeholder="100,000"
+                    placeholder="50,000"
                     className="flex-1 min-w-0 bg-transparent text-[28px] font-bold text-white placeholder:text-blue-300/60 outline-none caret-white"
                     aria-label="Savings amount in pesos"
                   />

@@ -245,10 +245,6 @@ export function computeDualScenario(
   };
 }
 
-function getAfterTaxRate(grossRate: number, taxExempt: boolean): number {
-  return taxExempt ? calcTaxExempt(grossRate) : calcAfterTaxPhp(grossRate);
-}
-
 function getTierRangeLabel(tier: RateTier): string {
   if (tier.maxBalance === null) {
     return `PHP ${tier.minBalance.toLocaleString()}+ tier`;
@@ -262,9 +258,7 @@ function buildPrimaryScenario(
   product: RateProduct,
   months: number
 ): CalculationScenario {
-  const taxLabel = product.taxExempt
-    ? 'Tax-exempt product: no withholding tax applied'
-    : '20% final withholding tax applied';
+  const taxLabel = 'Taxes are not deducted in Truva estimates';
   const hasConditions = product.conditions.some((condition) => condition.type !== 'none' && condition.type !== 'time_limited');
 
   if (product.tierType === 'flat' || product.tierType === 'threshold') {
@@ -276,8 +270,8 @@ function buildPrimaryScenario(
     return {
       label: hasConditions ? 'If conditions are met' : 'Current calculation',
       taxLabel,
-      effectiveRate: computeEffectiveRate(amount, product),
-      projectedReturn: computeReturn(amount, product, months),
+      effectiveRate: computeEffectiveGrossRate(amount, product),
+      projectedReturn: computeGrossEarnings(amount, product, months),
       lines: [
         {
           amount,
@@ -287,7 +281,7 @@ function buildPrimaryScenario(
               ? `Entire deposit qualifies for ${getTierRangeLabel(applicableTier)}`
               : 'Deposit does not meet this product tier minimum',
           grossRate,
-          afterTaxRate: getAfterTaxRate(grossRate, product.taxExempt),
+          afterTaxRate: grossRate,
         },
       ],
     };
@@ -310,7 +304,7 @@ function buildPrimaryScenario(
       amount: appliedAmount,
       label: `${getTierRangeLabel(tier)} portion`,
       grossRate: tier.grossRate,
-      afterTaxRate: getAfterTaxRate(tier.grossRate, product.taxExempt),
+      afterTaxRate: tier.grossRate,
     });
 
     remaining -= appliedAmount;
@@ -319,8 +313,8 @@ function buildPrimaryScenario(
   return {
     label: hasConditions ? 'If conditions are met' : 'Current calculation',
     taxLabel,
-    effectiveRate: computeEffectiveRate(amount, product),
-    projectedReturn: computeReturn(amount, product, months),
+    effectiveRate: computeEffectiveGrossRate(amount, product),
+    projectedReturn: computeGrossEarnings(amount, product, months),
     lines,
   };
 }
@@ -332,17 +326,15 @@ function buildBaseScenario(
 ): CalculationScenario {
   return {
     label: 'If conditions are not met',
-    taxLabel: product.taxExempt
-      ? 'Tax-exempt product: no withholding tax applied'
-      : '20% final withholding tax applied',
-    effectiveRate: getAfterTaxRate(product.baseRate.grossRate, product.taxExempt),
-    projectedReturn: computeBaseReturn(amount, product, months),
+    taxLabel: 'Taxes are not deducted in Truva estimates',
+    effectiveRate: product.baseRate.grossRate,
+    projectedReturn: (amount * product.baseRate.grossRate / 12) * months,
     lines: [
       {
         amount,
         label: 'Base rate applied to the full deposit',
         grossRate: product.baseRate.grossRate,
-        afterTaxRate: getAfterTaxRate(product.baseRate.grossRate, product.taxExempt),
+        afterTaxRate: product.baseRate.grossRate,
       },
     ],
   };

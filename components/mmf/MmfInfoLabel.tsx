@@ -22,7 +22,7 @@ export const MMF_HELP_TEXT = {
   cashAccess:
     'How quickly you can get your money back after requesting a withdrawal: same day, next day, or a few business days.',
   vsTbill:
-    'How this fund compares to government Treasury Bills (after tax). Positive = the fund is beating the T-Bill benchmark.',
+      'How this fund compares to government Treasury Bills using the published benchmark. Positive = the fund is beating the benchmark.',
   trustFee:
     "The yearly fee charged by the fund manager. For mutual funds, this is already reflected in the net yield shown.",
   grossYield:

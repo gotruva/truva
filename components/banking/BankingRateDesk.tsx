@@ -5,7 +5,7 @@ import type { ComparisonState, RateProduct } from '@/types';
 import { RateSection } from '@/components/RateSection';
 
 const DEFAULT_COMPARISON_STATE: ComparisonState = {
-  amount: 100000,
+  amount: 50000,
   months: 12,
   liquidityFilter: 'all',
   payoutFilter: 'all',

@@ -123,9 +123,9 @@ function buildReasons(product: TopProduct, answers: QuickMatchAnswers): string[]
 }
 
 const RANK_STYLES = [
-  'bg-gradient-to-br from-yellow-400 to-amber-500',
-  'bg-gradient-to-br from-gray-300 to-gray-400',
-  'bg-gradient-to-br from-amber-600 to-amber-700',
+  'bg-brand-primary',
+  'bg-blue-400',
+  'bg-slate-400',
 ];
 
 function RankBadge({ rank }: { rank: number }) {
@@ -169,7 +169,7 @@ function RecommendationCard({
       {isTop && (
         <div className="flex items-center gap-2 bg-brand-primary px-4 py-1.5">
           <Sparkles className="h-3.5 w-3.5 text-white" />
-          <span className="text-xs font-bold uppercase tracking-wider text-white">Best Match for You</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-white">Top match for your answers</span>
         </div>
       )}
 
@@ -195,19 +195,19 @@ function RecommendationCard({
           <div className="mb-1 flex items-center justify-between">
             <span className="flex items-center gap-1.5 text-[13px] text-brand-textSecondary dark:text-gray-400">
               <Banknote className="h-3.5 w-3.5" />
-              You earn in {months < 12 ? `${months} months` : `${months / 12} year${months > 12 ? 's' : ''}`}
+              Estimated gross interest in {months < 12 ? `${months} months` : `${months / 12} year${months > 12 ? 's' : ''}`}
             </span>
             <span className="text-lg font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
               +{formatPHP(product.projectedReturn)}
             </span>
           </div>
-          {product.dual.hasConditions && product.dual.conditionBoost > 0 && (
+          {product.hasConditions && product.conditionBoost > 0 && (
             <div className="mt-1 border-t border-brand-border pt-1 text-[11px] text-brand-textSecondary dark:border-white/10 dark:text-gray-500">
               Without conditions:{' '}
               <span className="font-semibold text-amber-600 dark:text-amber-400">
-                {formatPHP(product.dual.withoutConditions.return)}
+                {formatPHP(product.baseGrossReturn)}
               </span>{' '}
-              ({formatRate(product.dual.withoutConditions.effectiveRate)})
+              ({formatRate(product.baseRate.grossRate)} advertised)
             </div>
           )}
         </div>
