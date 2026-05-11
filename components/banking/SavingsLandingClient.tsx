@@ -12,6 +12,7 @@ import {
   type Horizon,
   type Liquidity,
   HORIZON_MONTHS,
+  monthsToLockInDays,
   recommend,
 } from '@/lib/savings-recommend';
 import { computeGrossEarnings } from '@/utils/yieldEngine';
@@ -802,6 +803,7 @@ export function SavingsLandingClient({
   const [tableMonths, setTableMonths] = useState(months);
   const [tableAmtInput, setTableAmtInput] = useState(amount.toLocaleString('en-PH'));
   const [openProductId, setOpenProductId] = useState<string | null>(null);
+  const [showLongerLockProducts, setShowLongerLockProducts] = useState(false);
 
   // ── Alternates accordion ───────────────────────────────────────────────────
   const [openAltId, setOpenAltId] = useState<string | null>(null);
@@ -824,9 +826,12 @@ export function SavingsLandingClient({
   useEffect(() => {
     setTableMonths(months);
   }, [months]);
+  useEffect(() => {
+    setShowLongerLockProducts(false);
+  }, [productFilter, tableMonths]);
 
   // Derived for the partner table — using calculator state
-  const tableHorizonDays = tableMonths * 30;
+  const tableHorizonDays = monthsToLockInDays(tableMonths);
   const sortedAll = [...activeRates].sort((a, b) => {
     const diff =
       computeGrossEarnings(tableAmt, b, tableMonths) - computeGrossEarnings(tableAmt, a, tableMonths);
@@ -837,12 +842,29 @@ export function SavingsLandingClient({
   });
   const flexProducts = sortedAll.filter((p) => p.lockInDays === 0);
   const lockedProducts = sortedAll.filter((p) => p.lockInDays > 0);
-  const filteredList =
+  const baseFilteredList =
     productFilter === 'flexible'
       ? flexProducts
       : productFilter === 'time-deposit'
         ? lockedProducts
         : sortedAll;
+  const longerLockProducts = baseFilteredList.filter((p) => (
+    p.lockInDays > 0 && p.lockInDays > tableHorizonDays
+  ));
+  const hiddenLongerLockCount = longerLockProducts.length;
+  const filteredList = showLongerLockProducts
+    ? baseFilteredList
+    : baseFilteredList.filter((p) => (
+      p.lockInDays === 0 || p.lockInDays <= tableHorizonDays
+    ));
+  const visibleProductIds = filteredList.map((p) => p.id).join('|');
+
+  useEffect(() => {
+    if (!openProductId) return;
+    if (!visibleProductIds.split('|').includes(openProductId)) {
+      setOpenProductId(null);
+    }
+  }, [openProductId, visibleProductIds]);
 
   // On mount: sync amountInput with URL and check localStorage
   useEffect(() => {
@@ -1275,34 +1297,74 @@ export function SavingsLandingClient({
           </p>
         ) : (
           <div className="space-y-3">
-            {/* Desktop: table header */}
-            <div className="hidden md:block rounded-2xl border border-brand-border bg-white dark:border-white/10 dark:bg-white/[0.03] overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-brand-border dark:border-white/10">
-                    <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Provider
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Advertised rate
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Gross interest for {formatPeso(tableAmt)} / {formatMonthsLabel(tableMonths)}
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Lock-in
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Conditions
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Apply
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+            {hiddenLongerLockCount > 0 && (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:border-amber-500/25 dark:bg-amber-950/20 dark:text-amber-300">
+                <span className="font-medium">
+                  {hiddenLongerLockCount} longer lock-in option{hiddenLongerLockCount !== 1 ? 's' : ''} hidden for {formatMonthsLabel(tableMonths)}.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowLongerLockProducts((value) => !value)}
+                  className="rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-semibold text-amber-800 transition-colors hover:border-amber-500 dark:border-amber-500/40 dark:bg-white/10 dark:text-amber-200"
+                >
+                  {showLongerLockProducts ? 'Hide longer lock-ins' : 'Show longer lock-ins'}
+                </button>
+              </div>
+            )}
+
+            {filteredList.length === 0 ? (
+              <p className="rounded-2xl border border-brand-border bg-white p-6 text-sm text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.03] dark:text-white/60">
+                No listed products match this filter for {formatMonthsLabel(tableMonths)}.
+                {hiddenLongerLockCount > 0 ? ' Longer lock-in options are available above.' : ' Try a different amount or timeframe.'}
+              </p>
+            ) : (
+              <>
+                {/* Desktop: table header */}
+                <div className="hidden overflow-hidden rounded-2xl border border-brand-border bg-white dark:border-white/10 dark:bg-white/[0.03] md:block">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-brand-border dark:border-white/10">
+                        <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+                          Provider
+                        </th>
+                        <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+                          Advertised rate
+                        </th>
+                        <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+                          Gross interest for {formatPeso(tableAmt)} / {formatMonthsLabel(tableMonths)}
+                        </th>
+                        <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+                          Lock-in
+                        </th>
+                        <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+                          Conditions
+                        </th>
+                        <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+                          Apply
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredList.map((p) => (
+                        <PartnerRowDesktop
+                          key={p.id}
+                          product={p}
+                          amount={tableAmt}
+                          months={tableMonths}
+                          isOpen={openProductId === p.id}
+                          onToggle={() => setOpenProductId(openProductId === p.id ? null : p.id)}
+                          muted={isThresholdOutOfRange(p, tableAmt)}
+                          dimmed={p.lockInDays > 0 && p.lockInDays > tableHorizonDays}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile: stacked cards */}
+                <div className="space-y-3 md:hidden">
                   {filteredList.map((p) => (
-                    <PartnerRowDesktop
+                    <PartnerCardMobile
                       key={p.id}
                       product={p}
                       amount={tableAmt}
@@ -1313,25 +1375,9 @@ export function SavingsLandingClient({
                       dimmed={p.lockInDays > 0 && p.lockInDays > tableHorizonDays}
                     />
                   ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile: stacked cards */}
-            <div className="md:hidden space-y-3">
-              {filteredList.map((p) => (
-                <PartnerCardMobile
-                  key={p.id}
-                  product={p}
-                  amount={tableAmt}
-                  months={tableMonths}
-                  isOpen={openProductId === p.id}
-                  onToggle={() => setOpenProductId(openProductId === p.id ? null : p.id)}
-                  muted={isThresholdOutOfRange(p, tableAmt)}
-                  dimmed={p.lockInDays > 0 && p.lockInDays > tableHorizonDays}
-                />
-              ))}
-            </div>
+                </div>
+              </>
+            )}
 
             <div className="space-y-3 pt-1">
               {lastVerified && (

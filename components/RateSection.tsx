@@ -9,6 +9,7 @@ import { BankCard } from './RateCard';
 import { FilterTabs } from './FilterTabs';
 import { PreQualFlow, PreQualAnswers } from './PreQualFlow';
 import { computeEffectiveGrossRate, computeGrossEarnings } from '@/utils/yieldEngine';
+import { monthsToLockInDays } from '@/lib/savings-recommend';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -46,8 +47,7 @@ export function RateSection({
   ];
 
   const filteredRates = rates.filter((rate) => {
-    const horizonMap: Record<number, number> = { 3: 91, 6: 182, 12: 365, 24: 730 };
-    const horizonDays = horizonMap[comparisonState.months] ?? comparisonState.months * 30;
+    const horizonDays = monthsToLockInDays(comparisonState.months);
     if (rate.lockInDays > 0 && rate.lockInDays > horizonDays) return false;
 
     if (comparisonState.liquidityFilter === 'liquid') {
