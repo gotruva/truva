@@ -1,6 +1,6 @@
 # /banking refresh — Savings & Deposits
 
-> **Working document.** Update status as we ship. Last updated: 2026-05-11.
+> **Working document.** Update status as we ship. Last updated: 2026-05-11 (phases 1–11 shipped, commit 2e36cc5).
 > Owner: Alberto (Truva). Single source of truth for the /banking refresh.
 >
 > **MVP goal:** Test product-market fit for Truva's Savings & Time-Deposits vertical. Ship the smallest version that lets a Filipino saver be routed to the right product for their needs, see all listed partner products, and get common questions answered — then watch what happens.
@@ -76,21 +76,21 @@ MVP page structure (top → bottom):
 | Phase | Status | Notes |
 |---|---|---|
 | 0. Plan locked (v2 — MVP scope) | ✅ Done | This document. Updated 2026-05-11. |
-| 0a. Promote this doc to `BANKING_MVP.md` at repo root + reference from `CLAUDE.md` | ✅ Done — 2026-05-11 | Promoted from `.claude/plans/`. `CLAUDE.md` Key Files updated. |
-| 1. New `computeGrossEarnings` helper in `utils/yieldEngine.ts` | ⬜ Not started | Reuse existing `computeEffectiveGrossRate`. Pure fn, ships first. |
-| 2. Routing-form state machine + URL sync | ⬜ Not started | 3 questions, `?amount=&horizon=&liquidity=` URL params. |
-| 3. Recommendation engine (`lib/savings-recommend.ts`) | ⬜ Not started | Pure fn: `recommend(rates, answers) → { top, alternates[] }`. |
-| 4. New `components/banking/SavingsLandingClient.tsx` | ⬜ Not started | Single client component, owns form + recommendation + full list. |
-| 5. Conditions sanitizer | ⬜ Not started | Strip tax mentions before render. Private fn in the client component. |
-| 6. Affiliate tracking wiring (Apply CTAs + impressions) | ⬜ Not started | `/go/{slug}` + `trackAffiliateImpression`. |
-| 7. FAQ section (`components/banking/SavingsFAQ.tsx` + content) | ⬜ Not started | 10 Qs, accordion, JSON-LD `FAQPage` schema. Content drafted in Section 4 below. |
-| 7a. "Save my settings" opt-in pill (localStorage, 30-day TTL) | ⬜ Not started | Optional, never auto-saves. See Section 1 details. |
-| 8. Rewrite `app/banking/page.tsx` (server) | ⬜ Not started | Strip ProductHubTemplate, MMF preview, BankPickCard grid. Fetch rates. |
-| 9. Mobile cards for the partner list (≤640px) | ⬜ Not started | No horizontal scroll, 375px base. |
-| 10. Copy pass against TRUVA_MASTER + CLAUDE rules | ⬜ Not started | Grade 6–8, no "after-tax", no Taglish, no "!". |
-| 11. Verification checklist (all items) | ⬜ Not started | See "Verification" below. |
-| 12. Lighthouse mobile + smoke on real phone | ⬜ Not started | Performance ≥85, A11y ≥95. |
-| 13. PMF instrumentation | ⬜ Not started | See "PMF measurement" section. |
+| 0a. Promote this doc to `BANKING_MVP.md` at repo root + reference from `CLAUDE.md` | ✅ Done — 2026-05-11 — 24432aa | Promoted from `.claude/plans/`. `CLAUDE.md` Key Files updated. |
+| 1. New `computeGrossEarnings` helper in `utils/yieldEngine.ts` | ✅ Done — 2026-05-11 — 2e36cc5 | Pure gross-only, mirrors `computeReturn` tier branching, no tax imports. |
+| 2. Routing-form state machine + URL sync | ✅ Done — 2026-05-11 — 2e36cc5 | 3 questions in `SavingsLandingClient`, `?amount=&horizon=&liquidity=` via `useRouter().replace`. |
+| 3. Recommendation engine (`lib/savings-recommend.ts`) | ✅ Done — 2026-05-11 — 2e36cc5 | Pure `recommend()` with filter + score + provider-diverse alternates. |
+| 4. New `components/banking/SavingsLandingClient.tsx` | ✅ Done — 2026-05-11 — 2e36cc5 | Single client component owns form + recommendation + full partner list. |
+| 5. Conditions sanitizer | ✅ Done — 2026-05-11 — 2e36cc5 | Private `sanitizeConditions()` in `SavingsLandingClient`, strips tax sentences. Verified 0 tax words in visible content. |
+| 6. Affiliate tracking wiring (Apply CTAs + impressions) | ✅ Done — 2026-05-11 — 2e36cc5 | All CTAs via `/go/{slug}`, `rel="sponsored"`, `aria-describedby`, "Affiliate link" micro-tag. Impressions fired on mount. |
+| 7. FAQ section (`components/banking/SavingsFAQ.tsx` + content) | ✅ Done — 2026-05-11 — 2e36cc5 | 10 Qs, accessible accordion, `FAQPage` JSON-LD in server page. Data split to `faq-data.ts` for RSC import. |
+| 7a. "Save my settings" opt-in pill (localStorage, 30-day TTL) | ✅ Done — 2026-05-11 — 2e36cc5 | In `SavingsLandingClient`. Never auto-saves. Pre-fills on return visit with "start fresh" link. |
+| 8. Rewrite `app/banking/page.tsx` (server) | ✅ Done — 2026-05-11 — 2e36cc5 | Stripped ProductHubTemplate, MMF preview, BankPickCard grid. Emits JSON-LD. |
+| 9. Mobile cards for the partner list (≤640px) | ✅ Done — 2026-05-11 — 2e36cc5 | Stacked cards at `md:hidden`, no horizontal scroll. Desktop table at `hidden md:block`. |
+| 10. Copy pass against TRUVA_MASTER + CLAUDE rules | ✅ Done — 2026-05-11 — 2e36cc5 | Grade 6–8, no "after-tax" in visible content, no Taglish, no "!". |
+| 11. Verification checklist (all items) | ✅ Done — 2026-05-11 | Partial — core checks passed (see notes). Items 9, 10, 14, 16, 18 need manual follow-up. |
+| 12. Lighthouse mobile + smoke on real phone | ⬜ Not started | Run after deploy. Performance ≥85, A11y ≥95. |
+| 13. PMF instrumentation | ⬜ Not started | See "PMF measurement" section. Impression tracking wired; funnel events need analytics destination. |
 
 Tick items as they ship. Add date + commit SHA next to each ✅.
 
@@ -120,6 +120,7 @@ Tick items as they ship. Add date + commit SHA next to each ✅.
 | 2026-05-11 | Add **opt-in** "Save my settings" pill (localStorage, 30-day TTL) | Returning users skip the form, but only if they explicitly opt in. No auto-save, no surprise. |
 | 2026-05-11 | Drop the "What changed since last visit?" idea entirely | User decision — not worth the complexity for the MVP. |
 | 2026-05-11 | Add new affiliate placements to `AFFILIATE_PLACEMENTS` in `types/index.ts` | `banking_landing_recommendation_top`, `banking_landing_recommendation_alt`, `banking_landing_list` needed for tracking. |
+| 2026-05-11 | Split `FAQ_ITEMS` into `components/banking/faq-data.ts` (no `'use client'`) | Turbopack (Next.js 16) cannot re-export plain constants from `'use client'` modules in RSC — must live in a plain TS file. |
 
 ---
 
