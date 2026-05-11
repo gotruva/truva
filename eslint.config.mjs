@@ -3,7 +3,7 @@ import nextTypeScript from 'eslint-config-next/typescript';
 
 const config = [
   {
-    ignores: ['.qa/**', 'scratch/**', 'scratch*.ts'],
+    ignores: ['.qa/**', 'scratch/**', 'scratch*.ts', '.design-bundle-tmp/**'],
   },
   ...nextCoreWebVitals,
   ...nextTypeScript,

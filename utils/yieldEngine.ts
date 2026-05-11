@@ -363,6 +363,45 @@ export function getCalculationBreakdown(
   };
 }
 
+export function computeGrossEarnings(
+  amount: number,
+  product: RateProduct,
+  months: number,
+): number {
+  if (amount <= 0 || product.tiers.length === 0) return 0;
+
+  const years = months / 12;
+
+  if (product.tierType === 'flat') {
+    const grossRate = product.tiers[0]?.grossRate ?? product.baseRate.grossRate;
+    return amount * grossRate * years;
+  }
+
+  if (product.tierType === 'threshold') {
+    const tier = findThresholdTier(amount, product.tiers);
+    if (!tier) return 0;
+    return amount * tier.grossRate * years;
+  }
+
+  // Blended: each band earns independently
+  let remaining = amount;
+  let total = 0;
+
+  for (const tier of product.tiers) {
+    if (remaining <= 0) break;
+
+    const tierCapacity = tier.maxBalance !== null
+      ? tier.maxBalance - tier.minBalance
+      : Infinity;
+    const tierAmount = Math.min(remaining, tierCapacity);
+
+    total += tierAmount * tier.grossRate * years;
+    remaining -= tierAmount;
+  }
+
+  return total;
+}
+
 export function formatRate(rate: number): string {
   return `${(rate * 100).toFixed(2)}%`;
 }

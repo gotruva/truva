@@ -74,6 +74,9 @@ export const AFFILIATE_PLACEMENTS = [
   'quick_match_results',
   'yield_calculator',
   'bank_pick_card',
+  'banking_landing_recommendation_top',
+  'banking_landing_recommendation_alt',
+  'banking_landing_list',
 ] as const;
 
 export type AffiliatePlacement = (typeof AFFILIATE_PLACEMENTS)[number];
