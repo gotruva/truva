@@ -17,24 +17,31 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default async function BankingPage() {
+// Static — no await needed, computed once at module level
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+};
+
+// Async shell that fetches rates and passes them to the client component.
+// Keeping this separate from BankingPage lets Next.js stream the fallback
+// skeleton immediately while this component resolves the Supabase call.
+async function BankingContent() {
   const rates = await getPublicRates();
   const latestDate = getLatestVerifiedDate(rates);
   const lastVerified = latestDate ? formatVerifiedDate(latestDate) : '';
+  return <SavingsLandingClient rates={rates} lastVerified={lastVerified} />;
+}
 
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ_ITEMS.map((item) => ({
-      '@type': 'Question',
-      name: item.q,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.a,
-      },
-    })),
-  };
-
+export default function BankingPage() {
   return (
     <>
       <script
@@ -63,7 +70,7 @@ export default async function BankingPage() {
           </div>
         }
       >
-        <SavingsLandingClient rates={rates} lastVerified={lastVerified} />
+        <BankingContent />
       </Suspense>
       <div className="mx-auto max-w-4xl px-4 pb-12 sm:px-6">
         <SavingsFAQ />

@@ -162,7 +162,7 @@ function ApplyButton({
   );
 }
 
-function ProviderLogo({ product }: { product: RateProduct }) {
+function ProviderLogo({ product, priority = false }: { product: RateProduct; priority?: boolean }) {
   return (
     <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-black/5">
       <Image
@@ -171,6 +171,7 @@ function ProviderLogo({ product }: { product: RateProduct }) {
         fill
         sizes="36px"
         className="object-contain p-0.5"
+        priority={priority}
       />
     </div>
   );
@@ -234,7 +235,7 @@ function TopRecommendationCard({
       </p>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
-          <ProviderLogo product={product} />
+          <ProviderLogo product={product} priority />
           <div className="min-w-0">
             <h3 className="truncate text-base font-bold text-brand-textPrimary dark:text-white">
               {product.name}
