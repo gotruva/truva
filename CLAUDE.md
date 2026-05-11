@@ -19,6 +19,7 @@
 | File | Purpose |
 |---|---|
 | `TRUVA_MASTER.md` | Full strategy, brand, roadmap, personas, voice rules — read this |
+| `BANKING_MVP.md` | Working doc for the /banking (Savings & Deposits) refresh — update at start and end of every /banking session |
 | `types/index.ts` | TypeScript interfaces for all data models |
 | `lib/rates.ts` | Supabase → public `RateProduct[]` hydration |
 | `data/rates.json` | Manual/seed catalog (metadata fallback, non-scraper products) |
