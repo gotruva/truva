@@ -23,8 +23,21 @@ export const HORIZON_MONTHS: Record<Horizon, number> = {
   long: 24,
 };
 
+const LOCK_IN_DAYS_BY_MONTHS: Record<number, number> = {
+  1: 30,
+  3: 91,
+  6: 182,
+  12: 365,
+  24: 730,
+  36: 1095,
+};
+
+export function monthsToLockInDays(months: number): number {
+  return LOCK_IN_DAYS_BY_MONTHS[months] ?? Math.round((365 / 12) * months);
+}
+
 function horizonDays(horizon: Horizon): number {
-  return HORIZON_MONTHS[horizon] * 30;
+  return monthsToLockInDays(HORIZON_MONTHS[horizon]);
 }
 
 function isExpiredPromo(product: RateProduct): boolean {
