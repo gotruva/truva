@@ -1,4 +1,4 @@
-import { RateProduct, RateTier } from '@/types';
+import type { RateProduct, RateTier } from '@/types';
 import { calcAfterTaxPhp, calcTaxExempt } from '@/lib/tax';
 
 export interface CalculationBreakdownLine {
