@@ -1,6 +1,6 @@
 # /banking refresh — Savings & Deposits
 
-> **Working document.** Update status as we ship. Last updated: 2026-05-11 (phases 1–11 shipped, commit 2e36cc5).
+> **Working document.** Update status as we ship. Last updated: 2026-05-11 (phases 1–11 shipped 2e36cc5; phase 13 PMF instrumentation done).
 > Owner: Alberto (Truva). Single source of truth for the /banking refresh.
 >
 > **MVP goal:** Test product-market fit for Truva's Savings & Time-Deposits vertical. Ship the smallest version that lets a Filipino saver be routed to the right product for their needs, see all listed partner products, and get common questions answered — then watch what happens.
@@ -90,7 +90,7 @@ MVP page structure (top → bottom):
 | 10. Copy pass against TRUVA_MASTER + CLAUDE rules | ✅ Done — 2026-05-11 — 2e36cc5 | Grade 6–8, no "after-tax" in visible content, no Taglish, no "!". |
 | 11. Verification checklist (all items) | ✅ Done — 2026-05-11 | Partial — core checks passed (see notes). Items 9, 10, 14, 16, 18 need manual follow-up. |
 | 12. Lighthouse mobile + smoke on real phone | ⬜ Not started | Run after deploy. Performance ≥85, A11y ≥95. |
-| 13. PMF instrumentation | ⬜ Not started | See "PMF measurement" section. Impression tracking wired; funnel events need analytics destination. |
+| 13. PMF instrumentation | ✅ Done — 2026-05-11 | `banking_landing_events` table + RLS migration applied. `lib/banking-analytics.ts` + `app/api/banking-events/route.ts` created. All 9 funnel events wired into `SavingsLandingClient.tsx` and `SavingsFAQ.tsx`. Endpoint verified 200 OK in preview. |
 
 Tick items as they ship. Add date + commit SHA next to each ✅.
 

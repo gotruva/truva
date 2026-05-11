@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Lock, ShieldCheck, ShieldOff } from 'lucide-react';
 
 import type { RateCondition, RateProduct } from '@/types';
 import { buildTrackedAffiliateHref, trackAffiliateImpression } from '@/lib/affiliate-analytics';
+import { trackBankingEvent } from '@/lib/banking-analytics';
 import {
   type Horizon,
   type Liquidity,
@@ -130,6 +131,14 @@ function ApplyButton({
   if (!product.affiliateUrl) return null;
 
   const href = buildTrackedAffiliateHref(product.id, placement);
+
+  function handleClick() {
+    trackBankingEvent({
+      event_type: placement === 'banking_landing_list' ? 'list_apply_click' : 'recommendation_apply_click',
+      placement,
+    });
+  }
+
   const baseClass = size === 'md'
     ? 'inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-primary/20 transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2'
     : 'inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-primary px-3.5 py-2 text-xs font-semibold text-white shadow-sm shadow-brand-primary/20 transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2';
@@ -141,6 +150,7 @@ function ApplyButton({
         target="_blank"
         rel="sponsored noopener noreferrer"
         aria-describedby={DISCLOSURE_ID}
+        onClick={handleClick}
         className={baseClass}
       >
         Apply
@@ -469,6 +479,7 @@ export function SavingsLandingClient({
   }
 
   function setHorizon(h: Horizon) {
+    trackFormStarted();
     const params = new URLSearchParams(searchParams.toString());
     params.set('horizon', h);
     if (h === 'anytime') params.set('liquidity', 'flexible');
@@ -476,7 +487,49 @@ export function SavingsLandingClient({
   }
 
   function setLiquidity(l: Liquidity) {
+    trackFormStarted();
     setParam('liquidity', l);
+  }
+
+  // ── Data ───────────────────────────────────────────────────────────────────
+  const activeRates = rates.filter((p) => !isExpiredPromo(p));
+
+  const { top, alternates, reasonLine } = recommend(activeRates, {
+    amount,
+    horizon,
+    liquidity,
+  });
+
+  // Full list: sort by gross earnings desc, ties broken by headlineRate desc then lastVerified desc
+  const horizonDays = months * 30;
+  const sortedAll = [...activeRates].sort((a, b) => {
+    const diff = computeGrossEarnings(amount, b, months) - computeGrossEarnings(amount, a, months);
+    if (diff !== 0) return diff;
+    const rateDiff = b.headlineRate - a.headlineRate;
+    if (rateDiff !== 0) return rateDiff;
+    return b.lastVerified.localeCompare(a.lastVerified);
+  });
+
+  const flexProducts = sortedAll.filter((p) => p.lockInDays === 0);
+  const lockedProducts = sortedAll.filter((p) => p.lockInDays > 0);
+
+  // When flexible: show only liquid products; toggle reveals locked ones.
+  // When lockable: show everything, dimming products that lock longer than the horizon.
+  const primaryList = liquidity === 'flexible' ? flexProducts : sortedAll;
+
+  // ── PMF tracking ──────────────────────────────────────────────────────────
+  const landingViewFiredRef = useRef(false);
+  const formStartedFiredRef = useRef(false);
+  const formCompletedFiredRef = useRef(false);
+  const recommendationViewFiredRef = useRef(false);
+  const listScrolledFiredRef = useRef(false);
+  const recommendationSectionRef = useRef<HTMLElement>(null);
+  const allProductsSectionRef = useRef<HTMLElement>(null);
+
+  function trackFormStarted() {
+    if (formStartedFiredRef.current) return;
+    formStartedFiredRef.current = true;
+    trackBankingEvent({ event_type: 'form_started', horizon, liquidity, amount });
   }
 
   // ── localStorage ───────────────────────────────────────────────────────────
@@ -523,6 +576,63 @@ export function SavingsLandingClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // landing_view — once per page-view
+  useEffect(() => {
+    if (landingViewFiredRef.current) return;
+    landingViewFiredRef.current = true;
+    trackBankingEvent({ event_type: 'landing_view' });
+  }, []);
+
+  // form_completed — once all 3 URL params are explicitly set
+  useEffect(() => {
+    if (formCompletedFiredRef.current) return;
+    if (rawAmount !== null && rawHorizon !== null && rawLiquidity !== null) {
+      formCompletedFiredRef.current = true;
+      trackBankingEvent({ event_type: 'form_completed', horizon, liquidity, amount });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawAmount, rawHorizon, rawLiquidity]);
+
+  // recommendation_view — IntersectionObserver on the recommendation section
+  useEffect(() => {
+    const el = recommendationSectionRef.current;
+    if (!el || recommendationViewFiredRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !recommendationViewFiredRef.current) {
+          recommendationViewFiredRef.current = true;
+          trackBankingEvent({ event_type: 'recommendation_view', horizon, liquidity, amount });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [top]);
+
+  // list_scrolled — IntersectionObserver on the all-products section
+  useEffect(() => {
+    const el = allProductsSectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !listScrolledFiredRef.current) {
+          listScrolledFiredRef.current = true;
+          trackBankingEvent({ event_type: 'list_scrolled', horizon, liquidity, amount });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function savePill() {
     if (isPillSaved) {
       localStorage.removeItem(SAVED_KEY);
@@ -550,32 +660,6 @@ export function SavingsLandingClient({
     params.set('liquidity', 'flexible');
     router.replace(`?${params.toString()}`, { scroll: false });
   }
-
-  // ── Data ───────────────────────────────────────────────────────────────────
-  const activeRates = rates.filter((p) => !isExpiredPromo(p));
-
-  const { top, alternates, reasonLine } = recommend(activeRates, {
-    amount,
-    horizon,
-    liquidity,
-  });
-
-  // Full list: sort by gross earnings desc, ties broken by headlineRate desc then lastVerified desc
-  const horizonDays = months * 30;
-  const sortedAll = [...activeRates].sort((a, b) => {
-    const diff = computeGrossEarnings(amount, b, months) - computeGrossEarnings(amount, a, months);
-    if (diff !== 0) return diff;
-    const rateDiff = b.headlineRate - a.headlineRate;
-    if (rateDiff !== 0) return rateDiff;
-    return b.lastVerified.localeCompare(a.lastVerified);
-  });
-
-  const flexProducts = sortedAll.filter((p) => p.lockInDays === 0);
-  const lockedProducts = sortedAll.filter((p) => p.lockInDays > 0);
-
-  // When flexible: show only liquid products; toggle reveals locked ones.
-  // When lockable: show everything, dimming products that lock longer than the horizon.
-  const primaryList = liquidity === 'flexible' ? flexProducts : sortedAll;
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -618,6 +702,7 @@ export function SavingsLandingClient({
                 value={amountInput}
                 onChange={(e) => setAmountInput(e.target.value)}
                 onBlur={() => {
+                  trackFormStarted();
                   const n = Number(amountInput);
                   const clamped = clampAmount(Number.isFinite(n) ? n : 100_000);
                   setAmountInput(String(clamped));
@@ -717,6 +802,7 @@ export function SavingsLandingClient({
         <p className="mt-3 text-center text-xs text-brand-textSecondary dark:text-white/40">
           <a
             href="#all-products"
+            onClick={() => trackBankingEvent({ event_type: 'skip_to_list_click' })}
             className="font-semibold text-brand-primary underline-offset-2 hover:underline"
           >
             Skip questions, just show me everything
@@ -726,7 +812,7 @@ export function SavingsLandingClient({
 
       {/* Section 2: Recommendation */}
       {top && (
-        <section aria-labelledby="recommendation-heading">
+        <section ref={recommendationSectionRef} aria-labelledby="recommendation-heading">
           <h2
             id="recommendation-heading"
             className="mb-4 text-lg font-bold text-brand-textPrimary dark:text-white"
@@ -766,7 +852,7 @@ export function SavingsLandingClient({
       )}
 
       {/* Section 3: All partner products */}
-      <section id="all-products" aria-labelledby="all-products-heading" className="scroll-mt-24">
+      <section ref={allProductsSectionRef} id="all-products" aria-labelledby="all-products-heading" className="scroll-mt-24">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2
             id="all-products-heading"

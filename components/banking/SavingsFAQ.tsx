@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import { FAQ_ITEMS } from './faq-data';
+import type { FaqItem } from './faq-data';
+import { trackBankingEvent } from '@/lib/banking-analytics';
 export type { FaqItem } from './faq-data';
 
 function FaqAccordion({
@@ -20,7 +22,10 @@ function FaqAccordion({
   function toggle() {
     const next = !open;
     setOpen(next);
-    if (next) onOpen(index);
+    if (next) {
+      onOpen(index);
+      trackBankingEvent({ event_type: 'faq_opened', question_id: index + 1 });
+    }
   }
 
   return (
