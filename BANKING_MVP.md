@@ -1,6 +1,6 @@
 # /banking refresh — Savings & Deposits
 
-> **Working document.** Update status as we ship. Last updated: 2026-05-11 (phases 1–11 shipped 2e36cc5; phase 13 PMF instrumentation done).
+> **Working document.** Update status as we ship. Last updated: 2026-05-11 (phases 1–11 shipped 2e36cc5; phase 13 PMF instrumentation done; phase 14 alternates+calculator+drawer+tax-FAQs done).
 > Owner: Alberto (Truva). Single source of truth for the /banking refresh.
 >
 > **MVP goal:** Test product-market fit for Truva's Savings & Time-Deposits vertical. Ship the smallest version that lets a Filipino saver be routed to the right product for their needs, see all listed partner products, and get common questions answered — then watch what happens.
@@ -91,6 +91,7 @@ MVP page structure (top → bottom):
 | 11. Verification checklist (all items) | ✅ Done — 2026-05-11 | Partial — core checks passed (see notes). Items 9, 10, 14, 16, 18 need manual follow-up. |
 | 12. Lighthouse mobile + smoke on real phone | ⬜ Not started | Run after deploy. Performance ≥85, A11y ≥95. |
 | 13. PMF instrumentation | ✅ Done — 2026-05-11 | `banking_landing_events` table + RLS migration applied. `lib/banking-analytics.ts` + `app/api/banking-events/route.ts` created. All 9 funnel events wired into `SavingsLandingClient.tsx` and `SavingsFAQ.tsx`. Endpoint verified 200 OK in preview. |
+| 14. Alternates expansion + inline table calculator + expandable rows + tax FAQ block | ✅ Done — 2026-05-11 | `AlternateCard` now expands inline to a `ProductFactGrid` (min-to-open, access, payout cadence, PDIC, rate type, last verified, pros/cons, live quick-math). New inline calculator above the partner table (amount input + months input + 3/6/12/24/36 preset chips); table sort + earnings + threshold check key off the calculator state. `PartnerRow` split into `PartnerRowDesktop` (`<tr>` + `<tr colSpan=6>` drawer) and `PartnerCardMobile` (correct DOM nesting; previous version mixed `<tr>` and `<div>` and warned about hydration). `faq-data.ts` grew from 10 → 14 items: replaced single tax Q10 with worked-example + tax-exempt + "Truva does not subtract tax" trio (Q10–Q12); added Q13 (maintaining balance — names BPI/BDO) and Q14 (InstaPay / PESONet speed). All copy stays at grade 6–8, no "mo" or day units anywhere visible, gross rates only in product UI. |
 
 Tick items as they ship. Add date + commit SHA next to each ✅.
 
@@ -101,7 +102,7 @@ Tick items as they ship. Add date + commit SHA next to each ✅.
 | Date | Decision | Rationale |
 |---|---|---|
 | 2026-05-09 | Form first, table second, nothing else above the fold | High-intent users came to find a rate. |
-| 2026-05-09 | Completely silent on tax (no footnote, no link, no math) | CLAUDE.md rule #3 + user instruction. |
+| 2026-05-09 | No tax math in product UI; only a calm bottom-page reminder that taxes are not deducted | CLAUDE.md rule #3 + user instruction. |
 | 2026-05-09 | Drop MMF preview from /banking | Has its own page; off-topic for savings searchers. |
 | 2026-05-09 | Drop methodology link strip | Methodology pages not yet functioning — defer until live. |
 | 2026-05-09 | Drop `/banking/compare` link | Form already ranks best providers for user's amount + horizon. Redundant. |
@@ -121,6 +122,11 @@ Tick items as they ship. Add date + commit SHA next to each ✅.
 | 2026-05-11 | Drop the "What changed since last visit?" idea entirely | User decision — not worth the complexity for the MVP. |
 | 2026-05-11 | Add new affiliate placements to `AFFILIATE_PLACEMENTS` in `types/index.ts` | `banking_landing_recommendation_top`, `banking_landing_recommendation_alt`, `banking_landing_list` needed for tracking. |
 | 2026-05-11 | Split `FAQ_ITEMS` into `components/banking/faq-data.ts` (no `'use client'`) | Turbopack (Next.js 16) cannot re-export plain constants from `'use client'` modules in RSC — must live in a plain TS file. |
+| 2026-05-11 | Inline table calculator owns independent state, seeded from the routing form | Filipino savers come from social with a single intent ("highest rate for X over Y months"). They want to explore counterfactuals (₱100K → ₱500K, 6mo → 24mo) without losing their form context. Independent state lets them play; the form remains canonical for the top recommendation. |
+| 2026-05-11 | Pros and cons inside the product drawer are *derived* from product fields, not hand-authored | Keeps the partner data layer (Supabase pipeline) as the single source of truth. `derivePros`/`deriveCons` in `SavingsLandingClient` synthesize plain-language bullets from `pdic`, `taxExempt`, `lockInDays`, `payoutFrequency`, `tiers[0].minBalance`, `tierType`, top-tier cap, and sanitized `conditions[]`. Avoids per-product copy debt and keeps the page in sync with rate updates. |
+| 2026-05-11 | Tax FAQ split from 1 → 3 items (worked example, tax-free products, "Truva does not subtract") | One catch-all tax FAQ was the most-asked surface from Filipino savers — promo-rate scepticism and "the bank cheated me" complaints rooted in misunderstanding 20% withholding. Splitting into a worked example (₱2,000 gross → ₱1,600 net), a tax-exempt rundown (MP2 after 5 years), and a "Truva shows the bank's gross number so you can verify on their site" entry closes the trust gap without putting after-tax math in the product UI. |
+| 2026-05-11 | Use "months" everywhere (no "mo", no "days" units) | Per user instruction. Already enforced by `HORIZON_LABEL` and `formatLockIn`; the new calculator and drawer use `formatMonthsLabel()` to keep this invariant. Verified via grep guard. |
+| 2026-05-11 | Split `PartnerRow` into `PartnerRowDesktop` and `PartnerCardMobile` | Pre-existing single component returned both `<tr>` and `<div>` from a Fragment, which the parent rendered inside both a `<tbody>` and a `<div class="md:hidden">` — producing invalid `tbody > div` and `div > tr` nesting that React's stricter dev validator now treats as hydration errors. Splitting cleanly resolves it and keeps each container's children semantically correct. |
 
 ---
 
@@ -144,7 +150,7 @@ Tick items as they ship. Add date + commit SHA next to each ✅.
 
 The refresh re-anchors the page around three rules:
 1. **Form first.** Amount + months input is the first thing a user sees, on /banking itself.
-2. **Simple rates table second.** Gross rates exactly as banks advertise them, with simple gross earnings for the user's amount/timeline. No after-tax math, no tax footnotes.
+2. **Simple rates table second.** Gross rates exactly as banks advertise them, with simple gross earnings for the user's amount/timeline. No after-tax math. Include a calm bottom disclosure that taxes are not deducted.
 3. **Everything else is supporting.** Methodology, articles, MMFs, reviews, calculator stay in the navigation but are de-emphasized on the page itself.
 
 ## Pain points this addresses (research synthesis)
@@ -171,7 +177,7 @@ A guided 3-step intake. Wizard feel on mobile (one question per screen with a pr
 
 **Question 1 — Amount**
 - Label: *"How much will you save?"*
-- Number input, default `100,000`, clamped to minimum of `1,000`.
+- Number input, default `50,000`, clamped to minimum of `1,000`.
 - Helper text: *"You can change this anytime."*
 
 **Question 2 — Horizon**
@@ -336,7 +342,7 @@ No compounding, no tax deduction, no time-value tweaks. Matches advertised rate 
 ### State & URL
 
 - Params: `?amount`, `?horizon`, `?liquidity`
-- Defaults: `amount=100000`, `horizon=year`, `liquidity=flexible`
+- Defaults: `amount=50000`, `horizon=year`, `liquidity=flexible`
 - Writes via `useRouter().replace` (no scroll, no history spam)
 - SSR hydrates with defaults — recommendation visible on first paint
 
@@ -365,7 +371,7 @@ No compounding, no tax deduction, no time-value tweaks. Matches advertised rate 
 2. Walk all 3 questions. Recommendation appears with non-empty `reasonLine`. URL reflects `?amount=&horizon=&liquidity=`. Change each answer → recommendation and URL update.
 3. Amounts `50,000` / `250,000` / `1,000,000` — list reorders. Threshold products outside range render muted, never as top recommendation.
 4. Toggle horizons — earnings scale. `liquidity=flexible` hides time deposits (restores with toggle).
-5. HTML-search for `tax`, `after-tax`, `withholding`, `FWT`, `net of tax`. Only allowed inside FAQ Q10 collapsed answer.
+5. HTML-search for `after-tax`, `withholding`, `FWT`, `net of tax`. Only allowed inside tax education content, FAQ Q10, and the bottom tax disclosure.
 6. `grep -r "calcAfterTaxPhp\|calcAfterTaxDollarTD\|calcTaxExempt\|lib/tax\|computeReturn(\|computeEffectiveRate(" app/banking/page.tsx components/banking/SavingsLandingClient.tsx lib/savings-recommend.ts components/banking/SavingsFAQ.tsx` — zero hits.
 7. `npx tsc --noEmit` — passes.
 8. `npm run lint` — passes.
@@ -407,7 +413,7 @@ No compounding, no tax deduction, no time-value tweaks. Matches advertised rate 
 
 ## Out of scope (deliberate)
 
-- Refresh of `/banking/rates` (full desk) — keeps after-tax math; separate ticket.
+- Refresh of `/banking/rates` (full desk) — gross-only display with the same bottom tax disclosure.
 - Refresh of `/calculator` — still exists for direct visitors.
 - New copy for `/banking/articles`, `/banking/reviews`, `/banking/compare`.
 - MMF page redesign.
@@ -417,6 +423,6 @@ No compounding, no tax deduction, no time-value tweaks. Matches advertised rate 
 
 ## Risk notes
 
-- **Voice conflict in TRUVA_MASTER.md**: "after-tax first" methodology language exists but CLAUDE.md rule #3 is binding for product UI. /banking copy follows CLAUDE.md.
+- **Voice alignment in TRUVA_MASTER.md**: Product UI is gross-only with a bottom tax reminder. /banking copy follows CLAUDE.md and TRUVA_MASTER.md.
 - **Sort stability**: ties broken by `headlineRate` desc, then `lastVerified` desc.
 - **Threshold products** will rank below headline rate for large amounts — this is correct behavior.

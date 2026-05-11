@@ -15,11 +15,13 @@ import {
   recommend,
 } from '@/lib/savings-recommend';
 import { computeGrossEarnings } from '@/utils/yieldEngine';
+import { RateDisclosureNote } from '@/components/banking/RateDisclosureNote';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const SAVED_KEY = 'truva:banking:saved-answers';
 const SAVED_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const DEFAULT_AMOUNT = 50_000;
 
 const HORIZON_OPTIONS: { value: Horizon; label: string }[] = [
   { value: 'anytime', label: 'Anytime — I might need it soon' },
@@ -95,7 +97,68 @@ function isThresholdOutOfRange(product: RateProduct, amount: number): boolean {
 
 function clampAmount(n: number): number {
   if (!Number.isFinite(n) || n < 1000) return 1000;
-  return Math.round(n);
+  return Math.min(Math.round(n), 10_000_000);
+}
+
+
+function formatMonthsLabel(months: number): string {
+  return months === 1 ? '1 month' : `${months} months`;
+}
+
+function formatPayoutFreq(f: RateProduct['payoutFrequency']): string {
+  switch (f) {
+    case 'daily': return 'Every day';
+    case 'monthly': return 'Every month';
+    case 'quarterly': return 'Every 3 months';
+    case 'annually': return 'Once a year';
+    case 'at_maturity': return 'At the end of the lock';
+    default: return 'Every month';
+  }
+}
+
+function deriveMinOpen(product: RateProduct): number {
+  return product.tiers[0]?.minBalance ?? 0;
+}
+
+function derivePros(product: RateProduct): string[] {
+  const out: string[] = [];
+  if (product.pdic) out.push('Protected by PDIC up to ₱1 million.');
+  if (product.taxExempt) out.push('Interest is not taxed.');
+  if (product.lockInDays === 0) out.push('You can take your money out anytime.');
+  if (deriveMinOpen(product) === 0) out.push('No minimum balance to start.');
+  if (product.payoutFrequency === 'daily') out.push('Interest is added every day.');
+  else if (product.payoutFrequency === 'monthly') out.push('Interest is added every month.');
+  if (product.tierType === 'flat' && product.conditions.every((c) => c.type === 'none')) {
+    out.push('Flat rate — no monthly missions or spending to keep it.');
+  }
+  return out.slice(0, 4);
+}
+
+function deriveCons(product: RateProduct): string[] {
+  const out: string[] = [];
+  if (product.tierType === 'threshold' || product.tierType === 'blended') {
+    const topTier = product.tiers[product.tiers.length - 1];
+    const cap = topTier?.minBalance ?? null;
+    if (cap && cap > 0 && product.headlineRate > product.baseRate.grossRate) {
+      out.push(
+        `The top rate only covers part of your balance. Above ₱${cap.toLocaleString('en-PH')}, the rate drops to ${(product.baseRate.grossRate * 100).toFixed(1)}%.`,
+      );
+    }
+  }
+  if (product.lockInDays > 0) {
+    out.push(
+      `Money is locked for ${formatLockIn(product.lockInDays)}. Taking it out early lowers your interest.`,
+    );
+  }
+  const minOpen = deriveMinOpen(product);
+  if (minOpen > 0) out.push(`You need at least ₱${minOpen.toLocaleString('en-PH')} to open this.`);
+  product.conditions.forEach((c) => {
+    if (c.type === 'none' || c.type === 'time_limited') return;
+    const sentences = c.description.split(/(?<=[.!?])\s+/);
+    const clean = sentences.filter((s) => !TAX_PATTERN.test(s)).join(' ').trim();
+    if (clean && out.length < 4 && !out.some((o) => o === clean)) out.push(clean);
+  });
+  return out.slice(0, 4);
 }
 
 function isHorizon(v: string | null): v is Horizon {
@@ -170,6 +233,7 @@ function ProviderLogo({ product, priority = false }: { product: RateProduct; pri
         alt={product.provider}
         fill
         sizes="36px"
+        unoptimized
         className="object-contain p-0.5"
         priority={priority}
       />
@@ -218,6 +282,7 @@ function TopRecommendationCard({
   reasonLine: string;
 }) {
   const earnings = computeGrossEarnings(amount, product, months);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     trackAffiliateImpression({
@@ -231,7 +296,7 @@ function TopRecommendationCard({
   return (
     <article className="rounded-2xl border-2 border-brand-primary/30 bg-brand-primaryLight/30 p-5 dark:border-brand-primary/40 dark:bg-brand-primary/10">
       <p className="mb-3 text-xs font-bold uppercase tracking-widest text-brand-primary">
-        Best for you
+        Top match for your answers
       </p>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
@@ -255,19 +320,19 @@ function TopRecommendationCard({
           <p className="text-2xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
             {formatPct(product.headlineRate)}
           </p>
-          <p className="text-xs text-brand-textSecondary dark:text-white/50">per year</p>
+          <p className="text-xs text-brand-textSecondary dark:text-white/50">advertised p.a.</p>
         </div>
       </div>
 
       <div className="mt-4 rounded-xl border border-brand-primary/15 bg-white/60 p-3 dark:border-white/10 dark:bg-white/5">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/50">
-          Estimated earnings
+          Estimated gross interest
         </p>
         <p className="mt-1 text-xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
           {formatPeso(earnings)}
         </p>
         <p className="mt-0.5 text-xs text-brand-textSecondary dark:text-white/50">
-          on {formatPeso(amount)} over {HORIZON_LABEL[horizon]}
+          before tax on {formatPeso(amount)} over {HORIZON_LABEL[horizon]}
         </p>
       </div>
 
@@ -277,12 +342,33 @@ function TopRecommendationCard({
 
       <div className="mt-4 flex items-center justify-between gap-3">
         <ApplyButton product={product} placement="banking_landing_recommendation_top" size="md" />
+        <button
+          type="button"
+          onClick={() => setIsOpen((v) => !v)}
+          aria-expanded={isOpen}
+          className="text-xs font-semibold text-brand-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+        >
+          {isOpen ? 'Hide details ▴' : 'See details ▾'}
+        </button>
       </div>
+
+      {isOpen && <ProductFactGrid product={product} amount={amount} months={months} />}
     </article>
   );
 }
 
-function AlternateCard({
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
+        {label}
+      </p>
+      <p className="mt-0.5 text-xs font-semibold text-brand-textPrimary dark:text-white">{value}</p>
+    </div>
+  );
+}
+
+function ProductFactGrid({
   product,
   amount,
   months,
@@ -290,6 +376,85 @@ function AlternateCard({
   product: RateProduct;
   amount: number;
   months: number;
+}) {
+  const earnings = computeGrossEarnings(amount, product, months);
+  const pros = derivePros(product);
+  const cons = deriveCons(product);
+  const minOpen = deriveMinOpen(product);
+  const rateTypeLabel =
+    product.tierType === 'flat'
+      ? 'Flat (one rate)'
+      : product.tierType === 'threshold'
+        ? 'Tiered (depends on balance)'
+        : 'Blended (per band)';
+
+  return (
+    <div className="mt-3 space-y-4 rounded-xl border border-brand-border bg-brand-surface/60 p-4 dark:border-white/10 dark:bg-white/[0.02]">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <Fact label="Minimum to open" value={minOpen > 0 ? formatPeso(minOpen) : 'No minimum'} />
+        <Fact
+          label="Access to your money"
+          value={product.lockInDays === 0 ? 'Take out anytime' : `Locked for ${formatLockIn(product.lockInDays)}`}
+        />
+        <Fact label="When interest is paid" value={formatPayoutFreq(product.payoutFrequency)} />
+        <Fact label="Protected by" value={product.pdic ? 'PDIC up to ₱1 million' : product.insurer} />
+        <Fact label="Rate type" value={rateTypeLabel} />
+        <Fact label="Last verified" value={product.lastVerified} />
+      </div>
+      {pros.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/50">
+            What&apos;s good about this
+          </p>
+          <ul className="mt-1.5 space-y-1 text-xs text-brand-textPrimary dark:text-white/80">
+            {pros.map((p, i) => (
+              <li key={i} className="flex gap-2">
+                <span aria-hidden className="text-emerald-600 dark:text-emerald-400">●</span>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {cons.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/50">
+            Things to watch for
+          </p>
+          <ul className="mt-1.5 space-y-1 text-xs text-brand-textPrimary dark:text-white/80">
+            {cons.map((c, i) => (
+              <li key={i} className="flex gap-2">
+                <span aria-hidden className="text-amber-600 dark:text-amber-400">⚠</span>
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="rounded-lg bg-brand-primaryLight/40 px-3 py-2 text-xs dark:bg-brand-primary/15">
+        <span className="text-brand-textSecondary dark:text-white/60">
+          Quick math for {formatPeso(amount)} over {formatMonthsLabel(months)}:{' '}
+        </span>
+        <span className="font-bold text-brand-textPrimary dark:text-white">
+          about {formatPeso(earnings)} in gross interest.
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function AlternateCard({
+  product,
+  amount,
+  months,
+  isOpen,
+  onToggle,
+}: {
+  product: RateProduct;
+  amount: number;
+  months: number;
+  isOpen: boolean;
+  onToggle: () => void;
 }) {
   const earnings = computeGrossEarnings(amount, product, months);
 
@@ -302,53 +467,65 @@ function AlternateCard({
     });
   }, [product.id, product.provider, product.category]);
 
+  const lockLabel = product.lockInDays === 0 ? 'Take out anytime' : `Locked for ${formatLockIn(product.lockInDays)}`;
+
   return (
-    <article className="rounded-2xl border border-brand-border bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
-      <div className="flex min-w-0 items-center gap-2.5">
+    <article className="overflow-hidden rounded-2xl border border-brand-border bg-white dark:border-white/10 dark:bg-white/[0.04]">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center gap-2.5 p-4 text-left transition-colors hover:bg-brand-surface/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:hover:bg-white/[0.06]"
+      >
         <ProviderLogo product={product} />
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-sm font-semibold text-brand-textPrimary dark:text-white">
             {product.name}
           </h3>
           <p className="mt-0.5 text-xs font-bold text-brand-primary">
-            {formatPct(product.headlineRate)} p.a.
+            {formatPct(product.headlineRate)} per year
           </p>
         </div>
         <div className="shrink-0 text-right">
           <p className="text-sm font-bold tabular-nums text-brand-textPrimary dark:text-white">
             {formatPeso(earnings)}
           </p>
-          <p className="text-[10px] text-brand-textSecondary dark:text-white/50">earnings</p>
+          <p className="text-[10px] text-brand-textSecondary dark:text-white/50">gross interest</p>
         </div>
-      </div>
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <InsuranceBadge product={product} />
-        <ApplyButton product={product} placement="banking_landing_recommendation_alt" size="sm" />
-      </div>
+        <span
+          aria-hidden
+          className={`shrink-0 text-brand-textSecondary transition-transform dark:text-white/40 ${isOpen ? 'rotate-180' : ''}`}
+        >
+          ▾
+        </span>
+      </button>
+      {!isOpen && (
+        <div className="flex items-center justify-between gap-2 px-4 pb-4">
+          <InsuranceBadge product={product} />
+          <span className="text-[11px] text-brand-textSecondary dark:text-white/50">{lockLabel}</span>
+        </div>
+      )}
+      {isOpen && (
+        <div className="space-y-3 border-t border-brand-border px-4 pb-4 pt-3 dark:border-white/10">
+          <div className="flex flex-wrap items-center gap-2 text-[11px]">
+            <InsuranceBadge product={product} />
+            <span className="rounded-full bg-brand-surface px-2 py-0.5 font-semibold text-brand-textSecondary dark:bg-white/10 dark:text-white/60">
+              {lockLabel}
+            </span>
+          </div>
+          <ProductFactGrid product={product} amount={amount} months={months} />
+          <div className="flex justify-end pt-1">
+            <ApplyButton product={product} placement="banking_landing_recommendation_alt" size="sm" />
+          </div>
+        </div>
+      )}
     </article>
   );
 }
 
 // ─── Partner list row / card ──────────────────────────────────────────────────
 
-function PartnerRow({
-  product,
-  amount,
-  months,
-  muted,
-  dimmed,
-}: {
-  product: RateProduct;
-  amount: number;
-  months: number;
-  muted?: boolean;
-  dimmed?: boolean;
-}) {
-  const earnings = computeGrossEarnings(amount, product, months);
-  const conditions = sanitizeConditions(product.conditions);
-  const expiresAt = product.conditions.find((c) => c.expiresAt)?.expiresAt;
-  const rowClass = muted || dimmed ? 'opacity-50' : '';
-
+function usePartnerImpression(product: RateProduct) {
   useEffect(() => {
     trackAffiliateImpression({
       productId: product.id,
@@ -357,12 +534,54 @@ function PartnerRow({
       placement: 'banking_landing_list',
     });
   }, [product.id, product.provider, product.category]);
+}
+
+type PartnerRowProps = {
+  product: RateProduct;
+  amount: number;
+  months: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  muted?: boolean;
+  dimmed?: boolean;
+};
+
+function PartnerRowDesktop({
+  product,
+  amount,
+  months,
+  isOpen,
+  onToggle,
+  muted,
+  dimmed,
+}: PartnerRowProps) {
+  usePartnerImpression(product);
+  const earnings = computeGrossEarnings(amount, product, months);
+  const conditions = sanitizeConditions(product.conditions);
+  const expiresAt = product.conditions.find((c) => c.expiresAt)?.expiresAt;
+  const rowClass = muted || dimmed ? 'opacity-60' : '';
+  const headerKey = `partner-row-${product.id}`;
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onToggle();
+    }
+  }
 
   return (
     <>
-      {/* Desktop table row */}
-      <tr className={`hidden md:table-row border-b border-brand-border dark:border-white/10 ${rowClass}`}>
-        <td className="py-3.5 pr-4">
+      <tr
+        id={headerKey}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+        aria-controls={`${headerKey}-detail`}
+        onClick={onToggle}
+        onKeyDown={onKeyDown}
+        className={`cursor-pointer border-b border-brand-border transition-colors hover:bg-brand-surface/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-inset dark:border-white/10 dark:hover:bg-white/[0.04] ${isOpen ? 'bg-brand-surface/60 dark:bg-white/[0.04]' : ''} ${rowClass}`}
+      >
+        <td className="py-3.5 pl-4 pr-4">
           <div className="flex items-center gap-2.5">
             <ProviderLogo product={product} />
             <div>
@@ -388,62 +607,119 @@ function PartnerRow({
           {formatLockIn(product.lockInDays)}
         </td>
         <td className="py-3.5 pr-4 text-xs text-brand-textSecondary dark:text-white/60 max-w-[200px]">
-          {conditions || '—'}
-          {expiresAt && (
-            <span className="ml-1 text-amber-600 dark:text-amber-400">
-              (until {expiresAt})
+          <div className="space-y-1">
+            <div>
+              {conditions || '—'}
+              {expiresAt && (
+                <span className="ml-1 text-amber-600 dark:text-amber-400">
+                  (until {expiresAt})
+                </span>
+              )}
+            </div>
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-primary">
+              {isOpen ? 'Hide details ▴' : 'See details ▾'}
             </span>
-          )}
+          </div>
         </td>
-        <td className="py-3.5">
+        <td className="py-3.5 pr-4" onClick={(e) => e.stopPropagation()}>
           <ApplyButton product={product} placement="banking_landing_list" size="sm" />
         </td>
       </tr>
-
-      {/* Mobile card */}
-      <div className={`md:hidden rounded-2xl border border-brand-border bg-white p-4 dark:border-white/10 dark:bg-white/[0.04] ${rowClass}`}>
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <ProviderLogo product={product} />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-brand-textPrimary dark:text-white">
-                {product.name}
-              </p>
-              <InsuranceBadge product={product} />
-            </div>
-          </div>
-          <div className="shrink-0 text-right">
-            <p className="text-base font-bold tabular-nums text-brand-primary">
-              {formatPct(product.headlineRate)}
-            </p>
-            <p className="text-[10px] text-brand-textSecondary dark:text-white/50">per year</p>
-          </div>
-        </div>
-        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-          <div>
-            <p className="text-brand-textSecondary/60 dark:text-white/40">Earnings</p>
-            <p className="mt-0.5 font-semibold text-brand-textPrimary dark:text-white">
-              {muted ? '—' : formatPeso(earnings)}
-            </p>
-          </div>
-          <div>
-            <p className="text-brand-textSecondary/60 dark:text-white/40">Lock-in</p>
-            <p className={`mt-0.5 font-semibold ${dimmed ? 'text-amber-600 dark:text-amber-400' : 'text-brand-textPrimary dark:text-white'}`}>
-              {formatLockIn(product.lockInDays)}
-            </p>
-          </div>
-          {conditions && (
-            <div className="col-span-2">
-              <p className="text-brand-textSecondary/60 dark:text-white/40">Conditions</p>
-              <p className="mt-0.5 text-brand-textSecondary dark:text-white/60">{conditions}</p>
-            </div>
-          )}
-        </div>
-        <div className="mt-3 flex justify-end">
-          <ApplyButton product={product} placement="banking_landing_list" size="sm" />
-        </div>
-      </div>
+      {isOpen && (
+        <tr
+          id={`${headerKey}-detail`}
+          className="border-b border-brand-border bg-brand-surface/30 dark:border-white/10 dark:bg-white/[0.02]"
+        >
+          <td colSpan={6} className="px-4 pb-4 pt-1">
+            <ProductFactGrid product={product} amount={amount} months={months} />
+          </td>
+        </tr>
+      )}
     </>
+  );
+}
+
+function PartnerCardMobile({
+  product,
+  amount,
+  months,
+  isOpen,
+  onToggle,
+  muted,
+  dimmed,
+}: PartnerRowProps) {
+  usePartnerImpression(product);
+  const earnings = computeGrossEarnings(amount, product, months);
+  const conditions = sanitizeConditions(product.conditions);
+  const rowClass = muted || dimmed ? 'opacity-60' : '';
+
+  return (
+    <div
+      className={`rounded-2xl border bg-white dark:bg-white/[0.04] ${isOpen ? 'border-brand-primary/40' : 'border-brand-border dark:border-white/10'} ${rowClass}`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+      >
+        <div className="flex min-w-0 items-center gap-2.5">
+          <ProviderLogo product={product} />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-brand-textPrimary dark:text-white">
+              {product.name}
+            </p>
+            <InsuranceBadge product={product} />
+          </div>
+        </div>
+        <div className="shrink-0 text-right">
+          <p className="text-base font-bold tabular-nums text-brand-primary">
+            {formatPct(product.headlineRate)}
+          </p>
+          <p className="text-[10px] text-brand-textSecondary dark:text-white/50">
+            advertised per year
+          </p>
+        </div>
+      </button>
+      <div className="grid grid-cols-2 gap-2 px-4 pb-3 text-xs">
+        <div>
+          <p className="text-brand-textSecondary/60 dark:text-white/40">Gross interest</p>
+          <p className="mt-0.5 font-semibold text-brand-textPrimary dark:text-white">
+            {muted ? '—' : formatPeso(earnings)}
+          </p>
+        </div>
+        <div>
+          <p className="text-brand-textSecondary/60 dark:text-white/40">Lock-in</p>
+          <p
+            className={`mt-0.5 font-semibold ${dimmed ? 'text-amber-600 dark:text-amber-400' : 'text-brand-textPrimary dark:text-white'}`}
+          >
+            {formatLockIn(product.lockInDays)}
+          </p>
+        </div>
+        {conditions && (
+          <div className="col-span-2">
+            <p className="text-brand-textSecondary/60 dark:text-white/40">Conditions</p>
+            <p className="mt-0.5 text-brand-textSecondary dark:text-white/60">{conditions}</p>
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="block w-full border-t border-brand-border px-4 py-2 text-left text-xs font-semibold text-brand-primary hover:bg-brand-surface/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-inset dark:border-white/10 dark:hover:bg-white/[0.04]"
+      >
+        {isOpen ? 'Hide details ▴' : 'See details ▾'}
+      </button>
+      {isOpen && (
+        <div className="px-4 pb-4">
+          <ProductFactGrid product={product} amount={amount} months={months} />
+        </div>
+      )}
+      <div className="flex justify-end border-t border-brand-border px-4 py-3 dark:border-white/10">
+        <ApplyButton product={product} placement="banking_landing_list" size="sm" />
+      </div>
+    </div>
   );
 }
 
@@ -464,7 +740,7 @@ export function SavingsLandingClient({
   const rawHorizon = searchParams.get('horizon');
   const rawLiquidity = searchParams.get('liquidity');
 
-  const amount = clampAmount(rawAmount ? Number(rawAmount) : 100_000);
+  const amount = clampAmount(rawAmount ? Number(rawAmount) : DEFAULT_AMOUNT);
   const horizon: Horizon = isHorizon(rawHorizon) ? rawHorizon : 'year';
   const liquidity: Liquidity = isLiquidity(rawLiquidity) ? rawLiquidity : 'flexible';
   const months = HORIZON_MONTHS[horizon];
@@ -501,23 +777,6 @@ export function SavingsLandingClient({
     liquidity,
   });
 
-  // Full list: sort by gross earnings desc, ties broken by headlineRate desc then lastVerified desc
-  const horizonDays = months * 30;
-  const sortedAll = [...activeRates].sort((a, b) => {
-    const diff = computeGrossEarnings(amount, b, months) - computeGrossEarnings(amount, a, months);
-    if (diff !== 0) return diff;
-    const rateDiff = b.headlineRate - a.headlineRate;
-    if (rateDiff !== 0) return rateDiff;
-    return b.lastVerified.localeCompare(a.lastVerified);
-  });
-
-  const flexProducts = sortedAll.filter((p) => p.lockInDays === 0);
-  const lockedProducts = sortedAll.filter((p) => p.lockInDays > 0);
-
-  // When flexible: show only liquid products; toggle reveals locked ones.
-  // When lockable: show everything, dimming products that lock longer than the horizon.
-  const primaryList = liquidity === 'flexible' ? flexProducts : sortedAll;
-
   // ── PMF tracking ──────────────────────────────────────────────────────────
   const landingViewFiredRef = useRef(false);
   const formStartedFiredRef = useRef(false);
@@ -536,8 +795,54 @@ export function SavingsLandingClient({
   // ── localStorage ───────────────────────────────────────────────────────────
   const [showSavedBanner, setShowSavedBanner] = useState(false);
   const [isPillSaved, setIsPillSaved] = useState(false);
-  const [showLockedRows, setShowLockedRows] = useState(false);
   const [amountInput, setAmountInput] = useState(String(amount));
+
+  // ── Inline table calculator state (seeded from form; free to diverge) ─────
+  const [tableAmt, setTableAmt] = useState(amount);
+  const [tableMonths, setTableMonths] = useState(months);
+  const [tableAmtInput, setTableAmtInput] = useState(amount.toLocaleString('en-PH'));
+  const [openProductId, setOpenProductId] = useState<string | null>(null);
+
+  // ── Alternates accordion ───────────────────────────────────────────────────
+  const [openAltId, setOpenAltId] = useState<string | null>(null);
+
+  // ── Product list filter ────────────────────────────────────────────────────
+  type ProductFilter = 'all' | 'flexible' | 'time-deposit';
+  const [productFilter, setProductFilter] = useState<ProductFilter>(
+    liquidity === 'lockable' ? 'time-deposit' : 'all',
+  );
+  // Re-sync filter when Q3 changes (user edits the form)
+  useEffect(() => {
+    setProductFilter(liquidity === 'lockable' ? 'time-deposit' : 'all');
+  }, [liquidity]);
+
+  // Re-seed when the form changes (until the user touches the table calc — keep simple: always follow)
+  useEffect(() => {
+    setTableAmt(amount);
+    setTableAmtInput(amount.toLocaleString('en-PH'));
+  }, [amount]);
+  useEffect(() => {
+    setTableMonths(months);
+  }, [months]);
+
+  // Derived for the partner table — using calculator state
+  const tableHorizonDays = tableMonths * 30;
+  const sortedAll = [...activeRates].sort((a, b) => {
+    const diff =
+      computeGrossEarnings(tableAmt, b, tableMonths) - computeGrossEarnings(tableAmt, a, tableMonths);
+    if (diff !== 0) return diff;
+    const rateDiff = b.headlineRate - a.headlineRate;
+    if (rateDiff !== 0) return rateDiff;
+    return b.lastVerified.localeCompare(a.lastVerified);
+  });
+  const flexProducts = sortedAll.filter((p) => p.lockInDays === 0);
+  const lockedProducts = sortedAll.filter((p) => p.lockInDays > 0);
+  const filteredList =
+    productFilter === 'flexible'
+      ? flexProducts
+      : productFilter === 'time-deposit'
+        ? lockedProducts
+        : sortedAll;
 
   // On mount: sync amountInput with URL and check localStorage
   useEffect(() => {
@@ -656,7 +961,7 @@ export function SavingsLandingClient({
     setIsPillSaved(false);
     setShowSavedBanner(false);
     const params = new URLSearchParams();
-    params.set('amount', '100000');
+    params.set('amount', String(DEFAULT_AMOUNT));
     params.set('horizon', 'year');
     params.set('liquidity', 'flexible');
     router.replace(`?${params.toString()}`, { scroll: false });
@@ -664,21 +969,21 @@ export function SavingsLandingClient({
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 space-y-10 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-5 space-y-7 sm:px-6 sm:py-8 sm:space-y-10">
       <DisclosureSpan />
 
       {/* Section 1: Routing form */}
       <section aria-labelledby="form-heading">
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.03] space-y-6">
+        <div className="rounded-2xl border border-brand-border bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03] space-y-4 sm:p-6 sm:space-y-6">
           <div>
             <h1
               id="form-heading"
               className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl"
             >
-              Find your best savings home in 30 seconds.
+              Find your savings match in 30 seconds.
             </h1>
             <p className="mt-2 text-sm text-brand-textSecondary dark:text-white/60">
-              Three questions. We match you to the highest-paying option that fits.
+              Three questions. We match your amount and timeline to the listed options.
             </p>
           </div>
 
@@ -705,7 +1010,7 @@ export function SavingsLandingClient({
                 onBlur={() => {
                   trackFormStarted();
                   const n = Number(amountInput);
-                  const clamped = clampAmount(Number.isFinite(n) ? n : 100_000);
+                  const clamped = clampAmount(Number.isFinite(n) ? n : DEFAULT_AMOUNT);
                   setAmountInput(String(clamped));
                   setAmount(clamped);
                 }}
@@ -818,7 +1123,7 @@ export function SavingsLandingClient({
             id="recommendation-heading"
             className="mb-4 text-lg font-bold text-brand-textPrimary dark:text-white"
           >
-            Best for you
+            Top match for your answers
           </h2>
           <TopRecommendationCard
             product={top}
@@ -830,12 +1135,22 @@ export function SavingsLandingClient({
 
           {alternates.length > 0 && (
             <>
-              <p className="mt-5 mb-3 text-sm font-semibold text-brand-textSecondary dark:text-white/50">
-                Also worth considering
+              <p className="mt-5 mb-1 text-sm font-semibold text-brand-textPrimary dark:text-white">
+                Also worth a look
               </p>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <p className="mb-3 text-xs text-brand-textSecondary dark:text-white/50">
+                Tap any card to see the details.
+              </p>
+              <div className="space-y-3">
                 {alternates.map((alt) => (
-                  <AlternateCard key={alt.id} product={alt} amount={amount} months={months} />
+                  <AlternateCard
+                    key={alt.id}
+                    product={alt}
+                    amount={amount}
+                    months={months}
+                    isOpen={openAltId === alt.id}
+                    onToggle={() => setOpenAltId(openAltId === alt.id ? null : alt.id)}
+                  />
                 ))}
               </div>
             </>
@@ -854,15 +1169,100 @@ export function SavingsLandingClient({
 
       {/* Section 3: All partner products */}
       <section ref={allProductsSectionRef} id="all-products" aria-labelledby="all-products-heading" className="scroll-mt-24">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-3">
           <h2
             id="all-products-heading"
             className="text-lg font-bold text-brand-textPrimary dark:text-white"
           >
-            All listed partner products
+            All listed products
           </h2>
-          <p className="text-xs text-brand-textSecondary dark:text-white/40">
-            Sorted by earnings on {formatPeso(amount)} over {HORIZON_LABEL[horizon]}
+          <p className="mt-1 text-xs text-brand-textSecondary dark:text-white/50">
+            Sorted by gross interest on {formatPeso(tableAmt)} over {formatMonthsLabel(tableMonths)}. Change the amount below or pick a timeframe — numbers update live.
+          </p>
+        </div>
+
+        {/* Filter tabs: All / Flexible / Time Deposits */}
+        <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Filter products">
+          {([
+            { key: 'all', label: 'All', count: sortedAll.length },
+            { key: 'flexible', label: 'Flexible', count: flexProducts.length },
+            { key: 'time-deposit', label: 'Time Deposits', count: lockedProducts.length },
+          ] as const).map(({ key, label, count }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setProductFilter(key)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 ${
+                productFilter === key
+                  ? 'border-brand-primary bg-brand-primary text-white'
+                  : 'border-brand-border bg-white text-brand-textSecondary hover:border-brand-primary/40 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-white/60'
+              }`}
+            >
+              {label}{' '}
+              <span className={`text-xs ${productFilter === key ? 'opacity-80' : 'opacity-50'}`}>
+                ({count})
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Inline table calculator */}
+        <div className="mb-4 rounded-2xl border border-brand-border bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="min-w-[160px] flex-1">
+              <label
+                htmlFor="table-amount"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/50"
+              >
+                If I save
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-3.5 flex items-center text-sm font-semibold text-brand-textSecondary dark:text-white/50">
+                  ₱
+                </span>
+                <input
+                  id="table-amount"
+                  type="text"
+                  inputMode="numeric"
+                  value={tableAmtInput}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    setTableAmtInput(raw);
+                    const n = parseInt(raw.replace(/[^\d]/g, ''), 10);
+                    if (Number.isFinite(n) && n >= 1000) {
+                      setTableAmt(Math.min(n, 10_000_000));
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const raw = e.currentTarget.value;
+                    const n = parseInt(raw.replace(/[^\d]/g, ''), 10);
+                    const clamped = clampAmount(Number.isFinite(n) ? n : tableAmt);
+                    setTableAmt(clamped);
+                    setTableAmtInput(clamped.toLocaleString('en-PH'));
+                  }}
+                  className="w-full rounded-xl border border-brand-border bg-white py-2.5 pl-8 pr-3 text-sm font-semibold tabular-nums text-brand-textPrimary shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-1.5 pb-0.5">
+              {[3, 6, 12, 24, 36].map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setTableMonths(m)}
+                  className={`rounded-full border px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 ${
+                    tableMonths === m
+                      ? 'border-brand-primary bg-brand-primary text-white'
+                      : 'border-brand-border bg-white text-brand-textSecondary hover:border-brand-primary/40 hover:text-brand-primary dark:border-white/10 dark:bg-white/5 dark:text-white/60'
+                  }`}
+                >
+                  {formatMonthsLabel(m)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="mt-2 text-[11px] text-brand-textSecondary dark:text-white/40">
+            Try different amounts and timeframes to see how each option pays. Tap any row to learn more.
           </p>
         </div>
 
@@ -884,10 +1284,10 @@ export function SavingsLandingClient({
                       Provider
                     </th>
                     <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Rate (p.a.)
+                      Advertised rate
                     </th>
                     <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                      Earnings for {formatPeso(amount)} / {HORIZON_LABEL[horizon]}
+                      Gross interest for {formatPeso(tableAmt)} / {formatMonthsLabel(tableMonths)}
                     </th>
                     <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
                       Lock-in
@@ -900,76 +1300,47 @@ export function SavingsLandingClient({
                     </th>
                   </tr>
                 </thead>
-                <tbody className="px-4">
-                  {primaryList.map((p) => (
-                    <PartnerRow
+                <tbody>
+                  {filteredList.map((p) => (
+                    <PartnerRowDesktop
                       key={p.id}
                       product={p}
-                      amount={amount}
-                      months={months}
-                      muted={isThresholdOutOfRange(p, amount)}
-                      dimmed={liquidity === 'lockable' && p.lockInDays > horizonDays}
+                      amount={tableAmt}
+                      months={tableMonths}
+                      isOpen={openProductId === p.id}
+                      onToggle={() => setOpenProductId(openProductId === p.id ? null : p.id)}
+                      muted={isThresholdOutOfRange(p, tableAmt)}
+                      dimmed={p.lockInDays > 0 && p.lockInDays > tableHorizonDays}
                     />
                   ))}
-                  {liquidity === 'flexible' && showLockedRows &&
-                    lockedProducts.map((p) => (
-                      <PartnerRow
-                        key={p.id}
-                        product={p}
-                        amount={amount}
-                        months={months}
-                        muted={isThresholdOutOfRange(p, amount)}
-                        dimmed={p.lockInDays > horizonDays}
-                      />
-                    ))}
                 </tbody>
               </table>
             </div>
 
             {/* Mobile: stacked cards */}
             <div className="md:hidden space-y-3">
-              {primaryList.map((p) => (
-                <PartnerRow
+              {filteredList.map((p) => (
+                <PartnerCardMobile
                   key={p.id}
                   product={p}
-                  amount={amount}
-                  months={months}
-                  muted={isThresholdOutOfRange(p, amount)}
-                  dimmed={liquidity === 'lockable' && p.lockInDays > horizonDays}
+                  amount={tableAmt}
+                  months={tableMonths}
+                  isOpen={openProductId === p.id}
+                  onToggle={() => setOpenProductId(openProductId === p.id ? null : p.id)}
+                  muted={isThresholdOutOfRange(p, tableAmt)}
+                  dimmed={p.lockInDays > 0 && p.lockInDays > tableHorizonDays}
                 />
               ))}
-              {liquidity === 'flexible' && showLockedRows &&
-                lockedProducts.map((p) => (
-                  <PartnerRow
-                    key={p.id}
-                    product={p}
-                    amount={amount}
-                    months={months}
-                    muted={isThresholdOutOfRange(p, amount)}
-                    dimmed={p.lockInDays > horizonDays}
-                  />
-                ))}
             </div>
 
-            {/* Show locked options toggle */}
-            {liquidity === 'flexible' && lockedProducts.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setShowLockedRows((v) => !v)}
-                className="w-full rounded-2xl border border-dashed border-brand-border py-3 text-sm font-semibold text-brand-textSecondary transition-colors hover:border-brand-primary/40 hover:text-brand-primary dark:border-white/10 dark:text-white/50"
-              >
-                {showLockedRows
-                  ? `Hide ${lockedProducts.length} locked-rate option${lockedProducts.length !== 1 ? 's' : ''}`
-                  : `Show ${lockedProducts.length} locked-rate option${lockedProducts.length !== 1 ? 's' : ''}`}
-              </button>
-            )}
-
-            {/* Last verified */}
-            {lastVerified && (
-              <p className="pt-1 text-right text-xs text-brand-textSecondary/60 dark:text-white/30">
-                Last verified: {lastVerified}
-              </p>
-            )}
+            <div className="space-y-3 pt-1">
+              {lastVerified && (
+                <p className="text-right text-xs text-brand-textSecondary/60 dark:text-white/30">
+                  Last verified: {lastVerified}
+                </p>
+              )}
+              <RateDisclosureNote />
+            </div>
           </div>
         )}
       </section>

@@ -27,7 +27,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { computeEffectiveGrossRate, computeEffectiveRate, computeReturn, formatPHP, formatRate } from '@/utils/yieldEngine';
+import { computeEffectiveGrossRate, computeGrossEarnings, formatPHP, formatRate } from '@/utils/yieldEngine';
 import { resolveLogoSrc } from '@/lib/logo';
 import { CalculationBreakdownDetails } from '@/components/CalculationBreakdown';
 
@@ -111,7 +111,7 @@ function LockBadge({ days, verbose = false }: { days: number; verbose?: boolean 
 function RankBadge({ rank }: { rank: number }) {
   if (rank === 1) {
     return (
-      <span className="glow-rank-1 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 via-amber-400 to-amber-500 text-[12px] font-bold text-white shadow-md ring-2 ring-white/50">
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary text-[12px] font-bold text-white shadow-md ring-2 ring-white/50">
         <Trophy className="h-4 w-4" />
       </span>
     );
@@ -119,7 +119,7 @@ function RankBadge({ rank }: { rank: number }) {
 
   if (rank === 2) {
     return (
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gray-300 to-gray-400 text-[11px] font-bold text-white shadow-sm">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-400 text-[11px] font-bold text-white shadow-sm">
         2
       </span>
     );
@@ -127,7 +127,7 @@ function RankBadge({ rank }: { rank: number }) {
 
   if (rank === 3) {
     return (
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-600 to-amber-700 text-[11px] font-bold text-white shadow-sm">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-400 text-[11px] font-bold text-white shadow-sm">
         3
       </span>
     );
@@ -218,8 +218,8 @@ export function RateTable({
     const groups: BankGroup[] = [];
     for (const [provider, products] of groupMap) {
       const enriched = products.map((product) => {
-        const effectiveRate = computeEffectiveRate(numAmount, product);
-        const projectedReturn = computeReturn(numAmount, product, months);
+        const effectiveRate = computeEffectiveGrossRate(numAmount, product);
+        const projectedReturn = computeGrossEarnings(numAmount, product, months);
         return { ...product, effectiveRate, projectedReturn };
       });
 
@@ -305,7 +305,7 @@ export function RateTable({
                   onClick={() => handleSort('rate')}
                   className="ml-auto inline-flex items-center gap-1 transition-colors hover:text-brand-textPrimary dark:hover:text-gray-200"
                 >
-                  Marketed Rate <SortIcon col="rate" sortCol={sortCol} sortDir={sortDir} />
+                  Advertised rate <SortIcon col="rate" sortCol={sortCol} sortDir={sortDir} />
                 </button>
               </th>
             )}
@@ -320,7 +320,7 @@ export function RateTable({
                       />
                     )}
                   >
-                    Effective rate
+                    Amount-fit rate
                     <AlertCircle className="h-3.5 w-3.5 text-brand-textSecondary/70 dark:text-gray-400" />
                     <SortIcon col="effective" sortCol={sortCol} sortDir={sortDir} />
                   </TooltipTrigger>
@@ -329,7 +329,7 @@ export function RateTable({
                     className="max-w-[300px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
                   >
                     <p>
-                      Estimated return on ₱{numAmount.toLocaleString()} based on the advertised rate.
+                      Gross rate for your entered amount, based on the bank&apos;s advertised tiers.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -346,7 +346,7 @@ export function RateTable({
                       />
                     )}
                   >
-                    Projected Return
+                    Estimated gross interest
                     <SortIcon col="return" sortCol={sortCol} sortDir={sortDir} />
                   </TooltipTrigger>
                   <TooltipContent
@@ -354,7 +354,7 @@ export function RateTable({
                     className="max-w-[280px] border border-gray-200 bg-white p-3 text-left text-sm font-normal leading-relaxed text-gray-900 shadow-lg dark:border-white/10 dark:bg-slate-800 dark:text-gray-100"
                   >
                     <p>
-                      How much interest you&apos;d earn on PHP {numAmount.toLocaleString()} over {months} month{months > 1 ? 's' : ''} at the advertised rate.
+                      How much interest your balance could earn before tax over {months} month{months > 1 ? 's' : ''} at the advertised rate.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -389,9 +389,9 @@ export function RateTable({
                       : 'hover:bg-brand-surface dark:hover:bg-slate-800'
                   } ${groupIndex < 3 ? 'border-l-2 border-l-transparent' : ''}`}
                   style={
-                    groupIndex === 0 ? { borderLeftColor: '#FFD700' }
-                      : groupIndex === 1 ? { borderLeftColor: '#C0C0C0' }
-                        : groupIndex === 2 ? { borderLeftColor: '#CD7F32' }
+                    groupIndex === 0 ? { borderLeftColor: '#0052FF' }
+                      : groupIndex === 1 ? { borderLeftColor: '#60A5FA' }
+                        : groupIndex === 2 ? { borderLeftColor: '#94A3B8' }
                           : {}
                   }
                 >
@@ -440,7 +440,7 @@ export function RateTable({
                       <div className="text-[15px] font-semibold tabular-nums text-brand-textPrimary dark:text-gray-100">
                         {(headlineGross * 100).toFixed(2)}%
                       </div>
-                      <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">gross</div>
+                      <div className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-500">advertised</div>
                     </td>
                   )}
 
@@ -449,7 +449,7 @@ export function RateTable({
                       {formatRate(group.bestEffectiveRate)}
                     </div>
                     <div className="mt-0.5 text-[11px] font-medium text-positive">
-                      {showGross ? 'net return' : 'net'}
+                      {showGross ? 'amount-fit rate' : 'advertised'}
                     </div>
                   </td>
 
@@ -529,7 +529,7 @@ export function RateTable({
                                       </span>
                                       {isBest && (
                                         <Badge className="border-positive/20 bg-positive/10 py-1 px-2 text-[11px] font-bold text-positive shadow-none">
-                                          Best for PHP {numAmount.toLocaleString()}
+                                          Top fit for PHP {numAmount.toLocaleString()}
                                         </Badge>
                                       )}
                                       <LockBadge days={product.lockInDays} verbose />
@@ -602,7 +602,7 @@ export function RateTable({
                                     <div className="text-[16px] font-bold tabular-nums text-brand-textPrimary dark:text-gray-100">
                                       {formatRate(product.effectiveRate)}
                                       <span className="ml-1 text-[11px] font-medium text-brand-textSecondary dark:text-gray-500">
-                                        net return
+                                        gross p.a.
                                       </span>
                                     </div>
                                     {numAmount > 0 && (

@@ -21,23 +21,23 @@ type HydratedSnapshotEntry = {
 };
 
 const PROVIDER_DEFAULTS: Record<string, { logo: string; affiliateUrl: string }> = {
-  'maya-bank': { logo: '/logos/maya.svg', affiliateUrl: 'https://official.maya.ph/be7m/gmsb47rr' },
+  'maya-bank': { logo: '/logos/maya-mark.jpg', affiliateUrl: 'https://official.maya.ph/be7m/gmsb47rr' },
   'tonik-digital-bank': { logo: '/logos/tonik.svg', affiliateUrl: 'https://tonikbank.com/' },
-  'uno-digital-bank': { logo: '/logos/uno.svg', affiliateUrl: 'https://www.uno.bank/' },
-  'gotyme-bank': { logo: '/logos/gotyme.svg', affiliateUrl: 'https://www.gotyme.com.ph/' },
-  maribank: { logo: '/logos/maribank.svg', affiliateUrl: 'https://maribank.ph/c/earnfreemoney?referralCode=AA799662' },
-  'uniondigital-bank': { logo: '/logos/uniondigital.svg', affiliateUrl: 'https://uniondigitalbank.io/' },
-  ofbank: { logo: '/logos/ofbank.svg', affiliateUrl: 'https://www.ofbank.com.ph/' },
-  'cimb-gcash': { logo: '/logos/cimb.svg', affiliateUrl: 'https://www.gcash.com/services/gsave' },
-  'cimb-bank': { logo: '/logos/cimb.svg', affiliateUrl: 'https://www.cimbbank.com.ph/' },
+  'uno-digital-bank': { logo: '/logos/uno-mark.jpg', affiliateUrl: 'https://www.uno.bank/' },
+  'gotyme-bank': { logo: '/logos/gotyme-mark.png', affiliateUrl: 'https://www.gotyme.com.ph/' },
+  maribank: { logo: '/logos/maribank-mark.png', affiliateUrl: 'https://maribank.ph/c/earnfreemoney?referralCode=AA799662' },
+  'uniondigital-bank': { logo: '/logos/uniondigital-mark.jpg', affiliateUrl: 'https://uniondigitalbank.io/' },
+  ofbank: { logo: '/logos/ofbank-mark.jpg', affiliateUrl: 'https://www.ofbank.com.ph/' },
+  'cimb-gcash': { logo: '/logos/cimb-mark.png', affiliateUrl: 'https://www.gcash.com/services/gsave' },
+  'cimb-bank': { logo: '/logos/cimb-mark.png', affiliateUrl: 'https://www.cimbbank.com.ph/' },
   'salmon-bank': { logo: '/logos/salmon.svg', affiliateUrl: 'https://salmon.ph/salmonbank-deposits' },
-  netbank: { logo: '/logos/netbank.svg', affiliateUrl: 'https://netbank.ph/netbank-mobile/' },
-  ownbank: { logo: '/logos/ownbank.svg', affiliateUrl: 'https://s.ownbank.com.ph/cjZct3' },
-  komo: { logo: '/logos/komo.svg', affiliateUrl: 'https://www.komo.ph/' },
-  diskartech: { logo: '/logos/diskartech.svg', affiliateUrl: 'https://diskartech.ph/' },
-  banko: { logo: '/logos/banko.svg', affiliateUrl: 'https://www.banko.com.ph/' },
-  landbank: { logo: '/logos/landbank.svg', affiliateUrl: 'https://www.landbank.com/' },
-  dbp: { logo: '/logos/dbp.svg', affiliateUrl: 'https://www.dbp.ph/' },
+  netbank: { logo: '/logos/netbank-mark.webp', affiliateUrl: 'https://netbank.ph/netbank-mobile/' },
+  ownbank: { logo: '/logos/ownbank-mark.png', affiliateUrl: 'https://s.ownbank.com.ph/cjZct3' },
+  komo: { logo: '/logos/komo-mark.jpg', affiliateUrl: 'https://www.komo.ph/' },
+  diskartech: { logo: '/logos/diskartech-mark.png', affiliateUrl: 'https://diskartech.ph/' },
+  banko: { logo: '/logos/banko-mark.png', affiliateUrl: 'https://www.banko.com.ph/' },
+  landbank: { logo: '/logos/landbank-mark.jpg', affiliateUrl: 'https://www.landbank.com/' },
+  dbp: { logo: '/logos/dbp-mark.png', affiliateUrl: 'https://www.dbp.ph/' },
 };
 
 function normalizeProviderKey(key: string | null): string | null {

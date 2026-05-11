@@ -3,7 +3,7 @@
     "id": "maya-savings",
     "name": "Maya Savings",
     "provider": "Maya Bank",
-    "logo": "/logos/maya.svg",
+    "logo": "/logos/maya-mark.jpg",
     "category": "banks",
     "headlineRate": 0.035,
     "baseRate": {
@@ -36,7 +36,7 @@
     "id": "maya-savings-promo",
     "name": "Maya Savings (Boosted)",
     "provider": "Maya Bank",
-    "logo": "/logos/maya.svg",
+    "logo": "/logos/maya-mark.jpg",
     "category": "banks",
     "headlineRate": 0.15,
     "baseRate": {
@@ -81,7 +81,7 @@
     "id": "maya-td-3mo",
     "name": "Maya Time Deposit Plus 3-Month",
     "provider": "Maya Bank",
-    "logo": "/logos/maya.svg",
+    "logo": "/logos/maya-mark.jpg",
     "category": "banks",
     "headlineRate": 0.05,
     "baseRate": {
@@ -120,7 +120,7 @@
     "id": "maya-td-6mo",
     "name": "Maya Time Deposit Plus 6-Month",
     "provider": "Maya Bank",
-    "logo": "/logos/maya.svg",
+    "logo": "/logos/maya-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0606,
     "baseRate": {
@@ -159,7 +159,7 @@
     "id": "maya-td-12mo",
     "name": "Maya Time Deposit Plus 12-Month",
     "provider": "Maya Bank",
-    "logo": "/logos/maya.svg",
+    "logo": "/logos/maya-mark.jpg",
     "category": "banks",
     "headlineRate": 0.055,
     "baseRate": {
@@ -198,7 +198,7 @@
     "id": "maya-personal-goals",
     "name": "Maya Personal Goals",
     "provider": "Maya Bank",
-    "logo": "/logos/maya.svg",
+    "logo": "/logos/maya-mark.jpg",
     "category": "banks",
     "headlineRate": 0.08,
     "baseRate": {
@@ -551,7 +551,7 @@
     "id": "uno-ready",
     "name": "#UNOready",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.035,
     "baseRate": {
@@ -602,7 +602,7 @@
     "id": "uno-boost-3mo",
     "name": "#UNOboost 3-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -641,7 +641,7 @@
     "id": "uno-boost-4mo",
     "name": "#UNOboost 4-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -680,7 +680,7 @@
     "id": "uno-boost-5mo",
     "name": "#UNOboost 5-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -719,7 +719,7 @@
     "id": "uno-boost-6mo",
     "name": "#UNOboost 6-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -758,7 +758,7 @@
     "id": "uno-boost-7mo",
     "name": "#UNOboost 7-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -797,7 +797,7 @@
     "id": "uno-boost-8mo",
     "name": "#UNOboost 8-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -836,7 +836,7 @@
     "id": "uno-boost-9mo",
     "name": "#UNOboost 9-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -875,7 +875,7 @@
     "id": "uno-boost-10mo",
     "name": "#UNOboost 10-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.045,
     "baseRate": {
@@ -914,7 +914,7 @@
     "id": "uno-boost-11mo",
     "name": "#UNOboost 11-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.045,
     "baseRate": {
@@ -953,7 +953,7 @@
     "id": "uno-boost-12mo",
     "name": "#UNOboost 12-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.055,
     "baseRate": {
@@ -992,7 +992,7 @@
     "id": "uno-td-365",
     "name": "#UNOearn 12-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0475,
     "baseRate": {
@@ -1031,7 +1031,7 @@
     "id": "uno-td-730",
     "name": "#UNOearn 24-Month",
     "provider": "UNO Digital Bank",
-    "logo": "/logos/uno.svg",
+    "logo": "/logos/uno-mark.jpg",
     "category": "banks",
     "headlineRate": 0.05,
     "baseRate": {
@@ -1070,7 +1070,7 @@
     "id": "gotyme-savings",
     "name": "GoSave",
     "provider": "GoTyme Bank",
-    "logo": "/logos/gotyme.svg",
+    "logo": "/logos/gotyme-mark.png",
     "category": "banks",
     "headlineRate": 0.03,
     "baseRate": {
@@ -1103,7 +1103,7 @@
     "id": "cimb-gsave",
     "name": "GSave",
     "provider": "CIMB / GCash",
-    "logo": "/logos/cimb.svg",
+    "logo": "/logos/cimb-mark.png",
     "category": "banks",
     "headlineRate": 0.026,
     "baseRate": {
@@ -1142,7 +1142,7 @@
     "id": "cimb-maxsave-3mo",
     "name": "CIMB MaxSave 3-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb.svg",
+    "logo": "/logos/cimb-mark.png",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -1181,7 +1181,7 @@
     "id": "cimb-maxsave-6mo",
     "name": "CIMB MaxSave 6-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb.svg",
+    "logo": "/logos/cimb-mark.png",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -1220,7 +1220,7 @@
     "id": "cimb-maxsave-12mo",
     "name": "CIMB MaxSave 12-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb.svg",
+    "logo": "/logos/cimb-mark.png",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -1259,7 +1259,7 @@
     "id": "cimb-maxsave-24mo",
     "name": "CIMB MaxSave 24-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb.svg",
+    "logo": "/logos/cimb-mark.png",
     "category": "banks",
     "headlineRate": 0.0375,
     "baseRate": {
@@ -1298,7 +1298,7 @@
     "id": "maribank-savings",
     "name": "MariBank Savings",
     "provider": "MariBank",
-    "logo": "/logos/maribank.svg",
+    "logo": "/logos/maribank-mark.png",
     "category": "banks",
     "headlineRate": 0.0375,
     "baseRate": {
@@ -1337,7 +1337,7 @@
     "id": "maribank-td-3mo",
     "name": "MariBank Time Deposit 3-Month",
     "provider": "MariBank",
-    "logo": "/logos/maribank.svg",
+    "logo": "/logos/maribank-mark.png",
     "category": "banks",
     "headlineRate": 0.0375,
     "baseRate": {
@@ -1376,7 +1376,7 @@
     "id": "uniondigital-savings",
     "name": "UnionDigital Savings",
     "provider": "UnionDigital Bank",
-    "logo": "/logos/uniondigital.svg",
+    "logo": "/logos/uniondigital-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0325,
     "baseRate": {
@@ -1415,7 +1415,7 @@
     "id": "uniondigital-td",
     "name": "UD Time Deposit",
     "provider": "UnionDigital Bank",
-    "logo": "/logos/uniondigital.svg",
+    "logo": "/logos/uniondigital-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0315,
     "baseRate": {
@@ -1787,7 +1787,7 @@
     "id": "netbank-savings",
     "name": "Netbank Savings",
     "provider": "Netbank",
-    "logo": "/logos/netbank.svg",
+    "logo": "/logos/netbank-mark.webp",
     "category": "banks",
     "headlineRate": 0.0325,
     "baseRate": {
@@ -1826,7 +1826,7 @@
     "id": "netbank-td-6mo",
     "name": "Netbank Time Deposit 6-Month",
     "provider": "Netbank",
-    "logo": "/logos/netbank.svg",
+    "logo": "/logos/netbank-mark.webp",
     "category": "banks",
     "headlineRate": 0.045,
     "baseRate": {
@@ -1859,7 +1859,7 @@
     "id": "netbank-td-12mo",
     "name": "Netbank Time Deposit 12-Month",
     "provider": "Netbank",
-    "logo": "/logos/netbank.svg",
+    "logo": "/logos/netbank-mark.webp",
     "category": "banks",
     "headlineRate": 0.05,
     "baseRate": {
@@ -1892,7 +1892,7 @@
     "id": "komo-savings",
     "name": "Komo Savings",
     "provider": "Komo by EastWest Bank",
-    "logo": "/logos/komo.svg",
+    "logo": "/logos/komo-mark.jpg",
     "category": "banks",
     "headlineRate": 0.025,
     "baseRate": {
@@ -1943,7 +1943,7 @@
     "id": "diskartech-savings",
     "name": "DiskarTech Savings",
     "provider": "DiskarTech by RCBC",
-    "logo": "/logos/diskartech.svg",
+    "logo": "/logos/diskartech-mark.png",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -1988,7 +1988,7 @@
     "id": "ownbank-savings",
     "name": "Own It Savings",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.038,
     "baseRate": {
@@ -2021,7 +2021,7 @@
     "id": "ownbank-td-15d",
     "name": "OwnBank Time Deposit 15-Day",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -2054,7 +2054,7 @@
     "id": "ownbank-td-30d",
     "name": "OwnBank Time Deposit 30-Day",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.0415,
     "baseRate": {
@@ -2087,7 +2087,7 @@
     "id": "ownbank-td-60d",
     "name": "OwnBank Time Deposit 60-Day",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.0435,
     "baseRate": {
@@ -2120,7 +2120,7 @@
     "id": "ownbank-td-90d",
     "name": "OwnBank Time Deposit 90-Day",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.045,
     "baseRate": {
@@ -2153,7 +2153,7 @@
     "id": "ownbank-td-180d",
     "name": "OwnBank Time Deposit 180-Day",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.048,
     "baseRate": {
@@ -2186,7 +2186,7 @@
     "id": "ownbank-td-360d",
     "name": "OwnBank Time Deposit 360-Day",
     "provider": "OwnBank",
-    "logo": "/logos/ownbank.svg",
+    "logo": "/logos/ownbank-mark.png",
     "category": "banks",
     "headlineRate": 0.052,
     "baseRate": {
@@ -2219,7 +2219,7 @@
     "id": "landbank-iaccess",
     "name": "iAccess Savings",
     "provider": "Landbank of the Philippines",
-    "logo": "/logos/landbank.svg",
+    "logo": "/logos/landbank-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0175,
     "baseRate": {
@@ -2252,7 +2252,7 @@
     "id": "dbp-savings",
     "name": "DBP Savings",
     "provider": "Development Bank of the Philippines",
-    "logo": "/logos/dbp.svg",
+    "logo": "/logos/dbp-mark.png",
     "category": "banks",
     "headlineRate": 0.02,
     "baseRate": {
@@ -2285,7 +2285,7 @@
     "id": "ofbank-savings",
     "name": "OFBank Savings",
     "provider": "Overseas Filipino Bank",
-    "logo": "/logos/ofbank.svg",
+    "logo": "/logos/ofbank-mark.jpg",
     "category": "banks",
     "headlineRate": 0.0005,
     "baseRate": {
@@ -2318,7 +2318,7 @@
     "id": "tbill-91",
     "name": "T-Bill 91-Day",
     "provider": "Bureau of Treasury",
-    "logo": "/logos/btr.svg",
+    "logo": "/logos/btr-mark.jpg",
     "category": "govt",
     "headlineRate": 0.04542,
     "baseRate": {
@@ -2357,7 +2357,7 @@
     "id": "tbill-182",
     "name": "T-Bill 182-Day",
     "provider": "Bureau of Treasury",
-    "logo": "/logos/btr.svg",
+    "logo": "/logos/btr-mark.jpg",
     "category": "govt",
     "headlineRate": 0.04649,
     "baseRate": {
@@ -2396,7 +2396,7 @@
     "id": "tbill-364",
     "name": "T-Bill 364-Day",
     "provider": "Bureau of Treasury",
-    "logo": "/logos/btr.svg",
+    "logo": "/logos/btr-mark.jpg",
     "category": "govt",
     "headlineRate": 0.05052,
     "baseRate": {
@@ -2435,7 +2435,7 @@
     "id": "pagibig-mp2",
     "name": "Pag-IBIG MP2",
     "provider": "HDMF (Pag-IBIG Fund)",
-    "logo": "/logos/hdmf.svg",
+    "logo": "/logos/hdmf-mark.jpg",
     "category": "govt",
     "headlineRate": 0.0703,
     "baseRate": {
@@ -2474,7 +2474,7 @@
     "id": "rtb-27",
     "name": "RTB Series 27",
     "provider": "Bureau of Treasury",
-    "logo": "/logos/btr.svg",
+    "logo": "/logos/btr-mark.jpg",
     "category": "govt",
     "headlineRate": 0.0625,
     "baseRate": {
@@ -2513,7 +2513,7 @@
     "id": "bdo-mmf-uitf",
     "name": "BDO Peso Money Market Fund",
     "provider": "BDO Unibank",
-    "logo": "/logos/bdo.svg",
+    "logo": "/logos/bdo-mark.jpg",
     "category": "uitfs",
     "headlineRate": 0.036998,
     "baseRate": {
@@ -2552,7 +2552,7 @@
     "id": "bpi-mmf-uitf",
     "name": "BPI Money Market Fund",
     "provider": "Bank of the Philippine Islands",
-    "logo": "/logos/bpi.svg",
+    "logo": "/logos/bpi-mark.png",
     "category": "uitfs",
     "headlineRate": 0.038083,
     "baseRate": {
@@ -2591,7 +2591,7 @@
     "id": "aave-v3-usdc-base",
     "name": "USDC Base Market",
     "provider": "Aave V3",
-    "logo": "/logos/aave.svg",
+    "logo": "/logos/aave-mark.png",
     "category": "defi",
     "headlineRate": 0,
     "baseRate": {
@@ -2630,7 +2630,7 @@
     "id": "bpi-banko-savings",
     "name": "BanKo Savings",
     "provider": "BanKo (by BPI)",
-    "logo": "/logos/banko.svg",
+    "logo": "/logos/banko-mark.png",
     "category": "banks",
     "headlineRate": 0.05,
     "baseRate": {
