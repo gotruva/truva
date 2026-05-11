@@ -15,6 +15,10 @@ import {
   monthsToLockInDays,
   recommend,
 } from '@/lib/savings-recommend';
+import {
+  compareBankingRateTableProducts,
+  getBankingRateTableMetrics,
+} from '@/lib/banking-rate-table';
 import { computeGrossEarnings } from '@/utils/yieldEngine';
 import { RateDisclosureNote } from '@/components/banking/RateDisclosureNote';
 
@@ -282,7 +286,8 @@ function TopRecommendationCard({
   months: number;
   reasonLine: string;
 }) {
-  const earnings = computeGrossEarnings(amount, product, months);
+  const rateMetrics = getBankingRateTableMetrics(product, amount, months);
+  const earnings = rateMetrics.grossInterest;
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -319,9 +324,14 @@ function TopRecommendationCard({
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
-            {formatPct(product.headlineRate)}
+            {formatPct(rateMetrics.amountFitGrossRate)}
           </p>
-          <p className="text-xs text-brand-textSecondary dark:text-white/50">advertised p.a.</p>
+          <p className="text-xs text-brand-textSecondary dark:text-white/50">for your amount</p>
+          {rateMetrics.hasHigherHeadlineRate && (
+            <p className="mt-0.5 text-[10px] text-brand-textSecondary dark:text-white/40">
+              Top listed rate {formatPct(rateMetrics.headlineGrossRate)}
+            </p>
+          )}
         </div>
       </div>
 
@@ -457,7 +467,8 @@ function AlternateCard({
   isOpen: boolean;
   onToggle: () => void;
 }) {
-  const earnings = computeGrossEarnings(amount, product, months);
+  const rateMetrics = getBankingRateTableMetrics(product, amount, months);
+  const earnings = rateMetrics.grossInterest;
 
   useEffect(() => {
     trackAffiliateImpression({
@@ -484,8 +495,13 @@ function AlternateCard({
             {product.name}
           </h3>
           <p className="mt-0.5 text-xs font-bold text-brand-primary">
-            {formatPct(product.headlineRate)} per year
+            {formatPct(rateMetrics.amountFitGrossRate)} for your amount
           </p>
+          {rateMetrics.hasHigherHeadlineRate && (
+            <p className="mt-0.5 text-[10px] text-brand-textSecondary dark:text-white/50">
+              Top listed rate {formatPct(rateMetrics.headlineGrossRate)}
+            </p>
+          )}
         </div>
         <div className="shrink-0 text-right">
           <p className="text-sm font-bold tabular-nums text-brand-textPrimary dark:text-white">
@@ -557,7 +573,8 @@ function PartnerRowDesktop({
   dimmed,
 }: PartnerRowProps) {
   usePartnerImpression(product);
-  const earnings = computeGrossEarnings(amount, product, months);
+  const rateMetrics = getBankingRateTableMetrics(product, amount, months);
+  const earnings = rateMetrics.grossInterest;
   const conditions = sanitizeConditions(product.conditions);
   const expiresAt = product.conditions.find((c) => c.expiresAt)?.expiresAt;
   const rowClass = muted || dimmed ? 'opacity-60' : '';
@@ -594,7 +611,12 @@ function PartnerRowDesktop({
           </div>
         </td>
         <td className="py-3.5 pr-4 text-sm font-bold tabular-nums text-brand-textPrimary dark:text-white">
-          {formatPct(product.headlineRate)}
+          {muted ? 'N/A' : formatPct(rateMetrics.amountFitGrossRate)}
+          {!muted && rateMetrics.hasHigherHeadlineRate && (
+            <p className="mt-0.5 text-[10px] font-normal text-brand-textSecondary dark:text-white/40">
+              Top listed rate {formatPct(rateMetrics.headlineGrossRate)}
+            </p>
+          )}
           {muted && (
             <p className="mt-0.5 text-[10px] font-normal text-brand-textSecondary dark:text-white/40">
               Outside your balance range
@@ -650,7 +672,8 @@ function PartnerCardMobile({
   dimmed,
 }: PartnerRowProps) {
   usePartnerImpression(product);
-  const earnings = computeGrossEarnings(amount, product, months);
+  const rateMetrics = getBankingRateTableMetrics(product, amount, months);
+  const earnings = rateMetrics.grossInterest;
   const conditions = sanitizeConditions(product.conditions);
   const rowClass = muted || dimmed ? 'opacity-60' : '';
 
@@ -675,11 +698,16 @@ function PartnerCardMobile({
         </div>
         <div className="shrink-0 text-right">
           <p className="text-base font-bold tabular-nums text-brand-primary">
-            {formatPct(product.headlineRate)}
+            {muted ? 'N/A' : formatPct(rateMetrics.amountFitGrossRate)}
           </p>
           <p className="text-[10px] text-brand-textSecondary dark:text-white/50">
-            advertised per year
+            {muted ? 'outside range' : 'for this amount'}
           </p>
+          {!muted && rateMetrics.hasHigherHeadlineRate && (
+            <p className="mt-0.5 text-[10px] text-brand-textSecondary dark:text-white/40">
+              Top listed rate {formatPct(rateMetrics.headlineGrossRate)}
+            </p>
+          )}
         </div>
       </button>
       <div className="grid grid-cols-2 gap-2 px-4 pb-3 text-xs">
@@ -832,14 +860,7 @@ export function SavingsLandingClient({
 
   // Derived for the partner table — using calculator state
   const tableHorizonDays = monthsToLockInDays(tableMonths);
-  const sortedAll = [...activeRates].sort((a, b) => {
-    const diff =
-      computeGrossEarnings(tableAmt, b, tableMonths) - computeGrossEarnings(tableAmt, a, tableMonths);
-    if (diff !== 0) return diff;
-    const rateDiff = b.headlineRate - a.headlineRate;
-    if (rateDiff !== 0) return rateDiff;
-    return b.lastVerified.localeCompare(a.lastVerified);
-  });
+  const sortedAll = [...activeRates].sort(compareBankingRateTableProducts(tableAmt, tableMonths));
   const flexProducts = sortedAll.filter((p) => p.lockInDays === 0);
   const lockedProducts = sortedAll.filter((p) => p.lockInDays > 0);
   const baseFilteredList =
@@ -1328,7 +1349,7 @@ export function SavingsLandingClient({
                           Provider
                         </th>
                         <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
-                          Advertised rate
+                          Rate for your amount
                         </th>
                         <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-brand-textSecondary dark:text-white/40">
                           Gross interest for {formatPeso(tableAmt)} / {formatMonthsLabel(tableMonths)}

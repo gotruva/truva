@@ -1103,7 +1103,7 @@
     "id": "cimb-gsave",
     "name": "GSave",
     "provider": "CIMB / GCash",
-    "logo": "/logos/cimb-mark.png",
+    "logo": "/logos/cimb.svg",
     "category": "banks",
     "headlineRate": 0.026,
     "baseRate": {
@@ -1142,7 +1142,7 @@
     "id": "cimb-maxsave-3mo",
     "name": "CIMB MaxSave 3-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb-mark.png",
+    "logo": "/logos/cimb.svg",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -1181,7 +1181,7 @@
     "id": "cimb-maxsave-6mo",
     "name": "CIMB MaxSave 6-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb-mark.png",
+    "logo": "/logos/cimb.svg",
     "category": "banks",
     "headlineRate": 0.0425,
     "baseRate": {
@@ -1220,7 +1220,7 @@
     "id": "cimb-maxsave-12mo",
     "name": "CIMB MaxSave 12-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb-mark.png",
+    "logo": "/logos/cimb.svg",
     "category": "banks",
     "headlineRate": 0.04,
     "baseRate": {
@@ -1259,7 +1259,7 @@
     "id": "cimb-maxsave-24mo",
     "name": "CIMB MaxSave 24-Month",
     "provider": "CIMB Bank Philippines",
-    "logo": "/logos/cimb-mark.png",
+    "logo": "/logos/cimb.svg",
     "category": "banks",
     "headlineRate": 0.0375,
     "baseRate": {
