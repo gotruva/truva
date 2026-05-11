@@ -176,7 +176,7 @@ function buildCategories({
       imageAlt: 'Filipino woman comparing credit card options on a phone and laptop',
       metric: creditCardSummary.hasLiveData ? `${creditCardSummary.totalCards}` : 'Next',
       metricLabel: creditCardSummary.hasLiveData ? 'cards tracked' : 'after savings & funds',
-      priority: 'standard',
+      priority: creditCardSummary.hasLiveData ? 'standard' : 'future',
     },
     {
       id: 'insurance',

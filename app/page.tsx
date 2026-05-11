@@ -6,7 +6,6 @@ import {
   type MmfLandingSummary,
 } from '@/components/landing/LandingExperience';
 import { BASE_URL } from '@/lib/constants';
-import { getCreditCards } from '@/lib/credit-cards';
 import { getPublicRates } from '@/lib/rates';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { MoneyMarketFund, RateProduct } from '@/types';
@@ -77,24 +76,6 @@ const getRatesForLanding = unstable_cache(async (): Promise<RateProduct[]> => {
   }
 }, ['landing-public-rates'], { revalidate: 300, tags: ['landing', 'rates'] });
 
-const getCreditCardSummaryForLanding = unstable_cache(async (): Promise<CreditCardLandingSummary> => {
-  try {
-    const cards = await getCreditCards();
-    if (!cards.length) return EMPTY_CARD_SUMMARY;
-
-    return {
-      totalCards: cards.length,
-      banks: new Set(cards.map((card) => card.bank)).size,
-      noAnnualFeeCards: cards.filter((card) => card.naffl === true).length,
-      methodologyReadyCards: cards.filter((card) => card.methodology_ready).length,
-      hasLiveData: true,
-    };
-  } catch (error) {
-    console.error('[home] Failed to load credit card summary', error);
-    return EMPTY_CARD_SUMMARY;
-  }
-}, ['landing-credit-card-summary'], { revalidate: 300, tags: ['landing', 'credit-cards'] });
-
 const getMmfSummaryForLanding = unstable_cache(async (): Promise<MmfLandingSummary> => {
   try {
     const supabase = createSupabaseAdminClient('public');
@@ -141,9 +122,8 @@ const getMmfSummaryForLanding = unstable_cache(async (): Promise<MmfLandingSumma
 }, ['landing-mmf-summary'], { revalidate: 300, tags: ['landing', 'money-market-funds'] });
 
 export default async function HomePage() {
-  const [rates, creditCardSummary, mmfSummary] = await Promise.all([
+  const [rates, mmfSummary] = await Promise.all([
     getRatesForLanding(),
-    getCreditCardSummaryForLanding(),
     getMmfSummaryForLanding(),
   ]);
 
@@ -151,7 +131,7 @@ export default async function HomePage() {
     <LandingExperience
       rates={rates}
       mmfSummary={mmfSummary}
-      creditCardSummary={creditCardSummary}
+      creditCardSummary={EMPTY_CARD_SUMMARY}
     />
   );
 }
