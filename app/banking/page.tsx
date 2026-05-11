@@ -41,7 +41,28 @@ export default async function BankingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <Suspense fallback={<div className="h-screen" />}>
+      <Suspense
+        fallback={
+          <div className="mx-auto max-w-4xl px-4 py-8 space-y-10 sm:px-6">
+            <section aria-labelledby="form-heading">
+              <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.03] space-y-6">
+                <div>
+                  <h1
+                    id="form-heading"
+                    className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl"
+                  >
+                    Find your best savings home in 30 seconds.
+                  </h1>
+                  <p className="mt-2 text-sm text-brand-textSecondary dark:text-white/60">
+                    Three questions. We match you to the highest-paying option that fits.
+                  </p>
+                </div>
+                <div className="h-48 rounded-xl bg-gray-100 dark:bg-white/5" />
+              </div>
+            </section>
+          </div>
+        }
+      >
         <SavingsLandingClient rates={rates} lastVerified={lastVerified} />
       </Suspense>
       <div className="mx-auto max-w-4xl px-4 pb-12 sm:px-6">
