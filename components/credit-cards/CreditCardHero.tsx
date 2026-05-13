@@ -56,17 +56,17 @@ export function CreditCardHero({ cards }: CreditCardHeroProps) {
               className="flex flex-wrap gap-4"
             >
               <a
-                href="#quiz"
+                href="#match"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-brand-primary px-8 text-[15px] font-bold text-white shadow-lg shadow-brand-primary/20 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-brand-primary/30 active:scale-[0.98]"
               >
-                Find my card
+                Find my best match
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href="#cards"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-brand-border bg-white px-8 text-[15px] font-bold text-brand-textPrimary transition-all hover:bg-brand-surface dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
               >
-                Compare all cards
+                Browse all cards
               </a>
             </motion.div>
 
