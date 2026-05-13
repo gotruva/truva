@@ -254,12 +254,12 @@ export function CreditCardCatalog({
 
       {/* Collapsible advanced filters */}
       <div className="rounded-[1.4rem] border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
-        <button
-          type="button"
-          onClick={() => setShowFilters((prev) => !prev)}
-          className="flex w-full items-center justify-between gap-3 px-5 py-4"
-        >
-          <div className="flex items-center gap-2 text-sm font-semibold text-brand-textPrimary dark:text-white">
+        <div className="flex w-full items-center justify-between gap-3 px-5 py-4">
+          <button
+            type="button"
+            onClick={() => setShowFilters((prev) => !prev)}
+            className="flex flex-1 items-center gap-2 text-sm font-semibold text-brand-textPrimary dark:text-white text-left"
+          >
             <SlidersHorizontal className="h-4 w-4 text-brand-primary" />
             More filters
             {activeFilterCount > 0 && (
@@ -267,13 +267,12 @@ export function CreditCardCatalog({
                 {activeFilterCount}
               </span>
             )}
-          </div>
+          </button>
           <div className="flex items-center gap-3">
             {activeFilterCount > 0 && (
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   setFilters(DEFAULT_FILTERS);
                   setActivePill('all');
                 }}
@@ -282,13 +281,20 @@ export function CreditCardCatalog({
                 Reset
               </button>
             )}
-            {showFilters ? (
-              <ChevronUp className="h-4 w-4 text-brand-textSecondary" />
-            ) : (
-              <ChevronDown className="h-4 w-4 text-brand-textSecondary" />
-            )}
+            <button
+              type="button"
+              onClick={() => setShowFilters((prev) => !prev)}
+              className="text-brand-textSecondary"
+              aria-label={showFilters ? 'Collapse filters' : 'Expand filters'}
+            >
+              {showFilters ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </button>
           </div>
-        </button>
+        </div>
 
         {showFilters && (
           <div className="border-t border-brand-border px-5 pb-5 pt-4 dark:border-white/10">
