@@ -134,7 +134,7 @@ No existing bank account beyond a GCash wallet. May be a first-jobber, OFW famil
 
 | Phase | Status | Vertical | Notes |
 |---|---|---|---|
-| 1 | ✅ Live | Savings, Bonds, DeFi, Govt products (Pag-IBIG MP2, T-Bills, RTBs) | Core banking rates live |
+| 1 | ✅ Live | Savings, Bonds | Core banking rates live |
 | 2 | 🔨 Active | Credit Cards | Active build — highest affiliate payout per conversion |
 | 3 | 🔜 Next | Insurance — Travel first, then Health, Auto, Life | Travel is easiest to launch, seasonal demand, strong affiliate rates |
 | 4 | Future | Loans — Personal, Home, Car, Student, Business | After Insurance vertical is established |
