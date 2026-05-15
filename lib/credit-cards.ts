@@ -10,6 +10,8 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'RCBC': '/logos/rcbc.svg',
   'Rizal Commercial Banking Corporation (RCBC)': '/logos/rcbc.svg',
   'HSBC Philippines': '/logos/hsbc.svg',
+  'Asia United Bank': '/logos/aub.svg',
+  'BDO Unibank, Inc.': '/logos/bdo.svg',
 };
 
 function deriveLogo(bank: string): string {

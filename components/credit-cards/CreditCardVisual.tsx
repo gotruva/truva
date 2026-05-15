@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { CreditCard, FileCheck2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CreditCard as CreditCardType } from '@/types';
@@ -15,7 +16,37 @@ const ISSUER_TONES: Record<string, { from: string; via: string; to: string; acce
     to: 'to-slate-500',
     accent: 'bg-slate-100 text-slate-700 border-slate-200',
   },
+  'Asia United Bank': {
+    from: 'from-blue-700',
+    via: 'via-blue-500',
+    to: 'to-cyan-400',
+    accent: 'bg-blue-50 text-blue-700 border-blue-100',
+  },
+  'BDO Unibank, Inc.': {
+    from: 'from-blue-800',
+    via: 'via-blue-600',
+    to: 'to-indigo-400',
+    accent: 'bg-blue-50 text-blue-700 border-blue-100',
+  },
 };
+
+// Keys must match normalized_card_key exactly from the database
+const CARD_IMAGE_MAP: Record<string, string> = {
+  'bpi amore cashback card': '/cards/bpi-amore-cashback-card.png',
+  'bpi amore platinum cashback card': '/cards/bpi-amore-platinum-cashback-card.png',
+  'bpi edge card': '/cards/bpi-edge-card.png',
+  'bpi gold rewards card': '/cards/bpi-gold-rewards-card.png',
+  'bpi platinum rewards mastercard': '/cards/bpi-platinum-rewards-mastercard.png',
+  'bpi signature card': '/cards/bpi-signature-card.jpg',
+  'petron bpi card': '/cards/petron-bpi-card.png',
+  'robinsons cashback card': '/cards/robinsons-cashback-card.jpg',
+  'hsbc live credit card': '/cards/hsbc-live-credit-card.jpg',
+  'hsbc red platinum mastercard': '/cards/hsbc-red-platinum-mastercard.jpg',
+};
+
+function getCardImagePath(cardKey: string): string | null {
+  return CARD_IMAGE_MAP[cardKey] ?? null;
+}
 
 export function CreditCardVisual({
   card,
@@ -33,19 +64,38 @@ export function CreditCardVisual({
     accent: 'bg-brand-primary/10 text-brand-primary border-brand-primary/15',
   };
 
+  const imagePath = getCardImagePath(card.normalized_card_key);
+
   return (
     <div
       className={cn(
         'relative isolate aspect-[1.58] overflow-hidden rounded-[1.15rem] border border-white/70 bg-white shadow-inner dark:border-white/10 dark:bg-white/[0.04]',
         className,
       )}
-      aria-label={`Generic visual representation of the ${card.card_name} credit card`}
+      aria-label={`Visual representation of the ${card.card_name} credit card`}
       role="img"
     >
-      <div className={cn('absolute inset-0 bg-gradient-to-br opacity-95', tone.from, tone.via, tone.to)} />
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.28)_0,rgba(255,255,255,0.08)_32%,rgba(255,255,255,0)_33%)]" />
-      <div className="absolute inset-x-4 top-16 h-px bg-white/20" />
-      <div className="absolute bottom-14 right-4 h-px w-24 bg-white/20" />
+      {imagePath ? (
+        <>
+          <Image
+            src={imagePath}
+            alt={card.card_name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 40vw"
+            priority={false}
+          />
+          {/* subtle scrim so text stays readable over the photo */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/20" />
+        </>
+      ) : (
+        <>
+          <div className={cn('absolute inset-0 bg-gradient-to-br opacity-95', tone.from, tone.via, tone.to)} />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.28)_0,rgba(255,255,255,0.08)_32%,rgba(255,255,255,0)_33%)]" />
+          <div className="absolute inset-x-4 top-16 h-px bg-white/20" />
+          <div className="absolute bottom-14 right-4 h-px w-24 bg-white/20" />
+        </>
+      )}
 
       <div className={cn('relative flex h-full flex-col justify-between p-4 text-white', compact ? 'p-3' : '')}>
         <div className="flex items-start justify-between gap-3">

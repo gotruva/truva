@@ -77,7 +77,7 @@ select
 
 from web_weaver.credit_cards card
 left join active_promos promos on promos.credit_card_id = card.id
-where card.availability = 'available'
+where card.availability = 'publicly_available'
   and card.normalized_card_key is not null;
 
 -- Public read access for the Next.js anon key
