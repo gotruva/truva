@@ -4,6 +4,12 @@
 
 ---
 
+## Second Brain (Obsidian)
+
+Beto keeps durable Truva strategy/decisions in an Obsidian vault at `C:\Users\betoa\Documents\Beto's Brain` (plain Markdown — no connector needed). At the start of Truva work, read `Mardil\Projects\Truva.md` (living index) plus the linked note(s) relevant to the task. Load selectively, not the whole vault. Read-only — never write to the vault.
+
+---
+
 ## Non-Negotiable Rules (Quick Reference)
 
 1. **Mobile-first — 375px base.** No horizontal scroll on mobile. Ever.
