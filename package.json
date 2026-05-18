@@ -19,7 +19,9 @@
     "banking:verify": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/verify-banking-rate-table.ts",
     "mmf:verify": "tsx scripts/verify-mmf-automation.ts",
     "mmf:backfill": "tsx scripts/backfill-mmf-official-data.ts",
-    "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts"
+    "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts",
+    "test:finder": "tsx scripts/test-credit-card-finder.ts",
+    "lint:cc-copy": "tsx scripts/check-credit-card-copy.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
