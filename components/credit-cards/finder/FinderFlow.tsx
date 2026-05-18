@@ -15,6 +15,13 @@ import {
   type QuestionId,
 } from '@/lib/creditCardFinder/questions';
 import { answersToQuery } from '@/lib/creditCardFinder/rank';
+import {
+  trackFinderBrowseAll,
+  trackFinderCompleted,
+  trackFinderResume,
+  trackFinderStarted,
+  trackFinderStepCompleted,
+} from '@/lib/analytics/creditCards';
 import type { CreditCard } from '@/types';
 
 const DRAFT_KEY = 'truva.cards.finderDraft';
@@ -99,13 +106,19 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
     return { phase: 'landing' as const };
   }, [stepParam]);
 
-  const handleStart = useCallback(() => goToStep(1), [goToStep]);
-  const handleBrowse = useCallback(
-    () => router.push('/credit-cards/all'),
-    [router],
-  );
+  const handleStart = useCallback(() => {
+    trackFinderStarted();
+    goToStep(1);
+  }, [goToStep]);
+  const handleBrowse = useCallback(() => {
+    trackFinderBrowseAll();
+    router.push('/credit-cards/all');
+  }, [router]);
   const handleResume = useCallback(() => {
-    if (resume) router.push(`/credit-cards/results?${resume.query}`);
+    if (resume) {
+      trackFinderResume();
+      router.push(`/credit-cards/results?${resume.query}`);
+    }
   }, [resume, router]);
 
   const finish = useCallback(
@@ -119,6 +132,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
       } catch {
         /* ignore */
       }
+      trackFinderCompleted(finalAnswers);
       goToStep('match');
     },
     [goToStep],
@@ -141,6 +155,12 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
       const next = { ...answers, [qid]: value } as FinderAnswers;
       setAnswers(next);
       persistDraft(next);
+      trackFinderStepCompleted({
+        step: stepIndex + 1,
+        questionId: qid,
+        answerValue: value,
+        skipped: false,
+      });
       window.setTimeout(() => advanceFrom(stepIndex, next), 250);
     },
     [answers, advanceFrom, persistDraft],
@@ -152,6 +172,12 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
       const next = { ...answers, [qid]: null } as FinderAnswers;
       setAnswers(next);
       persistDraft(next);
+      trackFinderStepCompleted({
+        step: stepIndex + 1,
+        questionId: qid,
+        answerValue: null,
+        skipped: true,
+      });
       advanceFrom(stepIndex, next);
     },
     [answers, advanceFrom, persistDraft],

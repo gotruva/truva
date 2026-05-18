@@ -1,14 +1,20 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { sendGAEvent } from '@next/third-parties/google';
 import { cn } from '@/lib/utils';
+import { trackApplyClick, type SourcePage } from '@/lib/analytics/creditCards';
+import type { ResultRole } from '@/lib/creditCardFinder/rank';
 
 interface Props {
   /** Bank's public apply/info URL (CreditCard.source_url). */
   href: string;
   bank: string;
   cardKey: string;
+  /** Where this CTA lives — standardizes the `cc_apply_click` payload. */
+  sourcePage: SourcePage;
+  placement?: string;
+  rank?: number;
+  resultRole?: ResultRole;
   label?: string;
   className?: string;
 }
@@ -19,11 +25,17 @@ interface Props {
  * (`/go/[slug]` is rates-only). Keeping the click logic in one component
  * means it can be upgraded to a tracked `/go/cc/[key]` route in one place
  * without touching every result/detail surface (Mardil amendment 6).
+ *
+ * Fires `cc_apply_click` with standardized keys via the analytics util.
  */
 export function ApplyOnBankSiteButton({
   href,
   bank,
   cardKey,
+  sourcePage,
+  placement = 'credit-card-finder',
+  rank,
+  resultRole,
   label,
   className,
 }: Props) {
@@ -33,11 +45,13 @@ export function ApplyOnBankSiteButton({
       target="_blank"
       rel="nofollow noopener noreferrer"
       onClick={() =>
-        sendGAEvent({
-          event: 'cc_apply_click',
-          product: cardKey,
-          provider: bank,
-          placement: 'credit-card-finder',
+        trackApplyClick({
+          cardKey,
+          bank,
+          placement,
+          sourcePage,
+          rank,
+          resultRole,
         })
       }
       className={cn(
