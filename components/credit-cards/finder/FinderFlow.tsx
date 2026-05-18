@@ -36,11 +36,16 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
   const [resume, setResume] = useState<{ query: string } | null>(null);
   const matchFired = useRef(false);
 
-  // Hydrate draft answers + resume affordance once on mount.
+  // Hydrate draft answers + resume affordance once on mount. Storage is an
+  // external system, so the read happens here; the state update is deferred
+  // out of the synchronous effect body (avoids cascading renders).
   useEffect(() => {
+    let draftAnswers: FinderAnswers | null = null;
+    let resumeQuery: string | null = null;
+
     try {
       const draft = sessionStorage.getItem(DRAFT_KEY);
-      if (draft) setAnswers({ ...EMPTY_ANSWERS, ...JSON.parse(draft) });
+      if (draft) draftAnswers = { ...EMPTY_ANSWERS, ...JSON.parse(draft) };
     } catch {
       /* ignore corrupt draft */
     }
@@ -49,7 +54,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
       if (raw) {
         const saved = JSON.parse(raw) as { at: number; answers: FinderAnswers };
         if (saved?.at && Date.now() - saved.at < FINDER_STORAGE_TTL_MS) {
-          setResume({ query: answersToQuery(saved.answers) });
+          resumeQuery = answersToQuery(saved.answers);
         } else {
           localStorage.removeItem(FINDER_STORAGE_KEY);
         }
@@ -57,6 +62,12 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
     } catch {
       /* ignore corrupt storage */
     }
+
+    const raf = requestAnimationFrame(() => {
+      if (draftAnswers) setAnswers(draftAnswers);
+      if (resumeQuery) setResume({ query: resumeQuery });
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const persistDraft = useCallback((next: FinderAnswers) => {
