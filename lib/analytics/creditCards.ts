@@ -16,6 +16,12 @@ import { sendGAEvent } from '@next/third-parties/google';
 import type { FinderAnswers } from '@/lib/creditCardFinder/questions';
 import type { ResultRole } from '@/lib/creditCardFinder/rank';
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export type SourcePage =
   | 'credit-cards'
   | 'credit-card-results'
@@ -33,6 +39,10 @@ function emit(event: string, params: EventParams): void {
     for (const [k, v] of Object.entries(params)) {
       if (v === null || v === undefined || v === '') continue;
       clean[k] = v;
+    }
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', event, clean);
+      return;
     }
     sendGAEvent('event', event, clean);
   } catch {
