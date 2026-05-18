@@ -40,8 +40,13 @@ export interface ScoredCard {
   bestForLabel: string;
 }
 
+/** Honest section role — drives the section label/copy, not list position. */
+export type ResultRole = 'first' | 'no-fee' | 'worth';
+
+export type ScoredSection = ScoredCard & { role: ResultRole };
+
 export type FinderResult =
-  | { kind: 'matched'; sections: ScoredCard[] }
+  | { kind: 'matched'; sections: ScoredSection[] }
   | { kind: 'fallback' };
 
 const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
@@ -328,24 +333,26 @@ export function selectFinderResults(
     if (qualifying.length === 0) return { kind: 'fallback' };
 
     const used = new Set<string>();
-    const sections: ScoredCard[] = [];
+    const sections: ScoredSection[] = [];
 
     const slot1 = qualifying[0];
-    sections.push(slot1);
+    sections.push({ ...slot1, role: 'first' });
     used.add(slot1.card.id);
 
-    const slot2 = qualifying.find(
+    // Slot 2 is only a "no-yearly-fee pick" if a genuine no-fee card
+    // qualifies — never relabel a fee-carrying card as no-fee (trust rule).
+    const noFee = qualifying.find(
       (sc) => !used.has(sc.card.id) && isNoYearlyFee(sc.card),
     );
-    if (slot2) {
-      sections.push(slot2);
-      used.add(slot2.card.id);
+    if (noFee) {
+      sections.push({ ...noFee, role: 'no-fee' });
+      used.add(noFee.card.id);
     }
 
-    const slot3 = qualifying.find((sc) => !used.has(sc.card.id));
-    if (slot3) {
-      sections.push(slot3);
-      used.add(slot3.card.id);
+    const next = qualifying.find((sc) => !used.has(sc.card.id));
+    if (next) {
+      sections.push({ ...next, role: 'worth' });
+      used.add(next.card.id);
     }
 
     if (sections.length < 2) return { kind: 'fallback' };

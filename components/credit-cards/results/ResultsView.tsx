@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { RESULTS } from '@/lib/creditCardFinder/copy';
 import type { FinderAnswers } from '@/lib/creditCardFinder/questions';
-import type { ScoredCard } from '@/lib/creditCardFinder/rank';
+import type { ScoredCard, ResultRole } from '@/lib/creditCardFinder/rank';
 import { ResultsHeader } from './ResultsHeader';
 import { ResultSection } from './ResultSection';
 import { ResultCard } from './ResultCard';
@@ -11,9 +11,27 @@ import { AffiliateDisclosure } from '../shared/AffiliateDisclosure';
 
 export interface PreparedCard {
   scored: ScoredCard;
+  role: ResultRole;
   why: string;
   watchOut: string;
 }
+
+const ROLE_META: Record<
+  ResultRole,
+  { idx: number; toneClass: string; fitTone: 'positive' | 'good' | 'neutral' }
+> = {
+  first: { idx: 0, toneClass: 'text-brand-primary', fitTone: 'positive' },
+  'no-fee': {
+    idx: 1,
+    toneClass: 'text-emerald-600 dark:text-emerald-400',
+    fitTone: 'good',
+  },
+  worth: {
+    idx: 2,
+    toneClass: 'text-brand-textSecondary dark:text-gray-400',
+    fitTone: 'neutral',
+  },
+};
 
 interface Props {
   answers: FinderAnswers;
@@ -25,13 +43,6 @@ interface Props {
   fromQuery: string;
 }
 
-const TONE_CLASS = [
-  'text-brand-primary',
-  'text-emerald-600 dark:text-emerald-400',
-  'text-brand-textSecondary dark:text-gray-400',
-];
-const FIT_TONE = ['positive', 'good', 'neutral'] as const;
-
 export function ResultsView({
   answers,
   result,
@@ -42,16 +53,15 @@ export function ResultsView({
   fromQuery,
 }: Props) {
   if (result.kind === 'fallback') {
+    // No matched header here — NoMatchFallback owns the honest header so we
+    // never show "Here are cards that may fit you" above a no-match message.
     return (
-      <div className="min-h-screen bg-brand-surface dark:bg-slate-950">
-        <ResultsHeader answers={answers} editHref={editHref} />
-        <div className="py-4">
-          <NoMatchFallback
-            editHref={editHref}
-            beginnerHref={beginnerHref}
-            guideHref={guideHref}
-          />
-        </div>
+      <div className="min-h-screen bg-brand-surface py-6 dark:bg-slate-950">
+        <NoMatchFallback
+          editHref={editHref}
+          beginnerHref={beginnerHref}
+          guideHref={guideHref}
+        />
       </div>
     );
   }
@@ -61,25 +71,28 @@ export function ResultsView({
       <ResultsHeader answers={answers} editHref={editHref} />
 
       <div className="mx-auto max-w-3xl px-4 py-6">
-        {result.cards.map((entry, idx) => (
-          <ResultSection
-            key={entry.scored.card.id}
-            index={idx + 1}
-            label={RESULTS.sections[idx]?.label ?? RESULTS.sections[2].label}
-            sub={RESULTS.sections[idx]?.sub ?? RESULTS.sections[2].sub}
-            toneClass={TONE_CLASS[idx] ?? TONE_CLASS[2]}
-          >
-            <ResultCard
-              scored={entry.scored}
-              why={entry.why}
-              watchOut={entry.watchOut}
-              fitLabel={RESULTS.fitLabels[idx] ?? RESULTS.fitLabels[2]}
-              fitTone={FIT_TONE[idx] ?? 'neutral'}
-              highlight={idx === 0}
-              fromQuery={fromQuery}
-            />
-          </ResultSection>
-        ))}
+        {result.cards.map((entry, idx) => {
+          const meta = ROLE_META[entry.role];
+          return (
+            <ResultSection
+              key={entry.scored.card.id}
+              index={idx + 1}
+              label={RESULTS.sections[meta.idx].label}
+              sub={RESULTS.sections[meta.idx].sub}
+              toneClass={meta.toneClass}
+            >
+              <ResultCard
+                scored={entry.scored}
+                why={entry.why}
+                watchOut={entry.watchOut}
+                fitLabel={RESULTS.fitLabels[meta.idx]}
+                fitTone={meta.fitTone}
+                highlight={entry.role === 'first'}
+                fromQuery={fromQuery}
+              />
+            </ResultSection>
+          );
+        })}
 
         <AffiliateDisclosure size="card" className="mb-3" />
 

@@ -38,12 +38,13 @@ export default async function CreditCardResultsPage({ searchParams }: Props) {
     selection.kind === 'matched'
       ? {
           kind: 'matched' as const,
-          cards: selection.sections.map<PreparedCard>((scored) => {
-            const editorial = getEditorialFor(scored.card);
+          cards: selection.sections.map<PreparedCard>((section) => {
+            const editorial = getEditorialFor(section.card);
             return {
-              scored,
+              scored: section,
+              role: section.role,
               why: editorial.why,
-              watchOut: deriveWatchOut(scored.card, editorial),
+              watchOut: deriveWatchOut(section.card, editorial),
             };
           }),
         }
