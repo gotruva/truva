@@ -224,21 +224,35 @@ const PRIORITY_TAG: Record<PriorityAnswer, FinderTag> = {
   simple: 'beginner',
 };
 
+const INCOME_SHORTFALL_PENALTY = -0.15;
+
 function clamp01(n: number): number {
   return Math.max(0, Math.min(1, n));
 }
 
+function isScoringSuppressed(card: CreditCard): boolean {
+  return (
+    card.methodology_ready === false ||
+    card.score_ready === false ||
+    Boolean(card.score_suppressed_reason)
+  );
+}
+
 export function scoreFinderCard(card: CreditCard, answers: FinderAnswers): number {
+  if (isScoringSuppressed(card)) return 0;
+
   const tags = deriveTags(card);
   const spendingCategories = deriveSpendingCategories(card);
   let s = 0;
 
-  // Hard floor — income
+  // Soft floor — income. The quiz only knows the user's bracket minimum, so a
+  // user in "₱30k–₱50k" may still clear a card requiring ₱33k. Penalize near
+  // misses gently instead of suppressing otherwise-strong matches.
   const bracketMin = incomeBracketMin(answers.income);
   const cardMin = cardMinIncomeMonthly(card);
-  if (bracketMin !== null && cardMin !== null) {
+  if (card.income_filter_ready !== false && bracketMin !== null && cardMin !== null) {
     if (bracketMin >= cardMin) s += 0.3;
-    else s -= 0.4; // soft disqualify, stays visible but ranked down
+    else s += INCOME_SHORTFALL_PENALTY;
   }
 
   // Priority match
@@ -295,7 +309,7 @@ function avoidPenalty(
 
 // ── Selection + fallback (handoff §7 top-K) ──────────────────────────────────
 
-export const MATCH_THRESHOLD = 0.55;
+export const MATCH_THRESHOLD = 0.35;
 
 export function buildScoredCard(
   card: CreditCard,
@@ -318,7 +332,8 @@ export function buildScoredCard(
  *  1 = highest score
  *  2 = highest remaining with no yearly fee
  *  3 = next highest remaining
- * Fallback if fewer than 2 slots fill. Never silently shows a weak card.
+ * Fallback only if no slots fill. A single strong/relevant card is more helpful
+ * than a false "no match" state.
  */
 export function selectFinderResults(
   cards: CreditCard[],
@@ -355,7 +370,6 @@ export function selectFinderResults(
       used.add(next.card.id);
     }
 
-    if (sections.length < 2) return { kind: 'fallback' };
     return { kind: 'matched', sections: sections.slice(0, 3) };
   } catch {
     return { kind: 'fallback' };
