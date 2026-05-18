@@ -17,6 +17,7 @@ import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
 import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
 import { parseFinderAnswers } from '@/lib/creditCardFinder/rank';
 import { YouToldUsRail } from '@/components/credit-cards/results/YouToldUsRail';
+import { DetailAnalytics } from '@/components/credit-cards/results/DetailAnalytics';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
 import type { BadgeInputs, CreditCard } from '@/types';
@@ -132,6 +133,11 @@ export default async function CreditCardReviewPage(
         </header>
 
         <main className="relative z-20 mx-auto max-w-5xl space-y-6 px-4 pt-6 sm:-mt-8">
+          <DetailAnalytics
+            cardKey={card.normalized_card_key}
+            bank={card.bank}
+            sourcePage={typeof sp.from === 'string' ? sp.from : 'direct'}
+          />
           {fromFinder && <YouToldUsRail answers={finderAnswers} />}
 
           <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#111827] sm:p-6">
@@ -302,6 +308,8 @@ export default async function CreditCardReviewPage(
               href={card.source_url}
               bank={card.bank}
               cardKey={card.normalized_card_key}
+              sourcePage="credit-card-detail"
+              placement="credit-card-detail-sticky"
               label={`Apply on ${card.bank} site`}
               className="h-auto flex-1 py-3"
             />

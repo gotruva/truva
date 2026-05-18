@@ -66,9 +66,9 @@ function card(overrides: Partial<CreditCard> = {}): CreditCard {
     late_payment_fee_amount: null,
     overlimit_fee_amount: null,
     minimum_amount_due_formula: null,
-    methodology_ready: false,
-    income_filter_ready: false,
-    score_ready: false,
+    methodology_ready: true,
+    income_filter_ready: true,
+    score_ready: true,
     score_suppressed_reason: null,
     methodology_capture_score: null,
     badge_inputs: null,
@@ -162,6 +162,18 @@ const stacked = scoreFinderCard(
 check('stacked score clamped <= 1', stacked <= 1);
 check('eligible relevant card scores above threshold', stacked >= 0.55);
 
+const nearMissIncome = scoreFinderCard(
+  card({
+    naffl: true,
+    rewards_type: 'cashback',
+    rewards_formula: { bonus: 'cashback on groceries' },
+    min_income_monthly: 33_000,
+    last_scraped_at: RECENT,
+  }),
+  answers({ first: 'yes', income: '30-50', priority: 'cashback', spend: 'groceries' }),
+);
+check('near-miss income still qualifies when other signals are strong', nearMissIncome >= 0.35);
+
 // ── 5. Slot selection ────────────────────────────────────────────────────────
 const strong = card({
   id: 'strong',
@@ -216,7 +228,26 @@ const onlyOne = selectFinderResults(
   ],
   answers({ income: '100+', priority: 'naf', first: 'yes' }),
 );
-eq('single qualifying card → fallback (need >= 2)', onlyOne.kind, 'fallback');
+check('single qualifying card → matched', onlyOne.kind === 'matched');
+if (onlyOne.kind === 'matched') {
+  eq('single qualifying card returns one section', onlyOne.sections.length, 1);
+}
+
+const suppressed = selectFinderResults(
+  [
+    card({
+      id: 'suppressed',
+      naffl: true,
+      rewards_type: 'cashback',
+      min_income_monthly: 15_000,
+      score_ready: false,
+      score_suppressed_reason: 'Incomplete methodology capture',
+      last_scraped_at: RECENT,
+    }),
+  ],
+  answers({ income: '100+', priority: 'naf', first: 'yes' }),
+);
+eq('score-suppressed card → fallback', suppressed.kind, 'fallback');
 
 // ── 7. parseFinderAnswers validation ─────────────────────────────────────────
 const parsed = parseFinderAnswers(

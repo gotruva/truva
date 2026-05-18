@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { TrackedLink } from '../shared/TrackedLink';
 import {
   ANSWER_CHIP_LABELS,
   CHIP_QUESTION_LABELS,
@@ -32,12 +32,13 @@ export function ResultsHeader({ answers, editHref }: Props) {
           <h1 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
             {RESULTS.h1}
           </h1>
-          <Link
+          <TrackedLink
             href={editHref}
+            event="cc_results_edit_answers_clicked"
             className="shrink-0 rounded-lg px-2 py-1 text-sm font-semibold text-brand-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
           >
             Edit answers
-          </Link>
+          </TrackedLink>
         </div>
         <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
           {RESULTS.sub}

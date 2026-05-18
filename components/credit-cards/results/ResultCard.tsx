@@ -1,11 +1,11 @@
-import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CreditCardVisual } from '../CreditCardVisual';
 import { AffiliateDisclosure } from '../shared/AffiliateDisclosure';
 import { ApplyOnBankSiteButton } from '../shared/ApplyOnBankSiteButton';
+import { TrackedLink } from '../shared/TrackedLink';
 import { RESULTS, CONFIDENCE_LABELS } from '@/lib/creditCardFinder/copy';
-import type { ScoredCard } from '@/lib/creditCardFinder/rank';
+import type { ScoredCard, ResultRole } from '@/lib/creditCardFinder/rank';
 
 type FitTone = 'positive' | 'good' | 'neutral';
 
@@ -17,6 +17,8 @@ interface Props {
   fitTone: FitTone;
   highlight?: boolean;
   fromQuery: string;
+  rank: number;
+  role: ResultRole;
 }
 
 function confidenceDotClass(label: string): string {
@@ -46,6 +48,8 @@ export function ResultCard({
   fitTone,
   highlight = false,
   fromQuery,
+  rank,
+  role,
 }: Props) {
   const { card } = scored;
   const detailsHref = `/credit-cards/reviews/${encodeURIComponent(
@@ -122,16 +126,26 @@ export function ResultCard({
       <AffiliateDisclosure size="compact" className="mt-3" />
 
       <div className="mt-2 flex gap-2">
-        <Link
+        <TrackedLink
           href={detailsHref}
+          event="cc_result_detail_clicked"
+          detail={{
+            cardKey: card.normalized_card_key,
+            bank: card.bank,
+            rank,
+            resultRole: role,
+          }}
           className="inline-flex flex-1 items-center justify-center rounded-xl bg-brand-primaryLight px-4 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:bg-brand-primary/15 dark:focus-visible:ring-offset-slate-950"
         >
           {RESULTS.ctaDetails}
-        </Link>
+        </TrackedLink>
         <ApplyOnBankSiteButton
           href={card.source_url}
           bank={card.bank}
           cardKey={card.normalized_card_key}
+          sourcePage="credit-card-results"
+          rank={rank}
+          resultRole={role}
           label={RESULTS.ctaApply}
           className="h-auto flex-1 py-2.5"
         />
