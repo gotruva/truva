@@ -4,7 +4,6 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import {
   AlertTriangle,
-  ArrowRight,
   CheckCircle,
   ChevronLeft,
   ExternalLink,
@@ -16,7 +15,29 @@ import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
 import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
+import { parseFinderAnswers } from '@/lib/creditCardFinder/rank';
+import { YouToldUsRail } from '@/components/credit-cards/results/YouToldUsRail';
+import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
+import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
 import type { BadgeInputs, CreditCard } from '@/types';
+
+// Detail hero accent — stable per bank, never Truva blue or pure black
+// (handoff §6: avoid the primary blue / pure black for the card hero).
+const ACCENT_GRADIENTS = [
+  'bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500',
+  'bg-gradient-to-br from-violet-700 via-violet-600 to-fuchsia-500',
+  'bg-gradient-to-br from-rose-700 via-rose-600 to-orange-500',
+  'bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600',
+  'bg-gradient-to-br from-amber-700 via-amber-600 to-orange-500',
+];
+
+function accentFor(bank: string): string {
+  let hash = 0;
+  for (let i = 0; i < bank.length; i += 1) {
+    hash = (hash * 31 + bank.charCodeAt(i)) >>> 0;
+  }
+  return ACCENT_GRADIENTS[hash % ACCENT_GRADIENTS.length];
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -36,9 +57,15 @@ export async function generateMetadata(
 }
 
 export default async function CreditCardReviewPage(
-  props: { params: Promise<{ slug: string }> | { slug: string } },
+  props: {
+    params: Promise<{ slug: string }> | { slug: string };
+    searchParams?: Promise<Record<string, string>> | Record<string, string>;
+  },
 ) {
   const params = await props.params;
+  const sp = props.searchParams ? await props.searchParams : {};
+  const fromFinder = sp.from === 'finder';
+  const finderAnswers = parseFinderAnswers(sp);
   const slug = decodeCardSlug(params?.slug ?? '');
   const card = await getCreditCardBySlug(slug);
 
@@ -48,11 +75,12 @@ export default async function CreditCardReviewPage(
   const coverage = getFieldCoverage(card);
   const annualEst = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
   const editorial = getEditorialFor(card);
+  const heroAccent = accentFor(card.bank);
 
   return (
     <>
       <div className="min-h-screen bg-brand-surface pb-32 dark:bg-slate-950 sm:pb-24">
-        <header className="relative overflow-hidden bg-brand-primary px-4 py-10 text-white">
+        <header className={`relative overflow-hidden ${heroAccent} px-4 py-10 text-white`}>
           <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
           <div className="relative z-10 mx-auto max-w-5xl">
             <Link
@@ -104,6 +132,8 @@ export default async function CreditCardReviewPage(
         </header>
 
         <main className="relative z-20 mx-auto max-w-5xl space-y-6 px-4 pt-6 sm:-mt-8">
+          {fromFinder && <YouToldUsRail answers={finderAnswers} />}
+
           <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#111827] sm:p-6">
             <div className="grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
               <CreditCardVisual card={card} />
@@ -260,6 +290,7 @@ export default async function CreditCardReviewPage(
         </main>
 
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-border bg-white/95 px-4 py-3 shadow-[0_-18px_60px_-40px_rgba(15,23,42,0.55)] backdrop-blur dark:border-white/10 dark:bg-slate-950/95 sm:hidden">
+          <AffiliateDisclosure size="compact" className="mb-2" />
           <div className="flex gap-2">
             <Link
               href="/credit-cards"
@@ -267,15 +298,13 @@ export default async function CreditCardReviewPage(
             >
               Card desk
             </Link>
-            <a
+            <ApplyOnBankSiteButton
               href={card.source_url}
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-bold text-white"
-            >
-              Visit bank site
-              <ArrowRight className="h-4 w-4" />
-            </a>
+              bank={card.bank}
+              cardKey={card.normalized_card_key}
+              label={`Apply on ${card.bank} site`}
+              className="h-auto flex-1 py-3"
+            />
           </div>
         </div>
       </div>

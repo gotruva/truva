@@ -1,54 +1,64 @@
 import type { Metadata } from 'next';
-import { getCreditCards } from '@/lib/credit-cards';
-import { CreditCardResults } from '@/components/credit-cards/CreditCardResults';
-import type { CardMatchAnswers, GoalId, IncomeBracketId, SpendingCategory } from '@/lib/creditCardValue';
-import { rankCards } from '@/lib/creditCardValue';
-import { getEditorialFor } from '@/lib/credit-cards';
+import { getCreditCards, getEditorialFor } from '@/lib/credit-cards';
+import {
+  selectFinderResults,
+  deriveWatchOut,
+  answersToQuery,
+  parseFinderAnswers,
+} from '@/lib/creditCardFinder/rank';
+import { ResultsView, type PreparedCard } from '@/components/credit-cards/results/ResultsView';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Your Credit Card Matches | Truva',
-  description: 'See which Philippine credit cards fit your income, goal, and spending habits — ranked by how much money you actually keep per year.',
+  title: 'Cards that may fit you | Truva',
+  description:
+    'Credit cards that may fit your income, spending, and goals — based on your answers and available card details. Bank approval is still required.',
   robots: { index: false },
 };
-
-const VALID_GOALS = new Set<GoalId>(['no-annual-fee', 'cashback', 'travel', 'first-card', 'low-fee']);
-const VALID_INCOMES = new Set<IncomeBracketId>(['15k', '21k', '30k', '31k', '50k', '51k', '100k']);
-const VALID_SPENDING = new Set<SpendingCategory>(['groceries', 'dining', 'online', 'fuel', 'bills', 'travel']);
-
-function parseAnswers(params: URLSearchParams): CardMatchAnswers {
-  const goal     = params.get('goal') as GoalId;
-  const income   = params.get('income') as IncomeBracketId;
-  const spending = params.get('spending') as SpendingCategory;
-
-  return {
-    goal:     VALID_GOALS.has(goal)     ? goal     : 'cashback',
-    income:   VALID_INCOMES.has(income) ? income   : '30k',
-    spending: VALID_SPENDING.has(spending) ? spending : 'groceries',
-  };
-}
 
 interface Props {
   searchParams: Promise<Record<string, string>>;
 }
 
 export default async function CreditCardResultsPage({ searchParams }: Props) {
-  const params = new URLSearchParams(await searchParams);
-  const answers = parseAnswers(params);
+  const sp = await searchParams;
+  const answers = parseFinderAnswers(sp);
+  const query = answersToQuery(answers);
 
   const allCards = await getCreditCards();
-  const ranked   = rankCards(allCards, answers);
+  const selection = selectFinderResults(allCards, answers);
 
-  const rankedWithEditorial = ranked.map(entry => ({
-    ...entry,
-    editorial: getEditorialFor(entry.card, answers),
-  }));
+  const editHref = '/credit-cards?step=1';
+  const allHref = '/credit-cards/all';
+  const beginnerHref = '/credit-cards/all?filter=beginner';
+  const guideHref = '/guides';
+
+  const result =
+    selection.kind === 'matched'
+      ? {
+          kind: 'matched' as const,
+          cards: selection.sections.map<PreparedCard>((section) => {
+            const editorial = getEditorialFor(section.card);
+            return {
+              scored: section,
+              role: section.role,
+              why: editorial.why,
+              watchOut: deriveWatchOut(section.card, editorial),
+            };
+          }),
+        }
+      : ({ kind: 'fallback' } as const);
 
   return (
-    <CreditCardResults
+    <ResultsView
       answers={answers}
-      ranked={rankedWithEditorial}
+      result={result}
+      editHref={editHref}
+      allHref={allHref}
+      beginnerHref={beginnerHref}
+      guideHref={guideHref}
+      fromQuery={query}
     />
   );
 }
