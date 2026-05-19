@@ -141,7 +141,7 @@ export interface BadgeInputs {
   accident_only_insurance: boolean; // catch: travel insurance covers on-aircraft accidents only
 }
 
-/** Credit card product — maps 1:1 to public.credit_card_listings view */
+/** Credit card product — maps 1:1 to public.truva_credit_cards view */
 export interface CreditCard {
   id: string;
   bank: string;

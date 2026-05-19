@@ -55,8 +55,8 @@ export default function AuthorPage() {
 
             <p className="mt-8 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
               Feedback or corrections: {' '}
-              <a href="mailto:partners@truva.ph" className="font-semibold text-brand-primary hover:underline">
-                partners@truva.ph
+              <a href="mailto:beto@gotruva.com" className="font-semibold text-brand-primary hover:underline">
+                beto@gotruva.com
               </a>
             </p>
           </div>

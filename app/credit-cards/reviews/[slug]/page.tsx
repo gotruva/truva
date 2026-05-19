@@ -166,6 +166,7 @@ export default async function CreditCardReviewPage(
             </div>
           </section>
 
+          {!card.score_ready ? (
           <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:p-6">
             <div className="flex items-start gap-3">
               <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
@@ -187,6 +188,7 @@ export default async function CreditCardReviewPage(
               </div>
             </div>
           </section>
+          ) : null}
 
           {/* Editorial: why / pros / cons */}
           <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:p-6">

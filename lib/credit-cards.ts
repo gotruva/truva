@@ -25,7 +25,7 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
 export async function getCreditCards(): Promise<CreditCard[]> {
   const supabase = createSupabaseAdminClient('public') ?? await createSupabaseServerClient();
   const { data, error } = await supabase
-    .from('credit_card_listings')
+    .from('truva_credit_cards')
     .select('*')
     .order('bank', { ascending: true })
     .order('card_name', { ascending: true });
@@ -41,7 +41,7 @@ export async function getCreditCards(): Promise<CreditCard[]> {
 export async function getCreditCardBySlug(slug: string): Promise<CreditCard | null> {
   const supabase = createSupabaseAdminClient('public') ?? await createSupabaseServerClient();
   const { data, error } = await supabase
-    .from('credit_card_listings')
+    .from('truva_credit_cards')
     .select('*')
     .eq('normalized_card_key', slug)
     .maybeSingle();

@@ -123,6 +123,7 @@ export default async function CreditCardComparePage(
               })}
             </div>
 
+            {cards.some((c) => !c.score_ready) && (
             <div className="border-t border-brand-border p-5 dark:border-white/10 md:p-7">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-start gap-3">
@@ -139,6 +140,7 @@ export default async function CreditCardComparePage(
                 <TrueValueScoreBadge showReason />
               </div>
             </div>
+            )}
           </section>
 
           {/* Key Differences summary block */}
