@@ -284,7 +284,7 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -317,7 +317,7 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "TONIK456",
     "payoutAmount": 60,
@@ -356,7 +356,7 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://tonikbank.com/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -368,18 +368,18 @@
     "provider": "Tonik Digital Bank",
     "logo": "/logos/tonik.svg",
     "category": "banks",
-    "headlineRate": 0.0606,
+    "headlineRate": 0.055,
     "baseRate": {
-      "grossRate": 0.0606,
-      "afterTaxRate": 0.04848
+      "grossRate": 0.055,
+      "afterTaxRate": 0.044
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.06,
-        "afterTaxRate": 0.048
+        "grossRate": 0.055,
+        "afterTaxRate": 0.044
       }
     ],
     "conditions": [],
@@ -389,9 +389,9 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "limits": {
-      "maxDepositPerProduct": 250000,
+      "maxDepositPerProduct": 100000,
       "maxProductsPerUser": 5
     },
     "affiliateUrl": "https://tonikbank.com/",
@@ -405,18 +405,18 @@
     "provider": "Tonik Digital Bank",
     "logo": "/logos/tonik.svg",
     "category": "banks",
-    "headlineRate": 0.07,
+    "headlineRate": 0.06,
     "baseRate": {
-      "grossRate": 0.07,
-      "afterTaxRate": 0.056
+      "grossRate": 0.06,
+      "afterTaxRate": 0.048
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.07,
-        "afterTaxRate": 0.056
+        "grossRate": 0.06,
+        "afterTaxRate": 0.048
       }
     ],
     "conditions": [],
@@ -426,9 +426,9 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "limits": {
-      "maxDepositPerProduct": 250000,
+      "maxDepositPerProduct": 100000,
       "maxProductsPerUser": 5
     },
     "affiliateUrl": "https://tonikbank.com/",
@@ -442,18 +442,18 @@
     "provider": "Tonik Digital Bank",
     "logo": "/logos/tonik.svg",
     "category": "banks",
-    "headlineRate": 0.08,
+    "headlineRate": 0.065,
     "baseRate": {
-      "grossRate": 0.08,
-      "afterTaxRate": 0.064
+      "grossRate": 0.065,
+      "afterTaxRate": 0.052
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.08,
-        "afterTaxRate": 0.064
+        "grossRate": 0.065,
+        "afterTaxRate": 0.052
       }
     ],
     "conditions": [],
@@ -463,9 +463,9 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "limits": {
-      "maxDepositPerProduct": 250000,
+      "maxDepositPerProduct": 100000,
       "maxProductsPerUser": 5
     },
     "affiliateUrl": "https://tonikbank.com/",
@@ -500,9 +500,9 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "limits": {
-      "maxDepositPerProduct": 250000,
+      "maxDepositPerProduct": 100000,
       "maxProductsPerUser": 5
     },
     "affiliateUrl": "https://tonikbank.com/",
@@ -537,9 +537,9 @@
     "riskLevel": "Low",
     "pdic": true,
     "insurer": "PDIC",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "limits": {
-      "maxDepositPerProduct": 250000,
+      "maxDepositPerProduct": 100000,
       "maxProductsPerUser": 5
     },
     "affiliateUrl": "https://tonikbank.com/",
@@ -2320,18 +2320,18 @@
     "provider": "Bureau of Treasury",
     "logo": "/logos/btr-mark.jpg",
     "category": "govt",
-    "headlineRate": 0.04542,
+    "headlineRate": 0.05074,
     "baseRate": {
-      "grossRate": 0.04542,
-      "afterTaxRate": 0.036336
+      "grossRate": 0.05074,
+      "afterTaxRate": 0.040592
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.04542,
-        "afterTaxRate": 0.036336
+        "grossRate": 0.05074,
+        "afterTaxRate": 0.040592
       }
     ],
     "conditions": [
@@ -2347,7 +2347,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Bureau of Treasury",
-    "lastVerified": "2026-04-25",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2359,18 +2359,18 @@
     "provider": "Bureau of Treasury",
     "logo": "/logos/btr-mark.jpg",
     "category": "govt",
-    "headlineRate": 0.04649,
+    "headlineRate": 0.05894,
     "baseRate": {
-      "grossRate": 0.04649,
-      "afterTaxRate": 0.037192
+      "grossRate": 0.05894,
+      "afterTaxRate": 0.047152
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.04649,
-        "afterTaxRate": 0.037192
+        "grossRate": 0.05894,
+        "afterTaxRate": 0.047152
       }
     ],
     "conditions": [
@@ -2386,7 +2386,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Bureau of Treasury",
-    "lastVerified": "2026-04-25",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2398,18 +2398,18 @@
     "provider": "Bureau of Treasury",
     "logo": "/logos/btr-mark.jpg",
     "category": "govt",
-    "headlineRate": 0.05052,
+    "headlineRate": 0.06037,
     "baseRate": {
-      "grossRate": 0.05052,
-      "afterTaxRate": 0.040416
+      "grossRate": 0.06037,
+      "afterTaxRate": 0.048296
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.05052,
-        "afterTaxRate": 0.040416
+        "grossRate": 0.06037,
+        "afterTaxRate": 0.048296
       }
     ],
     "conditions": [
@@ -2425,7 +2425,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Bureau of Treasury",
-    "lastVerified": "2026-04-25",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://www.treasury.gov.ph/",
     "referralCode": "",
     "payoutAmount": 0,
@@ -2437,24 +2437,24 @@
     "provider": "HDMF (Pag-IBIG Fund)",
     "logo": "/logos/hdmf-mark.jpg",
     "category": "govt",
-    "headlineRate": 0.0703,
+    "headlineRate": 0.0712,
     "baseRate": {
-      "grossRate": 0.0703,
-      "afterTaxRate": 0.0703
+      "grossRate": 0.0712,
+      "afterTaxRate": 0.0712
     },
     "tierType": "threshold",
     "tiers": [
       {
         "minBalance": 0,
         "maxBalance": null,
-        "grossRate": 0.0703,
-        "afterTaxRate": 0.0703
+        "grossRate": 0.0712,
+        "afterTaxRate": 0.0712
       }
     ],
     "conditions": [
       {
         "type": "none",
-        "description": "Requires active Pag-IBIG (HDMF) membership. 5-year mandatory lock-in — not suitable as liquid savings. Dividend rate declared annually; shown rate is 2023 dividend.",
+        "description": "Requires active Pag-IBIG (HDMF) membership. 5-year mandatory lock-in — not suitable as liquid savings. Dividend rate declared annually; shown rate is 2025 dividend.",
         "expiresAt": null
       }
     ],
@@ -2464,7 +2464,7 @@
     "riskLevel": "Low",
     "pdic": false,
     "insurer": "Pag-IBIG Fund",
-    "lastVerified": "2026-04-10",
+    "lastVerified": "2026-05-21",
     "affiliateUrl": "https://www.pagibigfund.gov.ph/MP2.html",
     "referralCode": "",
     "payoutAmount": 0,

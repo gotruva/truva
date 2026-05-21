@@ -1,6 +1,6 @@
 # /banking refresh — Savings & Deposits
 
-> **Working document.** Update status as we ship. Last updated: 2026-05-11 (phases 1–11 shipped 2e36cc5; phase 13 PMF instrumentation done; phase 14 alternates+calculator+drawer+tax-FAQs done).
+> **Working document.** Update status as we ship. Last updated: 2026-05-21 (rates audit — Tonik TD rates corrected, stale seeds updated, full scraper pipeline re-run).
 > Owner: Alberto (Truva). Single source of truth for the /banking refresh.
 >
 > **MVP goal:** Test product-market fit for Truva's Savings & Time-Deposits vertical. Ship the smallest version that lets a Filipino saver be routed to the right product for their needs, see all listed partner products, and get common questions answered — then watch what happens.
@@ -127,6 +127,11 @@ Tick items as they ship. Add date + commit SHA next to each ✅.
 | 2026-05-11 | Tax FAQ split from 1 → 3 items (worked example, tax-free products, "Truva does not subtract") | One catch-all tax FAQ was the most-asked surface from Filipino savers — promo-rate scepticism and "the bank cheated me" complaints rooted in misunderstanding 20% withholding. Splitting into a worked example (₱2,000 gross → ₱1,600 net), a tax-exempt rundown (MP2 after 5 years), and a "Truva shows the bank's gross number so you can verify on their site" entry closes the trust gap without putting after-tax math in the product UI. |
 | 2026-05-11 | Use "months" everywhere (no "mo", no "days" units) | Per user instruction. Already enforced by `HORIZON_LABEL` and `formatLockIn`; the new calculator and drawer use `formatMonthsLabel()` to keep this invariant. Verified via grep guard. |
 | 2026-05-11 | Split `PartnerRow` into `PartnerRowDesktop` and `PartnerCardMobile` | Pre-existing single component returned both `<tr>` and `<div>` from a Fragment, which the parent rendered inside both a `<tbody>` and a `<div class="md:hidden">` — producing invalid `tbody > div` and `div > tr` nesting that React's stricter dev validator now treats as hydration errors. Splitting cleanly resolves it and keeps each container's children semantically correct. |
+| 2026-05-21 | Tonik TD rates corrected in `data/rates.json` and Supabase staging pipeline — Tonik lowered rates after 2026-04-10; 6mo 6.06%→5.50%, 9mo 7%→6%, 12mo 8%→6.5%; max deposit ₱100k (was ₱250k). Scraper had correct rates in `pending_review` since May 16 but was never promoted. Full pipeline re-run and promotion triggered this session. | User spotted mismatch on gotruva.com vs tonikbank.com; confirmed by direct page fetch. |
+| 2026-05-21 | Scraper outage May 11–15 (PGRST116) logged — `staging.institutions` `.single()` lookup returned 0 rows during that window; auto-recovered May 16. No code fix needed; current `supabase.ts` is defensive. Documented for awareness. | Transient Supabase infra issue; not a code bug. |
+| 2026-05-21 | Rate audit scope expanded to T-Bills, MP2, Salmon promo (expires 2026-06-01), Maya TDs — all stale >21 days. Updated this session. | Routine freshness check triggered by Tonik discovery. |
+| 2026-05-21 | MP2 updated to 2025 dividend (7.12%, was 7.03%) in `data/rates.json` and Supabase. T-Bills updated to May 18 BTr auction results in `data/rates.json` (91d 5.074%, 182d 5.894%, 364d 6.037%). T-Bills remain `active_public=false` — delivered from seed file, not snapshot. | HDMF announced 2025 MP2 dividend; BTr May 18 auction data sourced. |
+| 2026-05-21 | Session close — production snapshot `18619bc4-290d-4e3d-938b-a1e34d20a2af` promoted with 61 products across 18 providers. All Tonik TD rates corrected, MP2 updated, review queue clean. Salmon promo flag: check after 2026-06-01. | End of audit session. |
 
 ---
 
