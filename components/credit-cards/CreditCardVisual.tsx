@@ -121,14 +121,14 @@ export function CreditCardDeskVisual({ cards }: { cards: CreditCardType[] }) {
         <div className="grid gap-3 sm:grid-cols-3">
           <DeskMetric label="Source checked" value="Bank page" />
           <DeskMetric label="Fields visible" value="Fees + rewards" />
-          <DeskMetric label="Score state" value="Coming later" />
+          <DeskMetric label="The catch" value="Shown upfront" />
         </div>
 
         <div className="rounded-[1.1rem] border border-brand-border bg-brand-surface/80 p-4 dark:border-white/10 dark:bg-white/[0.03]">
           <div className="flex items-start gap-3">
             <FileCheck2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              Truva keeps bank source links, missing details, and score notes visible before you continue.
+              Truva keeps bank source links and any missing details visible before you continue.
             </p>
           </div>
         </div>

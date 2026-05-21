@@ -10,7 +10,6 @@ import {
   WalletCards,
 } from 'lucide-react';
 import { ProductHubTemplate } from '@/components/layout/ProductHubTemplate';
-import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { PRODUCT_NAVIGATION_ITEMS } from '@/lib/product-navigation';
 
 export const metadata: Metadata = {
@@ -247,8 +246,6 @@ function LoansPreviewCard() {
         <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
           Loans are the easiest category to make look complete before the logic is complete. This preview keeps the emphasis on methodology and borrower tradeoffs until the data model is ready.
         </p>
-
-        <TrueValueScoreBadge />
 
         <div className="flex flex-wrap gap-3">
           <Link

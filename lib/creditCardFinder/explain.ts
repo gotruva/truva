@@ -2,6 +2,7 @@ import type { CreditCard } from '@/types';
 import type { CardEditorial } from '@/lib/creditCardEditorial';
 import type { FinderAnswers, PriorityAnswer } from '@/lib/creditCardFinder/questions';
 import {
+  cardMinIncomeMonthly,
   hasNoYearlyFeeConflict,
   incomeBracketMin,
   isNoYearlyFee,
@@ -31,12 +32,6 @@ const SPEND_LABEL: Record<string, string> = {
   bills: 'bill payment',
   travel: 'travel',
 };
-
-function cardMinIncomeMonthly(card: CreditCard): number | null {
-  if (card.min_income_monthly !== null) return card.min_income_monthly;
-  if (card.min_income_annual !== null) return Math.round(card.min_income_annual / 12);
-  return null;
-}
 
 function hasYearlyFee(card: CreditCard): boolean {
   return !isNoYearlyFee(card) && (card.annual_fee_recurring ?? 0) > 0;

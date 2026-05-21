@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- local logo tiles are fixed-size decorative assets */
 import Link from 'next/link';
 import { ArrowRight, Calendar, Lock, ShieldCheck, AlertTriangle } from 'lucide-react';
-import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { AffiliateButton } from '@/components/AffiliateButton';
 import { Badge } from '@/components/ui/badge';
 import type { BankPick } from '@/lib/banking';
@@ -141,10 +140,6 @@ export function BankPickCard({
             over {months} month{months !== 1 ? 's' : ''}
           </p>
         </div>
-      </div>
-
-      <div className="mt-4">
-        <TrueValueScoreBadge compact />
       </div>
 
       <div className="mt-5 space-y-2 text-sm text-brand-textSecondary dark:text-gray-300">

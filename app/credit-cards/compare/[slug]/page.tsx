@@ -2,10 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { CheckCircle2, ChevronLeft, ExternalLink, Info, Minus } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ExternalLink, Minus } from 'lucide-react';
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
-import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { getCreditCardBySlug } from '@/lib/credit-cards';
 import type { CreditCard } from '@/types';
 
@@ -123,24 +122,6 @@ export default async function CreditCardComparePage(
               })}
             </div>
 
-            {cards.some((c) => !c.score_ready) && (
-            <div className="border-t border-brand-border p-5 dark:border-white/10 md:p-7">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-start gap-3">
-                  <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
-                  <div>
-                    <h2 className="text-lg font-bold text-brand-textPrimary dark:text-white">
-                      Scores are coming later
-                    </h2>
-                    <p className="mt-1 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                      Truva keeps missing fields visible until the score inputs are complete.
-                    </p>
-                  </div>
-                </div>
-                <TrueValueScoreBadge showReason />
-              </div>
-            </div>
-            )}
           </section>
 
           {/* Key Differences summary block */}

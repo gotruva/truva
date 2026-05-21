@@ -6,7 +6,6 @@ import {
   Gift,
   ReceiptText,
   SearchCheck,
-  ShieldCheck,
   UserRoundX,
   type LucideIcon,
 } from 'lucide-react';
@@ -42,10 +41,6 @@ export function buildDataBadges(card: CreditCard): DataBadge[] {
 
   if (card.active_promo_count > 0) {
     badges.push({ icon: BadgePercent, label: 'Promo-linked', tone: 'promo' });
-  }
-
-  if (card.score_ready !== true) {
-    badges.push({ icon: CircleDashed, label: 'Score coming later', tone: 'neutral' });
   }
 
   return badges;
@@ -160,18 +155,5 @@ export function MissingDataLabel({ children = 'Not yet verified' }: { children?:
       <CircleDashed className="h-3 w-3" />
       {children}
     </span>
-  );
-}
-
-export function ScorePendingNotice() {
-  return (
-    <div className="rounded-[1.1rem] border border-brand-border bg-brand-surface/80 p-4 dark:border-white/10 dark:bg-white/[0.03]">
-      <div className="flex items-start gap-3">
-        <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
-        <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-          We only show a score when fees, rewards, income requirements, and source data are complete enough to compare fairly.
-        </p>
-      </div>
-    </div>
   );
 }

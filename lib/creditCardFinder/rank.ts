@@ -72,7 +72,7 @@ export function incomeBracketMin(income: IncomeAnswer | null): number | null {
   }
 }
 
-function cardMinIncomeMonthly(card: CreditCard): number | null {
+export function cardMinIncomeMonthly(card: CreditCard): number | null {
   if (card.min_income_monthly !== null) return card.min_income_monthly;
   if (card.min_income_annual !== null) return Math.round(card.min_income_annual / 12);
   return null;

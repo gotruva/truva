@@ -22,6 +22,7 @@
     "mmf:backfill": "tsx scripts/backfill-mmf-official-data.ts",
     "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts",
     "test:finder": "tsx scripts/test-credit-card-finder.ts",
+    "test:detail": "tsx scripts/test-credit-card-detail.ts",
     "lint:cc-copy": "tsx scripts/check-credit-card-copy.ts"
   },
   "dependencies": {

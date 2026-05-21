@@ -1,39 +1,44 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
 import {
   AlertTriangle,
   CheckCircle,
   ChevronLeft,
-  ExternalLink,
+  Gift,
   Info,
+  ReceiptText,
+  ShieldCheck,
   Sparkles,
 } from 'lucide-react';
-import { CreditCardTrustBadges, ScorePendingNotice, TheCatchPanel } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
-import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
-import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
-import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
-import {
-  answersToQuery,
-  hasNoYearlyFeeConflict,
-  parseFinderAnswers,
-} from '@/lib/creditCardFinder/rank';
-import { YouToldUsRail } from '@/components/credit-cards/results/YouToldUsRail';
 import { DetailAnalytics } from '@/components/credit-cards/results/DetailAnalytics';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
-import type { BadgeInputs, CreditCard } from '@/types';
+import { getCreditCardBySlug } from '@/lib/credit-cards';
+import { answersToQuery, deriveAnnualFeeLabel, deriveMinIncomeLabel, parseFinderAnswers } from '@/lib/creditCardFinder/rank';
+import {
+  assessApproval,
+  deriveCardSummary,
+  deriveCatchList,
+  deriveCostRows,
+  deriveFitLists,
+  deriveMainBenefit,
+  deriveQuickTakeChips,
+  type ApprovalAssessment,
+  type CostRow,
+} from '@/lib/creditCardFinder/detail';
+import { cn } from '@/lib/utils';
+import type { CreditCard } from '@/types';
 
-// Detail hero accent — stable per bank, never Truva blue or pure black
-// (handoff §6: avoid the primary blue / pure black for the card hero).
+// Detail hero accent — stable per bank, never Truva blue or pure black.
 const ACCENT_GRADIENTS = [
-  'bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500',
-  'bg-gradient-to-br from-violet-700 via-violet-600 to-fuchsia-500',
-  'bg-gradient-to-br from-rose-700 via-rose-600 to-orange-500',
-  'bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600',
-  'bg-gradient-to-br from-amber-700 via-amber-600 to-orange-500',
+  'bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-600',
+  'bg-gradient-to-br from-violet-800 via-violet-700 to-fuchsia-600',
+  'bg-gradient-to-br from-rose-800 via-rose-700 to-orange-600',
+  'bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-700',
+  'bg-gradient-to-br from-indigo-900 via-violet-800 to-rose-700',
 ];
 
 function accentFor(bank: string): string {
@@ -42,6 +47,53 @@ function accentFor(bank: string): string {
     hash = (hash * 31 + bank.charCodeAt(i)) >>> 0;
   }
   return ACCENT_GRADIENTS[hash % ACCENT_GRADIENTS.length];
+}
+
+const SHORT_BANK: Record<string, string> = {
+  'Bank of the Philippine Islands': 'BPI',
+  'BDO Unibank, Inc.': 'BDO',
+  'HSBC Philippines': 'HSBC',
+  'Asia United Bank': 'AUB',
+  'China Banking Corporation': 'Chinabank',
+};
+
+function shortBankName(bank: string): string {
+  return SHORT_BANK[bank] ?? bank.split(',')[0].trim();
+}
+
+function rewardTypeLabel(rewardType: string | null): string | null {
+  switch (rewardType) {
+    case 'cashback':
+      return 'Cashback';
+    case 'points':
+      return 'Rewards';
+    case 'miles':
+      return 'Miles';
+    default:
+      return null;
+  }
+}
+
+/** Compare → the browse catalog pre-filtered to cards of the same kind. */
+function compareHrefFor(card: CreditCard): string {
+  const pill =
+    card.rewards_type === 'cashback'
+      ? 'cashback'
+      : card.rewards_type === 'points'
+        ? 'points'
+        : card.rewards_type === 'miles'
+          ? 'travel'
+          : null;
+  return pill ? `/credit-cards/all?filter=${pill}` : '/credit-cards/all';
+}
+
+function formatDate(value: string | null): string {
+  if (!value) return 'recently';
+  return new Intl.DateTimeFormat('en-PH', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(value));
 }
 
 export const dynamic = 'force-dynamic';
@@ -54,9 +106,10 @@ export async function generateMetadata(
   const card = await getCreditCardBySlug(slug);
   if (!card) return {};
 
+  const summary = deriveCardSummary(card);
   return {
-    title: `${card.card_name} Details`,
-    description: `Plain-English details for the ${card.card_name} by ${card.bank}: fees, rewards, income notes, source links, and missing data.`,
+    title: `${card.card_name} — is it the right card for you? | Truva`,
+    description: `${summary.whatItIs} See the rewards, the fees, the catch, and what to check before you apply.`,
     alternates: { canonical: `/credit-cards/reviews/${card.normalized_card_key}` },
   };
 }
@@ -70,266 +123,346 @@ export default async function CreditCardReviewPage(
   const params = await props.params;
   const sp = props.searchParams ? await props.searchParams : {};
   const fromFinder = sp.from === 'finder';
-  const finderAnswers = parseFinderAnswers(sp);
+  const answers = parseFinderAnswers(sp);
   const slug = decodeCardSlug(params?.slug ?? '');
   const card = await getCreditCardBySlug(slug);
 
   if (!card) notFound();
 
   const isPartnerCard = card.badge_inputs?.partner_card === true;
-  const coverage = getFieldCoverage(card);
-  const annualEst = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
-  const editorial = getEditorialFor(card);
   const heroAccent = accentFor(card.bank);
-  const finderQuery = answersToQuery(finderAnswers);
+  const shortBank = shortBankName(card.bank);
+  const applyLabel = `Apply on ${shortBank}`;
+  const compareHref = compareHrefFor(card);
+
+  const finderQuery = answersToQuery(answers);
   const backHref = fromFinder && finderQuery
     ? `/credit-cards/results?${finderQuery}`
     : '/credit-cards';
-  const backLabel = fromFinder && finderQuery ? 'Back to results' : 'Back to card desk';
+  const backLabel = fromFinder && finderQuery ? 'Back to my matches' : 'Back to credit cards';
+
+  // ── Derived decision content ──
+  const benefit = deriveMainBenefit(card);
+  const catches = deriveCatchList(card);
+  const mainCatch = catches[0];
+  const approval = assessApproval(card, answers.income);
+  const chips = fromFinder ? deriveQuickTakeChips(answers, approval) : [];
+  const fitLists = deriveFitLists(card, answers, fromFinder);
+  const costs = deriveCostRows(card);
+
+  const rewardLabel = rewardTypeLabel(card.rewards_type);
+  const tierLine = ['Credit card', card.card_network, rewardLabel].filter(Boolean).join(' · ');
+  const annualFeeLabel = deriveAnnualFeeLabel(card);
+  const feeReturnsAfterYearOne =
+    card.annual_fee_first_year === 0 && (card.annual_fee_recurring ?? 0) > 0;
 
   return (
-    <>
-      <div className="min-h-screen bg-brand-surface pb-32 dark:bg-slate-950 sm:pb-24">
-        <header className={`relative overflow-hidden ${heroAccent} px-4 py-10 text-white`}>
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
-          <div className="relative z-10 mx-auto max-w-5xl">
-            <Link
-              href={backHref}
-              className="mb-6 inline-flex items-center text-sm text-white/80 transition-colors hover:text-white"
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              {backLabel}
-            </Link>
+    <div className="min-h-screen bg-white pb-32 dark:bg-slate-950 sm:pb-0">
+      <DetailAnalytics
+        cardKey={card.normalized_card_key}
+        bank={card.bank}
+        sourcePage={typeof sp.from === 'string' ? sp.from : 'direct'}
+      />
 
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-3xl">
-                <div className="flex flex-wrap gap-2">
-                  {isPartnerCard ? (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/60 bg-amber-400/20 px-3 py-1.5 text-xs font-bold text-white">
-                      <Sparkles className="h-3.5 w-3.5" />
-                      Partner disclosure applies
-                    </span>
-                  ) : null}
-                  <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90">
-                    {formatCardMeta(card)}
-                  </span>
-                </div>
+      {/* ===== Stage: hero + Quick Take ===== */}
+      <div className="bg-brand-surface dark:bg-slate-950/40">
+        <div className="mx-auto max-w-[1080px] md:grid md:grid-cols-[1.05fr_1fr] md:items-start md:gap-6 md:px-8 md:py-9 lg:px-12">
+          {/* Hero */}
+          <header
+            className={cn(
+              'relative overflow-hidden px-4 pb-9 pt-5 text-white md:rounded-2xl md:px-6 md:py-7',
+              heroAccent,
+            )}
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/30 to-transparent" />
+            <div className="relative z-10">
+              <Link
+                href={backHref}
+                className="-ml-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[13px] font-semibold text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                {backLabel}
+              </Link>
 
-                <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl">
-                  {card.card_name}
-                </h1>
-                <p className="mt-2 text-lg text-white/80">{card.bank}</p>
-              </div>
-
-              <div className="space-y-3">
-                <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/70">
-                    You could keep / year
-                  </p>
-                  <p className="mt-1 text-3xl font-black tabular-nums text-white">
-                    {'₱' + Math.round(annualEst.netAnnual).toLocaleString('en-PH')}
-                  </p>
-                  <p className="mt-1 text-[11px] text-white/60">
-                    Based on ₱25,000/mo income · grocery spending
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
-                  <TrueValueScoreBadge showReason className="text-white" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="relative z-20 mx-auto max-w-5xl space-y-6 px-4 pt-6 sm:-mt-8">
-          <DetailAnalytics
-            cardKey={card.normalized_card_key}
-            bank={card.bank}
-            sourcePage={typeof sp.from === 'string' ? sp.from : 'direct'}
-          />
-          {fromFinder && <YouToldUsRail answers={finderAnswers} />}
-
-          <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#111827] sm:p-6">
-            <div className="grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
-              <CreditCardVisual card={card} />
-              <div className="space-y-4">
+              <div className="mt-4 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-5">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-                    Card facts
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/75">
+                    {tierLine}
                   </p>
-                  <h2 className="mt-2 text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-                    Fees, rewards, and missing fields in one place
-                  </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                    This page shows what Truva has captured and marks what still needs checking with the bank.
-                  </p>
+                  <h1 className="mt-1.5 text-[28px] font-bold leading-[1.1] tracking-tight md:text-[34px]">
+                    {card.card_name}
+                  </h1>
+                  <p className="mt-1 text-[15px] text-white/85">by {card.bank}</p>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {isPartnerCard && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-900">
+                        <Sparkles className="h-3 w-3" />
+                        Truva partner
+                      </span>
+                    )}
+                    {card.card_network && (
+                      <span className="inline-flex items-center rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white">
+                        {card.card_network} network
+                      </span>
+                    )}
+                    {rewardLabel && (
+                      <span className="inline-flex items-center rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white">
+                        {rewardLabel} card
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <FactTile label="Yearly fee" value={formatAnnualFee(card)} detail={card.annual_fee_waiver_condition ?? 'Waiver data incomplete'} />
-                  <FactTile label="Rewards" value={formatRewardType(card.rewards_type)} detail={formatRewardFormula(card.rewards_formula)} />
-                  <FactTile label="Interest" value={formatMonthlyRate(card.interest_rate_pct)} detail="Monthly rate when disclosed" />
-                  <FactTile label="Foreign card fee" value={formatPercent(card.foreign_transaction_fee_pct)} detail="Fee for non-PHP or overseas transactions" />
+                <div className="mt-5 w-40 md:mt-0 md:w-44">
+                  <CreditCardVisual card={card} />
                 </div>
-                <CreditCardTrustBadges card={card} limit={6} />
               </div>
             </div>
-          </section>
+          </header>
 
-          {!card.score_ready ? (
-          <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:p-6">
-            <div className="flex items-start gap-3">
-              <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
-              <div>
-                <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-                  Scores are coming later for this card
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                  Truva can show the card details below, but this row is not ready for scoring yet.
+          {/* Quick Take */}
+          <div className="relative z-10 -mt-6 px-4 md:mt-0 md:px-0">
+            <div className="rounded-2xl border border-brand-border bg-white p-5 shadow-[0_16px_40px_-16px_rgba(15,23,42,0.18)] dark:border-white/10 dark:bg-[#111827] md:p-6">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="text-[13px] font-bold uppercase tracking-[0.12em] text-brand-textSecondary dark:text-gray-400">
+                  Quick take
                 </p>
-                {card.score_suppressed_reason ? (
-                  <p className="mt-3 rounded-xl border border-brand-border bg-brand-surface p-3 text-xs leading-relaxed text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400">
-                    {card.score_suppressed_reason}
-                  </p>
-                ) : null}
-                <div className="mt-3">
-                  <ScorePendingNotice />
-                </div>
+                {fromFinder && (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] text-brand-textSecondary dark:text-gray-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-brand-primary" />
+                    Matched to your finder answers
+                  </span>
+                )}
               </div>
-            </div>
-          </section>
-          ) : null}
 
-          {/* Editorial: why / pros / cons */}
-          <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:p-6">
-            <div className="mb-4 flex items-center gap-2 text-sm font-bold text-brand-primary">
-              <Sparkles className="h-4 w-4" />
-              What you should know about this card
-            </div>
-            <p className="mb-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              {editorial.why}
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle className="h-3.5 w-3.5" /> What&apos;s good
-                </h4>
-                <ul className="space-y-1.5">
-                  {editorial.pros.map((p, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-brand-textSecondary dark:text-gray-300">
-                      <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />{p}
-                    </li>
+              {fromFinder && chips.length > 0 && (
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {chips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-full bg-brand-primaryLight px-2.5 py-1 text-[11px] font-medium text-brand-primary dark:bg-brand-primary/20 dark:text-blue-200"
+                    >
+                      {chip}
+                    </span>
                   ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
-                  <AlertTriangle className="h-3.5 w-3.5" /> Things to know
-                </h4>
-                <ul className="space-y-1.5">
-                  {editorial.cons.map((p, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-brand-textSecondary dark:text-gray-300">
-                      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />{p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
-            <div className="space-y-6">
-              <FactSection title="Fees to check" description="Known public fields stay visible. Missing fields are preserved instead of collapsed.">
-                <DetailRow label="Annual fee" value={formatAnnualFee(card)} />
-                <DetailRow label="Waiver condition" value={card.annual_fee_waiver_condition ?? 'No public data'} muted={card.annual_fee_waiver_condition === null} />
-                <DetailRow label="Waiver threshold" value={formatWaiverThreshold(card.annual_fee_waiver_threshold)} muted={card.annual_fee_waiver_threshold === null} />
-                <DetailRow label="Interest rate" value={formatMonthlyRate(card.interest_rate_pct)} muted={card.interest_rate_pct === null} />
-                <DetailRow label="Effective annual rate" value={formatPercent(card.interest_rate_effective_annual)} muted={card.interest_rate_effective_annual === null} />
-                <DetailRow label="Foreign fee" value={formatPercent(card.foreign_transaction_fee_pct)} muted={card.foreign_transaction_fee_pct === null} />
-                <DetailRow label="Cash advance fee" value={formatCashAdvance(card)} muted={card.cash_advance_fee_amount === null && card.cash_advance_fee_pct === null} />
-                <DetailRow label="Late payment fee" value={formatPhpNullable(card.late_payment_fee_amount)} muted={card.late_payment_fee_amount === null} />
-                <DetailRow label="Overlimit fee" value={formatPhpNullable(card.overlimit_fee_amount)} muted={card.overlimit_fee_amount === null} />
-                <DetailRow label="Minimum amount due" value={card.minimum_amount_due_formula ?? 'Not disclosed'} muted={card.minimum_amount_due_formula === null} />
-              </FactSection>
-
-              <FactSection title="Rewards and benefits" description="Rewards are shown in the bank's own terms. Peso value is not ready yet.">
-                <DetailRow label="Reward type" value={formatRewardType(card.rewards_type)} />
-                <DetailRow label="Formula summary" value={formatRewardFormula(card.rewards_formula)} />
-                <DetailRow label="Peso value" value="Not yet verified" muted />
-              </FactSection>
-
-              <FactSection title="Requirements" description="Income filters wait until minimum income details are complete.">
-                <DetailRow label="Minimum monthly income" value={formatIncome(card)} muted={card.min_income_monthly === null && card.min_income_annual === null} />
-                <DetailRow label="Income source text" value={card.min_income_source_text ?? 'No public data'} muted={card.min_income_source_text === null} />
-                <DetailRow label="Income filter" value={card.income_filter_ready ? 'Ready' : 'Not yet verified'} muted={!card.income_filter_ready} />
-              </FactSection>
-            </div>
-
-            <aside className="space-y-6">
-              <TheCatchPanel card={card} />
-
-              <FactSection title="Fine-print badges" description="Badges are computed upstream and only shown when active.">
-                <BadgeGrid badges={card.badge_inputs} />
-              </FactSection>
-
-              <FactSection title="Promos" description="Promos are helpful context, but check the regular fees and rewards too.">
-                <div className="rounded-xl border border-brand-border bg-brand-surface/70 p-4 dark:border-white/10 dark:bg-white/[0.03]">
-                  <p className="text-sm font-bold text-brand-textPrimary dark:text-white">
-                    {card.active_promo_count > 0
-                      ? `${card.active_promo_count} active linked promo`
-                      : 'No active linked promo in Truva data'}
-                  </p>
-                  <p className="mt-2 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-                    Promos can change. Use them as extra context, not the only reason to choose a card.
-                  </p>
                 </div>
-              </FactSection>
+              )}
 
-              <FactSection title="Source and freshness" description="Bank site links leave Truva and open the public source.">
-                <div className="space-y-3">
-                  <DetailPill label="Source checked" value="Bank source linked" />
-                  <DetailPill label="Source updated" value={formatDate(card.last_scraped_at)} />
-                  <DetailPill label="Fields visible" value={`${coverage.known}/${coverage.total}`} />
-                  <DetailPill label="Fields missing" value={`${coverage.missing}/${coverage.total}`} />
-                  <DetailPill label="Partner status" value={isPartnerCard ? 'Partner disclosure applies' : 'No partner badge on this row'} />
-                  <a
-                    href={card.source_url}
-                    target="_blank"
-                    rel="nofollow noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-bold text-white shadow-lg shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
-                  >
-                    Visit bank site
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </div>
-              </FactSection>
-            </aside>
-          </section>
-        </main>
+              <div className="mt-4 space-y-3">
+                <QuickTakeRow icon={Gift} tone="info" label="Main benefit" lead={benefit.lead} body={benefit.body} />
+                <QuickTakeRow icon={AlertTriangle} tone="warn" label="Main catch" body={mainCatch} />
+                {fromFinder ? (
+                  <QuickTakeRow
+                    icon={APPROVAL_ICON[approval.verdict]}
+                    tone={APPROVAL_TONE[approval.verdict]}
+                    label="Can you qualify?"
+                    lead={approval.headline}
+                    body={approval.detail}
+                  />
+                ) : (
+                  <QuickTakeRow
+                    icon={Info}
+                    tone="info"
+                    label="Income needed"
+                    lead={deriveMinIncomeLabel(card)}
+                    body="The bank does the final check."
+                  />
+                )}
+                <QuickTakeRow
+                  icon={ReceiptText}
+                  tone="neutral"
+                  label="Annual fee"
+                  lead={annualFeeLabel}
+                  body={feeReturnsAfterYearOne ? 'Waived for the first year.' : undefined}
+                />
+              </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-border bg-white/95 px-4 py-3 shadow-[0_-18px_60px_-40px_rgba(15,23,42,0.55)] backdrop-blur dark:border-white/10 dark:bg-slate-950/95 sm:hidden">
-          <AffiliateDisclosure size="compact" className="mb-2" />
-          <div className="flex gap-2">
-            <Link
-              href={backHref}
-              className="inline-flex flex-1 items-center justify-center rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm font-bold text-brand-textPrimary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
-            >
-              {fromFinder && finderQuery ? 'Results' : 'Card desk'}
-            </Link>
-            <ApplyOnBankSiteButton
-              href={card.source_url}
-              bank={card.bank}
-              cardKey={card.normalized_card_key}
-              sourcePage="credit-card-detail"
-              placement="credit-card-detail-sticky"
-              label={`Apply on ${card.bank} site`}
-              className="h-auto flex-1 py-3"
-            />
+              <div className="mt-4 flex gap-2">
+                <ApplyOnBankSiteButton
+                  href={card.source_url}
+                  bank={card.bank}
+                  cardKey={card.normalized_card_key}
+                  sourcePage="credit-card-detail"
+                  placement="credit-card-detail-quicktake"
+                  label={applyLabel}
+                  className="flex-1 py-3"
+                />
+                <Link
+                  href={compareHref}
+                  className="inline-flex flex-1 items-center justify-center rounded-xl border border-brand-border bg-white px-4 py-3 text-sm font-bold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:border-white/15 dark:bg-white/[0.04] dark:text-gray-100 dark:hover:bg-white/10"
+                >
+                  Compare
+                </Link>
+              </div>
+              <AffiliateDisclosure size="compact" className="mt-2.5" />
+            </div>
           </div>
         </div>
       </div>
-    </>
+
+      {/* ===== Decision sections ===== */}
+      <div className="mx-auto max-w-[1080px]">
+        <Section title="Is this card for you?">
+          <div className="grid gap-4 md:grid-cols-2">
+            <FitColumn tone="good" title="Good fit if" items={fitLists.goodFit} />
+            <FitColumn tone="bad" title="Look elsewhere if" items={fitLists.lookElsewhere} />
+          </div>
+        </Section>
+
+        <Section title="The numbers">
+          <div className="overflow-hidden rounded-xl border border-brand-border dark:border-white/10">
+            {costs.primary.map((row) => (
+              <CostRowEl key={row.label} row={row} />
+            ))}
+          </div>
+          {costs.more.length > 0 && (
+            <details className="group mt-3">
+              <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 text-[13px] font-semibold text-brand-textSecondary [&::-webkit-details-marker]:hidden dark:text-gray-400">
+                <span className="text-base leading-none transition-transform group-open:rotate-90">›</span>
+                More fees and details
+              </summary>
+              <div className="mt-2 overflow-hidden rounded-xl border border-brand-border dark:border-white/10">
+                {costs.more.map((row) => (
+                  <CostRowEl key={row.label} row={row} />
+                ))}
+              </div>
+            </details>
+          )}
+        </Section>
+
+        <Section title="The catch">
+          <ul className="space-y-2.5">
+            {catches.slice(0, 3).map((text) => (
+              <CatchItem key={text} text={text} />
+            ))}
+          </ul>
+          {catches.length > 3 && (
+            <>
+              {/* Desktop: show the rest inline */}
+              <ul className="mt-2.5 hidden space-y-2.5 md:block">
+                {catches.slice(3).map((text) => (
+                  <CatchItem key={text} text={text} />
+                ))}
+              </ul>
+              {/* Mobile: tuck the rest behind an accordion */}
+              <details className="group mt-2 md:hidden">
+                <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 text-[13px] font-semibold text-brand-textSecondary [&::-webkit-details-marker]:hidden dark:text-gray-400">
+                  <span className="text-base leading-none transition-transform group-open:rotate-90">›</span>
+                  {catches.length - 3} more to know
+                </summary>
+                <ul className="mt-2.5 space-y-2.5">
+                  {catches.slice(3).map((text) => (
+                    <CatchItem key={text} text={text} />
+                  ))}
+                </ul>
+              </details>
+            </>
+          )}
+        </Section>
+      </div>
+
+      {/* ===== Ready to decide ===== */}
+      <section className="border-t border-brand-border bg-brand-surface dark:border-white/10 dark:bg-slate-950/40">
+        <div className="mx-auto max-w-[1080px] px-4 py-7 md:px-8 md:py-9 lg:px-12">
+          <div className="rounded-2xl border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04] md:p-6">
+            <h2 className="text-lg font-bold tracking-tight text-brand-textPrimary dark:text-white">
+              Ready to decide?
+            </h2>
+            <div className="mt-3.5 flex flex-col gap-2.5 sm:flex-row">
+              <ApplyOnBankSiteButton
+                href={card.source_url}
+                bank={card.bank}
+                cardKey={card.normalized_card_key}
+                sourcePage="credit-card-detail"
+                placement="credit-card-detail-final"
+                label={applyLabel}
+                className="flex-1 py-3.5"
+              />
+              <Link
+                href={compareHref}
+                className="inline-flex flex-1 items-center justify-center rounded-xl border border-brand-border bg-white px-4 py-3.5 text-sm font-bold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:border-white/15 dark:bg-white/[0.04] dark:text-gray-100 dark:hover:bg-white/10"
+              >
+                Compare similar cards
+              </Link>
+            </div>
+            <AffiliateDisclosure size="compact" className="mt-3" />
+
+            <div className="mt-3 flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-[12.5px] leading-relaxed text-brand-textSecondary dark:border-emerald-800/40 dark:bg-emerald-900/15 dark:text-gray-300">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>
+                <strong className="font-semibold text-brand-textPrimary dark:text-white">
+                  You&apos;ll finish on {shortBank}&apos;s official site.
+                </strong>{' '}
+                Truva doesn&apos;t collect your application or see your details.
+              </span>
+            </div>
+
+            <details className="group mt-3.5 border-t border-brand-border pt-3.5 dark:border-white/10">
+              <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 text-[13px] font-semibold text-brand-textSecondary [&::-webkit-details-marker]:hidden dark:text-gray-400">
+                <span className="text-base leading-none transition-transform group-open:rotate-90">›</span>
+                What you&apos;ll need before you start
+              </summary>
+              <ul className="mt-2.5 space-y-1.5 text-[13.5px] leading-relaxed text-brand-textSecondary dark:text-gray-300">
+                <PrepItem>
+                  <b>One valid government ID</b> — passport, driver&apos;s license, UMID, or PhilSys.
+                </PrepItem>
+                <PrepItem>
+                  <b>Proof of income</b> — a recent payslip, your latest ITR, or a COE with salary.
+                </PrepItem>
+                <PrepItem>
+                  <b>Proof of billing address</b> — a utility bill or a bank statement.
+                </PrepItem>
+                <PrepItem>
+                  <b>10&ndash;15 minutes</b> to fill out {shortBank}&apos;s application form.
+                </PrepItem>
+              </ul>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Source ===== */}
+      <div className="mx-auto flex max-w-[1080px] flex-wrap items-center gap-x-2 gap-y-1 px-4 py-5 text-xs text-brand-textSecondary dark:text-gray-500 md:px-8 lg:px-12">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+        <span>
+          From{' '}
+          <a
+            href={card.source_url}
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+            className="font-medium text-brand-textSecondary underline underline-offset-2 hover:text-brand-primary dark:text-gray-400"
+          >
+            {shortBank}&apos;s official page
+          </a>{' '}
+          · Checked {formatDate(card.last_scraped_at)}
+        </span>
+      </div>
+
+      {/* ===== Mobile sticky action bar ===== */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-border bg-white/95 px-4 py-2.5 shadow-[0_-18px_60px_-40px_rgba(15,23,42,0.55)] backdrop-blur dark:border-white/10 dark:bg-slate-950/95 sm:hidden">
+        <AffiliateDisclosure size="compact" className="mb-2" />
+        <div className="flex items-center gap-3">
+          <ApplyOnBankSiteButton
+            href={card.source_url}
+            bank={card.bank}
+            cardKey={card.normalized_card_key}
+            sourcePage="credit-card-detail"
+            placement="credit-card-detail-sticky"
+            label={applyLabel}
+            className="h-auto flex-1 py-3"
+          />
+          <Link
+            href={compareHref}
+            className="shrink-0 px-2 py-2 text-sm font-bold text-brand-primary"
+          >
+            Compare
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
+
+// ── Sub-components ───────────────────────────────────────────────────────────
 
 function decodeCardSlug(slug: string) {
   try {
@@ -339,227 +472,153 @@ function decodeCardSlug(slug: string) {
   }
 }
 
-function getFieldCoverage(card: CreditCard) {
-  const fields = [
-    card.annual_fee_recurring,
-    card.annual_fee_waiver_condition,
-    card.annual_fee_waiver_threshold,
-    card.rewards_type,
-    card.rewards_formula,
-    card.interest_rate_pct,
-    card.foreign_transaction_fee_pct,
-    card.min_income_monthly ?? card.min_income_annual,
-    card.min_income_source_text,
-    card.last_scraped_at,
-  ];
-  const known = fields.filter((field) => field !== null && field !== undefined && field !== '').length;
+type RowTone = 'info' | 'warn' | 'positive' | 'neutral';
 
-  return {
-    total: fields.length,
-    known,
-    missing: fields.length - known,
-  };
-}
+const ROW_TONE: Record<RowTone, string> = {
+  info: 'bg-brand-primaryLight text-brand-primary dark:bg-brand-primary/20 dark:text-blue-200',
+  warn: 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+  positive: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+  neutral: 'bg-brand-surface text-brand-textSecondary dark:bg-white/10 dark:text-gray-300',
+};
 
-function FactSection({
-  title,
-  description,
-  children,
+const APPROVAL_TONE: Record<ApprovalAssessment['verdict'], RowTone> = {
+  'likely-meet': 'positive',
+  'may-need-higher': 'warn',
+  'cannot-confirm': 'neutral',
+};
+
+const APPROVAL_ICON: Record<ApprovalAssessment['verdict'], typeof Info> = {
+  'likely-meet': CheckCircle,
+  'may-need-higher': AlertTriangle,
+  'cannot-confirm': Info,
+};
+
+function QuickTakeRow({
+  icon: Icon,
+  tone,
+  label,
+  lead,
+  body,
 }: {
-  title: string;
-  description: string;
-  children: ReactNode;
+  icon: typeof Info;
+  tone: RowTone;
+  label: string;
+  lead?: string;
+  body?: string;
 }) {
   return (
-    <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">{title}</h2>
-        <p className="mt-1 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">{description}</p>
+    <div className="grid grid-cols-[1.75rem_1fr] gap-2.5">
+      <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', ROW_TONE[tone])}>
+        <Icon className="h-3.5 w-3.5" />
+      </span>
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-brand-textSecondary dark:text-gray-400">
+          {label}
+        </p>
+        <p className="mt-0.5 text-[14px] leading-snug text-brand-textPrimary dark:text-gray-100">
+          {lead && <strong className="font-bold">{lead}</strong>}
+          {lead && body ? ' ' : ''}
+          {body}
+        </p>
       </div>
-      <div className="space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="border-t border-brand-border px-4 py-7 dark:border-white/10 md:px-8 md:py-9 lg:px-12">
+      <h2 className="mb-3.5 text-lg font-bold tracking-tight text-brand-textPrimary dark:text-white md:mb-4 md:text-xl">
+        {title}
+      </h2>
+      {children}
     </section>
   );
 }
 
-function FactTile({ label, value, detail }: { label: string; value: string; detail: string }) {
+function FitColumn({
+  tone,
+  title,
+  items,
+}: {
+  tone: 'good' | 'bad';
+  title: string;
+  items: string[];
+}) {
+  const isGood = tone === 'good';
+  const Icon = isGood ? CheckCircle : AlertTriangle;
   return (
-    <div className="min-h-[6.5rem] rounded-xl border border-brand-border bg-brand-surface/80 p-4 dark:border-white/10 dark:bg-slate-950/40">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-        {label}
-      </p>
-      <p className="mt-2 text-lg font-bold tabular-nums text-brand-textPrimary dark:text-white">{value}</p>
-      <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">{detail}</p>
-    </div>
-  );
-}
-
-function DetailRow({ label, value, muted = false }: { label: string; value: string; muted?: boolean }) {
-  return (
-    <div className="grid gap-1 rounded-xl border border-brand-border bg-brand-surface/70 p-3 dark:border-white/10 dark:bg-white/[0.03] sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-        {label}
-      </p>
-      <p className={muted ? 'text-sm font-medium text-brand-textSecondary dark:text-gray-400' : 'text-sm font-semibold text-brand-textPrimary dark:text-gray-100'}>
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function DetailPill({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-brand-border bg-brand-surface/70 p-3 dark:border-white/10 dark:bg-white/[0.03]">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-        {label}
-      </p>
-      <p className="mt-1 text-sm font-semibold text-brand-textPrimary dark:text-gray-100">{value}</p>
-    </div>
-  );
-}
-
-type BadgeEntry = {
-  key: keyof BadgeInputs;
-  label: string;
-  type: 'positive' | 'catch' | 'info';
-  detail: string;
-};
-
-const BADGE_GRID: BadgeEntry[] = [
-  { key: 'true_naffl', label: 'True NAFFL', type: 'positive', detail: 'No annual fee for life with no spend threshold captured.' },
-  { key: 'low_fx_fee', label: 'Low foreign fee', type: 'positive', detail: 'Fee for non-PHP or overseas transactions is 1.85% or lower.' },
-  { key: 'full_medical_coverage', label: 'Full medical coverage', type: 'positive', detail: 'Travel insurance covers medical expenses abroad.' },
-  { key: 'high_fx_fee', label: 'High foreign fee', type: 'catch', detail: 'Fee for non-PHP or overseas transactions is 2.75% or higher.' },
-  { key: 'earn_cap', label: 'Earn cap', type: 'catch', detail: 'Rewards have a monthly or annual earn cap.' },
-  { key: 'narrow_mcc', label: 'Narrow earn categories', type: 'catch', detail: 'Bonus earn is restricted to narrow merchant categories.' },
-  { key: 'rewards_devalued', label: 'Rewards devalued', type: 'catch', detail: 'Rewards program was devalued in the past 12 months.' },
-  { key: 'accident_only_insurance', label: 'Accident-only insurance', type: 'catch', detail: 'Travel insurance covers accidents only, not medical emergencies abroad.' },
-  { key: 'no_ewallet_earn', label: 'No e-wallet earn', type: 'info', detail: 'GCash and Maya loads earn no rewards in the current interpretation.' },
-  { key: 'partner_card', label: 'Partner card', type: 'info', detail: 'Truva has an affiliate relationship with this bank.' },
-];
-
-function BadgeGrid({ badges }: { badges: BadgeInputs | null }) {
-  const active = badges ? BADGE_GRID.filter((badge) => badges[badge.key]) : [];
-
-  if (active.length === 0) {
-    return (
-      <div className="rounded-xl border border-dashed border-brand-border bg-brand-surface/70 p-4 dark:border-white/10 dark:bg-white/[0.03]">
-        <p className="text-sm font-semibold text-brand-textPrimary dark:text-white">No fine-print badges yet</p>
-        <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-          This does not mean the card has no catches. It means no badge input is active in the current public row.
-        </p>
+    <div
+      className={cn(
+        'rounded-xl border p-4 md:p-5',
+        isGood
+          ? 'border-emerald-200 bg-emerald-50/60 dark:border-emerald-800/40 dark:bg-emerald-900/10'
+          : 'border-amber-200 bg-amber-50/60 dark:border-amber-800/40 dark:bg-amber-900/10',
+      )}
+    >
+      <div
+        className={cn(
+          'mb-3 flex items-center gap-2 text-sm font-bold',
+          isGood ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-800 dark:text-amber-300',
+        )}
+      >
+        <Icon className="h-4 w-4" />
+        <span>{title}</span>
       </div>
-    );
-  }
-
-  return (
-    <div className="grid gap-3">
-      {active.map((badge) => {
-        const Icon = badge.type === 'positive' ? CheckCircle : badge.type === 'catch' ? AlertTriangle : Info;
-        const classes =
-          badge.type === 'positive'
-            ? 'border-emerald-100 bg-emerald-50/60 text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-900/10 dark:text-emerald-300'
-            : badge.type === 'catch'
-              ? 'border-amber-100 bg-amber-50/60 text-amber-700 dark:border-amber-800/30 dark:bg-amber-900/10 dark:text-amber-300'
-              : 'border-brand-border bg-brand-surface text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300';
-
-        return (
-          <div key={badge.key} className={`rounded-xl border p-4 ${classes}`}>
-            <div className="flex items-start gap-3">
-              <Icon className="mt-0.5 h-4 w-4 shrink-0" />
-              <div>
-                <p className="text-sm font-bold">{badge.label}</p>
-                <p className="mt-1 text-xs leading-relaxed">{badge.detail}</p>
-              </div>
-            </div>
-          </div>
-        );
-      })}
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li
+            key={item}
+            className="grid grid-cols-[0.5rem_1fr] gap-2.5 text-[13.5px] leading-relaxed text-brand-textSecondary dark:text-gray-300"
+          >
+            <span
+              className={cn(
+                'mt-[7px] h-1.5 w-1.5 rounded-full',
+                isGood ? 'bg-emerald-500' : 'bg-amber-500',
+              )}
+            />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-function formatCardMeta(card: CreditCard) {
-  return [card.card_network, card.card_tier].filter(Boolean).join(' / ') || 'Card details';
+function CostRowEl({ row }: { row: CostRow }) {
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-baseline gap-4 border-t border-brand-border px-4 py-3 first:border-t-0 dark:border-white/10">
+      <span className="text-sm text-brand-textPrimary dark:text-gray-200">{row.label}</span>
+      <span
+        className={cn(
+          'text-sm tabular-nums',
+          row.pending
+            ? 'max-w-[11rem] text-right text-[13px] italic text-brand-textSecondary dark:text-gray-400'
+            : 'font-semibold text-brand-textPrimary dark:text-white',
+        )}
+      >
+        {row.value}
+      </span>
+    </div>
+  );
 }
 
-function formatAnnualFee(card: CreditCard): string {
-  if (hasNoYearlyFeeConflict(card) && card.annual_fee_recurring !== null) {
-    return `${formatPhpAmount(card.annual_fee_recurring)} listed`;
-  }
-  if (card.naffl) return 'PHP 0 NAFFL';
-  if (card.annual_fee_recurring === 0) return 'PHP 0';
-  if (card.annual_fee_recurring !== null) return formatPhpAmount(card.annual_fee_recurring);
-  if (card.annual_fee_first_year !== null) return `${formatPhpAmount(card.annual_fee_first_year)} first year`;
-  return 'Not disclosed';
+function CatchItem({ text }: { text: string }) {
+  return (
+    <li className="grid grid-cols-[1.25rem_1fr] gap-3 text-[14px] leading-relaxed text-brand-textSecondary dark:text-gray-300">
+      <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-300">
+        <AlertTriangle className="h-2.5 w-2.5" />
+      </span>
+      <span>{text}</span>
+    </li>
+  );
 }
 
-function formatRewardType(rewardType: CreditCard['rewards_type']) {
-  switch (rewardType) {
-    case 'cashback':
-      return 'Cashback';
-    case 'miles':
-      return 'Miles';
-    case 'points':
-      return 'Points';
-    default:
-      return 'None captured';
-  }
-}
-
-function formatRewardFormula(formula: CreditCard['rewards_formula']) {
-  if (!formula) return 'No public data';
-  const earnUnit = typeof formula.earn_unit === 'string' ? formula.earn_unit : '';
-  if (earnUnit.trim()) return earnUnit;
-  return 'Formula captured; peso value not ready';
-}
-
-function formatMonthlyRate(rate: number | null) {
-  if (rate === null) return 'Not disclosed';
-  return `${rate.toFixed(2)}% / mo`;
-}
-
-function formatPercent(value: number | null) {
-  if (value === null) return 'Not disclosed';
-  return `${value.toFixed(2)}%`;
-}
-
-function formatPhpNullable(value: number | null) {
-  if (value === null) return 'Not disclosed';
-  return formatPhpAmount(value);
-}
-
-function formatWaiverThreshold(value: number | null) {
-  if (value === null) return 'No public data';
-  return formatPhpAmount(value);
-}
-
-function formatCashAdvance(card: CreditCard) {
-  const pieces = [
-    card.cash_advance_fee_pct !== null ? `${card.cash_advance_fee_pct.toFixed(2)}%` : null,
-    card.cash_advance_fee_amount !== null ? formatPhpAmount(card.cash_advance_fee_amount) : null,
-  ].filter(Boolean);
-  return pieces.length > 0 ? pieces.join(' or ') : 'Not disclosed';
-}
-
-function formatIncome(card: CreditCard) {
-  if (card.min_income_monthly !== null) return `${formatPhpAmount(card.min_income_monthly)} / mo`;
-  if (card.min_income_annual !== null) return `${formatPhpAmount(card.min_income_annual)} / yr`;
-  return 'No public data';
-}
-
-function formatDate(value: string | null) {
-  if (!value) return 'No public data';
-  return new Intl.DateTimeFormat('en-PH', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }).format(new Date(value));
-}
-
-function formatPhpAmount(amount: number) {
-  return new Intl.NumberFormat('en-PH', {
-    style: 'currency',
-    currency: 'PHP',
-    maximumFractionDigits: 0,
-  }).format(amount).replace('PHP', 'PHP ');
+function PrepItem({ children }: { children: ReactNode }) {
+  return (
+    <li className="grid grid-cols-[0.5rem_1fr] gap-2.5">
+      <span className="mt-[7px] h-1 w-1 rounded-full bg-brand-textSecondary/60" />
+      <span>{children}</span>
+    </li>
+  );
 }

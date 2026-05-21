@@ -4,6 +4,7 @@ import type { CreditCard } from '@/types';
 import editorial, { type CardEditorial } from '@/lib/creditCardEditorial';
 import { deriveCategoryMatch } from '@/lib/creditCardValue';
 import type { SpendingCategory, GoalId } from '@/lib/creditCardValue';
+import { normalizeRewardType } from '@/lib/creditCardFinder/detail';
 
 const BANK_LOGO_MAP: Record<string, string> = {
   'Bank of the Philippine Islands': '/logos/bpi.svg',
@@ -19,7 +20,13 @@ function deriveLogo(bank: string): string {
 }
 
 function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
-  return { ...row, logo: deriveLogo(row.bank) };
+  // Normalize rewards_type at the data boundary so the finder ranking and every
+  // detail-page derivation see a clean 'cashback' | 'points' | 'miles' | null.
+  return {
+    ...row,
+    logo: deriveLogo(row.bank),
+    rewards_type: normalizeRewardType(row.rewards_type),
+  };
 }
 
 export async function getCreditCards(): Promise<CreditCard[]> {

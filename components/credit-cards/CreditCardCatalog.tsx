@@ -15,7 +15,6 @@ import {
 } from 'lucide-react';
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
-import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
 import editorial from '@/lib/creditCardEditorial';
 import { cn } from '@/lib/utils';
@@ -358,14 +357,10 @@ export function CreditCardCatalog({
               />
             </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <LockedControl
                 title="Income filter off for now"
                 description="We need clearer bank income requirements before using this filter."
-              />
-              <LockedControl
-                title="Scores come later"
-                description="Scores wait until enough card details are complete and fair to compare."
               />
               <LockedControl
                 title="Peso value off for now"
@@ -376,16 +371,13 @@ export function CreditCardCatalog({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-brand-textSecondary dark:text-gray-300">
-          Showing{' '}
-          <span className="font-semibold text-brand-textPrimary dark:text-white">
-            {filteredCards.length}
-          </span>{' '}
-          of {cards.length} public card records.
-        </p>
-        <TrueValueScoreBadge compact />
-      </div>
+      <p className="text-sm text-brand-textSecondary dark:text-gray-300">
+        Showing{' '}
+        <span className="font-semibold text-brand-textPrimary dark:text-white">
+          {filteredCards.length}
+        </span>{' '}
+        of {cards.length} public card records.
+      </p>
 
       {filteredCards.length > 0 ? (
         <div className="grid gap-6 xl:grid-cols-2">

@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
-import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { getCreditCards } from '@/lib/credit-cards';
 import type { CreditCard as CreditCardType } from '@/types';
 
@@ -42,22 +41,17 @@ export default async function CreditCardReviewsPage() {
               <ChevronLeft className="mr-1 h-4 w-4" />
               Back to card desk
             </Link>
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
-              <div>
-                <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
-                  <FileSearch className="h-4 w-4" />
-                  Detail pages
-                </p>
-                <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl">
-                  Inspect each card before you visit the bank site
-                </h1>
-                <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/80">
-                  These pages show the basics in plain English: fees, rewards, income notes, source links, and what is still missing.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
-                <TrueValueScoreBadge showReason />
-              </div>
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
+                <FileSearch className="h-4 w-4" />
+                Detail pages
+              </p>
+              <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl">
+                Inspect each card before you visit the bank site
+              </h1>
+              <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/80">
+                These pages show the basics in plain English: fees, rewards, income notes, source links, and what is still missing.
+              </p>
             </div>
           </div>
         </header>
@@ -118,17 +112,14 @@ function DetailDirectoryCard({ card }: { card: CreditCardType }) {
       <div className="grid gap-4 sm:grid-cols-[12rem_minmax(0,1fr)]">
         <CreditCardVisual card={card} compact />
         <div className="min-w-0">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-                {[card.card_network, card.card_tier].filter(Boolean).join(' / ') || 'Card details'}
-              </p>
-              <h2 className="mt-2 text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-                {card.card_name}
-              </h2>
-              <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">{card.bank}</p>
-            </div>
-            <TrueValueScoreBadge compact />
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
+              {[card.card_network, card.card_tier].filter(Boolean).join(' / ') || 'Card details'}
+            </p>
+            <h2 className="mt-2 text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+              {card.card_name}
+            </h2>
+            <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">{card.bank}</p>
           </div>
 
           <div className="mt-4">
