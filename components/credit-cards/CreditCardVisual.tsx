@@ -1,52 +1,52 @@
 import Image from 'next/image';
 import { CreditCard, FileCheck2 } from 'lucide-react';
+import { getCreditCardVisualAsset, normalizeCreditCardVisualKey } from '@/lib/credit-card-visuals';
 import { cn } from '@/lib/utils';
 import type { CreditCard as CreditCardType } from '@/types';
 
-const ISSUER_TONES: Record<string, { from: string; via: string; to: string; accent: string }> = {
-  'Bank of the Philippine Islands': {
+const ISSUER_TONES: Array<{
+  match: string[];
+  from: string;
+  via: string;
+  to: string;
+  accent: string;
+}> = [
+  {
+    match: ['bank of the philippine islands', 'bpi'],
     from: 'from-red-600',
     via: 'via-orange-500',
     to: 'to-amber-400',
     accent: 'bg-red-50 text-red-700 border-red-100',
   },
-  'HSBC Philippines': {
+  {
+    match: ['hsbc', 'hongkong and shanghai banking corporation'],
     from: 'from-red-700',
     via: 'via-slate-900',
     to: 'to-slate-500',
     accent: 'bg-slate-100 text-slate-700 border-slate-200',
   },
-  'Asia United Bank': {
+  {
+    match: ['asia united bank', 'aub'],
     from: 'from-blue-700',
     via: 'via-blue-500',
     to: 'to-cyan-400',
     accent: 'bg-blue-50 text-blue-700 border-blue-100',
   },
-  'BDO Unibank, Inc.': {
+  {
+    match: ['bdo', 'bdo unibank'],
     from: 'from-blue-800',
     via: 'via-blue-600',
     to: 'to-indigo-400',
     accent: 'bg-blue-50 text-blue-700 border-blue-100',
   },
-};
-
-// Keys must match normalized_card_key exactly from the database
-const CARD_IMAGE_MAP: Record<string, string> = {
-  'bpi amore cashback card': '/cards/bpi-amore-cashback-card.png',
-  'bpi amore platinum cashback card': '/cards/bpi-amore-platinum-cashback-card.png',
-  'bpi edge card': '/cards/bpi-edge-card.png',
-  'bpi gold rewards card': '/cards/bpi-gold-rewards-card.png',
-  'bpi platinum rewards mastercard': '/cards/bpi-platinum-rewards-mastercard.png',
-  'bpi signature card': '/cards/bpi-signature-card.jpg',
-  'petron bpi card': '/cards/petron-bpi-card.png',
-  'robinsons cashback card': '/cards/robinsons-cashback-card.jpg',
-  'hsbc live credit card': '/cards/hsbc-live-credit-card.jpg',
-  'hsbc red platinum mastercard': '/cards/hsbc-red-platinum-mastercard.jpg',
-};
-
-function getCardImagePath(cardKey: string): string | null {
-  return CARD_IMAGE_MAP[cardKey] ?? null;
-}
+  {
+    match: ['chinabank', 'china banking corporation'],
+    from: 'from-teal-700',
+    via: 'via-cyan-600',
+    to: 'to-emerald-400',
+    accent: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  },
+];
 
 export function CreditCardVisual({
   card,
@@ -57,19 +57,14 @@ export function CreditCardVisual({
   className?: string;
   compact?: boolean;
 }) {
-  const tone = ISSUER_TONES[card.bank] ?? {
-    from: 'from-brand-primary',
-    via: 'via-cyan-500',
-    to: 'to-emerald-400',
-    accent: 'bg-brand-primary/10 text-brand-primary border-brand-primary/15',
-  };
-
-  const imagePath = getCardImagePath(card.normalized_card_key);
+  const tone = getIssuerTone(card.bank);
+  const visualAsset = getCreditCardVisualAsset(card);
+  const imagePath = visualAsset?.assetPath;
 
   return (
     <div
       className={cn(
-        'relative isolate aspect-[1.58] overflow-hidden rounded-[1.15rem] border border-white/70 bg-white shadow-inner dark:border-white/10 dark:bg-white/[0.04]',
+        'relative isolate aspect-[1.58] overflow-hidden rounded-[1.1rem] border border-slate-200/80 bg-white shadow-[0_16px_38px_-30px_rgba(15,23,42,0.75)] ring-1 ring-white/70 dark:border-white/10 dark:bg-slate-950 dark:ring-white/10',
         className,
       )}
       aria-label={`Visual representation of the ${card.card_name} credit card`}
@@ -77,56 +72,23 @@ export function CreditCardVisual({
     >
       {imagePath ? (
         <>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.95),rgba(248,250,252,0.82)_36%,rgba(226,232,240,0.38)_100%)] dark:bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.98),rgba(241,245,249,0.92)_48%,rgba(203,213,225,0.72)_100%)]" />
+          <div className="absolute inset-2 rounded-[0.85rem] border border-white/80 bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.92)] dark:border-white dark:bg-white/80" />
           <Image
             src={imagePath}
-            alt={card.card_name}
+            alt={`${card.card_name} card artwork`}
             fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 40vw"
+            className={cn(
+              'object-contain drop-shadow-[0_18px_22px_rgba(15,23,42,0.20)]',
+              compact ? 'p-2.5' : 'p-3',
+            )}
+            sizes={compact ? '(max-width: 768px) 45vw, 16vw' : '(max-width: 768px) 100vw, 24vw'}
             priority={false}
           />
-          {/* subtle scrim so text stays readable over the photo */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/20" />
         </>
       ) : (
-        <>
-          <div className={cn('absolute inset-0 bg-gradient-to-br opacity-95', tone.from, tone.via, tone.to)} />
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.28)_0,rgba(255,255,255,0.08)_32%,rgba(255,255,255,0)_33%)]" />
-          <div className="absolute inset-x-4 top-16 h-px bg-white/20" />
-          <div className="absolute bottom-14 right-4 h-px w-24 bg-white/20" />
-        </>
+        <FallbackCreditCardVisual card={card} compact={compact} tone={tone} />
       )}
-
-      <div className={cn('relative flex h-full flex-col justify-between p-4 text-white', compact ? 'p-3' : '')}>
-        <div className="flex items-start justify-between gap-3">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/18 backdrop-blur">
-            <CreditCard className="h-4 w-4" />
-          </span>
-          {card.naffl ? (
-            <span className="rounded-full bg-emerald-500/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] backdrop-blur">
-              NAFFL
-            </span>
-          ) : (
-            <span className="rounded-full bg-white/18 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur">
-              {card.card_network ?? 'Fact card'}
-            </span>
-          )}
-        </div>
-
-        <div>
-          <p className="max-w-[12rem] truncate text-sm font-bold tracking-tight">
-            {card.bank}
-          </p>
-          <div className="mt-3 flex items-end justify-between gap-3">
-            <div className="space-y-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/75">
-                Annual fee
-              </p>
-              <p className="text-lg font-black tabular-nums">{formatAnnualFee(card)}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -183,6 +145,64 @@ function DeskMetric({ label, value }: { label: string; value: string }) {
       </p>
       <p className="mt-1 text-sm font-bold text-brand-textPrimary dark:text-white">{value}</p>
     </div>
+  );
+}
+
+function FallbackCreditCardVisual({
+  card,
+  compact,
+  tone,
+}: {
+  card: CreditCardType;
+  compact: boolean;
+  tone: { from: string; via: string; to: string; accent: string };
+}) {
+  return (
+    <>
+      <div className={cn('absolute inset-0 bg-gradient-to-br opacity-95', tone.from, tone.via, tone.to)} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.26),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.20)_0,rgba(255,255,255,0.08)_34%,rgba(255,255,255,0)_35%)]" />
+      <div className="absolute inset-x-4 top-16 h-px bg-white/20" />
+      <div className="absolute bottom-14 right-4 h-px w-24 bg-white/20" />
+
+      <div className={cn('relative flex h-full flex-col justify-between p-4 text-white', compact ? 'p-3' : '')}>
+        <div className="flex items-start justify-between gap-3">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/18 backdrop-blur">
+            <CreditCard className="h-4 w-4" />
+          </span>
+          <span className="rounded-full bg-white/18 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] backdrop-blur">
+            {card.card_network ?? 'Preview'}
+          </span>
+        </div>
+
+        <div>
+          <p className="max-w-[12rem] truncate text-sm font-bold tracking-tight">{card.bank}</p>
+          <div className="mt-3 flex items-end justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/75">
+                Annual fee
+              </p>
+              <p className="text-lg font-black tabular-nums">{formatAnnualFee(card)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function getIssuerTone(bank: string) {
+  const normalizedBank = normalizeCreditCardVisualKey(bank);
+  const tone = ISSUER_TONES.find(({ match }) =>
+    match.some((candidate) => normalizedBank.includes(candidate)),
+  );
+
+  return (
+    tone ?? {
+      from: 'from-brand-primary',
+      via: 'via-cyan-500',
+      to: 'to-emerald-400',
+      accent: 'bg-brand-primary/10 text-brand-primary border-brand-primary/15',
+    }
   );
 }
 
