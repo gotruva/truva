@@ -6,13 +6,20 @@
  */
 
 import type { CreditCard } from '@/types';
+import type { CardEditorial } from '@/lib/creditCardEditorial';
 import type { FinderAnswers } from '@/lib/creditCardFinder/questions';
 import { EMPTY_ANSWERS } from '@/lib/creditCardFinder/questions';
 import { CONFIDENCE_LABELS } from '@/lib/creditCardFinder/copy';
+import { explainFinderResult } from '@/lib/creditCardFinder/explain';
 import {
+  answersToQuery,
+  buildScoredCard,
+  deriveAnnualFeeLabel,
   incomeBracketMin,
   deriveTags,
   deriveDataConfidence,
+  hasNoYearlyFeeConflict,
+  isNoYearlyFee,
   scoreFinderCard,
   selectFinderResults,
   parseFinderAnswers,
@@ -75,6 +82,24 @@ function card(overrides: Partial<CreditCard> = {}): CreditCard {
     active_promo_count: 0,
     source_url: 'https://bank.example/apply',
     last_scraped_at: RECENT,
+    ...overrides,
+  };
+}
+
+function badgeInputs(
+  overrides: Partial<NonNullable<CreditCard['badge_inputs']>> = {},
+): NonNullable<CreditCard['badge_inputs']> {
+  return {
+    earn_cap: false,
+    low_fx_fee: false,
+    narrow_mcc: false,
+    true_naffl: false,
+    high_fx_fee: false,
+    partner_card: false,
+    no_ewallet_earn: false,
+    rewards_devalued: false,
+    full_medical_coverage: false,
+    accident_only_insurance: false,
     ...overrides,
   };
 }
@@ -258,6 +283,126 @@ eq('parse rejects invalid income', parsed.income, null);
 eq('parse keeps valid priority', parsed.priority, 'naf');
 
 // ── Report ───────────────────────────────────────────────────────────────────
+// -- 8. Contextual explanations ---------------------------------------------
+const emptyEditorial: CardEditorial = { why: '', pros: [], cons: [] };
+const explainAnswers = answers({
+  first: 'yes',
+  income: '30-50',
+  spend: 'groceries',
+  priority: 'cashback',
+  avoid: 'fees',
+});
+const explainCard = card({
+  id: 'explain-card',
+  naffl: true,
+  rewards_type: 'cashback',
+  rewards_formula: { bonus: 'cashback on groceries' },
+  min_income_monthly: 20_000,
+});
+const explainScored = buildScoredCard(explainCard, explainAnswers);
+const whyFirst = explainFinderResult(
+  { ...explainScored, role: 'first' },
+  explainAnswers,
+  emptyEditorial,
+).why;
+const whyNoFee = explainFinderResult(
+  { ...explainScored, role: 'no-fee' },
+  explainAnswers,
+  emptyEditorial,
+).why;
+const whyWorth = explainFinderResult(
+  { ...explainScored, role: 'worth' },
+  explainAnswers,
+  emptyEditorial,
+).why;
+eq('role-specific why copy differs', new Set([whyFirst, whyNoFee, whyWorth]).size, 3);
+check('why references answer signals', /cashback|grocery/.test(whyFirst));
+
+const feeAnswers = answers({ avoid: 'fees' });
+const feeWatch = explainFinderResult(
+  {
+    ...buildScoredCard(card({ annual_fee_recurring: 5_000 }), feeAnswers),
+    role: 'first',
+  },
+  feeAnswers,
+  emptyEditorial,
+).watchOut;
+check('avoid fees picks fee watch-out', feeWatch.includes('yearly fees') && feeWatch.includes('PHP 5,000'));
+
+const forexAnswers = answers({ avoid: 'forex' });
+const forexWatch = explainFinderResult(
+  {
+    ...buildScoredCard(
+      card({
+        badge_inputs: badgeInputs({ high_fx_fee: true }),
+        foreign_transaction_fee_pct: 3,
+      }),
+      forexAnswers,
+    ),
+    role: 'first',
+  },
+  forexAnswers,
+  emptyEditorial,
+).watchOut;
+check('avoid forex picks foreign-fee watch-out', forexWatch.includes('foreign card fees'));
+
+const complexAnswers = answers({ avoid: 'complex' });
+const complexWatch = explainFinderResult(
+  {
+    ...buildScoredCard(card({ rewards_type: 'points' }), complexAnswers),
+    role: 'worth',
+  },
+  complexAnswers,
+  emptyEditorial,
+).watchOut;
+check('avoid complex picks rewards-complexity watch-out', complexWatch.includes('simpler rewards'));
+
+const fallbackExplanation = explainFinderResult(
+  { ...buildScoredCard(card(), EMPTY_ANSWERS), role: 'worth' },
+  EMPTY_ANSWERS,
+  emptyEditorial,
+);
+check('missing answers use honest why fallback', fallbackExplanation.why.includes('available card details'));
+check('missing answers use honest watch-out fallback', fallbackExplanation.watchOut.includes('not clearly published'));
+
+const conflictCard = card({
+  naffl: true,
+  annual_fee_recurring: 1_550,
+  badge_inputs: badgeInputs({ true_naffl: true }),
+});
+eq('fee conflict detected', hasNoYearlyFeeConflict(conflictCard), true);
+eq('fee conflict is not treated as no-fee', isNoYearlyFee(conflictCard), false);
+check(
+  'fee conflict label avoids no-fee claim',
+  !deriveAnnualFeeLabel(conflictCard).toLowerCase().includes('no yearly fee'),
+);
+const conflictExplanation = explainFinderResult(
+  { ...buildScoredCard(conflictCard, feeAnswers), role: 'first' },
+  feeAnswers,
+  emptyEditorial,
+);
+check(
+  'fee conflict why avoids no-fee claim',
+  !conflictExplanation.why.toLowerCase().includes('no-yearly-fee') &&
+    !conflictExplanation.why.toLowerCase().includes('no yearly fee'),
+);
+check('fee conflict watch-out calls out mixed data', conflictExplanation.watchOut.includes('mixed fee data'));
+
+const resultBackQuery = answersToQuery(
+  answers({
+    first: 'yes',
+    income: '30-50',
+    spend: 'groceries',
+    priority: 'cashback',
+    avoid: 'fees',
+  }),
+);
+eq(
+  'answersToQuery preserves result state for back links',
+  resultBackQuery,
+  'first=yes&income=30-50&spend=groceries&priority=cashback&avoid=fees',
+);
+
 console.log(`\ncredit-card-finder: ${passed} passed, ${failures.length} failed`);
 if (failures.length > 0) {
   console.error('FAILED:\n - ' + failures.join('\n - '));

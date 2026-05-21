@@ -78,7 +78,15 @@ function cardMinIncomeMonthly(card: CreditCard): number | null {
   return null;
 }
 
+export function hasNoYearlyFeeConflict(card: CreditCard): boolean {
+  return (
+    (card.naffl === true || card.badge_inputs?.true_naffl === true) &&
+    (card.annual_fee_recurring ?? 0) > 0
+  );
+}
+
 export function isNoYearlyFee(card: CreditCard): boolean {
+  if (hasNoYearlyFeeConflict(card)) return false;
   return (
     card.naffl === true ||
     card.badge_inputs?.true_naffl === true ||
@@ -87,7 +95,7 @@ export function isNoYearlyFee(card: CreditCard): boolean {
 }
 
 function hasYearlyFee(card: CreditCard): boolean {
-  return card.naffl !== true && (card.annual_fee_recurring ?? 0) > 0;
+  return !isNoYearlyFee(card) && (card.annual_fee_recurring ?? 0) > 0;
 }
 
 // ── Tag derivation (fixed vocabulary, from real fields only) ─────────────────
@@ -166,6 +174,9 @@ export function deriveDataConfidence(
 // ── Display labels (plain language; missing → "Check bank terms") ────────────
 
 export function deriveAnnualFeeLabel(card: CreditCard): string {
+  if (hasNoYearlyFeeConflict(card) && card.annual_fee_recurring !== null) {
+    return `Check fee: PHP ${card.annual_fee_recurring.toLocaleString('en-PH')}/yr listed`;
+  }
   if (card.naffl === true) return '₱0 — no yearly fee for life';
   if (card.annual_fee_recurring === 0) return '₱0 — no yearly fee';
   if (card.annual_fee_recurring !== null) {

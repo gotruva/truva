@@ -15,7 +15,11 @@ import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { TrueValueScoreBadge } from '@/components/product/TrueValueScoreBadge';
 import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
 import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
-import { parseFinderAnswers } from '@/lib/creditCardFinder/rank';
+import {
+  answersToQuery,
+  hasNoYearlyFeeConflict,
+  parseFinderAnswers,
+} from '@/lib/creditCardFinder/rank';
 import { YouToldUsRail } from '@/components/credit-cards/results/YouToldUsRail';
 import { DetailAnalytics } from '@/components/credit-cards/results/DetailAnalytics';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
@@ -77,6 +81,11 @@ export default async function CreditCardReviewPage(
   const annualEst = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
   const editorial = getEditorialFor(card);
   const heroAccent = accentFor(card.bank);
+  const finderQuery = answersToQuery(finderAnswers);
+  const backHref = fromFinder && finderQuery
+    ? `/credit-cards/results?${finderQuery}`
+    : '/credit-cards';
+  const backLabel = fromFinder && finderQuery ? 'Back to results' : 'Back to card desk';
 
   return (
     <>
@@ -85,11 +94,11 @@ export default async function CreditCardReviewPage(
           <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
           <div className="relative z-10 mx-auto max-w-5xl">
             <Link
-              href="/credit-cards"
+              href={backHref}
               className="mb-6 inline-flex items-center text-sm text-white/80 transition-colors hover:text-white"
             >
               <ChevronLeft className="mr-1 h-4 w-4" />
-              Back to card desk
+              {backLabel}
             </Link>
 
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -301,10 +310,10 @@ export default async function CreditCardReviewPage(
           <AffiliateDisclosure size="compact" className="mb-2" />
           <div className="flex gap-2">
             <Link
-              href="/credit-cards"
+              href={backHref}
               className="inline-flex flex-1 items-center justify-center rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm font-bold text-brand-textPrimary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
             >
-              Card desk
+              {fromFinder && finderQuery ? 'Results' : 'Card desk'}
             </Link>
             <ApplyOnBankSiteButton
               href={card.source_url}
@@ -474,6 +483,9 @@ function formatCardMeta(card: CreditCard) {
 }
 
 function formatAnnualFee(card: CreditCard): string {
+  if (hasNoYearlyFeeConflict(card) && card.annual_fee_recurring !== null) {
+    return `${formatPhpAmount(card.annual_fee_recurring)} listed`;
+  }
   if (card.naffl) return 'PHP 0 NAFFL';
   if (card.annual_fee_recurring === 0) return 'PHP 0';
   if (card.annual_fee_recurring !== null) return formatPhpAmount(card.annual_fee_recurring);

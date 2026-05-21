@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import { getCreditCards, getEditorialFor } from '@/lib/credit-cards';
 import {
   selectFinderResults,
-  deriveWatchOut,
   answersToQuery,
   parseFinderAnswers,
 } from '@/lib/creditCardFinder/rank';
+import { explainFinderResult } from '@/lib/creditCardFinder/explain';
 import { ResultsView, type PreparedCard } from '@/components/credit-cards/results/ResultsView';
 
 export const dynamic = 'force-dynamic';
@@ -40,11 +40,12 @@ export default async function CreditCardResultsPage({ searchParams }: Props) {
           kind: 'matched' as const,
           cards: selection.sections.map<PreparedCard>((section) => {
             const editorial = getEditorialFor(section.card);
+            const explanation = explainFinderResult(section, answers, editorial);
             return {
               scored: section,
               role: section.role,
-              why: editorial.why,
-              watchOut: deriveWatchOut(section.card, editorial),
+              why: explanation.why,
+              watchOut: explanation.watchOut,
             };
           }),
         }

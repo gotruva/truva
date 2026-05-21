@@ -28,6 +28,9 @@ function isComment(line: string): boolean {
 const FORBIDDEN: Array<{ label: string; re: RegExp }> = [
   { label: 'guaranteed', re: /\bguaranteed\b/i },
   { label: 'approved', re: /\bapproved\b/i },
+  { label: 'recommended', re: /\brecommended\b/i },
+  { label: 'top pick', re: /\btop pick\b/i },
+  { label: 'winner', re: /\bwinner\b/i },
   { label: 'perfect card', re: /\bperfect card\b/i },
   { label: 'best card ever', re: /\bbest card ever\b/i },
 ];
