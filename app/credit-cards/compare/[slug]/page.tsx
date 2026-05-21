@@ -76,7 +76,7 @@ export default async function CreditCardComparePage(
               className={`grid divide-y divide-brand-border bg-slate-50 dark:divide-white/10 dark:bg-slate-900/70 ${headerGridClass}`}
             >
               {cards.map((card) => {
-                const bestFor = computeBestFor(card);
+                const fitLabel = computeFitLabel(card);
                 return (
                   <div key={card.id} className="p-6 md:p-8">
                     <div className="grid gap-5 sm:grid-cols-[13rem_minmax(0,1fr)]">
@@ -91,11 +91,11 @@ export default async function CreditCardComparePage(
                         <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">
                           {card.bank}
                         </p>
-                        {bestFor && (
+                        {fitLabel && (
                           <span
-                            className={`mt-3 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${bestFor.color}`}
+                            className={`mt-3 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${fitLabel.color}`}
                           >
-                            Best for: {bestFor.label}
+                            Good for: {fitLabel.label}
                           </span>
                         )}
                         <CreditCardTrustBadges card={card} limit={3} className="mt-4" />
@@ -256,7 +256,7 @@ function parseCompareSlug(slug: string): string[] | null {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function computeBestFor(card: CreditCard): { label: string; color: string } | null {
+function computeFitLabel(card: CreditCard): { label: string; color: string } | null {
   if (card.naffl || card.annual_fee_recurring === 0)
     return { label: 'No Annual Fee', color: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-500/20' };
   if (card.min_income_monthly !== null && card.min_income_monthly <= 21000)

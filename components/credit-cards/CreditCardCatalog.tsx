@@ -388,7 +388,7 @@ export function CreditCardCatalog({
       </div>
 
       {filteredCards.length > 0 ? (
-        <div className="grid gap-5 xl:grid-cols-2">
+        <div className="grid gap-6 xl:grid-cols-2">
           {filteredCards.map((card) => (
             <CatalogCard
               key={card.id}
@@ -487,12 +487,12 @@ function CatalogCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const isPartnerCard = card.badge_inputs?.partner_card === true;
-  const bestFor = computeBestFor(card);
+  const fitLabel = computeFitLabel(card);
 
   return (
     <article
       className={cn(
-        'overflow-hidden rounded-[1.4rem] border bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-white/[0.04]',
+        'overflow-hidden rounded-[1.25rem] border bg-white shadow-[0_18px_52px_-42px_rgba(15,23,42,0.62)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_64px_-40px_rgba(15,23,42,0.70)] dark:bg-white/[0.04]',
         isPartnerCard
           ? 'border-amber-400 dark:border-amber-500/50'
           : 'border-brand-border dark:border-white/10',
@@ -505,33 +505,33 @@ function CatalogCard({
         </div>
       ) : null}
 
-      <div className="p-5">
+      <div className="p-5 sm:p-6">
         {/* Top row: visual + header info */}
-        <div className="grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)]">
-          <CreditCardVisual card={card} />
+        <div className="grid gap-5 sm:grid-cols-[12rem_minmax(0,1fr)] lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-6">
+          <CreditCardVisual card={card} className="sm:mt-1" />
 
           <div className="flex min-w-0 flex-col">
-            {/* Card name + Best for badge */}
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            {/* Card name + fit badge */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
                   {formatCardMeta(card)}
                 </p>
-                <h3 className="mt-1 text-xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
+                <h3 className="mt-1 text-lg font-bold leading-snug tracking-tight text-brand-textPrimary dark:text-white sm:text-xl">
                   {card.card_name}
                 </h3>
                 <p className="mt-0.5 text-sm text-brand-textSecondary dark:text-gray-300">
                   {card.bank}
                 </p>
               </div>
-              {bestFor && (
+              {fitLabel && (
                 <span
                   className={cn(
-                    'inline-flex shrink-0 items-center self-start rounded-full border px-2.5 py-1 text-[11px] font-semibold',
-                    bestFor.color,
+                    'inline-flex shrink-0 items-center self-start rounded-full border px-3 py-1.5 text-[11px] font-semibold',
+                    fitLabel.color,
                   )}
                 >
-                  Best for: {bestFor.label}
+                  Good for: {fitLabel.label}
                 </span>
               )}
             </div>
@@ -540,7 +540,7 @@ function CatalogCard({
             {(() => {
               const est = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
               return (
-                <div className="mt-3 flex items-center gap-2">
+                <div className="mt-4 inline-flex w-fit items-baseline gap-2 rounded-xl bg-brand-surface/70 px-3 py-2 dark:bg-white/[0.05]">
                   <span className="text-xl font-black tabular-nums text-brand-textPrimary dark:text-white">
                     {'₱' + Math.round(est.netAnnual).toLocaleString('en-PH')}
                   </span>
@@ -552,7 +552,7 @@ function CatalogCard({
             })()}
 
             {/* 3 primary fact tiles: Yearly Fee · Min. Income · Rewards */}
-            <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
               <FactTile
                 label="Yearly fee"
                 value={formatAnnualFee(card)}
@@ -571,7 +571,7 @@ function CatalogCard({
             </div>
 
             {/* Secondary line: Foreign card fee + Interest */}
-            <p className="mt-3 text-xs text-brand-textSecondary dark:text-gray-400">
+            <p className="mt-3.5 text-xs text-brand-textSecondary dark:text-gray-400">
               Foreign card fee:{' '}
               <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
                 {formatPercent(card.foreign_transaction_fee_pct)}
@@ -629,7 +629,7 @@ function CatalogCard({
                 {editorial[card.normalized_card_key].why}
               </p>
             )}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid gap-2.5 sm:grid-cols-3">
               <FactTile
                 label="Waiver condition"
                 value={card.annual_fee_waiver_condition ?? 'No public data'}
@@ -680,7 +680,7 @@ function CatalogCard({
         <div className="mt-5 flex flex-col gap-2 sm:flex-row">
           <Link
             href={`/credit-cards/reviews/${card.normalized_card_key}`}
-            className="inline-flex flex-1 items-center justify-center rounded-full bg-brand-primary/10 px-4 py-3 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary/20 dark:bg-brand-primary/15 dark:hover:bg-brand-primary/25"
+            className="inline-flex flex-1 items-center justify-center rounded-xl bg-brand-primary/10 px-4 py-3 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary/20 dark:bg-brand-primary/15 dark:hover:bg-brand-primary/25"
           >
             View details
           </Link>
@@ -689,7 +689,7 @@ function CatalogCard({
             onClick={onToggleCompare}
             disabled={compareDisabled}
             className={cn(
-              'inline-flex flex-1 items-center justify-center rounded-full border px-4 py-3 text-sm font-semibold transition-colors',
+              'inline-flex flex-1 items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition-colors',
               selected
                 ? 'border-brand-primary bg-brand-primary text-white'
                 : 'border-brand-border bg-brand-surface text-brand-textPrimary hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100',
@@ -702,7 +702,7 @@ function CatalogCard({
             href={card.source_url}
             target="_blank"
             rel="nofollow noopener noreferrer"
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
           >
             Visit bank site
             <ArrowRight className="h-4 w-4" />
@@ -715,7 +715,7 @@ function CatalogCard({
 
 function FactTile({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
-    <div className="min-h-[5.5rem] rounded-xl border border-brand-border bg-brand-surface/80 p-3 dark:border-white/10 dark:bg-slate-950/40">
+    <div className="min-h-[5.75rem] rounded-xl border border-brand-border/90 bg-white/75 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] dark:border-white/10 dark:bg-slate-950/40">
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
         {label}
       </p>
@@ -851,9 +851,9 @@ function BadgeChips({ badges, limit }: { badges: BadgeInputs | null; limit?: num
   );
 }
 
-// ─── PH-tuned "Best for" label ───────────────────────────────────────────────
+// PH-tuned fit label.
 
-function computeBestFor(card: CreditCardType): { label: string; color: string } | null {
+function computeFitLabel(card: CreditCardType): { label: string; color: string } | null {
   if (card.naffl || card.annual_fee_recurring === 0)
     return {
       label: 'No Annual Fee',
