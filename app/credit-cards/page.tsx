@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Compare Credit Cards in the Philippines | Truva',
   description:
-    'Find the best credit cards for your income and spending. Compare annual fees, rewards, interest, and requirements in plain English.',
+    'Find credit cards that may fit your income and spending. Compare annual fees, rewards, interest, and requirements in plain English.',
   alternates: {
     canonical: '/credit-cards',
   },

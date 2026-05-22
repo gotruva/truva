@@ -32,24 +32,24 @@ export interface CardSummary {
 
 function whoItsForBase(card: CreditCard): string {
   if (card.rewards_type === 'cashback') {
-    return 'Best if you want cash back on everyday spending';
+    return 'Good if you want cash back on everyday spending';
   }
   if (card.rewards_type === 'miles') {
-    return 'Best if you travel often and want to earn miles';
+    return 'Good if you travel often and want to earn miles';
   }
   if (card.rewards_type === 'points') {
-    return 'Best if you want to earn points on everyday spending';
+    return 'Good if you want to earn points on everyday spending';
   }
   if (isNoYearlyFee(card)) {
-    return 'Best if you want a card you can keep without a yearly fee';
+    return 'Good if you want a card you can keep without a yearly fee';
   }
   if (
     card.card_tier === 'classic' ||
     (cardMinIncomeMonthly(card) ?? Infinity) <= 20_000
   ) {
-    return 'Best as a simple card to start with';
+    return 'Good as a simple card to start with';
   }
-  return 'Best for everyday rewards';
+  return 'Good for everyday rewards';
 }
 
 /**

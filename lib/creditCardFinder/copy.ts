@@ -12,7 +12,7 @@
 
 export const LANDING = {
   eyebrow: 'Credit-card finder · about 2 min',
-  h1: 'Find the best credit card for your lifestyle',
+  h1: 'Find a credit card that fits your lifestyle',
   sub: 'Answer a few simple questions. Truva will show cards that may fit your income, spending, and goals — with fees and catches explained before you apply.',
   primaryCta: 'Start card finder',
   secondaryCta: 'Browse all cards',
@@ -52,8 +52,8 @@ export const RESULTS = {
   h1: 'Here are cards that may fit you',
   sub: 'These matches are based on your answers and available card details. Bank approval is still required.',
   sections: [
-    { label: 'Best first pick', sub: 'Closest fit to your answers' },
-    { label: 'Best no-yearly-fee pick', sub: 'If you want to keep it free' },
+    { label: 'First-card fit', sub: 'Closest fit to your answers' },
+    { label: 'No-yearly-fee fit', sub: 'If you want to keep it free' },
     { label: 'Worth checking', sub: 'Higher rewards, more conditions' },
   ],
   fitLabels: ['Closest fit', 'Good fit', 'Worth checking'] as const,
@@ -61,7 +61,7 @@ export const RESULTS = {
     why: 'Why this may fit you',
     yearlyFee: 'Yearly fee',
     minIncome: 'Min. income',
-    bestFor: 'Best for',
+    bestFor: 'Good for',
     watchOut: 'What to watch out for',
   },
   ctaDetails: 'See details',
@@ -112,7 +112,7 @@ export const DETAIL = {
   youToldUs: 'You told us',
   sections: {
     why: 'Why this card may fit you',
-    bestFor: 'What it’s best for',
+    bestFor: 'What it is good for',
     watchOut: 'What to watch out for',
     rewards: 'Rewards in simple words',
     fees: 'Fees to know',

@@ -1,9 +1,8 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, BadgeCheck, ShieldCheck, Sparkles } from 'lucide-react';
-import { CreditCardVisual } from './CreditCardVisual';
-import { LANDING, REASSURANCE } from '@/lib/creditCardFinder/copy';
+import { CreditCardHeroCarousel } from './CreditCardHeroCarousel';
+import { LANDING } from '@/lib/creditCardFinder/copy';
 import type { CreditCard as CreditCardType } from '@/types';
 
 interface Props {
@@ -23,9 +22,6 @@ export function CreditCardHero({
   hasResume = false,
   onResume,
 }: Props) {
-  const reduceMotion = useReducedMotion();
-  const stack = cards.slice(0, 3);
-
   return (
     <section className="relative overflow-hidden bg-white dark:bg-slate-950">
       <div className="pointer-events-none absolute inset-0 z-0">
@@ -105,45 +101,8 @@ export function CreditCardHero({
           </div>
 
           {/* Visual column */}
-          <div className="order-first lg:order-last">
-            <div className="relative mx-auto h-56 max-w-sm overflow-hidden rounded-3xl bg-gradient-to-b from-brand-primaryLight to-transparent sm:h-72 lg:h-80 dark:from-brand-primary/10">
-              {stack[1] && (
-                <motion.div
-                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.05 }}
-                  className="absolute left-1/2 top-8 w-44 -translate-x-[78%] -rotate-[8deg] sm:w-56"
-                >
-                  <CreditCardVisual card={stack[1]} />
-                </motion.div>
-              )}
-              {stack[2] && (
-                <motion.div
-                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="absolute left-1/2 top-12 w-44 -translate-x-[22%] rotate-[7deg] sm:w-56"
-                >
-                  <CreditCardVisual card={stack[2]} />
-                </motion.div>
-              )}
-              {stack[0] && (
-                <motion.div
-                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute left-1/2 top-6 w-48 -translate-x-1/2 -rotate-[1deg] sm:w-64"
-                >
-                  <CreditCardVisual card={stack[0]} />
-                </motion.div>
-              )}
-              <div className="absolute inset-x-4 bottom-4 flex items-center gap-3 rounded-xl border border-brand-border bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-white/10 dark:bg-slate-900/90">
-                <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <p className="text-xs leading-snug text-brand-textSecondary dark:text-gray-300">
-                  {REASSURANCE}
-                </p>
-              </div>
-            </div>
+          <div className="lg:order-last">
+            <CreditCardHeroCarousel cards={cards} />
           </div>
         </div>
       </div>
