@@ -60,32 +60,30 @@ export function CreditCardVisual({
   const tone = getIssuerTone(card.bank);
   const visualAsset = getCreditCardVisualAsset(card);
   const imagePath = visualAsset?.assetPath;
+  const hasCardArtwork = Boolean(imagePath);
 
   return (
     <div
       className={cn(
-        'relative isolate aspect-[1.58] overflow-hidden rounded-[1.1rem] border border-slate-200/80 bg-white shadow-[0_16px_38px_-30px_rgba(15,23,42,0.75)] ring-1 ring-white/70 dark:border-white/10 dark:bg-slate-950 dark:ring-white/10',
+        'relative isolate aspect-[1.58] rounded-[1.1rem]',
+        hasCardArtwork
+          ? 'overflow-visible bg-transparent'
+          : 'overflow-hidden border border-slate-200/80 bg-white shadow-[0_16px_38px_-30px_rgba(15,23,42,0.75)] ring-1 ring-white/70 dark:border-white/10 dark:bg-slate-950 dark:ring-white/10',
         className,
       )}
+      data-visual-status={visualAsset?.status ?? 'truva-fallback'}
       aria-label={`Visual representation of the ${card.card_name} credit card`}
       role="img"
     >
       {imagePath ? (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.95),rgba(248,250,252,0.82)_36%,rgba(226,232,240,0.38)_100%)] dark:bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.98),rgba(241,245,249,0.92)_48%,rgba(203,213,225,0.72)_100%)]" />
-          <div className="absolute inset-2 rounded-[0.85rem] border border-white/80 bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.92)] dark:border-white dark:bg-white/80" />
-          <Image
-            src={imagePath}
-            alt={`${card.card_name} card artwork`}
-            fill
-            className={cn(
-              'object-contain drop-shadow-[0_18px_22px_rgba(15,23,42,0.20)]',
-              compact ? 'p-2.5' : 'p-3',
-            )}
-            sizes={compact ? '(max-width: 768px) 45vw, 16vw' : '(max-width: 768px) 100vw, 24vw'}
-            priority={false}
-          />
-        </>
+        <Image
+          src={imagePath}
+          alt={`${card.card_name} card artwork`}
+          fill
+          className="object-contain drop-shadow-[0_14px_18px_rgba(15,23,42,0.22)]"
+          sizes={compact ? '(max-width: 768px) 45vw, 16vw' : '(max-width: 768px) 100vw, 24vw'}
+          priority={false}
+        />
       ) : (
         <FallbackCreditCardVisual card={card} compact={compact} tone={tone} />
       )}

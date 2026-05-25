@@ -1,18 +1,32 @@
 import type { CreditCard as CreditCardType } from '@/types';
+import { SCRAPE_REPORT_STATUS_MAP } from '@/lib/credit-card-visual-status';
 
 export type CreditCardVisualStatus =
+  | 'clean-card'
+  | 'context-art'
+  | 'truva-fallback';
+
+export type CreditCardVisualManifestStatus =
   | 'official-art'
   | 'official-context-art'
   | 'truva-fallback';
 
-export type CreditCardVisualAsset = {
-  cardKeys: string[];
+export type CreditCardVisualSourceAsset = {
+  cardKeys: readonly string[];
   assetPath?: string;
   sourceUrl: string;
   checkedAt: string;
-  status: CreditCardVisualStatus;
+  status: CreditCardVisualManifestStatus;
   note?: string;
 };
+
+export type CreditCardVisualAsset = Omit<CreditCardVisualSourceAsset, 'assetPath' | 'status'> & {
+  assetPath?: string;
+  originalAssetPath?: string;
+  status: CreditCardVisualStatus;
+};
+
+export const CLEAN_CARD_ASSET_ROOT = '/cards/clean';
 
 const CHECKED_AT = '2026-05-21';
 
@@ -297,9 +311,9 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     checkedAt: CHECKED_AT,
     status: 'official-art',
   },
-] as const satisfies CreditCardVisualAsset[];
+] as const satisfies CreditCardVisualSourceAsset[];
 
-const VISUAL_ASSET_INDEX = new Map<string, CreditCardVisualAsset>();
+const VISUAL_ASSET_INDEX = new Map<string, CreditCardVisualSourceAsset>();
 
 for (const asset of CREDIT_CARD_VISUAL_ASSETS) {
   for (const key of asset.cardKeys) {
@@ -317,9 +331,36 @@ export function normalizeCreditCardVisualKey(value: string | null | undefined): 
     .replace(/\s+/g, ' ');
 }
 
+export function normalizeCleanCreditCardAssetKey(value: string | null | undefined): string {
+  return (value ?? '')
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+export function getCleanCreditCardAssetPath(value: string | null | undefined): string | null {
+  const normalizedKey = normalizeCleanCreditCardAssetKey(value);
+  return normalizedKey ? `${CLEAN_CARD_ASSET_ROOT}/${normalizedKey}.webp` : null;
+}
+
 export function getCreditCardVisualAsset(
   card: Pick<CreditCardType, 'normalized_card_key' | 'card_name' | 'bank'>,
 ): CreditCardVisualAsset | null {
+  // Check scrape report status first — only clean-card rows get a real asset
+  const reportKey = normalizeCleanCreditCardAssetKey(card.normalized_card_key);
+  const reportStatus = reportKey ? SCRAPE_REPORT_STATUS_MAP[reportKey] : null;
+
+  if (reportStatus !== 'clean-card') {
+    // Return truva-fallback: no assetPath so CreditCardVisual shows fallback UI
+    return {
+      cardKeys: [card.normalized_card_key ?? card.card_name].filter(Boolean),
+      sourceUrl: '',
+      checkedAt: '',
+      status: 'truva-fallback',
+    };
+  }
+
   const candidates = [
     card.normalized_card_key,
     card.card_name,
@@ -328,8 +369,27 @@ export function getCreditCardVisualAsset(
 
   for (const candidate of candidates) {
     const asset = VISUAL_ASSET_INDEX.get(normalizeCreditCardVisualKey(candidate));
-    if (asset) return asset;
+    if (asset) return resolveCreditCardVisualAsset(asset, card.normalized_card_key);
   }
 
   return null;
+}
+
+function resolveCreditCardVisualAsset(
+  asset: CreditCardVisualSourceAsset,
+  normalizedCardKey: string | null | undefined,
+): CreditCardVisualAsset {
+  if (asset.status === 'truva-fallback') {
+    return {
+      ...asset,
+      status: 'truva-fallback',
+    };
+  }
+
+  return {
+    ...asset,
+    assetPath: getCleanCreditCardAssetPath(normalizedCardKey) ?? asset.assetPath,
+    originalAssetPath: asset.assetPath,
+    status: asset.status === 'official-context-art' ? 'context-art' : 'clean-card',
+  };
 }
