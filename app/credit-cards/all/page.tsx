@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { getCreditCards } from '@/lib/credit-cards';
 import { CreditCardCatalog } from '@/components/credit-cards/CreditCardCatalog';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
+import { isLikelyConsumerCard } from '@/lib/credit-cards-display';
+import type { CreditCard as CreditCardType } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Browse all credit cards | Truva',
@@ -28,15 +30,34 @@ interface Props {
 
 function resolvePill(filter: string | undefined): string {
   if (!filter) return 'all';
-  // Fallback option deep-links here; "beginner" maps to the first-card pill.
   if (filter === 'beginner') return 'first-card';
   return VALID_PILLS.has(filter) ? filter : 'all';
 }
 
+function newestSourceDate(cards: CreditCardType[]): string | null {
+  let newest: number | null = null;
+  for (const c of cards) {
+    if (!c.last_scraped_at) continue;
+    const t = new Date(c.last_scraped_at).getTime();
+    if (!Number.isFinite(t)) continue;
+    if (newest === null || t > newest) newest = t;
+  }
+  if (newest === null) return null;
+  return new Intl.DateTimeFormat('en-PH', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(newest));
+}
+
 export default async function BrowseAllCreditCardsPage({ searchParams }: Props) {
   const sp = await searchParams;
-  const cards = await getCreditCards();
+  const allCards = await getCreditCards();
+  const displayed = allCards.filter(isLikelyConsumerCard);
   const initialPill = resolvePill(sp.filter);
+
+  const bankCount = new Set(displayed.map((c) => c.bank)).size;
+  const latestCheck = newestSourceDate(displayed);
 
   return (
     <div className="min-h-screen bg-brand-surface dark:bg-slate-950">
@@ -48,42 +69,44 @@ export default async function BrowseAllCreditCardsPage({ searchParams }: Props) 
           ]}
         />
 
-        <div className="mt-4 flex flex-col gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-              Browse all credit cards
-            </h1>
-            <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-              {cards.length} cards · plain-English details · check the bank&apos;s
-              site before applying
-            </p>
-          </div>
-
-          {/* The guided finder stays the primary path */}
-          <div className="flex items-center gap-3 rounded-2xl border border-brand-primary/15 bg-brand-primaryLight px-4 py-3.5 dark:bg-brand-primary/10">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary text-white">
-              <Sparkles className="h-4 w-4" />
+        <div className="mt-4 space-y-3">
+          <h1 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
+            See the fees, rewards, and catches before you apply.
+          </h1>
+          <p className="text-sm text-brand-textSecondary dark:text-gray-300">
+            <span className="font-semibold text-brand-textPrimary dark:text-white">
+              {displayed.length} cards
+            </span>{' '}
+            ·{' '}
+            <span className="font-semibold text-brand-textPrimary dark:text-white">
+              {bankCount} banks
             </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-brand-textPrimary dark:text-white">
-                Not sure which to compare?
-              </p>
-              <p className="text-xs text-brand-textSecondary dark:text-gray-300">
-                Answer a few questions and we&apos;ll show cards that may fit you.
-              </p>
-            </div>
+            {latestCheck && (
+              <>
+                {' '}
+                · Latest source check:{' '}
+                <span className="font-semibold text-brand-textPrimary dark:text-white">
+                  {latestCheck}
+                </span>
+              </>
+            )}
+          </p>
+          <AffiliateDisclosure size="compact" />
+          <p className="text-xs text-brand-textSecondary dark:text-gray-400">
+            Or try the{' '}
             <Link
               href="/credit-cards"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-primary px-3.5 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-primaryDark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950"
+              className="inline-flex items-center gap-0.5 font-semibold text-brand-primary hover:underline"
             >
-              Start finder
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
+              guided finder
+              <ArrowRight className="h-3 w-3" />
+            </Link>{' '}
+            — a few questions and we&apos;ll show cards that may fit you.
+          </p>
         </div>
 
         <div className="mt-6">
-          <CreditCardCatalog cards={cards} initialPill={initialPill} key={initialPill} />
+          <CreditCardCatalog cards={displayed} initialPill={initialPill} key={initialPill} />
         </div>
 
         <AffiliateDisclosure size="footer" className="mt-8" />

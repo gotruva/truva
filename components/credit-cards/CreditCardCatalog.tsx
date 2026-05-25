@@ -3,19 +3,21 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import {
+  AlertTriangle,
   ArrowRight,
   CheckCircle,
   ChevronDown,
   ChevronUp,
   Info,
   Landmark,
+  Search,
   SlidersHorizontal,
   Sparkles,
   X,
 } from 'lucide-react';
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
-import { estimateAnnualValue, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY } from '@/lib/creditCardValue';
+import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
 import editorial from '@/lib/creditCardEditorial';
 import { cn } from '@/lib/utils';
 import type { BadgeInputs, CreditCard as CreditCardType } from '@/types';
@@ -42,6 +44,8 @@ const DEFAULT_FILTERS: FilterState = {
   fx: 'all',
   promo: 'all',
 };
+
+const NOT_SHOWN = 'Not shown yet';
 
 const BADGE_DEFINITIONS: Array<{
   key: keyof BadgeInputs;
@@ -105,6 +109,46 @@ const QUICK_PILLS: QuickPill[] = [
   },
 ];
 
+// ─── Sort & data-completeness ─────────────────────────────────────────────────
+
+function hasAnnualFee(card: CreditCardType): boolean {
+  return card.naffl === true || card.annual_fee_recurring !== null;
+}
+function hasIncome(card: CreditCardType): boolean {
+  return card.min_income_monthly !== null || card.min_income_annual !== null;
+}
+function hasRewards(card: CreditCardType): boolean {
+  return card.rewards_type !== null;
+}
+function hasFx(card: CreditCardType): boolean {
+  return card.foreign_transaction_fee_pct !== null;
+}
+function hasSourceDate(card: CreditCardType): boolean {
+  return Boolean(card.last_scraped_at);
+}
+
+function dataCompletenessScore(card: CreditCardType): number {
+  let score = 0;
+  if (hasAnnualFee(card)) score += 1;
+  if (hasIncome(card)) score += 1;
+  if (hasRewards(card)) score += 1;
+  if (hasFx(card)) score += 1;
+  if (hasSourceDate(card)) score += 1;
+  return score;
+}
+
+function sortByCompleteness(a: CreditCardType, b: CreditCardType): number {
+  const sa = dataCompletenessScore(a);
+  const sb = dataCompletenessScore(b);
+  if (sb !== sa) return sb - sa;
+  const da = a.last_scraped_at ? new Date(a.last_scraped_at).getTime() : 0;
+  const db = b.last_scraped_at ? new Date(b.last_scraped_at).getTime() : 0;
+  if (db !== da) return db - da;
+  return a.card_name.localeCompare(b.card_name);
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function CreditCardCatalog({
   cards,
   initialPill = 'all',
@@ -120,6 +164,7 @@ export function CreditCardCatalog({
   const [activePill, setActivePill] = useState<string>(initialPill);
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
+  const [query, setQuery] = useState<string>('');
 
   const issuers = useMemo(
     () => Array.from(new Set(cards.map((card) => card.bank))).sort(),
@@ -127,7 +172,12 @@ export function CreditCardCatalog({
   );
 
   const filteredCards = useMemo(() => {
+    const q = query.trim().toLowerCase();
     const filtered = cards.filter((card) => {
+      if (q) {
+        const hay = `${card.card_name} ${card.bank}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
       if (filters.issuer !== 'all' && card.bank !== filters.issuer) return false;
       if (filters.reward !== 'all' && (card.rewards_type ?? 'none') !== filters.reward)
         return false;
@@ -154,18 +204,16 @@ export function CreditCardCatalog({
       if (filters.promo === 'none' && card.active_promo_count > 0) return false;
       return true;
     });
-    // Default sort: highest net annual value first
-    return filtered.sort((a, b) => {
-      const va = estimateAnnualValue(a, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY).netAnnual;
-      const vb = estimateAnnualValue(b, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY).netAnnual;
-      return vb - va;
-    });
-  }, [cards, filters]);
+    return filtered.sort(sortByCompleteness);
+  }, [cards, filters, query]);
 
   const activeFilterCount = useMemo(
     () => Object.values(filters).filter((v) => v !== 'all').length,
     [filters],
   );
+
+  const hasFilters = activeFilterCount > 0 || activePill !== 'all';
+  const hasQuery = query.trim().length > 0;
 
   const selectedCards = selected
     .map((key) => cards.find((card) => card.normalized_card_key === key))
@@ -190,6 +238,16 @@ export function CreditCardCatalog({
     setActivePill('all');
   }
 
+  function resetFilters() {
+    setFilters(DEFAULT_FILTERS);
+    setActivePill('all');
+  }
+
+  function clearAll() {
+    resetFilters();
+    setQuery('');
+  }
+
   function toggleCompare(card: CreditCardType) {
     setSelected((current) => {
       if (current.includes(card.normalized_card_key)) {
@@ -201,18 +259,31 @@ export function CreditCardCatalog({
   }
 
   return (
-    <section id="cards" className="space-y-6 scroll-mt-32">
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-          Browse current data
-        </p>
-        <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-          Compare cards without the hard sell
-        </h2>
-        <p className="max-w-3xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-          Truva currently shows {cards.length} card records from {issuers.length} banks. Start with
-          fees, income requirements, and the details that still need checking.
-        </p>
+    <section id="cards" className="scroll-mt-32 space-y-6 pb-28 sm:pb-24">
+      {/* Search */}
+      <div className="relative">
+        <Search
+          className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-textSecondary dark:text-gray-400"
+          aria-hidden="true"
+        />
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search card or bank…"
+          className="h-12 w-full rounded-2xl border border-brand-border bg-white pl-11 pr-11 text-sm text-brand-textPrimary outline-none transition-colors placeholder:text-brand-textSecondary focus:border-brand-primary dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:placeholder:text-gray-500"
+          aria-label="Search credit cards"
+        />
+        {hasQuery && (
+          <button
+            type="button"
+            onClick={() => setQuery('')}
+            aria-label="Clear search"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-brand-textSecondary transition-colors hover:bg-brand-surface hover:text-brand-primary dark:hover:bg-white/10"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Quick-filter pills */}
@@ -257,7 +328,7 @@ export function CreditCardCatalog({
           <button
             type="button"
             onClick={() => setShowFilters((prev) => !prev)}
-            className="flex flex-1 items-center gap-2 text-sm font-semibold text-brand-textPrimary dark:text-white text-left"
+            className="flex flex-1 items-center gap-2 text-left text-sm font-semibold text-brand-textPrimary dark:text-white"
           >
             <SlidersHorizontal className="h-4 w-4 text-brand-primary" />
             More filters
@@ -268,16 +339,13 @@ export function CreditCardCatalog({
             )}
           </button>
           <div className="flex items-center gap-3">
-            {activeFilterCount > 0 && (
+            {hasFilters && (
               <button
                 type="button"
-                onClick={() => {
-                  setFilters(DEFAULT_FILTERS);
-                  setActivePill('all');
-                }}
+                onClick={resetFilters}
                 className="text-xs font-semibold text-brand-primary hover:underline"
               >
-                Reset
+                Reset filters
               </button>
             )}
             <button
@@ -298,8 +366,7 @@ export function CreditCardCatalog({
         {showFilters && (
           <div className="border-t border-brand-border px-5 pb-5 pt-4 dark:border-white/10">
             <p className="mb-4 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-              Use filters to narrow the list. They do not indicate a bank will approve you. Income
-              and score controls stay off until the fields are complete enough to use.
+              Use filters to narrow the list. They do not indicate a bank will approve you.
             </p>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
               <FilterSelect
@@ -357,34 +424,39 @@ export function CreditCardCatalog({
               />
             </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <LockedControl
-                title="Income filter off for now"
-                description="We need clearer bank income requirements before using this filter."
-              />
-              <LockedControl
-                title="Peso value off for now"
-                description="Reward value and fee-waiver details still need more checking."
-              />
-            </div>
+            <p className="mt-4 text-[11px] leading-relaxed text-brand-textSecondary dark:text-gray-400">
+              Income filtering is off until bank requirements are more complete.
+            </p>
           </div>
         )}
       </div>
 
-      <p className="text-sm text-brand-textSecondary dark:text-gray-300">
-        Showing{' '}
-        <span className="font-semibold text-brand-textPrimary dark:text-white">
-          {filteredCards.length}
-        </span>{' '}
-        of {cards.length} public card records.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-brand-textSecondary dark:text-gray-300">
+        <p>
+          Showing{' '}
+          <span className="font-semibold text-brand-textPrimary dark:text-white">
+            {filteredCards.length}
+          </span>{' '}
+          of {cards.length} cards · sorted by most complete data
+        </p>
+        {hasQuery && hasFilters && (
+          <button
+            type="button"
+            onClick={clearAll}
+            className="text-xs font-semibold text-brand-primary hover:underline"
+          >
+            Clear all
+          </button>
+        )}
+      </div>
 
       {filteredCards.length > 0 ? (
         <div className="grid gap-6 xl:grid-cols-2">
-          {filteredCards.map((card) => (
+          {filteredCards.map((card, index) => (
             <CatalogCard
               key={card.id}
               card={card}
+              rank={index + 1}
               selected={selected.includes(card.normalized_card_key)}
               compareDisabled={
                 !selected.includes(card.normalized_card_key) && selected.length >= 3
@@ -399,17 +471,14 @@ export function CreditCardCatalog({
             No cards match these filters yet
           </p>
           <p className="mt-2 text-sm text-brand-textSecondary dark:text-gray-300">
-            Try removing a filter or browse all available card listings.
+            Try clearing a filter or your search.
           </p>
           <button
             type="button"
-            onClick={() => {
-              setFilters(DEFAULT_FILTERS);
-              setActivePill('all');
-            }}
+            onClick={clearAll}
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white"
           >
-            Clear filters
+            Clear all
           </button>
         </div>
       )}
@@ -455,24 +524,15 @@ function FilterSelect({
   );
 }
 
-function LockedControl({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-xl border border-dashed border-brand-border bg-brand-surface/70 p-3 dark:border-white/10 dark:bg-white/[0.03]">
-      <p className="text-sm font-bold text-brand-textPrimary dark:text-white">{title}</p>
-      <p className="mt-1 text-xs leading-relaxed text-brand-textSecondary dark:text-gray-400">
-        {description}
-      </p>
-    </div>
-  );
-}
-
 function CatalogCard({
   card,
+  rank,
   selected,
   compareDisabled,
   onToggleCompare,
 }: {
   card: CreditCardType;
+  rank: number;
   selected: boolean;
   compareDisabled: boolean;
   onToggleCompare: () => void;
@@ -480,6 +540,14 @@ function CatalogCard({
   const [expanded, setExpanded] = useState(false);
   const isPartnerCard = card.badge_inputs?.partner_card === true;
   const fitLabel = computeFitLabel(card);
+
+  const checks = computeChecks(card);
+
+  const annualFeeStr = formatAnnualFee(card);
+  const incomeStr = formatIncome(card);
+  const rewardStr = formatRewardType(card.rewards_type);
+  const fxStr = formatFxFee(card.foreign_transaction_fee_pct);
+  const sourceHost = extractHost(card.source_url);
 
   return (
     <article
@@ -498,18 +566,14 @@ function CatalogCard({
       ) : null}
 
       <div className="p-5 sm:p-6">
-        {/* Top row: visual + header info */}
+        {/* Top: visual + header */}
         <div className="grid gap-5 sm:grid-cols-[12rem_minmax(0,1fr)] lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-6">
           <CreditCardVisual card={card} className="sm:mt-1" />
 
           <div className="flex min-w-0 flex-col">
-            {/* Card name + fit badge */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-primary">
-                  {formatCardMeta(card)}
-                </p>
-                <h3 className="mt-1 text-lg font-bold leading-snug tracking-tight text-brand-textPrimary dark:text-white sm:text-xl">
+                <h3 className="text-lg font-bold leading-snug tracking-tight text-brand-textPrimary dark:text-white sm:text-xl">
                   {card.card_name}
                 </h3>
                 <p className="mt-0.5 text-sm text-brand-textSecondary dark:text-gray-300">
@@ -528,75 +592,29 @@ function CatalogCard({
               )}
             </div>
 
-            {/* ₱/year hero estimate */}
-            {(() => {
-              const est = estimateAnnualValue(card, BROWSE_DEFAULT_INCOME, BROWSE_DEFAULT_CATEGORY);
-              return (
-                <div className="mt-4 inline-flex w-fit items-baseline gap-2 rounded-xl bg-brand-surface/70 px-3 py-2 dark:bg-white/[0.05]">
-                  <span className="text-xl font-black tabular-nums text-brand-textPrimary dark:text-white">
-                    {'₱' + Math.round(est.netAnnual).toLocaleString('en-PH')}
-                  </span>
-                  <span className="text-xs text-brand-textSecondary dark:text-gray-400">
-                    you could keep / year
-                  </span>
-                </div>
-              );
-            })()}
-
-            {/* 3 primary fact tiles: Yearly Fee · Min. Income · Rewards */}
-            <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
-              <FactTile
-                label="Yearly fee"
-                value={formatAnnualFee(card)}
-                detail={card.annual_fee_waiver_condition ?? 'Waiver data incomplete'}
-              />
-              <FactTile
-                label="Min. income"
-                value={formatIncome(card)}
-                detail="Monthly income required"
-              />
-              <FactTile
-                label="Rewards"
-                value={formatRewardType(card.rewards_type)}
-                detail={formatRewardFormula(card.rewards_formula)}
-              />
+            {/* 4-fact grid: 2x2 on mobile, 4-up on sm+ */}
+            <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              <FactTile label="Annual fee" value={annualFeeStr} />
+              <FactTile label="Min. income" value={incomeStr} />
+              <FactTile label="Rewards" value={rewardStr} />
+              <FactTile label="FX fee" value={fxStr} />
             </div>
 
-            {/* Secondary line: Foreign card fee + Interest */}
-            <p className="mt-3.5 text-xs text-brand-textSecondary dark:text-gray-400">
-              Foreign card fee:{' '}
-              <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
-                {formatPercent(card.foreign_transaction_fee_pct)}
-              </span>
-              {'  ·  '}Interest:{' '}
-              <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
-                {formatMonthlyRate(card.interest_rate_pct)}
-              </span>
-            </p>
-
-            {/* PH-specific signals: e-wallet earn + promo count */}
-            {(card.badge_inputs?.no_ewallet_earn || card.active_promo_count > 0) && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {card.badge_inputs?.no_ewallet_earn && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-amber-100 bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-700 dark:border-amber-500/20 dark:bg-amber-900/20 dark:text-amber-300">
-                    <Info className="h-3 w-3" />
-                    No GCash/Maya earn
-                  </span>
-                )}
-                {card.active_promo_count > 0 && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-brand-primary/15 bg-brand-primaryLight px-2.5 py-1 text-[11px] font-semibold text-brand-primary dark:border-brand-primary/25 dark:bg-brand-primary/10">
-                    <Sparkles className="h-3 w-3" />
-                    {card.active_promo_count} active promo
-                  </span>
-                )}
+            {/* Things to check */}
+            {checks.length > 0 && (
+              <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2.5 text-[12px] leading-relaxed text-amber-800 dark:border-amber-500/20 dark:bg-amber-900/15 dark:text-amber-200">
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                <p className="min-w-0">
+                  <span className="font-semibold">Worth checking on the bank site:</span>{' '}
+                  {checks.join(', ')}.
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Trust badges */}
+        {/* Trust badges + fine-print badges */}
         <CreditCardTrustBadges card={card} limit={4} className="mt-4" />
-
         <div className="mt-2 flex flex-wrap gap-1.5">
           <BadgeChips badges={card.badge_inputs} limit={4} />
         </div>
@@ -621,22 +639,27 @@ function CatalogCard({
                 {editorial[card.normalized_card_key].why}
               </p>
             )}
-            <div className="grid gap-2.5 sm:grid-cols-3">
-              <FactTile
+            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+              <DetailTile
+                label="Interest"
+                value={formatMonthlyRate(card.interest_rate_pct)}
+                detail="Per month"
+              />
+              <DetailTile
                 label="Waiver condition"
                 value={card.annual_fee_waiver_condition ?? 'No public data'}
                 detail={
                   card.annual_fee_waiver_threshold
-                    ? `Spend ₱${card.annual_fee_waiver_threshold.toLocaleString('en-PH')}+`
+                    ? `Spend PHP ${card.annual_fee_waiver_threshold.toLocaleString('en-PH')}+`
                     : ''
                 }
               />
-              <FactTile
+              <DetailTile
                 label="Cash advance"
                 value={formatCashAdvanceFee(card)}
                 detail="Per transaction"
               />
-              <FactTile
+              <DetailTile
                 label="Late payment"
                 value={
                   card.late_payment_fee_amount !== null
@@ -649,74 +672,110 @@ function CatalogCard({
             <div className="flex flex-wrap gap-1.5">
               <BadgeChips badges={card.badge_inputs} />
             </div>
-            <p className="text-xs text-brand-textSecondary dark:text-gray-400">
-              Source updated:{' '}
-              <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
-                {formatDate(card.last_scraped_at)}
-              </span>
-            </p>
           </div>
         )}
 
-        {/* Source date (collapsed state only) */}
-        {!expanded && (
-          <p className="mt-3 text-xs text-brand-textSecondary dark:text-gray-400">
-            Source updated:{' '}
-            <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
-              {formatDate(card.last_scraped_at)}
-            </span>
-          </p>
-        )}
+        {/* Source line */}
+        <p className="mt-4 text-xs text-brand-textSecondary dark:text-gray-400">
+          Source updated:{' '}
+          <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
+            {formatDate(card.last_scraped_at)}
+          </span>
+          {sourceHost && (
+            <>
+              {' '}·{' '}
+              <span className="font-medium text-brand-textSecondary dark:text-gray-400">
+                {sourceHost}
+              </span>
+            </>
+          )}
+        </p>
 
-        {/* CTAs */}
-        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-          <Link
-            href={`/credit-cards/reviews/${card.normalized_card_key}`}
-            className="inline-flex flex-1 items-center justify-center rounded-xl bg-brand-primary/10 px-4 py-3 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary/20 dark:bg-brand-primary/15 dark:hover:bg-brand-primary/25"
-          >
-            View details
-          </Link>
-          <button
-            type="button"
-            onClick={onToggleCompare}
-            disabled={compareDisabled}
-            className={cn(
-              'inline-flex flex-1 items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition-colors',
-              selected
-                ? 'border-brand-primary bg-brand-primary text-white'
-                : 'border-brand-border bg-brand-surface text-brand-textPrimary hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100',
-              compareDisabled ? 'cursor-not-allowed opacity-50' : '',
-            )}
-          >
-            {selected ? 'Selected' : '+ Compare'}
-          </button>
-          <a
+        {/* CTA row: Apply (primary blue) + View details + Compare checkbox */}
+        <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ApplyOnBankSiteButton
             href={card.source_url}
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
-          >
-            Visit bank site
-            <ArrowRight className="h-4 w-4" />
-          </a>
+            bank={card.bank}
+            cardKey={card.normalized_card_key}
+            sourcePage="credit-cards-all"
+            placement="browse_catalog_card"
+            rank={rank}
+            label="Apply on bank site"
+            className="h-12 w-full sm:w-auto sm:flex-1"
+          />
+          <div className="flex items-center justify-between gap-4 sm:justify-end">
+            <Link
+              href={`/credit-cards/reviews/${card.normalized_card_key}`}
+              className="inline-flex items-center gap-1 text-sm font-semibold text-brand-primary hover:underline"
+            >
+              View details
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <label
+              className={cn(
+                'inline-flex cursor-pointer select-none items-center gap-2 text-sm font-semibold text-brand-textSecondary dark:text-gray-300',
+                compareDisabled && 'cursor-not-allowed opacity-50',
+              )}
+            >
+              <input
+                type="checkbox"
+                checked={selected}
+                disabled={compareDisabled}
+                onChange={onToggleCompare}
+                className="h-4 w-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary"
+              />
+              Compare
+            </label>
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
-function FactTile({ label, value, detail }: { label: string; value: string; detail: string }) {
+function FactTile({ label, value }: { label: string; value: string }) {
+  const missing = value === NOT_SHOWN;
   return (
-    <div className="min-h-[5.75rem] rounded-xl border border-brand-border/90 bg-white/75 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] dark:border-white/10 dark:bg-slate-950/40">
+    <div className="min-h-[4.5rem] rounded-xl border border-brand-border/90 bg-white/75 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] dark:border-white/10 dark:bg-slate-950/40">
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
         {label}
       </p>
-      <p className="mt-1 text-sm font-bold tabular-nums text-brand-textPrimary dark:text-white">
+      <p
+        className={cn(
+          'mt-1 break-words text-sm font-bold tabular-nums',
+          missing
+            ? 'text-brand-textSecondary dark:text-gray-400'
+            : 'text-brand-textPrimary dark:text-white',
+        )}
+      >
         {value}
       </p>
-      <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-brand-textSecondary dark:text-gray-400">
-        {detail}
+    </div>
+  );
+}
+
+function DetailTile({
+  label,
+  value,
+  detail,
+}: {
+  label: string;
+  value: string;
+  detail: string;
+}) {
+  return (
+    <div className="min-h-[5.5rem] rounded-xl border border-brand-border/90 bg-white/75 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] dark:border-white/10 dark:bg-slate-950/40">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+        {label}
       </p>
+      <p className="mt-1 break-words text-sm font-bold text-brand-textPrimary dark:text-white">
+        {value}
+      </p>
+      {detail && (
+        <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-brand-textSecondary dark:text-gray-400">
+          {detail}
+        </p>
+      )}
     </div>
   );
 }
@@ -759,11 +818,9 @@ function CompareTray({
               </span>
             ))}
             {selectedCards.length === 1 && (
-              <>
-                <span className="inline-flex items-center rounded-full border border-dashed border-brand-border px-3 py-1.5 text-xs text-brand-textSecondary dark:border-white/10">
-                  Select 1 or 2 more cards
-                </span>
-              </>
+              <span className="inline-flex items-center rounded-full border border-dashed border-brand-border px-3 py-1.5 text-xs text-brand-textSecondary dark:border-white/10">
+                Select 1 or 2 more cards
+              </span>
             )}
             {selectedCards.length === 2 && (
               <span className="inline-flex items-center rounded-full border border-dashed border-brand-border px-3 py-1.5 text-xs text-brand-textSecondary dark:border-white/10">
@@ -843,8 +900,6 @@ function BadgeChips({ badges, limit }: { badges: BadgeInputs | null; limit?: num
   );
 }
 
-// PH-tuned fit label.
-
 function computeFitLabel(card: CreditCardType): { label: string; color: string } | null {
   if (card.naffl || card.annual_fee_recurring === 0)
     return {
@@ -883,11 +938,24 @@ function computeFitLabel(card: CreditCardType): { label: string; color: string }
   return null;
 }
 
-// ─── Format helpers ───────────────────────────────────────────────────────────
-
-function formatCardMeta(card: CreditCardType) {
-  return [card.card_network, card.card_tier].filter(Boolean).join(' / ') || 'Card details';
+function computeChecks(card: CreditCardType): string[] {
+  const checks: string[] = [];
+  if (!hasAnnualFee(card)) checks.push('annual fee');
+  if (!hasIncome(card)) checks.push('min. income');
+  if (!hasRewards(card)) checks.push('rewards details');
+  if (!hasFx(card)) checks.push('FX fee');
+  // Waiver missing only counts when there's a fee to waive
+  const hasPaidFee =
+    !card.naffl &&
+    card.annual_fee_recurring !== null &&
+    card.annual_fee_recurring > 0;
+  if (hasPaidFee && !card.annual_fee_waiver_condition) {
+    checks.push('fee waiver condition');
+  }
+  return checks;
 }
+
+// ─── Format helpers ───────────────────────────────────────────────────────────
 
 function formatAnnualFee(card: CreditCardType): string {
   if (card.naffl) return 'PHP 0 NAFFL';
@@ -895,7 +963,7 @@ function formatAnnualFee(card: CreditCardType): string {
   if (card.annual_fee_recurring !== null) return formatPhpAmount(card.annual_fee_recurring);
   if (card.annual_fee_first_year !== null)
     return `${formatPhpAmount(card.annual_fee_first_year)} first year`;
-  return 'Not disclosed';
+  return NOT_SHOWN;
 }
 
 function formatRewardType(rewardType: CreditCardType['rewards_type']) {
@@ -907,15 +975,8 @@ function formatRewardType(rewardType: CreditCardType['rewards_type']) {
     case 'points':
       return 'Points';
     default:
-      return 'None captured';
+      return NOT_SHOWN;
   }
-}
-
-function formatRewardFormula(formula: CreditCardType['rewards_formula']) {
-  if (!formula) return 'No public data';
-  const earnUnit = typeof formula.earn_unit === 'string' ? formula.earn_unit : '';
-  if (earnUnit.trim()) return earnUnit;
-  return 'Formula captured; peso value not ready';
 }
 
 function formatMonthlyRate(rate: number | null) {
@@ -923,8 +984,8 @@ function formatMonthlyRate(rate: number | null) {
   return `${rate.toFixed(2)}% / mo`;
 }
 
-function formatPercent(value: number | null) {
-  if (value === null) return 'Not disclosed';
+function formatFxFee(value: number | null) {
+  if (value === null) return NOT_SHOWN;
   return `${value.toFixed(2)}%`;
 }
 
@@ -932,11 +993,11 @@ function formatIncome(card: CreditCardType) {
   if (card.min_income_monthly !== null) return `${formatPhpAmount(card.min_income_monthly)} / mo`;
   if (card.min_income_annual !== null)
     return `${formatPhpAmount(Math.round(card.min_income_annual / 12))} / mo`;
-  return 'No public data';
+  return NOT_SHOWN;
 }
 
 function formatDate(value: string | null) {
-  if (!value) return 'No public data';
+  if (!value) return NOT_SHOWN;
   return new Intl.DateTimeFormat('en-PH', {
     year: 'numeric',
     month: 'short',
@@ -960,4 +1021,13 @@ function formatCashAdvanceFee(card: CreditCardType) {
     card.cash_advance_fee_amount !== null ? formatPhpAmount(card.cash_advance_fee_amount) : null,
   ].filter(Boolean);
   return pieces.length > 0 ? pieces.join(' or ') : 'Not disclosed';
+}
+
+function extractHost(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).host.replace(/^www\./, '');
+  } catch {
+    return null;
+  }
 }
