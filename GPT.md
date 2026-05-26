@@ -24,6 +24,19 @@
 | `lib/rates.ts` | Supabase → public `RateProduct[]` hydration |
 | `data/rates.json` | Manual/seed catalog (metadata fallback, non-scraper products) |
 | `utils/yieldEngine.ts` | Rate calculation logic (do not surface after-tax outputs in UI) |
+| `docs/webweaver-credit-card-data-contract.md` | WebWeaver credit-card bridge, promo tables, and live schema caveats |
+
+---
+
+## Credit Card Data Bridge
+
+Credit-card pages should read through the public bridge, not raw WebWeaver rows:
+`web_weaver.credit_cards -> public.credit_card_listings -> public.truva_credit_cards -> lib/credit-cards.ts`.
+
+Before touching this flow, read `docs/webweaver-credit-card-data-contract.md`.
+Watch especially for mixed `interest_rate_monthly` storage, non-snake-case
+`normalized_card_key` values, temporary readiness overrides, and incomplete
+promo-to-card targets.
 
 ---
 

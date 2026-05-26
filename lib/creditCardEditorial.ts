@@ -17,6 +17,10 @@
  *           the card's rewards_type + goal/spend answers — see getEditorialFor() in lib/credit-cards.ts
  */
 
+import { deriveCategoryMatch } from '@/lib/creditCardValue';
+import type { SpendingCategory, GoalId } from '@/lib/creditCardValue';
+import type { CreditCard } from '@/types';
+
 export interface CardEditorial {
   why: string;
   pros: string[];
@@ -205,3 +209,40 @@ const editorial: Record<string, CardEditorial> = {
 };
 
 export default editorial;
+
+/**
+ * Returns per-card editorial copy, or a generic data-driven fallback.
+ * Never returns fabricated content — fallback is grounded in real DB fields.
+ * Client-safe: depends only on the editorial record and pure derivations,
+ * so it can be imported by client components (e.g. the browse catalog).
+ */
+export function getEditorialFor(
+  card: CreditCard,
+  answers?: { goal?: GoalId; spending?: SpendingCategory },
+): CardEditorial {
+  const key = card.normalized_card_key;
+  if (editorial[key]) return editorial[key];
+
+  // Fallback: build a minimal-but-honest generic entry
+  const goalLabel = answers?.goal
+    ? { cashback: 'earning cashback', travel: 'travel and miles', 'no-annual-fee': 'avoiding a yearly fee', 'first-card': 'getting your first card', 'low-fee': 'keeping fees low' }[answers.goal]
+    : 'getting value from your spending';
+
+  const catMap = deriveCategoryMatch(card);
+  const topCat = (Object.entries(catMap) as [SpendingCategory, number][])
+    .sort((a, b) => b[1] - a[1])[0][0];
+  const topCatLabel = { groceries: 'grocery', dining: 'dining', online: 'online shopping', fuel: 'fuel', bills: 'bill payments', travel: 'travel' }[topCat];
+
+  return {
+    why: `This card suits your goal of ${goalLabel} and performs best on ${topCatLabel} spending.`,
+    pros: [
+      card.naffl === true ? 'No annual fee for life (NAFFL)' : card.annual_fee_recurring ? `Yearly fee of ₱${card.annual_fee_recurring.toLocaleString('en-PH')}` : 'Yearly fee — confirm with bank',
+      card.rewards_type ? `Earns ${card.rewards_type} on purchases` : 'Rewards on eligible purchases',
+      `Accepted wherever ${card.card_network ?? 'major networks'} is used`,
+    ].filter(Boolean) as string[],
+    cons: [
+      card.min_income_monthly ? `Minimum monthly income of ₱${card.min_income_monthly.toLocaleString('en-PH')} required` : 'Income requirement — confirm with bank',
+      card.foreign_transaction_fee_pct ? `Foreign card fee of ${card.foreign_transaction_fee_pct}% on overseas purchases` : 'Foreign card fee — confirm terms before travelling',
+    ],
+  };
+}

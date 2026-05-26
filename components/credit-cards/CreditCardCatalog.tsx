@@ -5,22 +5,20 @@ import { useMemo, useState } from 'react';
 import {
   AlertTriangle,
   ArrowRight,
-  CheckCircle,
+  Check,
   ChevronDown,
   ChevronUp,
-  Info,
-  Landmark,
   Search,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   X,
 } from 'lucide-react';
-import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
-import editorial from '@/lib/creditCardEditorial';
+import { getEditorialFor } from '@/lib/creditCardEditorial';
 import { cn } from '@/lib/utils';
-import type { BadgeInputs, CreditCard as CreditCardType } from '@/types';
+import type { CreditCard as CreditCardType } from '@/types';
 
 type FilterState = {
   issuer: string;
@@ -46,23 +44,6 @@ const DEFAULT_FILTERS: FilterState = {
 };
 
 const NOT_SHOWN = 'Not shown yet';
-
-const BADGE_DEFINITIONS: Array<{
-  key: keyof BadgeInputs;
-  label: string;
-  type: 'positive' | 'catch' | 'info' | 'neutral';
-}> = [
-  { key: 'true_naffl', label: 'True NAFFL', type: 'positive' },
-  { key: 'low_fx_fee', label: 'Low foreign fee', type: 'positive' },
-  { key: 'full_medical_coverage', label: 'Full medical cover', type: 'positive' },
-  { key: 'partner_card', label: 'Partner card', type: 'neutral' },
-  { key: 'high_fx_fee', label: 'High foreign fee', type: 'catch' },
-  { key: 'earn_cap', label: 'Earn cap', type: 'catch' },
-  { key: 'narrow_mcc', label: 'Narrow earn categories', type: 'catch' },
-  { key: 'rewards_devalued', label: 'Rewards devalued', type: 'catch' },
-  { key: 'accident_only_insurance', label: 'Accident-only insurance', type: 'catch' },
-  { key: 'no_ewallet_earn', label: 'No e-wallet earn', type: 'info' },
-];
 
 const QUICK_PILLS: QuickPill[] = [
   {
@@ -541,11 +522,14 @@ function CatalogCard({
   const isPartnerCard = card.badge_inputs?.partner_card === true;
   const fitLabel = computeFitLabel(card);
 
-  const checks = computeChecks(card);
+  const editorialEntry = getEditorialFor(card);
+  const pros = editorialEntry.pros.slice(0, 3);
+  const cons = editorialEntry.cons.slice(0, 2);
 
   const annualFeeStr = formatAnnualFee(card);
   const incomeStr = formatIncome(card);
-  const rewardStr = formatRewardType(card.rewards_type);
+  const rewardStr = formatEarnRate(card);
+  const interestStr = formatMonthlyRate(card.interest_rate_pct);
   const fxStr = formatFxFee(card.foreign_transaction_fee_pct);
   const sourceHost = extractHost(card.source_url);
 
@@ -594,30 +578,57 @@ function CatalogCard({
 
             {/* 4-fact grid: 2x2 on mobile, 4-up on sm+ */}
             <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              <FactTile label="Rewards" value={rewardStr} />
               <FactTile label="Annual fee" value={annualFeeStr} />
               <FactTile label="Min. income" value={incomeStr} />
-              <FactTile label="Rewards" value={rewardStr} />
-              <FactTile label="FX fee" value={fxStr} />
+              <FactTile label="Interest / mo" value={interestStr} />
             </div>
-
-            {/* Things to check */}
-            {checks.length > 0 && (
-              <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2.5 text-[12px] leading-relaxed text-amber-800 dark:border-amber-500/20 dark:bg-amber-900/15 dark:text-amber-200">
-                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                <p className="min-w-0">
-                  <span className="font-semibold">Worth checking on the bank site:</span>{' '}
-                  {checks.join(', ')}.
-                </p>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Trust badges + fine-print badges */}
-        <CreditCardTrustBadges card={card} limit={4} className="mt-4" />
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          <BadgeChips badges={card.badge_inputs} limit={4} />
-        </div>
+        {/* Good / Watch out — plain-language pros & cons */}
+        {(pros.length > 0 || cons.length > 0) && (
+          <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+            {pros.length > 0 && (
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3.5 dark:border-emerald-500/20 dark:bg-emerald-900/10">
+                <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-300">
+                  <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                  Good
+                </p>
+                <ul className="mt-2 space-y-1.5">
+                  {pros.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-1.5 text-[12.5px] leading-snug text-brand-textPrimary dark:text-gray-200"
+                    >
+                      <Check className="mt-[3px] h-3 w-3 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                      <span className="min-w-0">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {cons.length > 0 && (
+              <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-3.5 dark:border-amber-500/20 dark:bg-amber-900/10">
+                <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-amber-700 dark:text-amber-300">
+                  <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
+                  Watch out
+                </p>
+                <ul className="mt-2 space-y-1.5">
+                  {cons.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-1.5 text-[12.5px] leading-snug text-brand-textPrimary dark:text-gray-200"
+                    >
+                      <AlertTriangle className="mt-[3px] h-3 w-3 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                      <span className="min-w-0">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Inline expand toggle */}
         <button
@@ -634,19 +645,19 @@ function CatalogCard({
 
         {expanded && (
           <div className="mt-3 space-y-3 border-t border-brand-border pt-3 dark:border-white/10">
-            {editorial[card.normalized_card_key]?.why && (
+            {editorialEntry.why && (
               <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-                {editorial[card.normalized_card_key].why}
+                {editorialEntry.why}
               </p>
             )}
             <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
               <DetailTile
-                label="Interest"
-                value={formatMonthlyRate(card.interest_rate_pct)}
-                detail="Per month"
+                label="Foreign card fee"
+                value={fxStr === NOT_SHOWN ? 'Not disclosed' : fxStr}
+                detail="On overseas spend"
               />
               <DetailTile
-                label="Waiver condition"
+                label="Fee waiver"
                 value={card.annual_fee_waiver_condition ?? 'No public data'}
                 detail={
                   card.annual_fee_waiver_threshold
@@ -669,24 +680,21 @@ function CatalogCard({
                 detail="Per missed payment"
               />
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              <BadgeChips badges={card.badge_inputs} />
-            </div>
           </div>
         )}
 
-        {/* Source line */}
-        <p className="mt-4 text-xs text-brand-textSecondary dark:text-gray-400">
-          Source updated:{' '}
+        {/* Source line — single calm trust signal */}
+        <p className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-brand-textSecondary dark:text-gray-400">
+          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+          <span>Checked from the bank page</span>
+          <span aria-hidden="true">·</span>
           <span className="font-semibold text-brand-textPrimary dark:text-gray-200">
             {formatDate(card.last_scraped_at)}
           </span>
           {sourceHost && (
             <>
-              {' '}·{' '}
-              <span className="font-medium text-brand-textSecondary dark:text-gray-400">
-                {sourceHost}
-              </span>
+              <span aria-hidden="true">·</span>
+              <span className="font-medium">{sourceHost}</span>
             </>
           )}
         </p>
@@ -857,49 +865,6 @@ function CompareTray({
   );
 }
 
-function BadgeChips({ badges, limit }: { badges: BadgeInputs | null; limit?: number }) {
-  const active = badges ? BADGE_DEFINITIONS.filter((def) => badges[def.key]) : [];
-  const shown = limit ? active.slice(0, limit) : active;
-
-  if (shown.length === 0) {
-    return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:bg-white/10 dark:text-gray-400">
-        <Info className="h-3 w-3" />
-        No fine-print badges yet
-      </span>
-    );
-  }
-
-  return (
-    <>
-      {shown.map((def) => {
-        const iconClass = 'h-3 w-3 shrink-0';
-        const classes =
-          def.type === 'positive'
-            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300'
-            : def.type === 'catch'
-              ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300'
-              : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-gray-400';
-        const Icon =
-          def.type === 'positive' ? CheckCircle : def.type === 'catch' ? Info : Landmark;
-
-        return (
-          <span
-            key={def.key}
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium',
-              classes,
-            )}
-          >
-            <Icon className={iconClass} />
-            {def.label}
-          </span>
-        );
-      })}
-    </>
-  );
-}
-
 function computeFitLabel(card: CreditCardType): { label: string; color: string } | null {
   if (card.naffl || card.annual_fee_recurring === 0)
     return {
@@ -938,23 +903,6 @@ function computeFitLabel(card: CreditCardType): { label: string; color: string }
   return null;
 }
 
-function computeChecks(card: CreditCardType): string[] {
-  const checks: string[] = [];
-  if (!hasAnnualFee(card)) checks.push('annual fee');
-  if (!hasIncome(card)) checks.push('min. income');
-  if (!hasRewards(card)) checks.push('rewards details');
-  if (!hasFx(card)) checks.push('FX fee');
-  // Waiver missing only counts when there's a fee to waive
-  const hasPaidFee =
-    !card.naffl &&
-    card.annual_fee_recurring !== null &&
-    card.annual_fee_recurring > 0;
-  if (hasPaidFee && !card.annual_fee_waiver_condition) {
-    checks.push('fee waiver condition');
-  }
-  return checks;
-}
-
 // ─── Format helpers ───────────────────────────────────────────────────────────
 
 function formatAnnualFee(card: CreditCardType): string {
@@ -979,9 +927,51 @@ function formatRewardType(rewardType: CreditCardType['rewards_type']) {
   }
 }
 
+/**
+ * Short, scannable earn rate for the key-facts tile — shows the real rate the
+ * bank advertises when we have it (e.g. "8% on dining", "2 pts / ₱30",
+ * "₱4 / ₱1,000"), otherwise falls back to the reward type. Never fabricates a
+ * number: when no documented earn_rate exists we show only the type label.
+ */
+function formatEarnRate(card: CreditCardType): string {
+  const formula = card.rewards_formula as
+    | { earn_rate?: number | null; earn_unit?: string | null }
+    | null;
+  const rate =
+    formula && typeof formula.earn_rate === 'number' ? formula.earn_rate : null;
+  const unitRaw =
+    formula && typeof formula.earn_unit === 'string' ? formula.earn_unit.trim() : '';
+
+  if (rate !== null && rate > 0) {
+    const unit = unitRaw.toLowerCase();
+    const perMatch = unitRaw.match(/per\s*php\s*([\d,]+)/i);
+    const per = perMatch ? perMatch[1].replace(/,/g, '') : null;
+
+    // Percentage rewards: "percent on dining" -> "8% on dining"; "% fuel rebate"
+    if (unit.includes('percent') || unit.includes('%')) {
+      const tail = unitRaw.replace(/percent/i, '').replace(/%/g, '').trim();
+      return tail ? `${rate}% ${tail}` : `${rate}%`;
+    }
+    // Points: "1 pt" / "2 pts / ₱30"
+    if (unit.includes('point')) {
+      const noun = rate === 1 ? 'pt' : 'pts';
+      return per ? `${rate} ${noun} / ₱${per}` : `${rate} ${noun}`;
+    }
+    // Miles
+    if (unit.includes('mile')) {
+      return per ? `${rate} mi / ₱${per}` : `${rate} miles`;
+    }
+    // Peso-back per spend: "per Php 1,000 spend..." -> "₱4 / ₱1,000"
+    if (per) return `₱${rate} / ₱${perMatch![1]}`;
+  }
+
+  // No documented rate -> reward type label only (or "Not shown yet")
+  return formatRewardType(card.rewards_type);
+}
+
 function formatMonthlyRate(rate: number | null) {
-  if (rate === null) return 'Not disclosed';
-  return `${rate.toFixed(2)}% / mo`;
+  if (rate === null) return NOT_SHOWN;
+  return `${rate.toFixed(2)}%`;
 }
 
 function formatFxFee(value: number | null) {
