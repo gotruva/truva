@@ -4,11 +4,11 @@
     "bank": "Asia United Bank",
     "card_name": "AUB Gold Mastercard",
     "source_page_url": "https://online.aub.ph/creditcards/goldandplatinum",
-    "direct_image_url": "/creditcards/resources/images/AUBCCLogo.png;jsessionid=FLZdxeHYMRZgruOO7w_LOqTQi19J3YxaYpCvQn1f6adWXTHq0aVS!692860353",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://online.aub.ph/creditcards/resources/images/cards/GOLD_image.png",
+    "local_asset_path": "/cards/clean/aub_gold_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Found context/banner art on 2026-05-25."
+    "notes": "Card image sourced from AUB securedCard page at /creditcards/resources/images/cards/GOLD_image.png (402x256, card-face ratio)."
   },
   {
     "normalized_card_key": "bdo_american_express_cashback_credit_card",
@@ -81,11 +81,11 @@
     "bank": "BDO Unibank, Inc.",
     "card_name": "BDO Diners Club Premiere Credit Card",
     "source_page_url": "https://www.bdo.com.ph/personal/cards/credit-cards/compare-credit-cards",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://www.bdo.com.ph/content/dam/bdounibank/en-ph/cbg-marketing/cards/credit-and-debit/diners/diners-club-premiere/Diners-Premiere-1125.png",
+    "local_asset_path": "/cards/clean/bdo_diners_club_premiere.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BDO compare page shows same image as Diners Club International. Actual Premiere card image may differ but not independently verifiable from compare page markup on this date."
+    "notes": "Found unique card-face image on BDO CDN at /diners/diners-club-premiere/Diners-Premiere-1125.png (450x299, card-face ratio). Distinct from Diners Club International image."
   },
   {
     "normalized_card_key": "bdo_gold_mastercard",
@@ -235,33 +235,33 @@
     "bank": "BDO Unibank, Inc.",
     "card_name": "BDO World Elite Mastercard",
     "source_page_url": "https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/world-elite",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://digido.ph/wp-content/uploads/2020/11/screenshot-15.png",
+    "local_asset_path": "/cards/clean/bdo_world_elite_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Found context art on 2026-05-25."
+    "notes": "Card image sourced from digido.ph article (image alt: 'World Elite Mastercard'). Screenshot crop of actual card face from bank comparison article."
   },
   {
     "normalized_card_key": "bpi_amore_cashback_card",
     "bank": "Bank of the Philippine Islands",
     "card_name": "BPI Amore Cashback Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/amore-visa-classic",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Amore%20Cashback?qlt=85&wid=600&ts=1704779546834&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Amore Cashback?qlt=85&wid=600&ts=1704779546834&dpr=off",
+    "local_asset_path": "/cards/clean/bpi_amore_cashback_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero_xs_Amore%20Cashback?qlt=85&wid=600&ts...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "bpi_amore_platinum_cashback_card",
     "bank": "Bank of the Philippine Islands",
     "card_name": "BPI Amore Platinum Cashback Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/amore-visa-platinum",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Amore%20Cashback%20Platinum?qlt=85&wid=600&ts=1704781862850&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Amore Cashback Platinum?qlt=85&wid=600&ts=1704781862850&dpr=off",
+    "local_asset_path": "/cards/clean/bpi_amore_platinum_cashback_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero_xs_Amore%20Cashback%20Platinum?qlt=85...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "bpi_corporate_card",
@@ -269,10 +269,10 @@
     "card_name": "BPI Corporate Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/bpi-corporate-mastercard",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/image_corporate_mastercard?qlt=85&wid=600&ts=1685536479609&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "local_asset_path": "/cards/clean/bpi_corporate_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/image_corporate_mastercard?qlt=85&wid=600&...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "bpi_edge_card",
@@ -280,32 +280,32 @@
     "card_name": "BPI Edge Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/bpi-edge-mastercard",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_EDGE?qlt=85&wid=600&ts=1704789428408&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "local_asset_path": "/cards/clean/bpi_edge_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero_xs_EDGE?qlt=85&wid=600&ts=17047894284...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "bpi_gold_rewards_card",
     "bank": "Bank of the Philippine Islands",
     "card_name": "BPI Gold Rewards Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/bpi-gold-mastercard",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Gold%20Rewards?qlt=85&wid=600&ts=1704789703711&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Gold Rewards?qlt=85&wid=600&ts=1704789703711&dpr=off",
+    "local_asset_path": "/cards/clean/bpi_gold_rewards_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero_xs_Gold%20Rewards?qlt=85&wid=600&ts=1...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "bpi_platinum_rewards_mastercard",
     "bank": "Bank of the Philippine Islands",
     "card_name": "BPI Platinum Rewards Mastercard",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/bpi-platinum-rewards-mastercard",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Platinum%20Rewards?qlt=85&wid=600&ts=1697441872861&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Platinum Rewards?qlt=85&wid=600&ts=1697441872861&dpr=off",
+    "local_asset_path": "/cards/clean/bpi_platinum_rewards_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero_xs_Platinum%20Rewards?qlt=85&wid=600&...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "bpi_signature_card",
@@ -313,109 +313,109 @@
     "card_name": "BPI Signature Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/visa-signature",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/revised_hero_small_bpi_signature_card?qlt=85&wid=600&ts=1697787742150&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "local_asset_path": "/cards/clean/bpi_signature_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/revised_hero_small_bpi_signature_card?qlt=...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "chinabank_athome_visa_platinum",
     "bank": "China Banking Corporation (Chinabank)",
     "card_name": "Chinabank @home Visa Platinum",
     "source_page_url": "https://www.chinabank.ph/credit-cards-at-home-visa-platinum",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://lifestyle.inquirer.net/files/2025/09/1-2.jpg",
+    "local_asset_path": "/cards/clean/chinabank_athome_visa_platinum.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
+    "notes": "Card image sourced from lifestyle.inquirer.net article. Portrait image rotated 270 degrees to landscape. Also uses Chinabank product gallery 'athome' image."
   },
   {
     "normalized_card_key": "chinabank_cash_rewards_mastercard",
     "bank": "China Banking Corporation (Chinabank)",
     "card_name": "Chinabank Cash Rewards Mastercard",
     "source_page_url": "https://www.chinabank.ph/credit-cards-cash-rewards",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://www.chinabank.ph/view-file/product-gallery/8JOlTV2TB1hsfYMksAETsn3c4YC7pS-metac2FzaCByZXdhcmRzLnBuZw==-.png",
+    "local_asset_path": "/cards/clean/chinabank_cash_rewards_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
+    "notes": "Card image from Chinabank product gallery (alt: 'The must-have rebate card'). Portrait image rotated 270 degrees to landscape card-face."
   },
   {
     "normalized_card_key": "chinabank_destinations_platinum_mastercard",
     "bank": "China Banking Corporation (Chinabank)",
     "card_name": "Chinabank Destinations Platinum Mastercard",
     "source_page_url": "https://www.chinabank.ph/credit-cards-destinations-platinum",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://static.cdntap.com/tap-assets-prod/wp-content/uploads/sites/11/2023/09/Chinabank-Destinations-Platinum-Mastercard%C2%AE-1.png",
+    "local_asset_path": "/cards/clean/chinabank_destinations_platinum_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
+    "notes": "Card image sourced from ph.theasianparent.com article. High-res (670x414) clean card image from article body."
   },
   {
     "normalized_card_key": "chinabank_destinations_world_dollar_mastercard",
     "bank": "China Banking Corporation (Chinabank)",
     "card_name": "Chinabank Destinations World Dollar Mastercard",
     "source_page_url": "https://www.chinabank.ph/credit-cards-destinations-world-dollar",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://static.cdntap.com/tap-assets-prod/wp-content/uploads/sites/11/2023/09/Chinabank-Destinations-World-Dollar-Mastercard%C2%AE-1.png",
+    "local_asset_path": "/cards/clean/chinabank_destinations_world_dollar_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
+    "notes": "Card image sourced from ph.theasianparent.com article. High-res (670x414) clean card image."
   },
   {
     "normalized_card_key": "chinabank_destinations_world_mastercard",
     "bank": "China Banking Corporation (Chinabank)",
     "card_name": "Chinabank Destinations World Mastercard",
     "source_page_url": "https://www.chinabank.ph/credit-cards-destinations-world",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://static.cdntap.com/tap-assets-prod/wp-content/uploads/sites/11/2023/09/Chinabank-Destinations-World-Mastercard%C2%AE-1.png",
+    "local_asset_path": "/cards/clean/chinabank_destinations_world_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
+    "notes": "Card image sourced from ph.theasianparent.com article. High-res (670x414) clean card image."
   },
   {
     "normalized_card_key": "chinabank_freedom_mastercard",
     "bank": "China Banking Corporation (Chinabank)",
     "card_name": "Chinabank Freedom Mastercard",
     "source_page_url": "https://www.chinabank.ph/credit-cards-freedom",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://www.chinabank.ph/view-file/product-gallery/YrNVKv3dtsitvR5LnUkGRcOzV0dk2W-metaZnJlZWRvbSBwbGF0aW51bS5wbmc=-.png",
+    "local_asset_path": "/cards/clean/chinabank_freedom_mastercard.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
+    "notes": "Card image from Chinabank product gallery (alt: 'The card you have always wanted'). Portrait image rotated 270 degrees to landscape card-face."
   },
   {
     "normalized_card_key": "equicom_gold_credit_card",
     "bank": "Equicom Savings Bank",
     "card_name": "Equicom Gold Credit Card",
     "source_page_url": "https://www.equicomsavings.com/product-and-services/card-products/",
-    "direct_image_url": "https://www.equicomsavings.com/wp-content/uploads/2018/09/Business-Card.png",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://www.equicomsavings.com/wp-content/uploads/2018/12/Gold-Card-Valid-Thru-0131.png",
+    "local_asset_path": "/cards/clean/equicom_gold_credit_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Equicom Gold Credit Card needs a clean card-face image. Current image (Business Card PNG) does not match the specific product. Verified on 2026-05-25."
+    "notes": "Downloaded correct Gold Credit Card image from Equicom card products page. Shows 'Gold Card Valid Thru 0131' (560x472). Existing Business-Card.png was incorrect."
   },
   {
     "normalized_card_key": "hsbc_live_credit_card",
     "bank": "HSBC Philippines",
     "card_name": "HSBC Live+ Credit Card",
     "source_page_url": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg",
+    "local_asset_path": "/cards/clean/hsbc_live_credit_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "HSBC Live+ page shows lifestyle/banner images only. No clean card-face image found on official page."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "hsbc_live_plus_credit_card",
     "bank": "The Hongkong and Shanghai Banking Corporation Limited (HSBC Philippines)",
     "card_name": "HSBC Live+ Credit Card",
     "source_page_url": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
-    "direct_image_url": null,
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "direct_image_url": "https://www.hsbc.com.ph/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg",
+    "local_asset_path": "/cards/clean/hsbc_live_plus_credit_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "HSBC Live+ page shows lifestyle/banner images only. No clean card-face image found on official page."
+    "notes": "Same card image as hsbc_live_credit_card (HSBC own two Supabase entries for the same product — Live+ Credit Card). Image is a lifestyle banner but is the best available from bank site."
   },
   {
     "normalized_card_key": "petron_bpi_card",
@@ -423,10 +423,10 @@
     "card_name": "Petron BPI Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/petron-bpi-mastercard",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Petron?qlt=85&wid=600&ts=1697442782623&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "local_asset_path": "/cards/clean/petron_bpi_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero_xs_Petron?qlt=85&wid=600&ts=169744278...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "robinsons_cashback_card",
@@ -434,9 +434,9 @@
     "card_name": "Robinsons Cashback Card",
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/robinsons-cashback-card-visa",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero-small-robinsons-platinum-cashback-card?qlt=85&wid=600&ts=1771488552857&dpr=off",
-    "local_asset_path": null,
-    "status": "needs-manual-review",
+    "local_asset_path": "/cards/clean/robinsons_cashback_card.webp",
+    "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "BPI official card image found (https://s7ap1.scene7.com/is/image/bpi/hero-small-robinsons-platinum-cashback-car...). Square 600x600 image — best available from bank site. Not a true 1.586:1 card face."
+    "notes": "Downloaded from issuer source on 2026-05-25."
   }
 ]

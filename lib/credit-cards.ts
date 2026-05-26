@@ -1,10 +1,12 @@
 import { createSupabaseServerClient } from '@/lib/supabase';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { CreditCard } from '@/types';
-import editorial, { type CardEditorial } from '@/lib/creditCardEditorial';
-import { deriveCategoryMatch } from '@/lib/creditCardValue';
-import type { SpendingCategory, GoalId } from '@/lib/creditCardValue';
 import { normalizeRewardType } from '@/lib/creditCardFinder/detail';
+import editorial from '@/lib/creditCardEditorial';
+
+// getEditorialFor now lives in the (client-safe) editorial module so client
+// components can import it too. Re-exported here for existing server callers.
+export { getEditorialFor, type CardEditorial } from '@/lib/creditCardEditorial';
 
 const BANK_LOGO_MAP: Record<string, string> = {
   'Bank of the Philippine Islands': '/logos/bpi.svg',
@@ -29,6 +31,109 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
   };
 }
 
+/**
+ * Canonical key for deduping rows that describe the same product but were
+ * upserted under inconsistent `normalized_card_key` values (e.g. "hsbc live
+ * credit card" vs "hsbc_live_plus_credit_card"). The WebWeaver v2 contract is
+ * supposed to enforce snake_case keys (see docs/webweaver-credit-card-data-
+ * contract.md), but live data still has mixed formats. We canonicalise by
+ * lowercasing the card name, dropping "+" and other punctuation, then
+ * collapsing whitespace. This is deliberately conservative — it only collides
+ * rows whose product names match after that normalisation.
+ */
+function canonicalCardKey(card: Pick<CreditCard, 'card_name'>): string {
+  return card.card_name
+    .toLowerCase()
+    .replace(/\+/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Counts populated, decision-relevant fields. Used to pick the "fuller" row. */
+function completenessScore(card: CreditCard): number {
+  let n = 0;
+  if (card.naffl === true || card.annual_fee_recurring !== null) n++;
+  if (card.min_income_monthly !== null || card.min_income_annual !== null) n++;
+  if (card.interest_rate_pct !== null) n++;
+  if (card.foreign_transaction_fee_pct !== null) n++;
+  if (card.annual_fee_waiver_condition !== null) n++;
+  if (card.rewards_formula !== null) n++;
+  if (card.rewards_type !== null) n++;
+  if (card.card_network !== null) n++;
+  if (card.last_scraped_at) n++;
+  return n;
+}
+
+/**
+ * Merges two duplicate-product rows. `more` is the fuller row (its values win
+ * on conflict); `less` only fills in fields the fuller row has as null. We bias
+ * the kept `normalized_card_key` toward the variant that has a hand-written
+ * editorial entry so per-card review URLs land on the richest copy.
+ */
+function mergeCards(more: CreditCard, less: CreditCard): CreditCard {
+  const out: CreditCard = { ...less, ...more };
+  // Field-by-field: if `more` has null/undefined and `less` has a real value,
+  // borrow it from `less`. Cheap loop over a small, flat shape.
+  const moreRecord = more as unknown as Record<string, unknown>;
+  const lessRecord = less as unknown as Record<string, unknown>;
+  const outRecord = out as unknown as Record<string, unknown>;
+  (Object.keys(out) as Array<keyof CreditCard>).forEach((k) => {
+    const mv = moreRecord[k as string];
+    const lv = lessRecord[k as string];
+    if ((mv === null || mv === undefined) && lv !== null && lv !== undefined) {
+      outRecord[k as string] = lv;
+    }
+  });
+  // Editorial-aware key choice.
+  const moreHasEd = Boolean(editorial[more.normalized_card_key]);
+  const lessHasEd = Boolean(editorial[less.normalized_card_key]);
+  if (lessHasEd && !moreHasEd) {
+    out.normalized_card_key = less.normalized_card_key;
+  } else {
+    out.normalized_card_key = more.normalized_card_key;
+  }
+  // Newest scrape date.
+  if (more.last_scraped_at && less.last_scraped_at) {
+    out.last_scraped_at =
+      new Date(less.last_scraped_at).getTime() > new Date(more.last_scraped_at).getTime()
+        ? less.last_scraped_at
+        : more.last_scraped_at;
+  }
+  // Max active_promo_count (numbers should aggregate, not overwrite).
+  out.active_promo_count = Math.max(more.active_promo_count, less.active_promo_count);
+  // Prefer the shorter, more user-friendly bank name when both rows have one
+  // (e.g. "HSBC Philippines" beats "The Hongkong and Shanghai Banking
+  // Corporation Limited (HSBC Philippines)"). Re-derive the logo so the bank
+  // mark still resolves through BANK_LOGO_MAP.
+  if (more.bank && less.bank && less.bank.length < more.bank.length) {
+    out.bank = less.bank;
+  }
+  out.logo = deriveLogo(out.bank);
+  return out;
+}
+
+/**
+ * Collapses rows that describe the same product into a single richer row.
+ * Order of inputs doesn't matter — for each canonical key we keep the most
+ * complete row and let any duplicates top up its null fields.
+ */
+function dedupeCards(cards: CreditCard[]): CreditCard[] {
+  const byKey = new Map<string, CreditCard>();
+  for (const c of cards) {
+    const k = canonicalCardKey(c);
+    const existing = byKey.get(k);
+    if (!existing) {
+      byKey.set(k, c);
+      continue;
+    }
+    const [more, less] =
+      completenessScore(c) > completenessScore(existing) ? [c, existing] : [existing, c];
+    byKey.set(k, mergeCards(more, less));
+  }
+  return Array.from(byKey.values());
+}
+
 export async function getCreditCards(): Promise<CreditCard[]> {
   const supabase = createSupabaseAdminClient('public') ?? await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -42,58 +147,24 @@ export async function getCreditCards(): Promise<CreditCard[]> {
     return [];
   }
 
-  return (data ?? []).map(attachLogo);
+  return dedupeCards((data ?? []).map(attachLogo));
 }
 
 export async function getCreditCardBySlug(slug: string): Promise<CreditCard | null> {
-  const supabase = createSupabaseAdminClient('public') ?? await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('truva_credit_cards')
-    .select('*')
-    .eq('normalized_card_key', slug)
-    .maybeSingle();
-
-  if (error) {
-    console.error('getCreditCardBySlug error:', error.message);
-    return null;
-  }
-
-  return data ? attachLogo(data) : null;
-}
-
-/**
- * Returns per-card editorial copy, or a generic data-driven fallback.
- * Never returns fabricated content — fallback is grounded in real DB fields.
- */
-export function getEditorialFor(
-  card: CreditCard,
-  answers?: { goal?: GoalId; spending?: SpendingCategory },
-): CardEditorial {
-  const key = card.normalized_card_key;
-  if (editorial[key]) return editorial[key];
-
-  // Fallback: build a minimal-but-honest generic entry
-  const goalLabel = answers?.goal
-    ? { cashback: 'earning cashback', travel: 'travel and miles', 'no-annual-fee': 'avoiding a yearly fee', 'first-card': 'getting your first card', 'low-fee': 'keeping fees low' }[answers.goal]
-    : 'getting value from your spending';
-
-  const catMap = deriveCategoryMatch(card);
-  const topCat = (Object.entries(catMap) as [SpendingCategory, number][])
-    .sort((a, b) => b[1] - a[1])[0][0];
-  const topCatLabel = { groceries: 'grocery', dining: 'dining', online: 'online shopping', fuel: 'fuel', bills: 'bill payments', travel: 'travel' }[topCat];
-
-  return {
-    why: `This card suits your goal of ${goalLabel} and performs best on ${topCatLabel} spending.`,
-    pros: [
-      card.naffl === true ? 'No annual fee for life (NAFFL)' : card.annual_fee_recurring ? `Yearly fee of ₱${card.annual_fee_recurring.toLocaleString('en-PH')}` : 'Yearly fee — confirm with bank',
-      card.rewards_type ? `Earns ${card.rewards_type} on purchases` : 'Rewards on eligible purchases',
-      `Accepted wherever ${card.card_network ?? 'major networks'} is used`,
-    ].filter(Boolean) as string[],
-    cons: [
-      card.min_income_monthly ? `Minimum monthly income of ₱${card.min_income_monthly.toLocaleString('en-PH')} required` : 'Income requirement — confirm with bank',
-      card.foreign_transaction_fee_pct ? `Foreign card fee of ${card.foreign_transaction_fee_pct}% on overseas purchases` : 'Foreign card fee — confirm terms before travelling',
-    ],
-  };
+  // Resolve against the deduped list so the merged card answers for any of the
+  // duplicate-row slugs (e.g. both `hsbc live credit card` and
+  // `hsbc_live_plus_credit_card` should return the same merged card).
+  const cards = await getCreditCards();
+  const direct = cards.find((c) => c.normalized_card_key === slug);
+  if (direct) return direct;
+  // Fall back to canonical-name match for old/alternate slug shapes.
+  const target = slug
+    .toLowerCase()
+    .replace(/\+/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return cards.find((c) => canonicalCardKey(c) === target) ?? null;
 }
 
 export async function getCreditCardsByRubric(

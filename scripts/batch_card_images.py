@@ -305,7 +305,7 @@ async def extract_bpi_card_image(page, url: str) -> dict | None:
                 const w = img.naturalWidth || img.width || 0;
                 const h = img.naturalHeight || img.height || 0;
                 if (w < 100 || h < 60) continue;
-                if (src.includes('hero_xs') || src.includes('hero_small')) {
+                if (src.includes('hero_xs') || src.includes('hero_small') || src.includes('hero-small') || (src.includes('scene7') && src.includes('image_') && !src.includes('739x391'))) {
                     const altText = (img.getAttribute('alt') || '').trim();
                     return {src: src, w: w, h: h, ratio: w/h, alt: altText, isCardSpecific: true};
                 }
@@ -570,10 +570,12 @@ async def scrape_all_cards(cards_list: list) -> list:
                         direct_url = result["src"]
                         ratio = result.get("ratio", 0)
                         is_card_face = 1.3 < ratio < 2.0
+                        is_card_specific = result.get("isCardSpecific", False)
 
-                        print(f"  🖼️  {direct_url} ({result['w']}x{result['h']}, ratio={ratio:.4f})")
+                        print(f"  🖼️  {direct_url} ({result['w']}x{result['h']}, ratio={ratio:.4f}, cardSpecific={is_card_specific})")
 
-                        if is_card_face:
+                        # Accept card-ratio images OR card-specific Scene7 art
+                        if is_card_face or is_card_specific:
                             # Download via page context
                             img_data = await page.evaluate(f"""
                                 async () => {{
@@ -593,14 +595,14 @@ async def scrape_all_cards(cards_list: list) -> list:
                             """)
                             if img_data:
                                 downloaded_bytes = base64.b64decode(img_data)
-                                # Check if it's actually a card face or a lifestyle photo
-                                # Lifestyle photos tend to be very tall (wider ratio isn't 1.5)
                                 pil_img = Image.open(io.BytesIO(downloaded_bytes))
                                 w, h = pil_img.size
                                 actual_ratio = w / h
-                                if 1.3 < actual_ratio < 2.0 and w >= 200 and h >= 100:
+                                # Accept card-ratio images OR card-specific Scene7 art (even if square)
+                                if (1.3 < actual_ratio < 2.0) or (actual_ratio >= 0.9 and actual_ratio <= 1.2 and is_card_specific):
                                     status = "clean-card"
                                     notes = f"Downloaded from issuer source on {TODAY}."
+                                    print(f"  ✅ Accepted as clean-card")
                                 else:
                                     print(f"  ⚠️  BPI image is context/lifestyle art (ratio={actual_ratio:.4f})")
                                     status = "needs-manual-review"
@@ -609,7 +611,7 @@ async def scrape_all_cards(cards_list: list) -> list:
                                 status = "needs-manual-review"
                                 notes = f"Download failed on {TODAY}."
                         else:
-                            print(f"  ⚠️  BPI image is not card-ratio (ratio={ratio:.4f})")
+                            print(f"  ⚠️  BPI image is not card-specific (ratio={ratio:.4f})")
                             status = "needs-manual-review"
                             notes = f"Found context art on {TODAY}. Card-face image not available from bank site."
                     else:
