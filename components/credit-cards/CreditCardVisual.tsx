@@ -91,6 +91,40 @@ export function CreditCardVisual({
   );
 }
 
+/**
+ * Compact card chip for the dense comparison rows (~64×40px). Deliberately
+ * renders NO overlay text — the card-name heading carries the accessible label,
+ * so this is `aria-hidden`. Uses real card art when available, otherwise the
+ * issuer-tone gradient. Size is controlled by the caller via `className`.
+ */
+export function MiniCreditCardVisual({
+  card,
+  className,
+}: {
+  card: CreditCardType;
+  className?: string;
+}) {
+  const tone = getIssuerTone(card.bank);
+  const visualAsset = getCreditCardVisualAsset(card);
+  const imagePath = visualAsset?.assetPath;
+
+  return (
+    <div
+      className={cn(
+        'relative shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-black/5 dark:ring-white/10',
+        className,
+      )}
+      aria-hidden="true"
+    >
+      {imagePath ? (
+        <Image src={imagePath} alt="" fill className="object-cover" sizes="96px" />
+      ) : (
+        <div className={cn('h-full w-full bg-gradient-to-br', tone.from, tone.via, tone.to)} />
+      )}
+    </div>
+  );
+}
+
 export function CreditCardDeskVisual({ cards }: { cards: CreditCardType[] }) {
   const first = cards[0];
   const second = cards[1] ?? cards[0];
@@ -177,7 +211,7 @@ function FallbackCreditCardVisual({
           <div className="mt-3 flex items-end justify-between gap-3">
             <div className="space-y-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/75">
-                Annual fee
+                Yearly fee
               </p>
               <p className="text-lg font-black tabular-nums">{formatAnnualFee(card)}</p>
             </div>
