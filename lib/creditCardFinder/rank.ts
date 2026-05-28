@@ -72,6 +72,25 @@ export function incomeBracketMin(income: IncomeAnswer | null): number | null {
   }
 }
 
+export function incomeBracketMax(income: IncomeAnswer | null): number | null {
+  switch (income) {
+    case '<15':
+      return 15_000;
+    case '15-30':
+      return 30_000;
+    case '30-50':
+      return 50_000;
+    case '50-100':
+      return 100_000;
+    case '100+':
+      return Infinity;
+    case 'skip':
+    case null:
+    default:
+      return null;
+  }
+}
+
 export function cardMinIncomeMonthly(card: CreditCard): number | null {
   if (card.min_income_monthly !== null) return card.min_income_monthly;
   if (card.min_income_annual !== null) return Math.round(card.min_income_annual / 12);
@@ -236,6 +255,7 @@ const PRIORITY_TAG: Record<PriorityAnswer, FinderTag> = {
 };
 
 const INCOME_SHORTFALL_PENALTY = -0.15;
+const INCOME_HARD_SHORTFALL_PENALTY = -0.5;
 
 function clamp01(n: number): number {
   return Math.max(0, Math.min(1, n));
@@ -256,14 +276,22 @@ export function scoreFinderCard(card: CreditCard, answers: FinderAnswers): numbe
   const spendingCategories = deriveSpendingCategories(card);
   let s = 0;
 
-  // Soft floor — income. The quiz only knows the user's bracket minimum, so a
-  // user in "₱30k–₱50k" may still clear a card requiring ₱33k. Penalize near
-  // misses gently instead of suppressing otherwise-strong matches.
+  // Income matching. The quiz only knows the user's bracket.
+  // We check:
+  // 1. Perfect fit (bracket minimum >= card requirement): User is guaranteed to qualify.
+  // 2. Near miss (card requirement falls inside the bracket): User might qualify. Penalize gently.
+  // 3. Hard shortfall (card requirement is strictly above bracket maximum): User has no chance to qualify. Penalize heavily.
   const bracketMin = incomeBracketMin(answers.income);
+  const bracketMax = incomeBracketMax(answers.income);
   const cardMin = cardMinIncomeMonthly(card);
-  if (card.income_filter_ready !== false && bracketMin !== null && cardMin !== null) {
-    if (bracketMin >= cardMin) s += 0.3;
-    else s += INCOME_SHORTFALL_PENALTY;
+  if (card.income_filter_ready !== false && bracketMin !== null && cardMin !== null && bracketMax !== null) {
+    if (bracketMin >= cardMin) {
+      s += 0.3;
+    } else if (cardMin > bracketMax) {
+      s += INCOME_HARD_SHORTFALL_PENALTY;
+    } else {
+      s += INCOME_SHORTFALL_PENALTY;
+    }
   }
 
   // Priority match

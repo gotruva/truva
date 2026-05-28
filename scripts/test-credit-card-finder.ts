@@ -16,6 +16,7 @@ import {
   buildScoredCard,
   deriveAnnualFeeLabel,
   incomeBracketMin,
+  incomeBracketMax,
   deriveTags,
   deriveDataConfidence,
   hasNoYearlyFeeConflict,
@@ -118,6 +119,14 @@ eq('incomeBracketMin 100+', incomeBracketMin('100+'), 100_000);
 eq('incomeBracketMin skip', incomeBracketMin('skip'), null);
 eq('incomeBracketMin null', incomeBracketMin(null), null);
 
+eq('incomeBracketMax <15', incomeBracketMax('<15'), 15_000);
+eq('incomeBracketMax 15-30', incomeBracketMax('15-30'), 30_000);
+eq('incomeBracketMax 30-50', incomeBracketMax('30-50'), 50_000);
+eq('incomeBracketMax 50-100', incomeBracketMax('50-100'), 100_000);
+eq('incomeBracketMax 100+', incomeBracketMax('100+'), Infinity);
+eq('incomeBracketMax skip', incomeBracketMax('skip'), null);
+eq('incomeBracketMax null', incomeBracketMax(null), null);
+
 // ── 2. Tag derivation ────────────────────────────────────────────────────────
 const naffl = card({ naffl: true });
 check('naffl card tagged naffl', deriveTags(naffl).includes('naffl'));
@@ -175,6 +184,18 @@ const ineligible = scoreFinderCard(
   answers({ income: '<15' }),
 );
 check('ineligible score clamped >= 0', ineligible >= 0);
+check('hard shortfall score is 0 due to heavy penalty', ineligible === 0);
+
+const hardShortfallEligibleSignals = scoreFinderCard(
+  card({
+    naffl: true,
+    rewards_type: 'cashback',
+    min_income_monthly: 100_000,
+    last_scraped_at: RECENT,
+  }),
+  answers({ first: 'yes', income: '<15', priority: 'naf', spend: 'groceries' }),
+);
+check('hard shortfall fails match threshold even with otherwise perfect signals', hardShortfallEligibleSignals < 0.35);
 const stacked = scoreFinderCard(
   card({
     naffl: true,

@@ -9,6 +9,9 @@ import { BASE_URL } from '@/lib/constants';
 import { getPublicRates } from '@/lib/rates';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { MoneyMarketFund, RateProduct } from '@/types';
+import { getCreditCards } from '@/lib/credit-cards';
+import { isLikelyConsumerCard } from '@/lib/credit-cards-display';
+import { isNoYearlyFee } from '@/lib/creditCardFinder/rank';
 
 export const revalidate = 300;
 
@@ -67,6 +70,29 @@ const EMPTY_CARD_SUMMARY: CreditCardLandingSummary = {
   hasLiveData: false,
 };
 
+const getCardSummaryForLanding = unstable_cache(async (): Promise<CreditCardLandingSummary> => {
+  try {
+    const allCards = await getCreditCards();
+    const consumerCards = allCards.filter(isLikelyConsumerCard);
+    if (!consumerCards.length) return EMPTY_CARD_SUMMARY;
+
+    const uniqueBanks = new Set(consumerCards.map((c) => c.bank)).size;
+    const noFeeCount = consumerCards.filter(isNoYearlyFee).length;
+    const readyCount = consumerCards.filter((c) => c.methodology_ready).length;
+
+    return {
+      totalCards: consumerCards.length,
+      banks: uniqueBanks,
+      noAnnualFeeCards: noFeeCount,
+      methodologyReadyCards: readyCount,
+      hasLiveData: true,
+    };
+  } catch (error) {
+    console.error('[home] Failed to load Credit Card summary', error);
+    return EMPTY_CARD_SUMMARY;
+  }
+}, ['landing-card-summary'], { revalidate: 300, tags: ['landing', 'credit-cards'] });
+
 const getRatesForLanding = unstable_cache(async (): Promise<RateProduct[]> => {
   try {
     return await getPublicRates();
@@ -122,16 +148,17 @@ const getMmfSummaryForLanding = unstable_cache(async (): Promise<MmfLandingSumma
 }, ['landing-mmf-summary'], { revalidate: 300, tags: ['landing', 'money-market-funds'] });
 
 export default async function HomePage() {
-  const [rates, mmfSummary] = await Promise.all([
+  const [rates, mmfSummary, cardSummary] = await Promise.all([
     getRatesForLanding(),
     getMmfSummaryForLanding(),
+    getCardSummaryForLanding(),
   ]);
 
   return (
     <LandingExperience
       rates={rates}
       mmfSummary={mmfSummary}
-      creditCardSummary={EMPTY_CARD_SUMMARY}
+      creditCardSummary={cardSummary}
     />
   );
 }
