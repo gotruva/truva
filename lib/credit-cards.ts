@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { CreditCard } from '@/types';
 import { normalizeRewardType } from '@/lib/creditCardFinder/detail';
 import editorial from '@/lib/creditCardEditorial';
+import { REWARDS_FALLBACK_REGISTRY } from '@/lib/creditCardRewardsFallback';
 
 // getEditorialFor now lives in the (client-safe) editorial module so client
 // components can import it too. Re-exported here for existing server callers.
@@ -19,16 +20,6 @@ const BANK_LOGO_MAP: Record<string, string> = {
 
 function deriveLogo(bank: string): string {
   return BANK_LOGO_MAP[bank] ?? '/logos/default-bank.svg';
-}
-
-function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
-  // Normalize rewards_type at the data boundary so the finder ranking and every
-  // detail-page derivation see a clean 'cashback' | 'points' | 'miles' | null.
-  return {
-    ...row,
-    logo: deriveLogo(row.bank),
-    rewards_type: normalizeRewardType(row.rewards_type),
-  };
 }
 
 /**
@@ -48,6 +39,28 @@ function canonicalCardKey(card: Pick<CreditCard, 'card_name'>): string {
     .replace(/[^a-z0-9]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
+  const normType = normalizeRewardType(row.rewards_type);
+  const canonKey = canonicalCardKey(row);
+  const fallback = REWARDS_FALLBACK_REGISTRY[canonKey];
+
+  const dbFormula = row.rewards_formula as Record<string, unknown> | null;
+  const hasDbEarnRate = dbFormula && typeof dbFormula.earn_rate === 'number' && dbFormula.earn_rate > 0;
+  
+  const finalFormula = hasDbEarnRate
+    ? dbFormula
+    : (fallback?.rewards_formula ?? dbFormula);
+
+  const finalType = normType || (fallback?.rewards_type ?? null);
+
+  return {
+    ...row,
+    logo: deriveLogo(row.bank),
+    rewards_type: finalType,
+    rewards_formula: finalFormula,
+  };
 }
 
 /** Counts populated, decision-relevant fields. Used to pick the "fuller" row. */
