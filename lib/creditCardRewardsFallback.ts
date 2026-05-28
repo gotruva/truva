@@ -16,6 +16,10 @@ export interface FallbackReward {
     redeem_rate?: number | null;
     redeem_unit?: string | null;
   } | null;
+  annual_fee_recurring?: number | null;
+  naffl?: boolean | null;
+  min_income_monthly?: number | null;
+  foreign_transaction_fee_pct?: number | null;
 }
 
 export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
@@ -29,38 +33,74 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   'bpi amore cashback card': {
     rewards_type: 'cashback',
     rewards_formula: { earn_rate: 4, earn_unit: 'percent on groceries' },
+    annual_fee_recurring: 2050,
+    naffl: false,
+    min_income_monthly: 15000,
+    foreign_transaction_fee_pct: 1.85,
   },
   'bpi amore platinum cashback card': {
     rewards_type: 'cashback',
     rewards_formula: { earn_rate: 4, earn_unit: 'percent on dining' },
+    annual_fee_recurring: 5000,
+    naffl: false,
+    min_income_monthly: 83333,
+    foreign_transaction_fee_pct: 1.85,
   },
   'bpi corporate card': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 1, earn_unit: 'point per Php 35 spend' },
+    annual_fee_recurring: 1700,
+    naffl: false,
+    min_income_monthly: null,
+    foreign_transaction_fee_pct: 1.85,
   },
   'bpi edge card': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 1, earn_unit: 'BPI Rewards Point per Php 20 spend' },
+    annual_fee_recurring: 1320,
+    naffl: false,
+    min_income_monthly: 15000,
+    foreign_transaction_fee_pct: 1.85,
   },
   'bpi gold rewards card': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 1, earn_unit: 'BPI Rewards Point per Php 35 spend' },
+    annual_fee_recurring: 2250,
+    naffl: false,
+    min_income_monthly: 40000,
+    foreign_transaction_fee_pct: 1.85,
   },
   'bpi platinum rewards mastercard': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 2, earn_unit: 'BPI Rewards Points per Php 30 local spend' },
+    annual_fee_recurring: 4000,
+    naffl: false,
+    min_income_monthly: 80000,
+    foreign_transaction_fee_pct: 1.85,
   },
   'bpi signature card': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 2, earn_unit: 'BPI Rewards Points per Php 20 spend' },
+    annual_fee_recurring: 5500,
+    naffl: false,
+    min_income_monthly: 100000,
+    foreign_transaction_fee_pct: 1.85,
   },
   'petron bpi card': {
     rewards_type: 'cashback',
     rewards_formula: { earn_rate: 3, earn_unit: '% fuel rebate' },
+    annual_fee_recurring: 1550,
+    naffl: false,
+    min_income_monthly: 15000,
+    foreign_transaction_fee_pct: 1.85,
   },
   'robinsons cashback card': {
     rewards_type: 'cashback',
     rewards_formula: { earn_rate: 3, earn_unit: 'percent on groceries at Robinsons' },
+    annual_fee_recurring: 2500,
+    naffl: false,
+    min_income_monthly: 15000,
+    foreign_transaction_fee_pct: 1.85,
   },
 
   // American Express
@@ -79,6 +119,10 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   'blue from american express': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 1, earn_unit: 'Membership Rewards point per Php 45 spend' },
+    annual_fee_recurring: 1800,
+    naffl: false,
+    min_income_monthly: 15000,
+    foreign_transaction_fee_pct: 2.50,
   },
 
   // BDO Unibank
@@ -105,6 +149,10 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   'bdo installment card': {
     rewards_type: null,
     rewards_formula: null,
+    annual_fee_recurring: 1000,
+    naffl: false,
+    min_income_monthly: 15000,
+    foreign_transaction_fee_pct: 2.50,
   },
   'bdo jcb gold': {
     rewards_type: 'points',
@@ -123,8 +171,12 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
     rewards_formula: { earn_rate: 1, earn_unit: 'point per Php 40 spend' },
   },
   'bdo secured credit card': {
-    rewards_type: null,
-    rewards_formula: null,
+    rewards_type: 'points',
+    rewards_formula: { earn_rate: 1, earn_unit: 'Peso Point per Php 50 spend' },
+    annual_fee_recurring: 1000,
+    naffl: false,
+    min_income_monthly: 0,
+    foreign_transaction_fee_pct: 2.50,
   },
   'bdo standard mastercard': {
     rewards_type: 'points',
@@ -149,6 +201,10 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   'bdo world elite mastercard': {
     rewards_type: 'points',
     rewards_formula: { earn_rate: 1, earn_unit: 'point per Php 40 spend' },
+    annual_fee_recurring: 85000,
+    naffl: false,
+    min_income_monthly: null,
+    foreign_transaction_fee_pct: 2.50,
   },
 
   // China Banking Corporation (Chinabank)

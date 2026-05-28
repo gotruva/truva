@@ -31,179 +31,186 @@ const editorial: Record<string, CardEditorial> = {
   // ── BPI ──────────────────────────────────────────────────────────────────
 
   'bpi amore cashback card': {
-    why: 'If you spend a lot on everyday things like groceries and dining, this card quietly puts money back in your pocket every month.',
+    why: 'This card gives you cashback on groceries and dining, which helps you save on your family\'s daily expenses.',
     pros: [
-      'Earns cashback on everyday spending categories',
-      'Accepted anywhere Mastercard or Visa is — including abroad',
-      'Good starting card if you already bank with BPI',
+      'Earns 4% cashback on groceries and 1% cashback on supermarkets.',
+      'Accepted wherever Visa or Mastercard is used worldwide.',
+      'Good starting card if you already have a BPI bank account.',
     ],
     cons: [
-      'Yearly fee details not publicly listed — confirm with BPI before applying',
-      'Cashback rates may be capped or tiered per category',
+      'Has a yearly fee of ₱2,050 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱15,000 to apply.',
+      'There is a limit on how much cashback you can earn each year.',
     ],
   },
 
   'bpi amore platinum cashback card': {
-    why: 'For higher spenders who want straightforward cashback without tracking points programs.',
+    why: 'This card gives you cashback when you eat out or order food, which fits people who spend heavily on restaurants.',
     pros: [
-      'Platinum tier means higher credit limits and more cashback potential',
-      'Cashback rewards — no need to convert points or redeem manually',
-      'Works worldwide wherever Mastercard or Visa is accepted',
+      'Earns 4% cashback on dining and 1% cashback on supermarkets.',
+      'Cashback is added directly to your account without needing to redeem points.',
+      'Accepted wherever Visa is used worldwide.',
     ],
     cons: [
-      'Yearly fee of ₱5,000 — you need to spend enough to earn it back',
-      'Higher income requirement typical for platinum cards',
+      'Has a yearly fee of ₱5,000 — you need to spend enough to earn this fee back.',
+      'Requires a high minimum monthly income of ₱83,333 to apply.',
+      'Charges a foreign card fee of 1.85% when spending abroad.',
     ],
   },
 
   'bpi corporate card': {
-    why: 'Designed for business owners or employees who handle company expenses and want to consolidate spending.',
+    why: 'This card helps business owners and employees track business expenses in one place.',
     pros: [
-      'Points earned on business purchases',
-      'Helps separate personal and business spending',
-      'Backed by BPI\'s wide acceptance network',
+      'Earns rewards points on business purchases.',
+      'Helps you keep your personal and business spending separate.',
+      'Accepted wherever Mastercard is used worldwide.',
     ],
     cons: [
-      'Requires company sponsorship or business relationship with BPI',
-      'Not designed for personal rewards optimization',
-      'Yearly fee details not publicly listed',
+      'Has a yearly fee of ₱1,700 — you need to spend enough to earn this fee back.',
+      'Only available for businesses and requires company documents to apply.',
+      'Not meant for earning personal rewards.',
     ],
   },
 
   'bpi edge card': {
-    why: 'A solid mid-range card if you want to start earning points without paying a high yearly fee.',
+    why: 'This card gives you a simple way to earn rewards points on your daily purchases.',
     pros: [
-      'Low yearly fee of ₱1,320 — easy to offset with regular spending',
-      'Points earned on most purchases',
-      'Good entry point into BPI\'s rewards ecosystem',
+      'Low yearly fee of ₱1,320, which is billed as ₱110 each month.',
+      'Earns 1 rewards point for every ₱20 you spend.',
+      'Good starter card to build your credit history.',
     ],
     cons: [
-      'Points-to-peso conversion varies — check current redemption rates',
-      'Not ideal if your primary goal is travel miles',
+      'Requires a minimum monthly income of ₱15,000 to apply.',
+      'It takes a lot of spending to accumulate enough points for rewards.',
+      'Charges a foreign card fee of 1.85% when spending abroad.',
     ],
   },
 
   'bpi gold rewards card': {
-    why: 'A mid-tier card suited for professionals who want rewards on their everyday and lifestyle spending.',
+    why: 'This card lets you earn rewards points on your purchases and comes with free travel insurance.',
     pros: [
-      'Gold tier — decent credit limit for regular use',
-      'Yearly fee of ₱2,250 is reasonable for this card tier',
-      'Accepted at millions of merchants globally',
+      'Earns 1 rewards point for every ₱35 you spend.',
+      'Includes free travel insurance when you book trips using the card.',
+      'Accepted wherever Mastercard or Visa is used worldwide.',
     ],
     cons: [
-      'Rewards type not fully documented — confirm earn rates with BPI directly',
-      'Not a NAFFL card, so the fee must be earned back through spending',
+      'Has a yearly fee of ₱2,250 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱40,000 to apply.',
+      'Charges a foreign card fee of 1.85% on overseas purchases.',
     ],
   },
 
   'bpi platinum rewards card': {
-    why: 'If you spend ₱20,000+ a month and want to build up points for gift cards, shopping, or travel, this card can pay for itself.',
+    why: 'This card helps you earn points faster on your local and international purchases.',
     pros: [
-      'Points earned on all purchases — online, in-store, and abroad',
-      'Platinum benefits including concierge services at some merchants',
-      'Wide acceptance as a Visa or Mastercard',
+      'Earns rewards points on all purchases, with double points when you spend overseas.',
+      'Includes free travel insurance and access to select airport lounges.',
+      'Accepted wherever Mastercard is used worldwide.',
     ],
     cons: [
-      'Yearly fee of ₱4,000 — works best if you charge most expenses to it',
-      'NAFFL status not confirmed — fee may apply from year one',
-      'Points programs can be complex; check if your favourite stores redeem well',
+      'Has a yearly fee of ₱4,000 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱80,000 to apply.',
+      'Charges a foreign card fee of 1.85% on overseas purchases.',
     ],
   },
 
   'bpi platinum rewards mastercard': {
-    why: 'The Mastercard version of BPI\'s platinum rewards card — same rewards program, Mastercard acceptance everywhere.',
+    why: 'This card helps you earn points faster on your local and international purchases.',
     pros: [
-      'Points on every purchase across all spending categories',
-      'Platinum card tier with higher limits',
-      'Mastercard network — accepted in over 210 countries',
+      'Earns rewards points on all purchases, with double points when you spend overseas.',
+      'Includes free travel insurance and access to select airport lounges.',
+      'Accepted wherever Mastercard is used worldwide.',
     ],
     cons: [
-      'Yearly fee of ₱4,000 — needs consistent spending to break even',
-      'Income requirement typical of platinum cards',
+      'Has a yearly fee of ₱4,000 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱80,000 to apply.',
+      'Charges a foreign card fee of 1.85% on overseas purchases.',
     ],
   },
 
   'bpi rewards card': {
-    why: 'You never pay a yearly fee — ever — and you still earn rewards points on every purchase.',
+    why: 'This card gives you a simple way to earn rewards points on your daily purchases.',
     pros: [
-      'No annual fee for life (NAFFL) — zero cost to keep the card',
-      'Earns points on purchases',
-      'Easy way to start building credit history without ongoing costs',
+      'Earns 1 rewards point for every ₱35 you spend.',
+      'Accepted wherever Mastercard is used worldwide.',
+      'Good starter card to build your credit history.',
     ],
     cons: [
-      'Base rewards rate is modest — not the top earner in the BPI lineup',
-      'Points value depends on how you redeem (gift cards, miles, cashback)',
+      'Has a yearly fee of ₱1,550 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱15,000 to apply.',
+      'Charges a foreign card fee of 1.85% when spending abroad.',
     ],
   },
 
   'bpi signature card': {
-    why: 'BPI\'s signature tier with no yearly fee — you get premium benefits without the yearly cost that usually comes with this tier.',
+    why: 'This card gives you premium travel benefits like free lounge access and special dining discounts.',
     pros: [
-      'Signature tier perks — higher limits, priority service, lounge access at select locations',
-      'No annual fee for life (NAFFL)',
-      'Strong prestige card for frequent travelers and high spenders',
+      'Earns 2 rewards points for every ₱20 you spend.',
+      'Includes free access to select airport lounges and travel insurance.',
+      'Accepted wherever Visa is used worldwide.',
     ],
     cons: [
-      'Higher income requirement — typically ₱100,000+/month',
-      'Rewards details not fully documented — verify earn rates with BPI',
+      'Has a yearly fee of ₱5,500 — you need to spend enough to earn this fee back.',
+      'Requires a high minimum monthly income of ₱100,000 to apply.',
+      'Charges a foreign card fee of 1.85% on overseas purchases.',
     ],
   },
 
   'petron bpi card': {
-    why: 'If you fuel up at Petron regularly, this card can give you 3% back on every fill — one of the better fuel rebates available from a PH bank.',
+    why: 'This card gives you 3% cashback when you buy fuel at Petron stations.',
     pros: [
-      '3% cashback at Petron stations — real peso savings on fuel',
-      'No annual fee for life (NAFFL)',
-      'Works as a regular credit card for all other purchases too',
+      'Saves you money with 3% cashback on Petron fuel purchases.',
+      'Earns a free ₱200 fuel voucher as a welcome gift when your card is approved.',
+      'Accepted wherever Mastercard is used worldwide.',
     ],
     cons: [
-      'Yearly fee of ₱1,550 despite NAFFL label — verify current terms',
-      'Petron-specific bonus means lower value if you use other fuel brands',
-      'Non-Petron spend earns at a lower base rate',
+      'Has a yearly fee of ₱1,550 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱15,000 to apply.',
+      'Gives you lower value if you buy fuel from other gas station brands.',
     ],
   },
 
   'robinsons cashback card': {
-    why: 'If you shop at Robinsons malls or supermarkets often, this card gives you cashback where you already spend.',
+    why: 'This card gives you cashback when you shop at Robinsons supermarkets and stores.',
     pros: [
-      'Cashback tailored to Robinsons retail ecosystem (supermarket, mall)',
-      'No annual fee for life (NAFFL)',
-      'Good for people who do most of their grocery and lifestyle shopping at Robinsons',
+      'Earns 3% cashback on grocery shopping at Robinsons supermarkets.',
+      'Accepted wherever Mastercard is used worldwide.',
+      'Good for families who buy their daily necessities at Robinsons stores.',
     ],
     cons: [
-      'Yearly fee of ₱2,500 despite NAFFL — confirm current terms with BPI',
-      'Lower value outside of Robinsons stores',
-      'Cashback rates and caps — check the current schedule before applying',
+      'Has a yearly fee of ₱2,500 — you need to spend enough to earn this fee back.',
+      'Requires a minimum monthly income of ₱15,000 to apply.',
+      'Gives you lower value when you shop at stores outside the Robinsons brand.',
     ],
   },
 
   // ── HSBC ─────────────────────────────────────────────────────────────────
 
   'hsbc live credit card': {
-    why: 'If dining and food delivery take up a big chunk of your monthly budget, the 8% cashback at restaurants is one of the highest dining rebates in the PH market right now.',
+    why: 'This card gives you 8% cashback on dining and food deliveries, which fits food-heavy budgets.',
     pros: [
-      '8% cashback on dining — very high rate for food spending',
-      'Cashback on other everyday categories too',
-      'HSBC is a globally recognized bank with strong card infrastructure',
+      'Earns 8% cashback on dining and food deliveries.',
+      'Earns cashback on your shopping and travel purchases too.',
+      'Accepted wherever Visa is used worldwide.',
     ],
     cons: [
-      'Yearly fee details not publicly listed — confirm before applying',
-      'High dining rate may have monthly or quarterly caps',
-      'Best value only if dining is your primary spend category',
+      'Lists a yearly fee of ₱5,000 — you need to spend enough to earn this fee back.',
+      'There is a limit on how much cashback you can earn each month.',
+      'You get the most value from this card only if you spend heavily on food and restaurants.',
     ],
   },
 
   'hsbc red platinum mastercard': {
-    why: 'If you want to earn bonus points across a wide range of spending and enjoy Mastercard\'s global acceptance, this is a solid all-rounder from HSBC.',
+    why: 'This card gives you a simple way to earn rewards points on shopping, dining, and online purchases.',
     pros: [
-      '4x bonus points on qualifying spending categories',
-      'First year free — no fee in year one, so you can try it at no cost',
-      'Platinum Mastercard — widely accepted, good for travel and online purchases',
+      'Earns 4 times more rewards points on shopping, online spending, and dining.',
+      'First year is free with no yearly fee to pay.',
+      'Accepted wherever Mastercard is used worldwide.',
     ],
     cons: [
-      'Yearly fee applies from year two — confirm the exact amount with HSBC',
-      'Points programs require tracking; check which categories earn 4x vs base rate',
-      'Minimum income and approval requirements typical of platinum cards',
+      'Has a yearly fee starting from the second year.',
+      'Requires a minimum monthly income to apply.',
+      'You need to spend on specific categories to earn the higher points rate.',
     ],
   },
 };
@@ -225,24 +232,76 @@ export function getEditorialFor(
 
   // Fallback: build a minimal-but-honest generic entry
   const goalLabel = answers?.goal
-    ? { cashback: 'earning cashback', travel: 'travel and miles', 'no-annual-fee': 'avoiding a yearly fee', 'first-card': 'getting your first card', 'low-fee': 'keeping fees low' }[answers.goal]
+    ? {
+        cashback: 'earning cashback',
+        travel: 'travel and miles',
+        'no-annual-fee': 'avoiding a yearly fee',
+        'first-card': 'getting your first card',
+        'low-fee': 'keeping fees low',
+      }[answers.goal]
     : 'getting value from your spending';
 
   const catMap = deriveCategoryMatch(card);
   const topCat = (Object.entries(catMap) as [SpendingCategory, number][])
     .sort((a, b) => b[1] - a[1])[0][0];
-  const topCatLabel = { groceries: 'grocery', dining: 'dining', online: 'online shopping', fuel: 'fuel', bills: 'bill payments', travel: 'travel' }[topCat];
+  const topCatLabel = {
+    groceries: 'grocery',
+    dining: 'dining',
+    online: 'online shopping',
+    fuel: 'fuel',
+    bills: 'bill payments',
+    travel: 'travel',
+  }[topCat];
+
+  let yearlyFeePro: string | null = null;
+  let yearlyFeeCon: string | null = null;
+  if (card.naffl === true || card.annual_fee_recurring === 0) {
+    yearlyFeePro = 'No annual fee for life (NAFFL) — zero cost to keep this card.';
+  } else if (card.annual_fee_recurring !== null && card.annual_fee_recurring !== undefined && card.annual_fee_recurring > 0) {
+    yearlyFeeCon = `Has a yearly fee of ₱${card.annual_fee_recurring.toLocaleString('en-PH')} — check if the rewards match this cost.`;
+  } else if ((card.naffl === null || card.naffl === undefined) && (card.annual_fee_recurring === null || card.annual_fee_recurring === undefined)) {
+    yearlyFeeCon = 'Yearly fee details are not confirmed — check the bank\'s terms before applying.';
+  }
+
+  const rewardsPro = card.rewards_type
+    ? `Earns ${card.rewards_type} on your purchases.`
+    : 'A simple starter card designed to help you build credit and manage payments safely.';
+
+  let incomePro: string | null = null;
+  let incomeCon: string | null = null;
+  if (card.min_income_monthly === 0) {
+    incomePro = 'Does not require proof of income to apply.';
+  } else if (card.min_income_monthly !== null && card.min_income_monthly !== undefined && card.min_income_monthly > 0) {
+    incomeCon = `Requires a minimum monthly income of ₱${card.min_income_monthly.toLocaleString('en-PH')} to apply.`;
+  } else if (
+    (card.min_income_monthly === null || card.min_income_monthly === undefined) &&
+    (card.min_income_annual === null || card.min_income_annual === undefined)
+  ) {
+    incomeCon = 'Minimum monthly income is not publicly listed — confirm your eligibility with the bank.';
+  }
+
+  const foreignFeeCon = (card.foreign_transaction_fee_pct !== null && card.foreign_transaction_fee_pct !== undefined)
+    ? `Charges a foreign card fee of ${card.foreign_transaction_fee_pct}% when you spend overseas or shop online in foreign currencies.`
+    : 'Foreign card fee is not confirmed — check overseas transaction terms before traveling.';
+
+  const networkPro = `Accepted wherever ${card.card_network || 'major networks'} is used`;
+
+  const pros = [
+    yearlyFeePro,
+    rewardsPro,
+    incomePro,
+    networkPro,
+  ].filter(Boolean) as string[];
+
+  const cons = [
+    yearlyFeeCon,
+    incomeCon,
+    foreignFeeCon,
+  ].filter(Boolean) as string[];
 
   return {
-    why: `This card suits your goal of ${goalLabel} and performs best on ${topCatLabel} spending.`,
-    pros: [
-      card.naffl === true ? 'No annual fee for life (NAFFL)' : card.annual_fee_recurring ? `Yearly fee of ₱${card.annual_fee_recurring.toLocaleString('en-PH')}` : 'Yearly fee — confirm with bank',
-      card.rewards_type ? `Earns ${card.rewards_type} on purchases` : 'Rewards on eligible purchases',
-      `Accepted wherever ${card.card_network ?? 'major networks'} is used`,
-    ].filter(Boolean) as string[],
-    cons: [
-      card.min_income_monthly ? `Minimum monthly income of ₱${card.min_income_monthly.toLocaleString('en-PH')} required` : 'Income requirement — confirm with bank',
-      card.foreign_transaction_fee_pct ? `Foreign card fee of ${card.foreign_transaction_fee_pct}% on overseas purchases` : 'Foreign card fee — confirm terms before travelling',
-    ],
+    why: `This card fits your goal of ${goalLabel} and gives you the most value when spending on ${topCatLabel}.`,
+    pros,
+    cons,
   };
 }
