@@ -1127,10 +1127,39 @@ function ExpandedDetails({
 }) {
   return (
     <div className="space-y-4 border-t border-brand-border bg-white px-4 py-4 dark:border-white/10 dark:bg-white/[0.02]">
-      {editorial.why && (
-        <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-          {editorial.why}
-        </p>
+      {/* Truva Advisor Verdict Bento Box */}
+      {(editorial.why || editorial.targetUser || editorial.valueAdd) && (
+        <div className="rounded-2xl border border-brand-primary/20 bg-brand-primary-light/40 p-4 dark:border-blue-500/20 dark:bg-blue-950/10">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-2 w-2 rounded-full bg-brand-primary animate-pulse" />
+            <p className="font-header text-xs font-bold uppercase tracking-[0.16em] text-brand-primary dark:text-blue-400">
+              TRUVA ADVISOR VERDICT
+            </p>
+          </div>
+          <div className="mt-3 space-y-2">
+            {editorial.why && (
+              <p className="text-[13.5px] leading-relaxed text-brand-textPrimary font-semibold dark:text-white">
+                {editorial.why}
+              </p>
+            )}
+            {(editorial.targetUser || editorial.valueAdd) && (
+              <div className="text-[12.5px] leading-relaxed text-brand-textSecondary space-y-1 dark:text-gray-300">
+                {editorial.targetUser && (
+                  <p>
+                    <span className="font-semibold text-brand-textPrimary dark:text-white">Who it is for: </span>
+                    {editorial.targetUser}
+                  </p>
+                )}
+                {editorial.valueAdd && (
+                  <p>
+                    <span className="font-semibold text-brand-textPrimary dark:text-white">What makes it unique: </span>
+                    {editorial.valueAdd}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {(pros.length > 0 || cons.length > 0) && (
