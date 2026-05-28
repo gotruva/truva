@@ -5,7 +5,8 @@ import type { ReactNode } from 'react';
 import { CheckCircle2, ChevronLeft, ExternalLink, Minus } from 'lucide-react';
 import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
-import { getCreditCardBySlug } from '@/lib/credit-cards';
+import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
+import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import type { CreditCard } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -39,6 +40,8 @@ export default async function CreditCardComparePage(
   if (results.some((c) => !c)) notFound();
   const cards = results as CreditCard[];
 
+  const editorials = cards.map((c) => getEditorialFor(c));
+
   const isAnyPartner = cards.some((c) => c.badge_inputs?.partner_card === true);
   const headerGridClass =
     cards.length === 3
@@ -60,10 +63,10 @@ export default async function CreditCardComparePage(
             </Link>
 
             <h1 className="text-3xl font-bold tracking-tight md:text-5xl">
-              Compare card details side by side
+              Compare your card matches side by side
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/80">
-              Put {cards.length === 3 ? 'three cards' : 'two cards'} next to each other. We show fees, rewards, interest, income notes, and missing data without choosing for you.
+              We compare fees, rewards, interest rates, and required incomes next to each other. We show you the facts without selecting for you.
             </p>
           </div>
         </header>
@@ -100,22 +103,25 @@ export default async function CreditCardComparePage(
                         <CreditCardTrustBadges card={card} limit={3} className="mt-4" />
                       </div>
                     </div>
-                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                      <Link
-                        href={`/credit-cards/reviews/${card.normalized_card_key}`}
-                        className="inline-flex flex-1 items-center justify-center rounded-full border border-brand-border bg-white px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
-                      >
-                        View card details
-                      </Link>
-                      <a
-                        href={card.source_url}
-                        target="_blank"
-                        rel="nofollow noopener noreferrer"
-                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
-                      >
-                        Visit bank site
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
+                    <div className="mt-6 space-y-2.5">
+                      <div className="flex flex-col gap-3 sm:flex-row">
+                        <Link
+                          href={`/credit-cards/reviews/${card.normalized_card_key}`}
+                          className="inline-flex flex-1 items-center justify-center rounded-full border border-brand-border bg-white px-4 py-3 text-sm font-semibold text-brand-textPrimary transition-colors hover:border-brand-primary/25 hover:text-brand-primary dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-100"
+                        >
+                          View card details
+                        </Link>
+                        <a
+                          href={card.source_url}
+                          target="_blank"
+                          rel="nofollow noopener noreferrer"
+                          className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
+                        >
+                          Visit bank site
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </div>
+                      <AffiliateDisclosure size="compact" className="justify-center" />
                     </div>
                   </div>
                 );
@@ -128,6 +134,23 @@ export default async function CreditCardComparePage(
           <KeyDiffsBlock cards={cards} />
 
           <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+            <CompareSectionTitle title="Truva Advisor Verdict" n={cards.length} />
+            <CompareRow
+              label="Truva's Take"
+              values={editorials.map((e) => e.why)}
+              n={cards.length}
+            />
+            <CompareRow
+              label="Who it is for"
+              values={editorials.map((e) => e.targetUser ?? 'Daily savers looking for transparent bank deals')}
+              n={cards.length}
+            />
+            <CompareRow
+              label="Unique advantage"
+              values={editorials.map((e) => e.valueAdd ?? 'No fee waived details specified')}
+              n={cards.length}
+            />
+
             <CompareSectionTitle title="Basic details" n={cards.length} />
             <CompareRow label="Bank" values={cards.map((c) => c.bank)} n={cards.length} />
             <CompareRow label="Network / tier" values={cards.map((c) => formatCardMeta(c))} n={cards.length} />
@@ -149,24 +172,11 @@ export default async function CreditCardComparePage(
             <CompareRow label="Reward type" values={cards.map((c) => formatRewardType(c.rewards_type))} n={cards.length} />
             <CompareRow label="Reward formula" values={cards.map((c) => formatRewardFormula(c.rewards_formula))} n={cards.length} />
             <CompareRow
-              label="Peso value"
-              values={cards.map(() => 'Not yet verified')}
-              muted={cards.map(() => true)}
-              n={cards.length}
-            />
-            <CompareRow
               label="Minimum income"
               values={cards.map((c) => formatIncome(c))}
               muted={cards.map((c) => c.min_income_monthly === null && c.min_income_annual === null)}
               n={cards.length}
             />
-            <CompareRow
-              label="Income filter"
-              values={cards.map((c) => (c.income_filter_ready ? 'Ready' : 'Off for now'))}
-              muted={cards.map((c) => !c.income_filter_ready)}
-              n={cards.length}
-            />
-            <CompareRow label="Things to check" values={cards.map((c) => formatCheckSummary(c))} n={cards.length} />
 
             <CompareSectionTitle title="Fees and source" n={cards.length} />
             <CompareRow
@@ -205,6 +215,26 @@ export default async function CreditCardComparePage(
               n={cards.length}
             />
             <CompareRow label="Source updated" values={cards.map((c) => formatDate(c.last_scraped_at))} n={cards.length} />
+
+            {/* Doubled CTAs at the bottom of the table columns */}
+            <CompareRow
+              label="Apply"
+              values={cards.map((card) => (
+                <div key={card.id} className="space-y-2.5">
+                  <a
+                    href={card.source_url}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
+                  >
+                    Visit bank site
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                  <AffiliateDisclosure size="compact" className="justify-center" />
+                </div>
+              ))}
+              n={cards.length}
+            />
           </section>
 
           <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 text-sm leading-relaxed text-brand-textSecondary shadow-sm dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-300">
@@ -386,9 +416,9 @@ function CompareCell({ children, muted, last = false }: { children: ReactNode; m
     <div
       className={`min-h-[3.5rem] border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'md:border-r'}`}
     >
-      <p className={muted ? 'text-sm font-medium text-brand-textSecondary dark:text-gray-400' : 'text-sm font-semibold text-brand-textPrimary dark:text-gray-100'}>
+      <div className={muted ? 'text-sm font-medium text-brand-textSecondary dark:text-gray-400' : 'text-sm font-semibold text-brand-textPrimary dark:text-gray-100'}>
         {children}
-      </p>
+      </div>
     </div>
   );
 }
