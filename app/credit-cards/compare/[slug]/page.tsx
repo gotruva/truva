@@ -142,7 +142,23 @@ export default async function CreditCardComparePage(
             />
             <CompareRow
               label="Welcome promo"
-              values={editorials.map((e) => e.welcomePromo ?? 'Verify active bank promotions upon application')}
+              values={editorials.map((e, idx) => {
+                const promoText = e.welcomePromo ?? 'Verify active bank promotions upon application';
+                return (
+                  <span key={cards[idx].id}>
+                    {promoText}
+                    {' '}
+                    <a
+                      href={cards[idx].source_url}
+                      target="_blank"
+                      rel="nofollow noopener noreferrer"
+                      className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
+                    >
+                      Terms &amp; Conditions
+                    </a>
+                  </span>
+                );
+              })}
               n={cards.length}
               cards={cards}
             />

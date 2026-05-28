@@ -1148,6 +1148,15 @@ function ExpandedDetails({
                   <p>
                     <span className="font-semibold text-brand-textPrimary dark:text-white">Welcome offer: </span>
                     <span className="text-brand-primary dark:text-blue-400 font-medium">{editorial.welcomePromo}</span>
+                    {' '}
+                    <a
+                      href={card.source_url}
+                      target="_blank"
+                      rel="nofollow noopener noreferrer"
+                      className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
+                    >
+                      Terms &amp; Conditions
+                    </a>
                   </p>
                 )}
                 {editorial.targetUser && (

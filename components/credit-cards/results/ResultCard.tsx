@@ -118,6 +118,15 @@ export function ResultCard({
               </dt>
               <dd className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-textPrimary dark:text-white">
                 {welcomePromo}
+                {' '}
+                <a
+                  href={card.source_url}
+                  target="_blank"
+                  rel="nofollow noopener noreferrer"
+                  className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
+                >
+                  Terms &amp; Conditions
+                </a>
               </dd>
             </div>
           </div>
