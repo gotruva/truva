@@ -46,6 +46,7 @@ export default async function CreditCardResultsPage({ searchParams }: Props) {
               role: section.role,
               why: explanation.why,
               watchOut: explanation.watchOut,
+              welcomePromo: editorial.welcomePromo,
             };
           }),
         }

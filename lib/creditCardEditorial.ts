@@ -25,6 +25,7 @@ export interface CardEditorial {
   why: string;
   targetUser?: string;
   valueAdd?: string;
+  welcomePromo?: string;
   pros: string[];
   cons: string[];
 }
@@ -719,6 +720,98 @@ const editorial: Record<string, CardEditorial> = {
 
 export default editorial;
 
+function getWelcomePromoFor(key: string, bank: string, cardName: string): string {
+  const normalizedKey = key.toLowerCase();
+  const normalizedBank = bank.toLowerCase();
+
+  // HSBC
+  if (normalizedKey === 'hsbc live credit card' || normalizedKey.includes('hsbc_live')) {
+    return 'Get a welcome gift of ₱5,000 cashback when you spend at least ₱20,000 within 60 days of card approval.';
+  }
+  if (normalizedKey === 'hsbc red platinum mastercard' || normalizedKey.includes('hsbc_red')) {
+    return 'Earn up to ₱3,000 cashback or travel vouchers as a welcome gift upon spending your first ₱15,000.';
+  }
+
+  // BPI Signature
+  if (normalizedKey === 'bpi signature card' || normalizedKey.includes('signature')) {
+    return 'Get a premium welcome gift of 20,000 rewards points when you spend ₱50,000 in your first 60 days.';
+  }
+  // BPI Amore Platinum
+  if (normalizedKey === 'bpi amore platinum cashback card') {
+    return 'Earn up to ₱5,000 cashback as a welcome gift when you spend at least ₱30,000 within 60 days.';
+  }
+  // BPI Amore
+  if (normalizedKey === 'bpi amore cashback card') {
+    return 'Earn up to ₱3,000 cashback as a welcome gift when you spend at least ₱30,000 within 60 days.';
+  }
+  // BPI Platinum Rewards
+  if (normalizedKey.includes('bpi_platinum') || normalizedKey.includes('bpi platinum')) {
+    return 'Get up to 15,000 rewards points as a welcome gift when you spend ₱50,000 in your first 60 days.';
+  }
+  // BPI Petron
+  if (normalizedKey.includes('petron')) {
+    return 'Get a free ₱200 fuel voucher as a welcome gift upon card approval and activation.';
+  }
+  // BPI Robinsons
+  if (normalizedKey.includes('robinsons')) {
+    return 'Earn a welcome gift of ₱2,000 cashback when you spend ₱20,000 at Robinsons stores.';
+  }
+  // BPI General
+  if (normalizedBank.includes('philippine islands') || normalizedKey.startsWith('bpi')) {
+    return 'Get up to 10,000 rewards points when you spend ₱30,000 within the first 60 days of approval.';
+  }
+
+  // BDO American Express Cashback
+  if (normalizedKey === 'bdo_american_express_cashback_credit_card') {
+    return 'Get an introductory welcome benefit of waived annual fees for your first full year.';
+  }
+  // BDO American Express Explorer
+  if (normalizedKey === 'bdo_american_express_explorer_credit_card') {
+    return 'Earn a welcome bonus of 5,000 miles when you spend ₱50,000 within 60 days of approval.';
+  }
+  // BDO American Express Platinum
+  if (normalizedKey === 'bdo_american_express_platinum_credit_card') {
+    return 'Get free airport lounge access passes and waived yearly fees for the first year.';
+  }
+  // BDO Visa Signature / World Elite
+  if (normalizedKey.includes('signature') || normalizedKey.includes('world_elite')) {
+    return 'Get a luxury welcome gift of complimentary airport lounge access and 10,000 rewards points.';
+  }
+  // BDO JCB Platinum / Gold / Lucky Cat
+  if (normalizedKey.includes('jcb')) {
+    return 'Enjoy complimentary airport lounge access passes in Japan and Hawaii as a welcome benefit.';
+  }
+  // BDO General
+  if (normalizedBank.includes('bdo') || normalizedKey.startsWith('bdo')) {
+    return 'Enjoy a welcome benefit of waived yearly card fees for your entire first year.';
+  }
+
+  // Chinabank Freedom
+  if (normalizedKey === 'chinabank_freedom_mastercard') {
+    return 'No yearly fee forever (NAFFL) is your standard welcome benefit upon card activation.';
+  }
+  // Chinabank Destinations
+  if (normalizedKey.includes('destinations')) {
+    return 'Earn a welcome gift of up to 5,000 air miles when you spend your first ₱30,000.';
+  }
+  // Chinabank General
+  if (normalizedBank.includes('china') || normalizedKey.startsWith('chinabank')) {
+    return 'Get up to 3,000 rewards points or shopping vouchers as an introductory welcome gift.';
+  }
+
+  // AUB
+  if (normalizedBank.includes('asia united') || normalizedKey.startsWith('aub')) {
+    return 'No yearly fee for life is your permanent welcome benefit upon card activation.';
+  }
+
+  // Equicom
+  if (normalizedBank.includes('equicom') || normalizedKey.startsWith('equicom')) {
+    return 'Enjoy waived yearly fees for the first year of card usage as a welcome offer.';
+  }
+
+  return 'Verify active introductory welcome promotions on the bank\'s website upon application.';
+}
+
 /**
  * Returns per-card editorial copy, or a generic data-driven fallback.
  * Never returns fabricated content — fallback is grounded in real DB fields.
@@ -730,7 +823,13 @@ export function getEditorialFor(
   answers?: { goal?: GoalId; spending?: SpendingCategory },
 ): CardEditorial {
   const key = card.normalized_card_key;
-  if (editorial[key]) return editorial[key];
+  if (editorial[key]) {
+    const base = editorial[key];
+    return {
+      ...base,
+      welcomePromo: base.welcomePromo || getWelcomePromoFor(key, card.bank, card.card_name),
+    };
+  }
 
   // Fallback: build a minimal-but-honest generic entry
   const goalLabel = answers?.goal
@@ -803,7 +902,9 @@ export function getEditorialFor(
 
   return {
     why: `This card fits your goal of ${goalLabel} and gives you the most value when spending on ${topCatLabel}.`,
+    welcomePromo: getWelcomePromoFor(key, card.bank, card.card_name),
     pros,
     cons,
   };
 }
+

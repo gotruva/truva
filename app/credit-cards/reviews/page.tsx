@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
-import { CreditCardTrustBadges } from '@/components/credit-cards/CreditCardTrustBadges';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { getCreditCards } from '@/lib/credit-cards';
 import type { CreditCard as CreditCardType } from '@/types';
@@ -122,11 +121,8 @@ function DetailDirectoryCard({ card }: { card: CreditCardType }) {
             <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">{card.bank}</p>
           </div>
 
-          <div className="mt-4">
-            <CreditCardTrustBadges card={card} limit={3} />
           </div>
         </div>
-      </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
         <MiniFact label="Annual fee" value={formatAnnualFee(card)} />

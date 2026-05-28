@@ -15,6 +15,7 @@ export interface PreparedCard {
   role: ResultRole;
   why: string;
   watchOut: string;
+  welcomePromo?: string;
 }
 
 const ROLE_META: Record<
@@ -96,6 +97,7 @@ export function ResultsView({
                 scored={entry.scored}
                 why={entry.why}
                 watchOut={entry.watchOut}
+                welcomePromo={entry.welcomePromo}
                 fitLabel={RESULTS.fitLabels[meta.idx]}
                 fitTone={meta.fitTone}
                 highlight={entry.role === 'first'}

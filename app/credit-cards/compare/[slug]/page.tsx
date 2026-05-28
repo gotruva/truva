@@ -100,7 +100,6 @@ export default async function CreditCardComparePage(
                             Good for: {fitLabel.label}
                           </span>
                         )}
-                        <CreditCardTrustBadges card={card} limit={3} className="mt-4" />
                       </div>
                     </div>
                     <div className="mt-6 space-y-2.5">
@@ -141,6 +140,11 @@ export default async function CreditCardComparePage(
               n={cards.length}
             />
             <CompareRow
+              label="Welcome promo"
+              values={editorials.map((e) => e.welcomePromo ?? 'Verify active bank promotions upon application')}
+              n={cards.length}
+            />
+            <CompareRow
               label="Who it is for"
               values={editorials.map((e) => e.targetUser ?? 'Daily savers looking for transparent bank deals')}
               n={cards.length}
@@ -152,8 +156,6 @@ export default async function CreditCardComparePage(
             />
 
             <CompareSectionTitle title="Basic details" n={cards.length} />
-            <CompareRow label="Bank" values={cards.map((c) => c.bank)} n={cards.length} />
-            <CompareRow label="Network / tier" values={cards.map((c) => formatCardMeta(c))} n={cards.length} />
             <CompareRow label="Yearly fee" values={cards.map((c) => formatAnnualFee(c))} n={cards.length} />
             <CompareRow
               label="Waiver condition"
@@ -207,11 +209,6 @@ export default async function CreditCardComparePage(
               label="Overlimit fee"
               values={cards.map((c) => formatPhpNullable(c.overlimit_fee_amount))}
               muted={cards.map((c) => c.overlimit_fee_amount === null)}
-              n={cards.length}
-            />
-            <CompareRow
-              label="Active linked promos"
-              values={cards.map((c) => formatPromoCount(c.active_promo_count))}
               n={cards.length}
             />
             <CompareRow label="Source updated" values={cards.map((c) => formatDate(c.last_scraped_at))} n={cards.length} />
@@ -306,7 +303,6 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
     { label: 'Min. income / mo', values: cards.map((c) => formatIncome(c)), winnerIdx: findWinnerIdx(incomes), note: 'Lower = more accessible' },
     { label: 'Rewards', values: cards.map((c) => `${formatRewardType(c.rewards_type)} — ${formatRewardFormula(c.rewards_formula)}`), winnerIdx: null },
     { label: 'Foreign fee', values: cards.map((c) => formatPercent(c.foreign_transaction_fee_pct)), winnerIdx: findWinnerIdx(fxFees), note: 'Lower is better for overseas use' },
-    { label: 'GCash / Maya earn', values: cards.map((c) => (c.badge_inputs?.no_ewallet_earn ? 'No earn on e-wallets' : 'No restriction noted')), winnerIdx: findWinnerIdx(ewalletFlags) },
   ];
 
   const gridClass =
@@ -319,7 +315,7 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
       <div className="border-b border-brand-border bg-brand-surface px-5 py-4 dark:border-white/10 dark:bg-white/[0.03]">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-primary">Key Differences</p>
         <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-          The five fields that matter most for a Philippine card comparison.{' '}
+          The four fields that matter most for a Philippine card comparison.{' '}
           <CheckCircle2 className="inline h-3.5 w-3.5 text-emerald-500" /> marks a clear advantage
           where public data allows.
         </p>

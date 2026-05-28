@@ -1,4 +1,4 @@
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CreditCardVisual } from '../CreditCardVisual';
 import { AffiliateDisclosure } from '../shared/AffiliateDisclosure';
@@ -13,6 +13,7 @@ interface Props {
   scored: ScoredCard;
   why: string;
   watchOut: string;
+  welcomePromo?: string;
   fitLabel: string;
   fitTone: FitTone;
   highlight?: boolean;
@@ -44,6 +45,7 @@ export function ResultCard({
   scored,
   why,
   watchOut,
+  welcomePromo,
   fitLabel,
   fitTone,
   highlight = false,
@@ -107,6 +109,19 @@ export function ResultCard({
           value={scored.bestForLabel}
           span
         />
+        {welcomePromo && (
+          <div className="col-span-2 mt-1 flex items-start gap-2 rounded-lg bg-emerald-50/70 px-3 py-2 dark:bg-emerald-900/15">
+            <Gift className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <div>
+              <dt className="text-[10px] font-semibold uppercase tracking-[0.05em] text-emerald-700 dark:text-emerald-300">
+                Welcome offer
+              </dt>
+              <dd className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-textPrimary dark:text-white">
+                {welcomePromo}
+              </dd>
+            </div>
+          </div>
+        )}
       </dl>
 
       {/* Watch out */}
