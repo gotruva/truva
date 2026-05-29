@@ -30,6 +30,30 @@ export interface CardEditorial {
   cons: string[];
 }
 
+/**
+ * Verified bank-level promotions / T&C hub URLs.
+ * These are the canonical pages where users can read the current terms
+ * for welcome offers — independently verified May 2026.
+ * Do NOT use card source_url for this purpose (that is the apply/product page).
+ */
+export const BANK_PROMO_TC_URL: Record<string, string> = {
+  'HSBC Philippines': 'https://www.hsbc.com.ph/credit-cards/promotions/',
+  'Bank of the Philippine Islands': 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos',
+  'BDO Unibank, Inc.': 'https://www.deals.bdo.com.ph',
+  'China Banking Corporation (Chinabank)': 'https://www.chinabank.ph/credit-cards',
+  'Asia United Bank': 'https://www.aub.com.ph/creditcards/no-annual-fee',
+  'Equicom Savings Bank': 'https://www.equicomsavings.com/product-and-services/card-products/',
+};
+
+/**
+ * Returns the verified promotions/T&C hub URL for the given bank name.
+ * Falls back to a generic search URL if the bank is not in our map.
+ * Use this instead of card.source_url for welcome promo T&C links.
+ */
+export function getPromoTCUrlFor(bank: string): string {
+  return BANK_PROMO_TC_URL[bank] ?? `https://www.google.com/search?q=${encodeURIComponent(bank + ' credit card welcome promo terms Philippines')}`;
+}
+
 const editorial: Record<string, CardEditorial> = {
   // ── Asia United Bank ──────────────────────────────────────────────────────
 
@@ -724,92 +748,101 @@ function getWelcomePromoFor(key: string, bank: string, cardName: string): string
   const normalizedKey = key.toLowerCase();
   const normalizedBank = bank.toLowerCase();
 
-  // HSBC
+  // ─── HSBC ─────────────────────────────────────────────────────────────────
+  // QA verified May 2026: HSBC current offer is tiered Universal eGC (not cashback),
+  // requiring ₱40k–₱145k spend. Previous ₱5k/₱20k cashback figures were from an older campaign.
   if (normalizedKey === 'hsbc live credit card' || normalizedKey.includes('hsbc_live')) {
-    return 'Get a welcome gift of ₱5,000 cashback when you spend at least ₱20,000 within 60 days of card approval.';
+    return 'New cardholders can earn a welcome gift of Universal eGCs when you meet a minimum spend within 60 days of card approval. Check the current offer tiers on the HSBC promotions page.';
   }
   if (normalizedKey === 'hsbc red platinum mastercard' || normalizedKey.includes('hsbc_red')) {
-    return 'Earn up to ₱3,000 cashback or travel vouchers as a welcome gift upon spending your first ₱15,000.';
+    return 'New cardholders may qualify for a welcome gift when you spend a minimum amount within your first 60 days. Check the HSBC promotions page for the current offer and required spend threshold.';
   }
 
-  // BPI Signature
-  if (normalizedKey === 'bpi signature card' || normalizedKey.includes('signature')) {
-    return 'Get a premium welcome gift of 20,000 rewards points when you spend ₱50,000 in your first 60 days.';
+  // ─── BPI ──────────────────────────────────────────────────────────────────
+  // QA verified May 2026: BPI welcome offer (Mar–Jun 2026) is eGC-based, not points/cashback.
+  // Signature: ₱18,000 eGC / ₱90,000 spend. Amore Platinum being rebranded Jun 24, 2026.
+  // Specific amounts are time-limited — use conservative language.
+  if (normalizedKey === 'bpi signature card' || normalizedKey.includes('bpi_signature')) {
+    return 'New cardholders may earn an eGC welcome gift when you meet the minimum spend requirement within 60 days. Visit the BPI promotions page for the current offer amount and qualifying spend.';
   }
-  // BPI Amore Platinum
+  // BPI Amore Platinum (being rebranded to Robinsons Cashback Card Jun 24 2026)
   if (normalizedKey === 'bpi amore platinum cashback card') {
-    return 'Earn up to ₱5,000 cashback as a welcome gift when you spend at least ₱30,000 within 60 days.';
+    return 'New cardholders may earn an eGC welcome gift upon reaching the minimum spend within 60 days of approval. Visit the BPI promotions page to confirm the current offer.';
   }
-  // BPI Amore
+  // BPI Amore Cashback
   if (normalizedKey === 'bpi amore cashback card') {
-    return 'Earn up to ₱3,000 cashback as a welcome gift when you spend at least ₱30,000 within 60 days.';
+    return 'New cardholders may earn an eGC welcome gift upon reaching the minimum spend within 60 days of approval. Check the BPI promotions page for the active offer.';
   }
   // BPI Platinum Rewards
   if (normalizedKey.includes('bpi_platinum') || normalizedKey.includes('bpi platinum')) {
-    return 'Get up to 15,000 rewards points as a welcome gift when you spend ₱50,000 in your first 60 days.';
+    return 'New cardholders may earn a rewards points welcome gift when you meet the minimum spend in your first 60 days. Visit the BPI promotions page for current qualifying spend amounts.';
   }
-  // BPI Petron
+  // BPI Petron — verifiable product feature (fuel voucher on activation)
   if (normalizedKey.includes('petron')) {
-    return 'Get a free ₱200 fuel voucher as a welcome gift upon card approval and activation.';
+    return 'Get a fuel voucher welcome gift upon card approval and activation. Verify the current voucher value on the BPI promotions page.';
   }
   // BPI Robinsons
   if (normalizedKey.includes('robinsons')) {
-    return 'Earn a welcome gift of ₱2,000 cashback when you spend ₱20,000 at Robinsons stores.';
+    return 'New cardholders may earn a cashback welcome gift when you reach the minimum spend at Robinsons stores. Check the BPI promotions page for current offer details.';
   }
   // BPI General
   if (normalizedBank.includes('philippine islands') || normalizedKey.startsWith('bpi')) {
-    return 'Get up to 10,000 rewards points when you spend ₱30,000 within the first 60 days of approval.';
+    return 'New cardholders may qualify for a welcome gift when you meet the minimum spend within your first 60 days. Visit the BPI promotions page for the current offer.';
   }
 
-  // BDO American Express Cashback
+  // ─── BDO ──────────────────────────────────────────────────────────────────
+  // QA verified May 2026: BDO.com.ph timed out for crawlers; offers are time-limited.
+  // BDO Explorer miles and fee waivers are historically plausible but unconfirmed as active.
   if (normalizedKey === 'bdo_american_express_cashback_credit_card') {
-    return 'Get an introductory welcome benefit of waived annual fees for your first full year.';
+    return 'New cardholders may receive a welcome benefit of waived annual fees. Verify the current offer on the BDO deals page.';
   }
-  // BDO American Express Explorer
   if (normalizedKey === 'bdo_american_express_explorer_credit_card') {
-    return 'Earn a welcome bonus of 5,000 miles when you spend ₱50,000 within 60 days of approval.';
+    return 'New cardholders may earn a miles welcome bonus when you meet the minimum spend within 60 days. Check the BDO deals page for the current miles amount and qualifying spend.';
   }
-  // BDO American Express Platinum
   if (normalizedKey === 'bdo_american_express_platinum_credit_card') {
-    return 'Get free airport lounge access passes and waived yearly fees for the first year.';
+    return 'New cardholders may receive complimentary airport lounge access passes and a waived yearly fee as a welcome benefit. Confirm current offers on the BDO deals page.';
   }
   // BDO Visa Signature / World Elite
-  if (normalizedKey.includes('signature') || normalizedKey.includes('world_elite')) {
-    return 'Get a luxury welcome gift of complimentary airport lounge access and 10,000 rewards points.';
+  if (normalizedKey.includes('visa_signature') || normalizedKey.includes('world_elite')) {
+    return 'New cardholders may receive complimentary lounge access and a rewards points welcome bonus. Check the BDO deals page for current welcome offer details.';
   }
-  // BDO JCB Platinum / Gold / Lucky Cat
+  // BDO JCB
   if (normalizedKey.includes('jcb')) {
-    return 'Enjoy complimentary airport lounge access passes in Japan and Hawaii as a welcome benefit.';
+    return 'New JCB cardholders may receive complimentary lounge access in Japan and Hawaii as a welcome benefit. Verify the current offer on the BDO deals page.';
   }
   // BDO General
   if (normalizedBank.includes('bdo') || normalizedKey.startsWith('bdo')) {
-    return 'Enjoy a welcome benefit of waived yearly card fees for your entire first year.';
+    return 'New cardholders may receive a welcome benefit such as waived yearly fees. Check the BDO deals page for the latest offer available on this card.';
   }
 
-  // Chinabank Freedom
+  // ─── Chinabank ────────────────────────────────────────────────────────────
+  // Freedom NAFFL is a verified permanent product feature — always safe.
   if (normalizedKey === 'chinabank_freedom_mastercard') {
-    return 'No yearly fee forever (NAFFL) is your standard welcome benefit upon card activation.';
+    return 'No yearly fee forever (NAFFL) is a permanent standard feature of this card — you will never pay an annual membership fee.';
   }
-  // Chinabank Destinations
+  // Destinations: QA corrected — welcome gift is Accor Plus Membership (NOT 5,000 air miles).
   if (normalizedKey.includes('destinations')) {
-    return 'Earn a welcome gift of up to 5,000 air miles when you spend your first ₱30,000.';
+    return 'New cardholders may receive a complimentary travel membership as a welcome gift upon meeting the minimum spend. Visit the Chinabank credit cards page for current offer details.';
   }
   // Chinabank General
   if (normalizedBank.includes('china') || normalizedKey.startsWith('chinabank')) {
-    return 'Get up to 3,000 rewards points or shopping vouchers as an introductory welcome gift.';
+    return 'New cardholders may receive rewards points or vouchers as a welcome gift upon meeting a minimum spend. Verify the current offer on the Chinabank credit cards page.';
   }
 
-  // AUB
+  // ─── AUB ──────────────────────────────────────────────────────────────────
+  // NAFFL is a verified permanent product feature across all AUB cards — always safe.
   if (normalizedBank.includes('asia united') || normalizedKey.startsWith('aub')) {
-    return 'No yearly fee for life is your permanent welcome benefit upon card activation.';
+    return 'No yearly fee for life is a permanent standard feature of all AUB credit cards — not a time-limited promotion.';
   }
 
-  // Equicom
+  // ─── Equicom ──────────────────────────────────────────────────────────────
+  // QA verified May 2026: No public welcome fee waiver promo found on equicomsavings.com.
+  // Previous claim was unverifiable. Removed — using safe generic fallback.
   if (normalizedBank.includes('equicom') || normalizedKey.startsWith('equicom')) {
-    return 'Enjoy waived yearly fees for the first year of card usage as a welcome offer.';
+    return 'Check the Equicom Savings Bank website for any active introductory welcome offers available upon card application.';
   }
 
-  return 'Verify active introductory welcome promotions on the bank\'s website upon application.';
+  return 'Check the bank\'s promotions page for any active introductory welcome offers available to new cardholders.';
 }
 
 /**

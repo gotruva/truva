@@ -1301,8 +1301,10 @@ function DenseCell({
       >
         {fact.value}
       </p>
-      {fact.sub && !fact.missing && (
-        <p className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-400">{fact.sub}</p>
+      {fact.sub && !fact.missing ? (
+        <p className="mt-0.5 text-[11px] font-medium text-brand-textSecondary dark:text-gray-400">{fact.sub}</p>
+      ) : (
+        <p className="mt-0.5 text-[11px] select-none opacity-0" aria-hidden="true">&nbsp;</p>
       )}
     </div>
   );
@@ -1341,8 +1343,8 @@ function DenseRow(props: SharedCardProps) {
         <DenseCell label="Rewards" fact={facts.reward} help={HELP.rewards} wrap />
         <DenseCell label="Yearly fee" fact={facts.fee} help={HELP.yearlyFee} />
         <DenseCell label="Income" fact={facts.income} help={HELP.income} />
-        <DenseCell label="Foreign card fee" fact={facts.fx} help={HELP.foreignFee} />
-        <DenseCell label="Interest / month" fact={facts.interest} help={HELP.interest} />
+        <DenseCell label="Foreign fee" fact={facts.fx} help={HELP.foreignFee} />
+        <DenseCell label="Interest" fact={facts.interest} help={HELP.interest} />
 
         {/* Actions */}
         <div className="flex flex-col gap-2">
@@ -1404,8 +1406,8 @@ function TabletCard(props: SharedCardProps) {
         <DenseCell label="Rewards" fact={facts.reward} help={HELP.rewards} wrap />
         <DenseCell label="Yearly fee" fact={facts.fee} help={HELP.yearlyFee} />
         <DenseCell label="Income" fact={facts.income} help={HELP.income} />
-        <DenseCell label="Foreign card fee" fact={facts.fx} help={HELP.foreignFee} />
-        <DenseCell label="Interest / month" fact={facts.interest} help={HELP.interest} />
+        <DenseCell label="Foreign fee" fact={facts.fx} help={HELP.foreignFee} />
+        <DenseCell label="Interest" fact={facts.interest} help={HELP.interest} />
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-brand-border px-5 py-2.5 dark:border-white/10">
