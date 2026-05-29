@@ -445,7 +445,7 @@ function BrandMarqueeSection({ logos }: { logos: Array<{ provider: string; logo:
           Providers we track
         </p>
         <h2 className="mt-2 text-2xl font-black leading-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-          Banks, funds, and card issuers — in one place.
+          All major financial institutions on one platform
         </h2>
       </div>
 
