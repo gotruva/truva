@@ -270,7 +270,7 @@ function HeroSection({
             Truva comparison hub
           </p>
           <h1 className="mt-3 max-w-3xl text-[38px] font-black leading-[1.02] tracking-tight text-brand-textPrimary dark:text-white sm:text-5xl lg:text-[58px]">
-            Compare financial products in the Philippines.
+            Compare financial products in the Philippines
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-[17px]">
             Savings, funds, credit cards, insurance, and loans in one place, with rates, fees,
