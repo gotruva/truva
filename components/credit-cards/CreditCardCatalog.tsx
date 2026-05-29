@@ -68,6 +68,7 @@ const NULL_NOT_DISCLOSED = 'Not disclosed';
 const HELP = {
   rewards: 'Money, points, or miles you can earn when you use the card.',
   yearlyFee: 'A yearly charge just for having the card.',
+  income: 'The minimum salary or income you need to qualify for this card.',
   foreignFee: 'A fee when you spend abroad or pay online in another currency.',
   interest: 'What the bank may charge if you do not pay your bill in full.',
   bestFor: 'A short tag showing who this card fits, based on its strongest verified feature.',
@@ -1283,11 +1284,17 @@ function DenseCell({
   return (
     <div className="min-w-0">
       <div className="flex items-center text-[10px] font-semibold uppercase tracking-[0.08em] text-brand-textSecondary dark:text-gray-400">
-        {help ? <ColumnHelp label={label} text={help} /> : <span>{label}</span>}
+        {help ? (
+          <ColumnHelp label={label} text={help} />
+        ) : (
+          <span className="inline-flex min-h-[24px] items-center uppercase tracking-[0.08em] text-brand-textSecondary dark:text-gray-400">
+            {label}
+          </span>
+        )}
       </div>
       <p
         className={cn(
-          'mt-1 text-sm font-semibold text-brand-textPrimary dark:text-white',
+          'mt-1 text-[14.5px] font-bold text-brand-textPrimary dark:text-white',
           !wrap && 'truncate tabular-nums',
           fact.missing && 'font-medium italic text-brand-textSecondary dark:text-gray-400',
         )}
@@ -1295,7 +1302,7 @@ function DenseCell({
         {fact.value}
       </p>
       {fact.sub && !fact.missing && (
-        <p className="text-[11px] text-brand-textSecondary dark:text-gray-400">{fact.sub}</p>
+        <p className="mt-0.5 text-[11px] text-brand-textSecondary dark:text-gray-400">{fact.sub}</p>
       )}
     </div>
   );
@@ -1310,7 +1317,7 @@ function DenseRow(props: SharedCardProps) {
         selected ? 'border-brand-primary ring-2 ring-brand-primaryLight dark:ring-brand-primary/30' : 'border-brand-border dark:border-white/10',
       )}
     >
-      <div className="grid grid-cols-[minmax(300px,1fr)_128px_112px_120px_112px_100px_208px] items-center gap-4 px-4 py-4">
+      <div className="grid grid-cols-[minmax(280px,1.4fr)_minmax(120px,1.1fr)_minmax(100px,0.9fr)_minmax(100px,0.9fr)_minmax(100px,0.9fr)_minmax(100px,0.9fr)_208px] items-center gap-4 px-4 py-4">
         {/* Identity */}
         <div className="flex min-w-0 items-start gap-3">
           <MiniCreditCardVisual card={card} className="h-10 w-16" />
@@ -1333,7 +1340,7 @@ function DenseRow(props: SharedCardProps) {
 
         <DenseCell label="Rewards" fact={facts.reward} help={HELP.rewards} wrap />
         <DenseCell label="Yearly fee" fact={facts.fee} help={HELP.yearlyFee} />
-        <DenseCell label="Income" fact={facts.income} />
+        <DenseCell label="Income" fact={facts.income} help={HELP.income} />
         <DenseCell label="Foreign card fee" fact={facts.fx} help={HELP.foreignFee} />
         <DenseCell label="Interest / month" fact={facts.interest} help={HELP.interest} />
 
@@ -1396,7 +1403,7 @@ function TabletCard(props: SharedCardProps) {
       <div className="grid grid-cols-5 gap-4 border-t border-brand-border bg-brand-surface/60 px-5 py-4 dark:border-white/10 dark:bg-white/[0.02]">
         <DenseCell label="Rewards" fact={facts.reward} help={HELP.rewards} wrap />
         <DenseCell label="Yearly fee" fact={facts.fee} help={HELP.yearlyFee} />
-        <DenseCell label="Income" fact={facts.income} />
+        <DenseCell label="Income" fact={facts.income} help={HELP.income} />
         <DenseCell label="Foreign card fee" fact={facts.fx} help={HELP.foreignFee} />
         <DenseCell label="Interest / month" fact={facts.interest} help={HELP.interest} />
       </div>

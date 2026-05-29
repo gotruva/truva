@@ -71,7 +71,7 @@ export default async function BrowseAllCreditCardsPage({ searchParams }: Props) 
 
         <div className="mt-4 space-y-3">
           <h1 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
-            See the fees, rewards, and catches before you apply.
+            See the fees, rewards, and catches before you apply
           </h1>
           <p className="text-sm text-brand-textSecondary dark:text-gray-300">
             <span className="font-semibold text-brand-textPrimary dark:text-white">
