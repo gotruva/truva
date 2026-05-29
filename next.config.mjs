@@ -22,8 +22,11 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "font-src 'self' data:",
       "img-src 'self' data: https:",
-      // Supabase, DeFi data feeds, analytics
-      `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL} https://yields.llama.fi https://www.googletagmanager.com https://*.google-analytics.com https://va.vercel-scripts.com`,
+      // Supabase, DeFi data feeds, analytics.
+      // GA4 (with Google Signals) sends collect beacons not only to
+      // *.google-analytics.com but also to analytics.google.com and
+      // www.google.com — all three must be allowed or hits are CSP-blocked.
+      `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL} https://yields.llama.fi https://www.googletagmanager.com https://*.google-analytics.com https://analytics.google.com https://www.google.com https://va.vercel-scripts.com`,
       "frame-ancestors 'none'",
     ].join('; '),
   },
