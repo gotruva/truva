@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { CheckCircle2, ChevronLeft, ExternalLink, Minus } from 'lucide-react';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
+import { getPromoTCUrlFor } from '@/lib/creditCardEditorial';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import type { CreditCard } from '@/types';
 
@@ -64,23 +65,44 @@ export default async function CreditCardComparePage(
             <h1 className="text-3xl font-bold tracking-tight md:text-5xl">
               Compare your card matches side by side
             </h1>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/80">
-              We compare fees, rewards, interest rates, and required incomes next to each other.
-            </p>
-            <p className="mx-auto mt-1.5 max-w-2xl text-base leading-relaxed text-white/80">
-              We show you the facts without selecting for you.
-            </p>
+            <div className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/90 space-y-1">
+              <p>We compare fees, rewards, interest rates, and required incomes next to each other.</p>
+              <p className="text-sm text-white/70">We show you the facts without selecting for you.</p>
+            </div>
           </div>
         </header>
 
         <main className="relative z-20 mx-auto max-w-6xl space-y-6 px-4 pt-6 sm:-mt-8">
-          {/* Card header: visuals + best-for labels */}
+          {/* Sticky Compact Header for Desktop (md+) */}
+          <div className="sticky top-0 z-40 hidden md:block bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border border-brand-border dark:border-white/10 py-3 shadow-md md:rounded-2xl">
+            <div className={`grid ${
+              cards.length === 3
+                ? 'grid-cols-[13rem_1fr_1fr_1fr]'
+                : 'grid-cols-[13rem_1fr_1fr]'
+            } items-center`}>
+              <div className="flex items-center px-6">
+                <span className="text-xs font-bold uppercase tracking-widest text-brand-primary dark:text-blue-400">Comparing</span>
+              </div>
+              {cards.map((card) => (
+                <div key={card.id} className="flex items-center gap-3 px-6 border-l border-brand-border dark:border-white/10">
+                  <div className="h-6 w-9 shrink-0 overflow-hidden rounded border border-black/10 dark:border-white/10">
+                    <CreditCardVisual card={card} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-bold text-brand-textPrimary dark:text-white">{card.card_name}</p>
+                    <p className="truncate text-[10px] text-brand-textSecondary dark:text-gray-400">{card.bank}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Card header: visuals + info */}
           <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#111827]">
             <div
               className={`grid divide-y divide-brand-border bg-slate-50 dark:divide-white/10 dark:bg-slate-900/70 ${headerGridClass}`}
             >
               {cards.map((card) => {
-                const fitLabel = computeFitLabel(card);
                 return (
                   <div key={card.id} className="flex flex-col items-center p-6 text-center md:p-8">
                     <div className="mx-auto w-full max-w-[14rem]">
@@ -95,13 +117,6 @@ export default async function CreditCardComparePage(
                     <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-300">
                       {card.bank}
                     </p>
-                    {fitLabel && (
-                      <span
-                        className={`mt-2.5 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${fitLabel.color}`}
-                      >
-                        Good for: {fitLabel.label}
-                      </span>
-                    )}
                     <div className="mt-6 space-y-2.5">
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <Link
@@ -126,142 +141,143 @@ export default async function CreditCardComparePage(
                 );
               })}
             </div>
-
           </section>
 
           {/* Key Differences summary block */}
           <KeyDiffsBlock cards={cards} />
 
-          <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
-            <CompareSectionTitle title="Truva Advisor Verdict" n={cards.length} cards={cards} />
-            <CompareRow
-              label="Truva's Take"
-              values={editorials.map((e) => e.why)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Welcome promo"
-              values={editorials.map((e, idx) => {
-                const promoText = e.welcomePromo ?? 'Verify active bank promotions upon application';
-                return (
-                  <span key={cards[idx].id}>
-                    {promoText}
-                    {' '}
+          <div className="w-full overflow-x-auto scrollbar-thin border border-brand-border rounded-[1.4rem] dark:border-white/10 shadow-sm bg-white dark:bg-[#111827]">
+            <section className="min-w-max md:min-w-0">
+              <CompareSectionTitle title="Truva Advisor Verdict" n={cards.length} cards={cards} />
+              <CompareRow
+                label="Truva's Take"
+                values={editorials.map((e) => e.why)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Welcome promo"
+                values={editorials.map((e, idx) => {
+                  const promoText = e.welcomePromo ?? 'Verify active bank promotions upon application';
+                  return (
+                    <span key={cards[idx].id}>
+                      {promoText}
+                      {' '}
+                      <a
+                        href={getPromoTCUrlFor(cards[idx].bank)}
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                        className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
+                      >
+                        Terms &amp; Conditions
+                      </a>
+                    </span>
+                  );
+                })}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Who it is for"
+                values={editorials.map((e) => e.targetUser ?? 'Daily savers looking for transparent bank deals')}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Unique advantage"
+                values={editorials.map((e) => e.valueAdd ?? 'No fee waived details specified')}
+                n={cards.length}
+                cards={cards}
+              />
+
+              <CompareSectionTitle title="Basic details" n={cards.length} cards={cards} />
+              <CompareRow label="Yearly fee" values={cards.map((c) => formatAnnualFee(c))} n={cards.length} cards={cards} />
+              <CompareRow
+                label="Waiver condition"
+                values={cards.map((c) => c.annual_fee_waiver_condition ?? 'No public data')}
+                muted={cards.map((c) => c.annual_fee_waiver_condition === null)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Waiver threshold"
+                values={cards.map((c) => formatPhpNullable(c.annual_fee_waiver_threshold))}
+                muted={cards.map((c) => c.annual_fee_waiver_threshold === null)}
+                n={cards.length}
+                cards={cards}
+              />
+
+              <CompareSectionTitle title="Rewards and requirements" n={cards.length} cards={cards} />
+              <CompareRow label="Reward type" values={cards.map((c) => formatRewardType(c.rewards_type))} n={cards.length} cards={cards} />
+              <CompareRow label="Reward formula" values={cards.map((c) => formatRewardFormula(c.rewards_formula))} n={cards.length} cards={cards} />
+              <CompareRow
+                label="Minimum income"
+                values={cards.map((c) => formatIncome(c))}
+                muted={cards.map((c) => c.min_income_monthly === null && c.min_income_annual === null)}
+                n={cards.length}
+                cards={cards}
+              />
+
+              <CompareSectionTitle title="Fees and source" n={cards.length} cards={cards} />
+              <CompareRow
+                label="Interest rate"
+                values={cards.map((c) => formatMonthlyRate(c.interest_rate_pct))}
+                muted={cards.map((c) => c.interest_rate_pct === null)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Foreign card fee"
+                values={cards.map((c) => formatPercent(c.foreign_transaction_fee_pct))}
+                muted={cards.map((c) => c.foreign_transaction_fee_pct === null)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Cash advance fee"
+                values={cards.map((c) => formatCashAdvance(c))}
+                muted={cards.map((c) => c.cash_advance_fee_amount === null && c.cash_advance_fee_pct === null)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Late payment fee"
+                values={cards.map((c) => formatPhpNullable(c.late_payment_fee_amount))}
+                muted={cards.map((c) => c.late_payment_fee_amount === null)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow
+                label="Overlimit fee"
+                values={cards.map((c) => formatPhpNullable(c.overlimit_fee_amount))}
+                muted={cards.map((c) => c.overlimit_fee_amount === null)}
+                n={cards.length}
+                cards={cards}
+              />
+              <CompareRow label="Source updated" values={cards.map((c) => formatDate(c.last_scraped_at))} n={cards.length} cards={cards} />
+
+              {/* Doubled CTAs at the bottom of the table columns */}
+              <CompareRow
+                label="Apply"
+                values={cards.map((card) => (
+                  <div key={card.id} className="space-y-2.5">
                     <a
-                      href={cards[idx].source_url}
+                      href={card.source_url}
                       target="_blank"
                       rel="nofollow noopener noreferrer"
-                      className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
                     >
-                      Terms &amp; Conditions
+                      Visit bank site
+                      <ExternalLink className="h-4 w-4" />
                     </a>
-                  </span>
-                );
-              })}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Who it is for"
-              values={editorials.map((e) => e.targetUser ?? 'Daily savers looking for transparent bank deals')}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Unique advantage"
-              values={editorials.map((e) => e.valueAdd ?? 'No fee waived details specified')}
-              n={cards.length}
-              cards={cards}
-            />
-
-            <CompareSectionTitle title="Basic details" n={cards.length} cards={cards} />
-            <CompareRow label="Yearly fee" values={cards.map((c) => formatAnnualFee(c))} n={cards.length} cards={cards} />
-            <CompareRow
-              label="Waiver condition"
-              values={cards.map((c) => c.annual_fee_waiver_condition ?? 'No public data')}
-              muted={cards.map((c) => c.annual_fee_waiver_condition === null)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Waiver threshold"
-              values={cards.map((c) => formatPhpNullable(c.annual_fee_waiver_threshold))}
-              muted={cards.map((c) => c.annual_fee_waiver_threshold === null)}
-              n={cards.length}
-              cards={cards}
-            />
-
-            <CompareSectionTitle title="Rewards and requirements" n={cards.length} cards={cards} />
-            <CompareRow label="Reward type" values={cards.map((c) => formatRewardType(c.rewards_type))} n={cards.length} cards={cards} />
-            <CompareRow label="Reward formula" values={cards.map((c) => formatRewardFormula(c.rewards_formula))} n={cards.length} cards={cards} />
-            <CompareRow
-              label="Minimum income"
-              values={cards.map((c) => formatIncome(c))}
-              muted={cards.map((c) => c.min_income_monthly === null && c.min_income_annual === null)}
-              n={cards.length}
-              cards={cards}
-            />
-
-            <CompareSectionTitle title="Fees and source" n={cards.length} cards={cards} />
-            <CompareRow
-              label="Interest rate"
-              values={cards.map((c) => formatMonthlyRate(c.interest_rate_pct))}
-              muted={cards.map((c) => c.interest_rate_pct === null)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Foreign card fee"
-              values={cards.map((c) => formatPercent(c.foreign_transaction_fee_pct))}
-              muted={cards.map((c) => c.foreign_transaction_fee_pct === null)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Cash advance fee"
-              values={cards.map((c) => formatCashAdvance(c))}
-              muted={cards.map((c) => c.cash_advance_fee_amount === null && c.cash_advance_fee_pct === null)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Late payment fee"
-              values={cards.map((c) => formatPhpNullable(c.late_payment_fee_amount))}
-              muted={cards.map((c) => c.late_payment_fee_amount === null)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow
-              label="Overlimit fee"
-              values={cards.map((c) => formatPhpNullable(c.overlimit_fee_amount))}
-              muted={cards.map((c) => c.overlimit_fee_amount === null)}
-              n={cards.length}
-              cards={cards}
-            />
-            <CompareRow label="Source updated" values={cards.map((c) => formatDate(c.last_scraped_at))} n={cards.length} cards={cards} />
-
-            {/* Doubled CTAs at the bottom of the table columns */}
-            <CompareRow
-              label="Apply"
-              values={cards.map((card) => (
-                <div key={card.id} className="space-y-2.5">
-                  <a
-                    href={card.source_url}
-                    target="_blank"
-                    rel="nofollow noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-md shadow-brand-primary/20 transition-colors hover:bg-brand-primary/90"
-                  >
-                    Visit bank site
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                  <AffiliateDisclosure size="compact" className="justify-center" />
-                </div>
-              ))}
-              n={cards.length}
-              cards={cards}
-            />
-          </section>
+                    <AffiliateDisclosure size="compact" className="justify-center" />
+                  </div>
+                ))}
+                n={cards.length}
+                cards={cards}
+              />
+            </section>
+          </div>
 
           <section className="rounded-[1.4rem] border border-brand-border bg-white p-5 text-sm leading-relaxed text-brand-textSecondary shadow-sm dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-300">
             Truva is an independent comparison platform. Bank-site buttons open public source pages directly.
@@ -323,7 +339,6 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
     c.min_income_monthly ?? (c.min_income_annual ? Math.round(c.min_income_annual / 12) : null),
   );
   const fxFees = cards.map((c) => c.foreign_transaction_fee_pct);
-  const ewalletFlags = cards.map((c) => (c.badge_inputs?.no_ewallet_earn ? 1 : 0));
 
   type DiffRow = { label: string; values: string[]; winnerIdx: number | null; note?: string };
 
@@ -336,77 +351,71 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
 
   const gridClass =
     cards.length === 3
-      ? 'md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]'
-      : 'md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)]';
+      ? 'grid-cols-[100px_120px_120px_120px] md:grid-cols-[13rem_1fr_1fr_1fr]'
+      : 'grid-cols-[100px_1fr_1fr] md:grid-cols-[13rem_1fr_1fr]';
 
   return (
-    <section className="overflow-hidden rounded-[1.4rem] border border-brand-border bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
-      <div className={`grid border-b border-brand-border dark:border-white/10 ${gridClass}`}>
-        <div className="border-b border-brand-border bg-brand-surface px-5 py-4 dark:border-white/10 dark:bg-white/[0.03] md:border-b-0 md:border-r">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-primary">Key Differences</p>
-          <p className="mt-1 text-sm text-brand-textSecondary dark:text-gray-400">
-            The four fields that matter most for a Philippine card comparison.{' '}
-            <CheckCircle2 className="inline h-3.5 w-3.5 text-emerald-500" /> marks a clear advantage
-            where public data allows.
-          </p>
-        </div>
-        {/* Column card name headers — visible on md+ */}
-        {cards.map((card, idx) => (
-          <div
-            key={card.id}
-            className={`hidden items-center bg-brand-surface px-4 py-2.5 md:flex ${
-              idx < cards.length - 1 ? 'md:border-r' : ''
-            } border-brand-border dark:border-white/10 dark:bg-white/[0.03]`}
-          >
-            <p className="truncate text-[11px] font-bold text-brand-textPrimary dark:text-white">
-              {card.card_name}
+    <div className="w-full overflow-x-auto scrollbar-thin border border-brand-border rounded-[1.4rem] dark:border-white/10 shadow-sm bg-white dark:bg-[#111827]">
+      <section className="min-w-max md:min-w-0">
+        <div className={`grid border-b border-brand-border dark:border-white/10 ${gridClass}`}>
+          <div className="sticky left-0 z-20 border-r border-brand-border bg-brand-surface px-4 py-4 dark:border-white/10 dark:bg-slate-900 md:border-b-0">
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.2em] text-brand-primary dark:text-blue-400">Key Differences</p>
+            <p className="mt-1 text-[9px] md:text-xs text-brand-textSecondary dark:text-gray-400 leading-normal">
+              The four fields that matter most.
             </p>
           </div>
-        ))}
-      </div>
-
-      {rows.map((row) => (
-        <div
-          key={row.label}
-          className={`grid border-b border-brand-border last:border-b-0 dark:border-white/10 ${gridClass}`}
-        >
-          <div className="border-b border-brand-border bg-slate-50/70 px-4 py-3 dark:border-white/10 dark:bg-slate-900/40 md:border-b-0 md:border-r">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
-              {row.label}
-            </p>
-            {row.note && (
-              <p className="mt-0.5 text-[10px] text-brand-textSecondary/70 dark:text-gray-500">
-                {row.note}
+          {/* Column card name headers */}
+          {cards.map((card, idx) => (
+            <div
+              key={card.id}
+              className={`flex items-center bg-brand-surface px-4 py-2.5 ${
+                idx < cards.length - 1 ? 'border-r' : ''
+              } border-brand-border dark:border-white/10 dark:bg-white/[0.03]`}
+            >
+              <p className="line-clamp-2 text-[10px] md:text-[11px] font-bold text-brand-textPrimary dark:text-white">
+                {card.card_name}
               </p>
-            )}
-          </div>
-          {row.values.map((val, idx) => (
-            <KeyDiffCell key={idx} value={val} winner={row.winnerIdx === idx} last={idx === row.values.length - 1} cardName={cards[idx]?.card_name} />
+            </div>
           ))}
         </div>
-      ))}
-    </section>
+
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className={`grid border-b border-brand-border last:border-b-0 dark:border-white/10 ${gridClass}`}
+          >
+            <div className="sticky left-0 z-20 border-r border-brand-border bg-slate-50 dark:border-white/10 dark:bg-slate-900 px-4 py-3 md:border-b-0">
+              <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.12em] md:tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+                {row.label}
+              </p>
+              {row.note && (
+                <p className="mt-0.5 text-[8px] md:text-[10px] text-brand-textSecondary/70 dark:text-gray-500 leading-tight">
+                  {row.note}
+                </p>
+              )}
+            </div>
+            {row.values.map((val, idx) => (
+              <KeyDiffCell key={idx} value={val} winner={row.winnerIdx === idx} last={idx === row.values.length - 1} />
+            ))}
+          </div>
+        ))}
+      </section>
+    </div>
   );
 }
 
-function KeyDiffCell({ value, winner, last = false, cardName }: { value: string; winner: boolean; last?: boolean; cardName?: string }) {
+function KeyDiffCell({ value, winner, last = false }: { value: string; winner: boolean; last?: boolean }) {
   return (
     <div
-      className={`flex min-h-[3.5rem] flex-col gap-1 border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'md:border-r'}`}
+      className={`flex min-h-[3.5rem] flex-col justify-center border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'border-r'}`}
     >
-      {/* Card name label — visible only on mobile */}
-      {cardName && (
-        <p className="truncate text-[10px] font-bold uppercase tracking-[0.12em] text-brand-primary/70 md:hidden">
-          {cardName}
-        </p>
-      )}
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-1.5">
         {winner ? (
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
         ) : (
-          <Minus className="mt-0.5 h-4 w-4 shrink-0 text-brand-border dark:text-white/20" />
+          <Minus className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-border dark:text-white/20" />
         )}
-        <p className={winner ? 'text-sm font-semibold text-emerald-700 dark:text-emerald-300' : 'text-sm font-medium text-brand-textSecondary dark:text-gray-400'}>
+        <p className={winner ? 'text-[12px] md:text-sm font-semibold text-emerald-700 dark:text-emerald-300' : 'text-[12px] md:text-sm font-medium text-brand-textSecondary dark:text-gray-400'}>
           {value}
         </p>
       </div>
@@ -417,22 +426,22 @@ function KeyDiffCell({ value, winner, last = false, cardName }: { value: string;
 function CompareSectionTitle({ title, n, cards }: { title: string; n: number; cards: CreditCard[] }) {
   const gridClass =
     n === 3
-      ? 'md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]'
-      : 'md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)]';
+      ? 'grid-cols-[100px_120px_120px_120px] md:grid-cols-[13rem_1fr_1fr_1fr]'
+      : 'grid-cols-[100px_1fr_1fr] md:grid-cols-[13rem_1fr_1fr]';
   return (
     <div className={`grid border-b border-brand-border dark:border-white/10 ${gridClass}`}>
-      <div className="border-b border-brand-border bg-brand-surface px-4 py-3 dark:border-white/10 dark:bg-white/[0.03] md:border-b-0">
-        <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-brand-primary">{title}</h2>
+      <div className="sticky left-0 z-20 border-r border-brand-border bg-brand-surface px-4 py-3 dark:border-white/10 dark:bg-slate-900 md:border-b-0">
+        <h2 className="text-[10px] md:text-xs font-bold uppercase tracking-[0.12em] md:tracking-[0.2em] text-brand-primary dark:text-blue-400">{title}</h2>
       </div>
-      {/* Column card name headers — visible on md+ */}
+      {/* Column card name headers */}
       {cards.map((card, idx) => (
         <div
           key={card.id}
-          className={`hidden items-center bg-brand-surface px-4 py-2.5 md:flex ${
-            idx < cards.length - 1 ? 'md:border-r' : ''
+          className={`flex items-center bg-brand-surface px-4 py-2 ${
+            idx < cards.length - 1 ? 'border-r' : ''
           } border-brand-border dark:border-white/10 dark:bg-white/[0.03]`}
         >
-          <p className="truncate text-[11px] font-bold text-brand-textPrimary dark:text-white">
+          <p className="line-clamp-2 text-[10px] md:text-[11px] font-bold text-brand-textPrimary dark:text-white">
             {card.card_name}
           </p>
         </div>
@@ -456,17 +465,17 @@ function CompareRow({
 }) {
   const gridClass =
     n === 3
-      ? 'md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]'
-      : 'md:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)]';
+      ? 'grid-cols-[100px_120px_120px_120px] md:grid-cols-[13rem_1fr_1fr_1fr]'
+      : 'grid-cols-[100px_1fr_1fr] md:grid-cols-[13rem_1fr_1fr]';
   return (
     <div className={`grid border-b border-brand-border last:border-b-0 dark:border-white/10 ${gridClass}`}>
-      <div className="border-b border-brand-border bg-slate-50/70 px-4 py-3 dark:border-white/10 dark:bg-slate-900/40 md:border-b-0 md:border-r">
-        <h3 className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
+      <div className="sticky left-0 z-20 border-r border-brand-border bg-slate-50 dark:border-white/10 dark:bg-slate-900 px-4 py-3 md:border-b-0">
+        <h3 className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.12em] md:tracking-[0.18em] text-brand-textSecondary dark:text-gray-400">
           {label}
         </h3>
       </div>
       {values.map((val, idx) => (
-        <CompareCell key={idx} muted={muted[idx] ?? false} last={idx === values.length - 1} cardName={cards[idx]?.card_name}>
+        <CompareCell key={idx} muted={muted[idx] ?? false} last={idx === values.length - 1}>
           {val}
         </CompareCell>
       ))}
@@ -474,18 +483,12 @@ function CompareRow({
   );
 }
 
-function CompareCell({ children, muted, last = false, cardName }: { children: ReactNode; muted?: boolean; last?: boolean; cardName?: string }) {
+function CompareCell({ children, muted, last = false }: { children: ReactNode; muted?: boolean; last?: boolean }) {
   return (
     <div
-      className={`min-h-[3.5rem] border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'md:border-r'}`}
+      className={`min-h-[3.5rem] flex flex-col justify-center border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'border-r'}`}
     >
-      {/* Card name label — visible only on mobile where columns stack */}
-      {cardName && (
-        <p className="mb-1 truncate text-[10px] font-bold uppercase tracking-[0.12em] text-brand-primary/70 md:hidden">
-          {cardName}
-        </p>
-      )}
-      <div className={muted ? 'text-sm font-medium text-brand-textSecondary dark:text-gray-400' : 'text-sm font-semibold text-brand-textPrimary dark:text-gray-100'}>
+      <div className={muted ? 'text-[12px] md:text-sm font-medium text-brand-textSecondary dark:text-gray-400' : 'text-[12px] md:text-sm font-semibold text-brand-textPrimary dark:text-gray-100'}>
         {children}
       </div>
     </div>

@@ -7,6 +7,8 @@ import { TrackedLink } from '../shared/TrackedLink';
 import { RESULTS, CONFIDENCE_LABELS } from '@/lib/creditCardFinder/copy';
 import type { ScoredCard, ResultRole } from '@/lib/creditCardFinder/rank';
 
+import { getPromoTCUrlFor } from '@/lib/creditCardEditorial';
+
 type FitTone = 'positive' | 'good' | 'neutral';
 
 interface Props {
@@ -120,7 +122,7 @@ export function ResultCard({
                 {welcomePromo}
                 {' '}
                 <a
-                  href={card.source_url}
+                  href={getPromoTCUrlFor(card.bank)}
                   target="_blank"
                   rel="nofollow noopener noreferrer"
                   className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
