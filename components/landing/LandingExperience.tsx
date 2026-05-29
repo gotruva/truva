@@ -474,7 +474,7 @@ function CategoryGatewaySection({ categories }: { categories: CategoryItem[] }) 
             Choose your path
           </p>
           <h2 className="mt-2 text-3xl font-black leading-tight tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
-            Pick the product you need now.
+            Pick the product you need now
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
             Start with the decision in front of you. Truva keeps the comparison focused on what
@@ -724,7 +724,7 @@ function ClaritySection() {
             Less reading, clearer choices
           </p>
           <h2 className="mt-2 max-w-xl text-3xl font-black leading-tight tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
-            Truva turns the fine print into the parts that matter.
+            Truva turns the fine print into the parts that matter
           </h2>
           <div className="mt-7 grid gap-3">
             {steps.map(({ title, body, icon: Icon }, index) => (
@@ -783,14 +783,18 @@ function TrustPromiseSection() {
               Why people can trust it
             </p>
             <h2 className="mt-2 text-3xl font-black leading-tight tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
-              Plain words. Visible tradeoffs. No hidden agenda.
+              Plain words. Visible tradeoffs. No hidden agenda
             </h2>
           </div>
-          <p className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
-            Truva is built for people who do not want to open ten tabs or decode product terms. The
-            page should show what the product is, who it is for, and what the catch is before any
-            application link.
-          </p>
+          <div className="max-w-2xl text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
+            <span className="block">
+              Truva is built for people who do not want to open ten tabs or decode product terms.
+            </span>
+            <span className="mt-2 block">
+              The page should show what the product is, who it is for, and what the catch is before any
+              application link.
+            </span>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-3 md:grid-cols-3">
@@ -827,7 +831,7 @@ function NewsletterBlock() {
           The Truva Brief
         </p>
         <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
-          Stay in the loop on all things Truva.
+          Stay in the loop on all things Truva
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
           New products, new providers, coverage updates — one short email when something
