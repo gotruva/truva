@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react';
 import { CreditCardVisual } from './CreditCardVisual';
 import { getCreditCardVisualAsset } from '@/lib/credit-card-visuals';
 import { REASSURANCE } from '@/lib/creditCardFinder/copy';
+import { trackHeroCarouselNav } from '@/lib/analytics/creditCards';
 import { cn } from '@/lib/utils';
 import type { CreditCard as CreditCardType } from '@/types';
 
@@ -65,6 +66,17 @@ export function CreditCardHeroCarousel({ cards }: { cards: CreditCardType[] }) {
     return () => window.clearInterval(timer);
   }, [carouselCards.length, isPaused, reduceMotion, showNext]);
 
+  // Manual arrow taps are tracked; the auto-advance interval above is not.
+  const handleManualPrevious = useCallback(() => {
+    trackHeroCarouselNav({ direction: 'prev' });
+    showPrevious();
+  }, [showPrevious]);
+
+  const handleManualNext = useCallback(() => {
+    trackHeroCarouselNav({ direction: 'next' });
+    showNext();
+  }, [showNext]);
+
   if (carouselCards.length === 0) {
     return (
       <div className="relative mx-auto w-full max-w-[29rem] rounded-[2rem] border border-brand-border bg-brand-surface p-5 dark:border-white/10 dark:bg-white/[0.04]">
@@ -116,14 +128,14 @@ export function CreditCardHeroCarousel({ cards }: { cards: CreditCardType[] }) {
         <div className="absolute right-4 top-4 z-30 flex gap-2">
           <CarouselButton
             label="Show previous card"
-            onClick={showPrevious}
+            onClick={handleManualPrevious}
             disabled={carouselCards.length <= 1}
           >
             <ChevronLeft className="h-4 w-4" />
           </CarouselButton>
           <CarouselButton
             label="Show next card"
-            onClick={showNext}
+            onClick={handleManualNext}
             disabled={carouselCards.length <= 1}
           >
             <ChevronRight className="h-4 w-4" />

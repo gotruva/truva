@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
+import { sendGAEvent } from '@next/third-parties/google';
 import { useTheme } from 'next-themes';
 import { BookOpenText, ChevronDown, Landmark, BarChart2, GraduationCap, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -188,7 +189,11 @@ export function Navbar() {
 
           {hasMounted && (
             <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onClick={() => {
+                const next = theme === 'dark' ? 'light' : 'dark';
+                setTheme(next);
+                sendGAEvent({ event: 'theme_toggled', to_theme: next });
+              }}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"
               aria-label="Toggle dark mode"
             >
@@ -197,7 +202,11 @@ export function Navbar() {
           )}
 
           <button
-            onClick={() => isMobileMenuOpen ? closeMobileMenu() : setIsMobileMenuOpen(true)}
+            onClick={() => {
+              const opening = !isMobileMenuOpen;
+              opening ? setIsMobileMenuOpen(true) : closeMobileMenu();
+              sendGAEvent({ event: 'mobile_menu_toggled', open: opening });
+            }}
             className="flex lg:hidden p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-brand-textPrimary dark:text-gray-300"
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}
@@ -276,7 +285,12 @@ export function Navbar() {
               </button>
               {hasMounted && (
                 <button
-                  onClick={() => { closeMobileMenu(); setTheme(theme === 'dark' ? 'light' : 'dark'); }}
+                  onClick={() => {
+                    const next = theme === 'dark' ? 'light' : 'dark';
+                    closeMobileMenu();
+                    setTheme(next);
+                    sendGAEvent({ event: 'theme_toggled', to_theme: next });
+                  }}
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold text-brand-textPrimary transition-colors hover:bg-brand-surface dark:text-gray-100 dark:hover:bg-slate-800"
                 >
                   {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

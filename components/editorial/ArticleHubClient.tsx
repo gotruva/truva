@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Search } from 'lucide-react';
 import type { EditorialArticle } from '@/types';
 import { ArticleCard } from './ArticleCard';
@@ -25,6 +26,11 @@ export function ArticleHubClient({
 }: ArticleHubClientProps) {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+
+  const selectCategory = (value: string) => {
+    setActiveCategory(value);
+    sendGAEvent({ event: 'article_category_filtered', category: value });
+  };
 
   const featured = featuredSlug ? articles.find((a) => a.slug === featuredSlug) : null;
 
@@ -65,7 +71,7 @@ export function ArticleHubClient({
         {hasCategories && (
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setActiveCategory('all')}
+              onClick={() => selectCategory('all')}
               className={`rounded-full px-4 py-1.5 text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 ${
                 activeCategory === 'all'
                   ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900 shadow-sm'
@@ -77,7 +83,7 @@ export function ArticleHubClient({
             {categories.map((cat) => (
               <button
                 key={cat.value}
-                onClick={() => setActiveCategory(cat.value)}
+                onClick={() => selectCategory(cat.value)}
                 className={`rounded-full px-4 py-1.5 text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 ${
                   activeCategory === cat.value
                     ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900 shadow-sm'

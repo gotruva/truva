@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 
 export function PartnerCTA() {
   const [open, setOpen] = useState(false);
@@ -23,6 +24,7 @@ export function PartnerCTA() {
     if (res.ok) {
       setStatus('success');
       setMessage(data.message);
+      sendGAEvent({ event: 'partner_form_submitted' });
     } else {
       setStatus('error');
       setMessage(data.error || 'Something went wrong. Please try again.');
@@ -37,7 +39,7 @@ export function PartnerCTA() {
 
       {!open && (
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => { setOpen(true); sendGAEvent({ event: 'partner_cta_clicked' }); }}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold bg-brand-surface dark:bg-white/5 border border-brand-border dark:border-white/10 text-brand-textPrimary dark:text-gray-200 hover:bg-brand-border/40 dark:hover:bg-white/10 transition-colors duration-200"
         >
           Partner with Truva

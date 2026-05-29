@@ -16,6 +16,7 @@ import {
 } from '@/lib/creditCardFinder/questions';
 import { answersToQuery } from '@/lib/creditCardFinder/rank';
 import {
+  trackFinderAbandoned,
   trackFinderBrowseAll,
   trackFinderCompleted,
   trackFinderResume,
@@ -185,8 +186,14 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
 
   const handleBack = useCallback(
     (stepIndex: number) => {
-      if (stepIndex <= 0) goToStep(null);
-      else goToStep(stepIndex); // one-based prev = stepIndex (0-based prev +1)
+      if (stepIndex <= 0) {
+        // Leaving Q1 back to the landing = abandoning the finder.
+        const qid = QUESTIONS_FINAL[stepIndex]?.id as QuestionId | undefined;
+        trackFinderAbandoned({ step: stepIndex + 1, questionId: qid ?? 'unknown' });
+        goToStep(null);
+      } else {
+        goToStep(stepIndex); // one-based prev = stepIndex (0-based prev +1)
+      }
     },
     [goToStep],
   );

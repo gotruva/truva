@@ -93,6 +93,74 @@ export function trackFinderCompleted(answers: FinderAnswers) {
   emit('cc_finder_completed', { ...coarseAnswers(answers) });
 }
 
+/** User left the quiz back to the landing without finishing (Q1 bail-out). */
+export function trackFinderAbandoned(args: { step: number; questionId: string }) {
+  emit('cc_finder_abandoned', { step: args.step, question_id: args.questionId });
+}
+
+// ── Browse / catalog (the "all cards" page) ───────────────────────────────────
+// High-value movement data for bank partnerships: which segments people filter
+// to, how they sort, which cards they open. No PII, no raw search text.
+
+export function trackBrowseFilterPill(args: { pillId: string; resultCount: number }) {
+  emit('cc_browse_filter_pill', { pill: args.pillId, result_count: args.resultCount });
+}
+
+export function trackBrowseFilterChanged(args: {
+  filterType: string; // 'issuer' | 'reward' | 'fee' | 'fx'
+  value: string;
+  resultCount: number;
+}) {
+  emit('cc_browse_filter_changed', {
+    filter_type: args.filterType,
+    filter_value: args.value, // avoid GA4's reserved `value` param name
+    result_count: args.resultCount,
+  });
+}
+
+export function trackBrowseSortChanged(args: { sortMode: string; resultCount: number }) {
+  emit('cc_browse_sort_changed', { sort_mode: args.sortMode, result_count: args.resultCount });
+}
+
+export function trackBrowseFiltersCleared(args: { method: 'reset' | 'clear_all' | 'chip' }) {
+  emit('cc_browse_filters_cleared', { method: args.method });
+}
+
+/** Search engagement — sends only the term length + result count, never the text. */
+export function trackBrowseSearchUsed(args: { queryLength: number; resultCount: number }) {
+  emit('cc_browse_search_used', {
+    query_length: args.queryLength,
+    result_count: args.resultCount,
+  });
+}
+
+export function trackBrowseCardExpanded(args: { cardKey: string; bank: string; rank: number }) {
+  emit('cc_browse_card_expanded', {
+    card_key: args.cardKey,
+    bank: args.bank,
+    rank: args.rank,
+  });
+}
+
+export function trackCompareToggled(args: {
+  cardKey: string;
+  bank: string;
+  action: 'add' | 'remove';
+  count: number;
+}) {
+  emit('cc_compare_toggled', {
+    card_key: args.cardKey,
+    bank: args.bank,
+    action: args.action,
+    count: args.count,
+  });
+}
+
+/** Manual carousel navigation on the finder hero (never the auto-advance). */
+export function trackHeroCarouselNav(args: { direction: 'prev' | 'next' }) {
+  emit('cc_hero_carousel_nav', { direction: args.direction });
+}
+
 // ── Results ──────────────────────────────────────────────────────────────────
 
 export function trackResultsViewed(args: {
