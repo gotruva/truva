@@ -1155,7 +1155,7 @@ function ExpandedDetails({
                     <span className="text-brand-primary dark:text-blue-400 font-medium">{editorial.welcomePromo}</span>
                     {' '}
                     <a
-                      href={getPromoTCUrlFor(card.bank)}
+                      href={getPromoTCUrlFor(card.bank, card.normalized_card_key)}
                       target="_blank"
                       rel="nofollow noopener noreferrer"
                       className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"

@@ -122,7 +122,7 @@ export function ResultCard({
                 {welcomePromo}
                 {' '}
                 <a
-                  href={getPromoTCUrlFor(card.bank)}
+                  href={getPromoTCUrlFor(card.bank, card.normalized_card_key)}
                   target="_blank"
                   rel="nofollow noopener noreferrer"
                   className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"

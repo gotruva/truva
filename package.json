@@ -23,7 +23,8 @@
     "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts",
     "test:finder": "tsx scripts/test-credit-card-finder.ts",
     "test:detail": "tsx scripts/test-credit-card-detail.ts",
-    "lint:cc-copy": "tsx scripts/check-credit-card-copy.ts"
+    "lint:cc-copy": "tsx scripts/check-credit-card-copy.ts",
+    "lint:promo-links": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/verify-promo-links.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -81,16 +81,74 @@ def normalize_name(name: str) -> str:
 # ─── Image Processing ───
 
 def process_to_clean_card(raw_bytes: bytes, output_path: str) -> dict:
-    """Convert raw image to 960x606 WebP with 2% transparent padding."""
+    """Convert raw image to 960x606 WebP with 2% transparent padding, after transparentizing the background and cropping."""
     img = Image.open(io.BytesIO(raw_bytes))
     if img.mode != "RGBA":
         img = img.convert("RGBA")
 
+    w, h = img.size
+    
+    # 1. BPI direct cropping using fixed coordinates
+    filename = os.path.basename(output_path).lower()
+    is_bpi = "bpi" in filename or "robinsons" in filename or "petron" in filename
+    
+    if is_bpi and w == 744 and h == 368:
+        cropped = img.crop((148, 42, 596, 327))
+    else:
+        # 2. Safe crop using corner flood-fill for white/transparent only
+        import collections
+        visited = set()
+        queue = collections.deque([(0, 0), (w-1, 0), (0, h-1), (w-1, h-1)])
+        for c in queue:
+            visited.add(c)
+            
+        while queue:
+            x, y = queue.popleft()
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < w and 0 <= ny < h and (nx, ny) not in visited:
+                    r, g, b, a = img.getpixel((nx, ny))
+                    # STRICT background condition: transparent or solid near-white only
+                    if a == 0 or (r >= 244 and g >= 244 and b >= 244):
+                        visited.add((nx, ny))
+                        queue.append((nx, ny))
+                        
+        pixels = img.load()
+        for x, y in visited:
+            pixels[x, y] = (0, 0, 0, 0)
+            
+        bbox_x1, bbox_y1 = w, h
+        bbox_x2, bbox_y2 = 0, 0
+        for y_idx in range(h):
+            for x_idx in range(w):
+                r, g, b, a = pixels[x_idx, y_idx]
+                if a > 0:
+                    if x_idx < bbox_x1: bbox_x1 = x_idx
+                    if y_idx < bbox_y1: bbox_y1 = y_idx
+                    if x_idx > bbox_x2: bbox_x2 = x_idx
+                    if y_idx > bbox_y2: bbox_y2 = y_idx
+                    
+        if bbox_x1 < bbox_x2 and bbox_y1 < bbox_y2:
+            cropped = img.crop((bbox_x1, bbox_y1, bbox_x2 + 1, bbox_y2 + 1))
+        else:
+            cropped = img
+
+    # 3. Apply smooth rounded transparent corner mask
+    from PIL import ImageDraw, ImageChops
+    mask = Image.new('L', cropped.size, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.rounded_rectangle((0, 0, cropped.width - 1, cropped.height - 1), radius=18, fill=255)
+    
+    r, g, b, a = cropped.split()
+    final_a = ImageChops.multiply(a, mask)
+    img_cropped = Image.merge('RGBA', (r, g, b, final_a))
+
+    # 4. Proceed with standard resizing and transparent padding
     padding_px = int(CARD_CANVAS_W * PADDING_RATIO)
     card_area_w = CARD_CANVAS_W - 2 * padding_px
     card_area_h = CARD_CANVAS_H - 2 * padding_px
 
-    img_ratio = img.width / img.height
+    img_ratio = img_cropped.width / img_cropped.height
     target_ratio = card_area_w / card_area_h
 
     if img_ratio > target_ratio:
@@ -100,7 +158,7 @@ def process_to_clean_card(raw_bytes: bytes, output_path: str) -> dict:
         new_h = card_area_h
         new_w = int(new_h * img_ratio)
 
-    img_resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    img_resized = img_cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
     canvas = Image.new("RGBA", (CARD_CANVAS_W, CARD_CANVAS_H), (0, 0, 0, 0))
     x_offset = (CARD_CANVAS_W - new_w) // 2
@@ -114,8 +172,8 @@ def process_to_clean_card(raw_bytes: bytes, output_path: str) -> dict:
     return {
         "width": CARD_CANVAS_W,
         "height": CARD_CANVAS_H,
-        "original_width": img.width,
-        "original_height": img.height,
+        "original_width": w,
+        "original_height": h,
         "mode": "RGBA",
         "file_size_kb": round(file_size / 1024, 1),
     }

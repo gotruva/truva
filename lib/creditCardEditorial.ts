@@ -45,12 +45,46 @@ export const BANK_PROMO_TC_URL: Record<string, string> = {
   'Equicom Savings Bank': 'https://www.equicomsavings.com/product-and-services/card-products/',
 };
 
+export const CARD_PROMO_TC_URL: Record<string, string> = {
+  'bdo_visa_classic': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/classic',
+  'bdo_visa_gold': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/gold',
+  'bdo_visa_platinum': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/platinum',
+  'bdo_visa_signature': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/signature',
+  'bdo_standard_mastercard': 'https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/standard',
+  'bdo_gold_mastercard': 'https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/gold',
+  'bdo_platinum_mastercard': 'https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/platinum',
+  'bdo_world_elite_mastercard': 'https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/world-elite',
+  'bdo_secured_credit_card': 'https://www.bdo.com.ph/personal/cards/credit-cards/secured-credit-card',
+  'bdo_jcb_lucky_cat': 'https://www.bdo.com.ph/personal/cards/credit-cards/jcb/lucky-cat',
+  'bdo_jcb_gold': 'https://www.bdo.com.ph/personal/cards/credit-cards/jcb/gold',
+  'bdo_jcb_platinum': 'https://www.bdo.com.ph/personal/cards/credit-cards/jcb/platinum',
+  'bdo_diners_club_international': 'https://www.bdo.com.ph/personal/cards/credit-cards/diners-club/international',
+  'bdo_diners_club_premiere': 'https://www.bdo.com.ph/personal/cards/credit-cards/diners-club/premiere',
+  'bdo_diamond_unionpay': 'https://www.bdo.com.ph/personal/cards/credit-cards/unionpay/diamond',
+  'bdo_gold_unionpay': 'https://www.bdo.com.ph/personal/cards/credit-cards/unionpay/gold',
+  'bdo_american_express_cashback_credit_card': 'https://www.bdo.com.ph/personal/cards/credit-cards/american-express',
+  'bdo_american_express_explorer_credit_card': 'https://www.bdo.com.ph/personal/cards/credit-cards/american-express',
+  'bdo_american_express_platinum_credit_card': 'https://www.bdo.com.ph/personal/cards/credit-cards/american-express',
+  'bdo_blue_from_american_express': 'https://www.bdo.com.ph/personal/cards/credit-cards/american-express',
+  'chinabank_freedom_mastercard': 'https://www.chinabank.ph/credit-cards-freedom',
+  'chinabank_cash_rewards_mastercard': 'https://www.chinabank.ph/credit-cards-cash-rewards',
+  'chinabank_athome_visa_platinum': 'https://www.chinabank.ph/credit-cards-at-home-visa-platinum',
+  'chinabank_destinations_platinum_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-platinum',
+  'chinabank_destinations_world_dollar_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world-dollar',
+  'chinabank_destinations_world_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world',
+  'aub_gold_mastercard': 'https://online.aub.ph/creditcards/goldandplatinum',
+  'equicom_gold_credit_card': 'https://www.equicomsavings.com/product-and-services/card-products/',
+};
+
 /**
  * Returns the verified promotions/T&C hub URL for the given bank name.
  * Falls back to a generic search URL if the bank is not in our map.
  * Use this instead of card.source_url for welcome promo T&C links.
  */
-export function getPromoTCUrlFor(bank: string): string {
+export function getPromoTCUrlFor(bank: string, key?: string): string {
+  if (key && CARD_PROMO_TC_URL[key]) {
+    return CARD_PROMO_TC_URL[key];
+  }
   return BANK_PROMO_TC_URL[bank] ?? `https://www.google.com/search?q=${encodeURIComponent(bank + ' credit card welcome promo terms Philippines')}`;
 }
 
@@ -697,7 +731,7 @@ const editorial: Record<string, CardEditorial> = {
     valueAdd: 'Its unique benefit is offering exclusive medical discounts and emergency health services.',
     pros: [
       'Provides special discounts at Maxicare partner clinics and hospitals.',
-      'Earns 1 rewards point for every ₱30 spent to redeem for gifts or bill credits.',
+      'Earns 1 rewards point for every ₱300 spent to redeem for gifts or bill credits.',
       'Foreign card fee of 2.00% is lower than the typical 2.50% bank standard.',
     ],
     cons: [
@@ -812,6 +846,18 @@ function getWelcomePromoFor(key: string, bank: string, cardName: string): string
   }
   // BDO General
   if (normalizedBank.includes('bdo') || normalizedKey.startsWith('bdo')) {
+    const isFirstYearFree = normalizedKey.includes('classic') || 
+                            normalizedKey.includes('gold') || 
+                            normalizedKey.includes('standard') || 
+                            normalizedKey.includes('lucky_cat') ||
+                            normalizedKey.includes('signature') ||
+                            normalizedKey.includes('diners');
+    if (isFirstYearFree) {
+      return 'Free membership fee for the first year for both principal and supplementary cardholders.';
+    }
+    if (normalizedKey.includes('platinum')) {
+      return 'Free membership fee for the first year, with subsequent years waived automatically if you spend at least ₱600,000 annually.';
+    }
     return 'New cardholders may receive a welcome benefit such as waived yearly fees. Check the BDO deals page for the latest offer available on this card.';
   }
 

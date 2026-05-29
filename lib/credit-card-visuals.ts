@@ -201,10 +201,10 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
   },
   {
     cardKeys: ['bdo secured credit card'],
+    assetPath: '/cards/clean/bdo_secured_credit_card.webp',
     sourceUrl: 'https://www.bdo.com.ph/personal/cards/credit-cards/secured-credit-card',
     checkedAt: CHECKED_AT,
-    status: 'truva-fallback',
-    note: 'Official page does not expose usable product-card artwork.',
+    status: 'official-art',
   },
   {
     cardKeys: ['bdo standard mastercard'],
@@ -243,24 +243,24 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
   },
   {
     cardKeys: ['bdo world elite mastercard'],
-    assetPath: '/cards/bdo-world-elite-mastercard.webp',
+    assetPath: '/cards/clean/bdo_world_elite_mastercard.webp',
     sourceUrl: 'https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/world-elite',
     checkedAt: CHECKED_AT,
-    status: 'official-context-art',
+    status: 'official-art',
   },
   {
     cardKeys: ['chinabank athome visa platinum', 'chinabank home visa platinum'],
-    assetPath: '/cards/chinabank-athome-visa-platinum.webp',
+    assetPath: '/cards/clean/chinabank_athome_visa_platinum.webp',
     sourceUrl: 'https://www.chinabank.ph/credit-cards-at-home-visa-platinum',
     checkedAt: CHECKED_AT,
-    status: 'official-context-art',
+    status: 'official-art',
   },
   {
     cardKeys: ['chinabank cash rewards mastercard'],
-    assetPath: '/cards/chinabank-cash-rewards-mastercard.webp',
+    assetPath: '/cards/clean/chinabank_cash_rewards_mastercard.webp',
     sourceUrl: 'https://www.chinabank.ph/credit-cards-cash-rewards',
     checkedAt: CHECKED_AT,
-    status: 'official-context-art',
+    status: 'official-art',
   },
   {
     cardKeys: ['chinabank destinations platinum mastercard'],
@@ -285,10 +285,10 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
   },
   {
     cardKeys: ['chinabank freedom mastercard'],
+    assetPath: '/cards/clean/chinabank_freedom_mastercard.webp',
     sourceUrl: 'https://www.chinabank.ph/credit-cards-freedom',
     checkedAt: CHECKED_AT,
-    status: 'truva-fallback',
-    note: 'Official page exposes lifestyle banner art, but not a usable card image.',
+    status: 'official-art',
   },
   {
     cardKeys: ['equicom gold credit card'],

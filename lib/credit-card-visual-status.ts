@@ -19,7 +19,7 @@ export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "bdo_jcb_lucky_cat": "clean-card",
   "bdo_jcb_platinum": "clean-card",
   "bdo_platinum_mastercard": "clean-card",
-  "bdo_secured_credit_card": "official-unavailable",
+  "bdo_secured_credit_card": "clean-card",
   "bdo_standard_mastercard": "clean-card",
   "bdo_visa_classic": "clean-card",
   "bdo_visa_gold": "clean-card",

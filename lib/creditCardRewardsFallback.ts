@@ -236,7 +236,7 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   // Equicom Savings Bank
   'equicom gold credit card': {
     rewards_type: 'points',
-    rewards_formula: { earn_rate: 1, earn_unit: 'Key Point per Php 30 spend' },
+    rewards_formula: { earn_rate: 1, earn_unit: 'Key Point per Php 300 spend' },
   },
 
   // HSBC
