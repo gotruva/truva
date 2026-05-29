@@ -241,6 +241,13 @@ function getIssuerTone(bank: string) {
 function formatAnnualFee(card: CreditCardType): string {
   if (card.naffl) return 'PHP 0';
   if (card.annual_fee_recurring === 0) return 'PHP 0';
-  if (card.annual_fee_recurring !== null) return `PHP ${card.annual_fee_recurring.toLocaleString('en-PH')}`;
+  
+  if (card.annual_fee_recurring !== null) {
+    if (card.normalized_card_key === 'chinabank_destinations_world_dollar_mastercard') {
+      return `$${card.annual_fee_recurring.toLocaleString()}`;
+    }
+    return `PHP ${card.annual_fee_recurring.toLocaleString('en-PH')}`;
+  }
+  
   return 'Pending';
 }

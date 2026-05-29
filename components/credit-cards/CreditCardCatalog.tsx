@@ -783,10 +783,14 @@ type Fact = { value: string; sub?: string; missing: boolean };
 function feeFact(card: CreditCardType): Fact {
   if (card.naffl) return { value: 'PHP 0', sub: 'for life', missing: false };
   if (card.annual_fee_recurring === 0) return { value: 'PHP 0', missing: false };
+
+  const isUsd = card.normalized_card_key === 'chinabank_destinations_world_dollar_mastercard';
+  const formatAmt = (amt: number) => (isUsd ? `$${amt.toLocaleString()}` : formatPhpAmount(amt));
+
   if (card.annual_fee_recurring !== null)
-    return { value: formatPhpAmount(card.annual_fee_recurring), sub: '/ year', missing: false };
+    return { value: formatAmt(card.annual_fee_recurring), sub: '/ year', missing: false };
   if (card.annual_fee_first_year !== null)
-    return { value: formatPhpAmount(card.annual_fee_first_year), sub: 'first year', missing: false };
+    return { value: formatAmt(card.annual_fee_first_year), sub: 'first year', missing: false };
   return { value: NULL_NO_DATA, missing: true };
 }
 
