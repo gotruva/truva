@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,10 @@ export function FeedbackModal({ onClose }: FeedbackModalProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    sendGAEvent({ event: 'feedback_modal_opened' });
+  }, []);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -54,6 +59,7 @@ export function FeedbackModal({ onClose }: FeedbackModalProps) {
         throw new Error(data.error || 'Something went wrong.');
       }
       setStatus('success');
+      sendGAEvent({ event: 'feedback_submitted', feedback_type: type });
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong.');
       setStatus('error');

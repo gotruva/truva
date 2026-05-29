@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -94,8 +95,12 @@ const ALL_MARQUEE_LOGOS: Array<{ provider: string; logo: string }> = [
 ];
 
 
-function scrollToNewsletter(e: React.MouseEvent) {
+function scrollToNewsletter(e: React.MouseEvent, categoryId?: string) {
   e.preventDefault();
+  if (categoryId) {
+    // Demand signal for the next roadmap phases (insurance, loans, cards).
+    sendGAEvent({ event: 'coming_soon_clicked', category: categoryId });
+  }
   document.getElementById('truva-brief')?.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -324,7 +329,7 @@ function HeroCategoryTile({ category }: { category: CategoryItem }) {
   return (
     <Link
       href={category.href}
-      onClick={isSoon ? scrollToNewsletter : undefined}
+      onClick={isSoon ? (e) => scrollToNewsletter(e, category.id) : undefined}
       className={`${focusRing} ${surfaceInteraction} group relative flex items-start gap-3 rounded-xl border bg-white p-4 shadow-[0_18px_46px_-36px_rgba(15,23,42,0.42)] dark:bg-white/[0.04] ${
         isPrimary
           ? 'border-brand-primary/25 bg-brand-primaryLight/65 dark:bg-brand-primary/15'
@@ -561,7 +566,7 @@ function CategoryImageCard({ category }: { category: CategoryItem }) {
   return (
     <Link
       href={category.href}
-      onClick={category.statusTone === 'soon' ? scrollToNewsletter : undefined}
+      onClick={category.statusTone === 'soon' ? (e) => scrollToNewsletter(e, category.id) : undefined}
       className={`${focusRing} ${surfaceInteraction} group grid min-h-[252px] overflow-hidden rounded-2xl border border-brand-border bg-white shadow-[0_22px_58px_-44px_rgba(15,23,42,0.45)] hover:border-brand-primary/30 hover:shadow-[0_26px_62px_-44px_rgba(0,82,255,0.48)] dark:border-white/10 dark:bg-white/[0.04] sm:grid-cols-[0.95fr_1.05fr]`}
     >
       <div className="relative min-h-[220px] sm:min-h-full">
@@ -613,7 +618,7 @@ function FutureCategoryCard({ category }: { category: CategoryItem }) {
     return (
       <Link
         href={category.href}
-        onClick={scrollToNewsletter}
+        onClick={(e) => scrollToNewsletter(e, category.id)}
         className={`${focusRing} ${surfaceInteraction} group grid min-h-[252px] overflow-hidden rounded-2xl border border-dashed border-brand-border bg-white shadow-[0_18px_48px_-40px_rgba(15,23,42,0.35)] hover:border-warning/40 hover:shadow-[0_22px_52px_-38px_rgba(247,144,9,0.28)] dark:border-white/15 dark:bg-white/[0.04] sm:grid-cols-[0.95fr_1.05fr]`}
       >
         <div className="relative min-h-[200px] sm:min-h-full">

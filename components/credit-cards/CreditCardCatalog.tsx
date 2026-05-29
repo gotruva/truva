@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
   ArrowRight,
@@ -20,6 +20,15 @@ import { MiniCreditCardVisual } from '@/components/credit-cards/CreditCardVisual
 import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import { getEditorialFor, getPromoTCUrlFor } from '@/lib/creditCardEditorial';
+import {
+  trackBrowseCardExpanded,
+  trackBrowseFilterChanged,
+  trackBrowseFilterPill,
+  trackBrowseFiltersCleared,
+  trackBrowseSearchUsed,
+  trackBrowseSortChanged,
+  trackCompareToggled,
+} from '@/lib/analytics/creditCards';
 import {
   Tooltip,
   TooltipContent,
@@ -221,6 +230,36 @@ function descNullsLast(a: number | null, b: number | null): number {
   return b - a;
 }
 
+/** Pure filter predicate, shared by the visible list and the analytics counter. */
+function matchesFilters(card: CreditCardType, filters: FilterState, q: string): boolean {
+  if (q) {
+    const hay = `${card.card_name} ${card.bank}`.toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  if (filters.issuer !== 'all' && card.bank !== filters.issuer) return false;
+  if (filters.reward !== 'all' && (card.rewards_type ?? 'none') !== filters.reward) return false;
+  if (filters.fee === 'free' && !(card.naffl || card.annual_fee_recurring === 0)) return false;
+  if (
+    filters.fee === 'paid' &&
+    !(card.annual_fee_recurring !== null && card.annual_fee_recurring > 0 && !card.naffl)
+  )
+    return false;
+  if (filters.fee === 'not-disclosed' && card.annual_fee_recurring !== null) return false;
+  if (
+    filters.fee === 'free-or-low' &&
+    !(
+      card.naffl ||
+      card.annual_fee_recurring === 0 ||
+      (card.annual_fee_recurring !== null && card.annual_fee_recurring <= 2000)
+    )
+  )
+    return false;
+  if (filters.fx === 'disclosed' && card.foreign_transaction_fee_pct === null) return false;
+  if (filters.fx === 'not-disclosed' && card.foreign_transaction_fee_pct !== null) return false;
+  if (filters.fx === 'low' && card.badge_inputs?.low_fx_fee !== true) return false;
+  return true;
+}
+
 function comparatorFor(mode: SortMode): (a: CreditCardType, b: CreditCardType) => number {
   switch (mode) {
     case 'fee':
@@ -327,37 +366,21 @@ export function CreditCardCatalog({
 
   const filteredCards = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const filtered = cards.filter((card) => {
-      if (q) {
-        const hay = `${card.card_name} ${card.bank}`.toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      if (filters.issuer !== 'all' && card.bank !== filters.issuer) return false;
-      if (filters.reward !== 'all' && (card.rewards_type ?? 'none') !== filters.reward)
-        return false;
-      if (filters.fee === 'free' && !(card.naffl || card.annual_fee_recurring === 0)) return false;
-      if (
-        filters.fee === 'paid' &&
-        !(card.annual_fee_recurring !== null && card.annual_fee_recurring > 0 && !card.naffl)
-      )
-        return false;
-      if (filters.fee === 'not-disclosed' && card.annual_fee_recurring !== null) return false;
-      if (
-        filters.fee === 'free-or-low' &&
-        !(
-          card.naffl ||
-          card.annual_fee_recurring === 0 ||
-          (card.annual_fee_recurring !== null && card.annual_fee_recurring <= 2000)
-        )
-      )
-        return false;
-      if (filters.fx === 'disclosed' && card.foreign_transaction_fee_pct === null) return false;
-      if (filters.fx === 'not-disclosed' && card.foreign_transaction_fee_pct !== null) return false;
-      if (filters.fx === 'low' && card.badge_inputs?.low_fx_fee !== true) return false;
-      return true;
-    });
-    return filtered.sort(comparatorFor(sortMode));
+    return cards.filter((card) => matchesFilters(card, filters, q)).sort(comparatorFor(sortMode));
   }, [cards, filters, query, sortMode]);
+
+  // Count cards matching a prospective filter/query state — lets analytics
+  // report the result_count *after* an interaction without duplicating logic.
+  const countMatching = useCallback(
+    (nextFilters: FilterState, nextQuery: string) =>
+      cards.filter((card) => matchesFilters(card, nextFilters, nextQuery.trim().toLowerCase()))
+        .length,
+    [cards],
+  );
+
+  // Search fires per keystroke; debounce the analytics ping so we record intent
+  // (term length + result count, never the raw text) once typing settles.
+  const searchTrackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeFilterCount = useMemo(
     () => Object.values(filters).filter((v) => v !== 'all').length,
@@ -417,6 +440,7 @@ export function CreditCardCatalog({
     setActivePill(pill.id);
     setFilters(nextFilters);
     syncUrl({ activePill: pill.id, filters: nextFilters, query, sortMode });
+    trackBrowseFilterPill({ pillId: pill.id, resultCount: countMatching(nextFilters, query) });
   }
 
   function patchFilters(patch: Partial<FilterState>) {
@@ -424,24 +448,35 @@ export function CreditCardCatalog({
     setFilters(nextFilters);
     setActivePill('all');
     syncUrl({ activePill: 'all', filters: nextFilters, query, sortMode });
+    const [filterType, value] = Object.entries(patch)[0] ?? [];
+    if (filterType) {
+      trackBrowseFilterChanged({
+        filterType,
+        value: String(value),
+        resultCount: countMatching(nextFilters, query),
+      });
+    }
   }
 
   function removeChip(key: keyof FilterState | 'query') {
     if (key === 'query') {
       setQuery('');
       syncUrl({ activePill, filters, query: '', sortMode });
+      trackBrowseFiltersCleared({ method: 'chip' });
       return;
     }
     const nextFilters = { ...filters, [key]: 'all' };
     setFilters(nextFilters);
     setActivePill('all');
     syncUrl({ activePill: 'all', filters: nextFilters, query, sortMode });
+    trackBrowseFiltersCleared({ method: 'chip' });
   }
 
   function resetFilters() {
     setFilters(DEFAULT_FILTERS);
     setActivePill('all');
     syncUrl({ activePill: 'all', filters: DEFAULT_FILTERS, query, sortMode });
+    trackBrowseFiltersCleared({ method: 'reset' });
   }
 
   function clearAll() {
@@ -450,16 +485,23 @@ export function CreditCardCatalog({
     setQuery('');
     setSortMode('best');
     syncUrl({ activePill: 'all', filters: DEFAULT_FILTERS, query: '', sortMode: 'best' });
+    trackBrowseFiltersCleared({ method: 'clear_all' });
   }
 
   function toggleCompare(card: CreditCardType) {
-    setSelected((current) => {
-      if (current.includes(card.normalized_card_key)) {
-        return current.filter((key) => key !== card.normalized_card_key);
-      }
-      if (current.length >= 3) return current;
-      return [...current, card.normalized_card_key];
-    });
+    // Tracking stays outside the state updater so a StrictMode double-invoke
+    // can't double-fire it.
+    const isSelected = selected.includes(card.normalized_card_key);
+    if (isSelected) {
+      const next = selected.filter((key) => key !== card.normalized_card_key);
+      setSelected(next);
+      trackCompareToggled({ cardKey: card.normalized_card_key, bank: card.bank, action: 'remove', count: next.length });
+      return;
+    }
+    if (selected.length >= 3) return;
+    const next = [...selected, card.normalized_card_key];
+    setSelected(next);
+    trackCompareToggled({ cardKey: card.normalized_card_key, bank: card.bank, action: 'add', count: next.length });
   }
 
   return (
@@ -479,6 +521,16 @@ export function CreditCardCatalog({
                 const nextQuery = event.target.value;
                 setQuery(nextQuery);
                 syncUrl({ activePill, filters, query: nextQuery, sortMode });
+                if (searchTrackTimer.current) clearTimeout(searchTrackTimer.current);
+                const trimmed = nextQuery.trim();
+                if (trimmed.length > 0) {
+                  searchTrackTimer.current = setTimeout(() => {
+                    trackBrowseSearchUsed({
+                      queryLength: trimmed.length,
+                      resultCount: countMatching(filters, nextQuery),
+                    });
+                  }, 700);
+                }
               }}
               placeholder="Search card or bank…"
               className="h-12 w-full rounded-2xl border border-brand-border bg-white pl-11 pr-11 text-sm text-brand-textPrimary outline-none transition-colors placeholder:text-brand-textSecondary focus:border-brand-primary dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:placeholder:text-gray-500"
@@ -506,6 +558,7 @@ export function CreditCardCatalog({
                 const nextSortMode = event.target.value as SortMode;
                 setSortMode(nextSortMode);
                 syncUrl({ activePill, filters, query, sortMode: nextSortMode });
+                trackBrowseSortChanged({ sortMode: nextSortMode, resultCount: filteredCards.length });
               }}
               aria-label="Sort cards"
               className="h-12 rounded-2xl border border-brand-border bg-white px-3 text-sm font-semibold text-brand-textPrimary outline-none transition-colors focus:border-brand-primary dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
@@ -860,6 +913,18 @@ function CatalogCard({
   const pros = editorial.pros.slice(0, 3);
   const cons = editorial.cons.slice(0, 2);
 
+  // Track only the open action (not collapse), once per expand. Tracking lives
+  // outside the state updater so a StrictMode double-invoke can't double-fire it.
+  const handleSetExpanded = useCallback(
+    (next: boolean) => {
+      if (next && !expanded) {
+        trackBrowseCardExpanded({ cardKey: card.normalized_card_key, bank: card.bank, rank });
+      }
+      setExpanded(next);
+    },
+    [expanded, card.normalized_card_key, card.bank, rank],
+  );
+
   const shared: SharedCardProps = {
     card,
     rank,
@@ -867,7 +932,7 @@ function CatalogCard({
     compareDisabled,
     onToggleCompare,
     expanded,
-    setExpanded,
+    setExpanded: handleSetExpanded,
     fitLabel,
     facts: {
       reward: rewardFact(card),

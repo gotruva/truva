@@ -56,3 +56,8 @@ __pycache__/
 # script/tool output
 output/
 .design-bundle-tmp/
+
+# GA4 OAuth credentials (never commit)
+ga4-oauth-client.json
+.ga4-token-cache.json
+.ga4-token-edit-cache.json

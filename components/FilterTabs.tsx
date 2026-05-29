@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { LiquidityFilter } from '@/types';
 import { Lock, Unlock, Layers, ChevronDown, SlidersHorizontal } from 'lucide-react';
 
@@ -34,6 +35,11 @@ export function FilterTabs({ activeLiquidity, onLiquidityChange }: FilterTabsPro
     }`;
 
   const activeLabel = tabs.find((t) => t.value === activeLiquidity)?.label ?? 'All Products';
+
+  const handleTabClick = (value: LiquidityFilter, label: string) => {
+    onLiquidityChange(value);
+    sendGAEvent({ event: 'filter_tab_clicked', tab: label, filter: value });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,7 +95,7 @@ export function FilterTabs({ activeLiquidity, onLiquidityChange }: FilterTabsPro
                 {tabs.map((tab) => (
                   <button
                     key={tab.value}
-                    onClick={() => onLiquidityChange(tab.value)}
+                    onClick={() => handleTabClick(tab.value, tab.label)}
                     className={mobileButtonClass(activeLiquidity === tab.value)}
                   >
                     <span className="flex items-center gap-1">{tab.icon} <span className="text-[13px] font-semibold">{tab.label}</span></span>
@@ -109,7 +115,7 @@ export function FilterTabs({ activeLiquidity, onLiquidityChange }: FilterTabsPro
           {tabs.map((tab) => (
             <button
               key={tab.value}
-              onClick={() => onLiquidityChange(tab.value)}
+              onClick={() => handleTabClick(tab.value, tab.label)}
               className={desktopPillClass(activeLiquidity === tab.value)}
             >
               {tab.icon}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Target, Wallet } from 'lucide-react';
 import { ComparisonState, RateProduct } from '@/types';
@@ -222,7 +223,10 @@ export function RateSection({
               {monthOptions.map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => onComparisonStateChange({ months: option.value })}
+                  onClick={() => {
+                    onComparisonStateChange({ months: option.value });
+                    sendGAEvent({ event: 'rates_duration_clicked', months: option.value });
+                  }}
                   className={`rounded-md py-1.5 text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
                     comparisonState.months === option.value
                       ? 'bg-brand-primary text-white shadow-sm'

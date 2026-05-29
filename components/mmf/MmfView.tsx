@@ -1,6 +1,7 @@
 'use client';
 
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Calculator, WalletCards } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { MoneyMarketFund } from '@/types';
@@ -150,8 +151,24 @@ function FundSection({
 
       {/* Filter pills */}
       <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-        <FilterPills label="Type" options={FUND_TYPE_OPTIONS} value={fundType} onChange={setFundType} />
-        <FilterPills label="Cash access" options={LIQUIDITY_OPTIONS} value={liquidity} onChange={setLiquidity} />
+        <FilterPills
+          label="Type"
+          options={FUND_TYPE_OPTIONS}
+          value={fundType}
+          onChange={(v) => {
+            setFundType(v);
+            sendGAEvent({ event: 'mmf_filter_clicked', filter_type: 'fund_type', filter_value: v });
+          }}
+        />
+        <FilterPills
+          label="Cash access"
+          options={LIQUIDITY_OPTIONS}
+          value={liquidity}
+          onChange={(v) => {
+            setLiquidity(v);
+            sendGAEvent({ event: 'mmf_filter_clicked', filter_type: 'liquidity', filter_value: v });
+          }}
+        />
       </div>
 
       {displayFunds.length === 0 ? (
