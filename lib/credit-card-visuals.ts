@@ -291,6 +291,20 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['eastwest everyday titanium mastercard', 'eastwest_everyday_titanium_mastercard'],
+    assetPath: '/cards/clean/eastwest_everyday_titanium_mastercard.webp',
+    sourceUrl: 'https://www.eastwestbanker.com/creditcards/everyday-titanium-mastercard',
+    checkedAt: '2026-06-01',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['eastwest platinum mastercard', 'eastwest_platinum_mastercard'],
+    assetPath: '/cards/clean/eastwest_platinum_mastercard.webp',
+    sourceUrl: 'https://www.eastwestbanker.com/cards/creditcards/platinum-mastercard',
+    checkedAt: '2026-06-01',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['equicom gold credit card'],
     assetPath: '/cards/equicom-gold-credit-card.webp',
     sourceUrl: 'https://www.equicomsavings.com/product-and-services/card-products/',
@@ -309,6 +323,20 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     assetPath: '/cards/hsbc-red-platinum-mastercard.jpg',
     sourceUrl: 'https://www.hsbc.com.ph/credit-cards/products/red-mastercard/',
     checkedAt: CHECKED_AT,
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['metrobank cashback visa', 'metrobank_cashback_visa'],
+    assetPath: '/cards/clean/metrobank_cashback_visa.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/cashback',
+    checkedAt: '2026-06-01',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['metrobank rewards plus visa', 'metrobank_rewards_plus_visa'],
+    assetPath: '/cards/clean/metrobank_rewards_plus_visa.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/rewards',
+    checkedAt: '2026-06-01',
     status: 'official-art',
   },
 ] as const satisfies CreditCardVisualSourceAsset[];

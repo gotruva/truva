@@ -222,6 +222,25 @@ for (const [key, entry] of reportByKey) {
         }
       }
     }
+
+    const row = rows.find(r => normalizeCleanCreditCardAssetKey(r.normalized_card_key) === key);
+    if (row) {
+      const asset = getCreditCardVisualAsset(row);
+      if (!asset) {
+        issues.push(`clean-card ${key}: getCreditCardVisualAsset returned null instead of clean-card`);
+      } else {
+        if (asset.status === 'truva-fallback') {
+          issues.push(`clean-card ${key}: getCreditCardVisualAsset returned truva-fallback instead of real artwork`);
+        }
+        if (!asset.assetPath) {
+          issues.push(`clean-card ${key}: getCreditCardVisualAsset returned no assetPath`);
+        } else if (entry.local_asset_path && asset.assetPath !== entry.local_asset_path) {
+          issues.push(
+            `clean-card ${key}: getCreditCardVisualAsset returned ${asset.assetPath}, report says ${entry.local_asset_path}`,
+          );
+        }
+      }
+    }
   } else if (entry.status === 'needs-manual-review') {
     reviewCount++;
     // Verify that getCreditCardVisualAsset returns fallback for this key

@@ -38,7 +38,11 @@ export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "chinabank_destinations_world_dollar_mastercard": "clean-card",
   "chinabank_destinations_world_mastercard": "clean-card",
   "chinabank_freedom_mastercard": "clean-card",
+  "eastwest_everyday_titanium_mastercard": "clean-card",
+  "eastwest_platinum_mastercard": "clean-card",
   "equicom_gold_credit_card": "clean-card",
   "hsbc_live_plus_credit_card": "clean-card",
+  "metrobank_cashback_visa": "clean-card",
+  "metrobank_rewards_plus_visa": "clean-card",
   "petron_bpi_card": "clean-card",
 };

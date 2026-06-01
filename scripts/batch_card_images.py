@@ -60,6 +60,13 @@ BANK_PAGES = {
     "chinabank_all": "https://www.chinabank.ph/credit-cards",
 }
 
+TRUSTED_GENERIC_IMAGE_URL_HINTS = {
+    "eastwest_everyday_titanium_mastercard": ["everyday-mc_2025"],
+    "eastwest_platinum_mastercard": ["platinum-mc-emv_2025"],
+    "metrobank_cashback_visa": ["cashback-visa.png"],
+    "metrobank_rewards_plus_visa": ["rewards-plus-card"],
+}
+
 # Per-card source URLs (individual product pages for cards where listing page isn't enough)
 PER_CARD_URLS = {
     "bdo_secured_credit_card": "https://www.bdo.com.ph/personal/cards/credit-cards/secured-credit-card",
@@ -582,6 +589,61 @@ async def download_image_bytes(page, direct_url: str, source_url: str) -> bytes 
     return base64.b64decode(img_data) if img_data else None
 
 
+async def extract_generic_card_image(page, url: str, card_name: str, card_key: str) -> dict | None:
+    """Extract a generic issuer image candidate, trusting only curated URL hints."""
+    await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+    await page.wait_for_timeout(5000)
+
+    raw_images = await page.evaluate(
+        """
+        () => Array.from(document.images).map((img, index) => {
+            const rect = img.getBoundingClientRect();
+            return {
+                index,
+                src: img.currentSrc || img.src || img.getAttribute('src') || img.getAttribute('data-src') || '',
+                alt: (img.getAttribute('alt') || '').trim(),
+                w: img.naturalWidth || img.width || Math.round(rect.width) || 0,
+                h: img.naturalHeight || img.height || Math.round(rect.height) || 0,
+            };
+        }).filter(img => img.src)
+        """
+    )
+
+    parsed = urlparse(url)
+    images = []
+    for image in raw_images:
+        src = image.get("src", "")
+        if src.startswith("//"):
+            src = "https:" + src
+        elif src.startswith("/"):
+            src = f"{parsed.scheme}://{parsed.netloc}{src}"
+        image["src"] = src
+        if image["w"] >= 100 and image["h"] >= 60:
+            images.append(image)
+
+    hints = TRUSTED_GENERIC_IMAGE_URL_HINTS.get(card_key, [])
+    for hint in hints:
+        hint_lower = hint.lower()
+        for image in images:
+            if hint_lower in image["src"].lower():
+                image["ratio"] = image["w"] / image["h"] if image["h"] else 0
+                image["isTrusted"] = True
+                return image
+
+    candidates = []
+    for image in images:
+        ratio = image["w"] / image["h"] if image["h"] else 0
+        src_lower = image["src"].lower()
+        if "/thumbnails/promos/" in src_lower:
+            continue
+        if 1.2 < ratio < 2.1 and image_candidate_matches_card(image, card_name, card_key):
+            image["ratio"] = ratio
+            image["isTrusted"] = False
+            candidates.append(image)
+
+    return candidates[0] if candidates else None
+
+
 async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwrite: bool = False) -> list:
     """Scrape all cards and return report entries."""
     from playwright.async_api import async_playwright
@@ -986,24 +1048,24 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
 
             elif source_url:
                 # Generic per-card official page scraper for Stage 2 candidates.
-                result = await extract_bpi_card_image(page, source_url)
+                result = await extract_generic_card_image(page, source_url, card_name, card_key)
                 if result:
                     direct_url = result["src"]
                     ratio = result.get("ratio", 0)
                     is_card_face = 1.3 < ratio < 2.0
-                    is_card_specific = result.get("isCardSpecific", False)
-                    print(f"  Generic image candidate: {direct_url} ({result['w']}x{result['h']}, ratio={ratio:.4f})")
+                    is_trusted = result.get("isTrusted", False)
+                    print(f"  Generic image candidate: {direct_url} ({result['w']}x{result['h']}, ratio={ratio:.4f}, trusted={is_trusted})")
 
-                    if not image_candidate_matches_card(result, card_name, card_key):
+                    if not is_trusted:
                         status = "needs-manual-review"
-                        notes = f"Generic image candidate did not include card-specific URL/alt text on {TODAY}."
-                    elif is_card_face or is_card_specific:
+                        notes = f"Generic image candidate requires manual review on {TODAY}."
+                    elif is_card_face or is_trusted:
                         downloaded_bytes = await download_image_bytes(page, direct_url, source_url)
                         if downloaded_bytes:
                             pil_img = Image.open(io.BytesIO(downloaded_bytes))
                             w, h = pil_img.size
                             actual_ratio = w / h
-                            if 1.3 < actual_ratio < 2.0:
+                            if (1.3 < actual_ratio < 2.0) or (0.9 <= actual_ratio <= 1.2 and is_trusted):
                                 status = "clean-card"
                                 notes = f"Downloaded from generic issuer source strategy on {TODAY}."
                             else:

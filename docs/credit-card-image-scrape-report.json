@@ -374,6 +374,28 @@
     "notes": "Premium customized high-fidelity card-face asset generated for Truva."
   },
   {
+    "normalized_card_key": "eastwest_everyday_titanium_mastercard",
+    "bank": "East West Banking Corporation",
+    "card_name": "EastWest EveryDay Titanium Mastercard",
+    "source_page_url": "https://www.eastwestbanker.com/creditcards/everyday-titanium-mastercard",
+    "direct_image_url": "https://www.eastwestbanker.com/sites/default/files/styles/1920x1080/public/2025-05/everyday-mc_2025.webp",
+    "local_asset_path": "/cards/clean/eastwest_everyday_titanium_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-01",
+    "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
+  },
+  {
+    "normalized_card_key": "eastwest_platinum_mastercard",
+    "bank": "East West Banking Corporation",
+    "card_name": "EastWest Platinum Mastercard",
+    "source_page_url": "https://www.eastwestbanker.com/cards/creditcards/platinum-mastercard",
+    "direct_image_url": "https://www.eastwestbanker.com/sites/default/files/styles/1920x1080/public/2025-05/platinum-mc-emv_2025.webp",
+    "local_asset_path": "/cards/clean/eastwest_platinum_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-01",
+    "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
+  },
+  {
     "normalized_card_key": "equicom_gold_credit_card",
     "bank": "Equicom Savings Bank",
     "card_name": "Equicom Gold Credit Card",
@@ -394,6 +416,28 @@
     "status": "clean-card",
     "checked_at": "2026-05-25",
     "notes": "Downloaded from issuer source on 2026-05-25. Image is a lifestyle banner but is the best available from bank site."
+  },
+  {
+    "normalized_card_key": "metrobank_cashback_visa",
+    "bank": "Metropolitan Bank and Trust Company",
+    "card_name": "Metrobank Cashback Visa",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/cashback",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1733380267-cashback-visa.png",
+    "local_asset_path": "/cards/clean/metrobank_cashback_visa.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-01",
+    "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
+  },
+  {
+    "normalized_card_key": "metrobank_rewards_plus_visa",
+    "bank": "Metrobank Card Corporation",
+    "card_name": "Metrobank Rewards Plus Visa",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/rewards",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1770229689-rewards-plus-card.png",
+    "local_asset_path": "/cards/clean/metrobank_rewards_plus_visa.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-01",
+    "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
   },
   {
     "normalized_card_key": "petron_bpi_card",
