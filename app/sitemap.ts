@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
 import { BASE_URL } from '@/lib/constants';
+import { BLOG_CATEGORIES, getBlogPosts } from '@/lib/blog';
 
 const APP_ROOT = path.join(process.cwd(), 'app');
 const DATA_ROOT = path.join(process.cwd(), 'data');
@@ -84,6 +85,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
   addMDXRoutes(routes, path.join(APP_ROOT, 'banking', 'rates'), 'banking/rates');
   addMDXRoutes(routes, path.join(APP_ROOT, 'banking', 'compare'), 'banking/compare');
   addMDXRoutes(routes, path.join(APP_ROOT, 'guides'), 'guides');
+
+  // Blog: hub, category cluster pages, and posts (content/blog/*).
+  addRoute(routes, `${BASE_URL}/blog`, path.join(APP_ROOT, 'blog', 'page.tsx'), 'daily', 0.9);
+  for (const category of BLOG_CATEGORIES) {
+    addRoute(routes, `${BASE_URL}/blog/category/${category.value}`, undefined, 'weekly', 0.8);
+  }
+  for (const post of getBlogPosts()) {
+    const entry: MetadataRoute.Sitemap[number] = {
+      url: `${BASE_URL}/blog/${post.slug}`,
+      changeFrequency: 'weekly',
+      priority: post.featured ? 0.8 : 0.7,
+    };
+    const parsed = new Date(post.updatedAt);
+    if (!Number.isNaN(parsed.getTime())) entry.lastModified = parsed;
+    routes.push(entry);
+  }
 
   try {
     const dataPath = path.join(DATA_ROOT, 'credit-cards.json');

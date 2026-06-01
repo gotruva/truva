@@ -32,6 +32,27 @@ const securityHeaders = [
   },
 ];
 
+// Relaxed CSP scoped to the Keystatic admin only. The admin SPA needs eval
+// (editor internals) and, in cloud mode, talks to keystatic.cloud + GitHub.
+// The strict site-wide CSP is left untouched for every public route.
+const keystaticHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+  {
+    key: 'Content-Security-Policy',
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      'img-src \'self\' data: blob: https:',
+      "font-src 'self' data:",
+      "connect-src 'self' https://keystatic.cloud https://api.github.com https://*.githubusercontent.com https://avatars.githubusercontent.com",
+      "worker-src 'self' blob:",
+      "frame-src 'self'",
+    ].join('; '),
+  },
+];
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
@@ -44,9 +65,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Every public route except the Keystatic admin + its API.
+        source: '/((?!keystatic|api/keystatic).*)',
         headers: securityHeaders,
       },
+      { source: '/keystatic', headers: keystaticHeaders },
+      { source: '/keystatic/:path*', headers: keystaticHeaders },
     ];
   },
 };
