@@ -531,7 +531,7 @@ export const GUIDE_EDITORIAL_ARTICLES: EditorialArticle[] = [
     seoTitle: 'PDIC insurance guide: coverage limit and how it works',
     description:
       'Understand the PHP 1,000,000 PDIC coverage limit, what it protects, and how to split deposits above the cap.',
-    subtitle: 'A plain-English guide to deposit protection for Filipino savers.',
+    subtitle: 'A clear and simple guide to deposit protection for Filipino savers.',
     category: 'guides',
     categoryLabel: 'Guides',
     section: 'guides',

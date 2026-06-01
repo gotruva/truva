@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: 'About Truva — Our Mission and Core Promises',
   description:
-    'Truva is a free, plain-English comparison platform built to help Filipinos compare savings, credit cards, and insurance with clearer math and zero fine-print hunting.',
+    'Truva is a free, clear and simple comparison platform built to help Filipinos compare savings, credit cards, and insurance with clearer math and zero fine-print hunting.',
   alternates: {
     canonical: '/about',
   },
@@ -50,7 +50,7 @@ const targetUsers = [
   },
   {
     title: 'Starting from the Basics',
-    description: 'You are completely new to tools like credit card cashbacks, lock-in periods, or insurance premiums. You want simple, plain-English explanations of how things work without the intimidating jargon.',
+    description: 'You are completely new to tools like credit card cashbacks, lock-in periods, or insurance premiums. You want explanations in simple, everyday language to understand how things work without the intimidating jargon.',
     image: '/images/financial_beginner.png',
   },
 ];
@@ -68,7 +68,7 @@ export default function AboutPage() {
             We build tools that make personal finance <span className="text-brand-primary">clear, honest, and simple</span> for every Filipino
           </h1>
           <p className="mt-8 text-base leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-lg md:text-xl max-w-[65ch]">
-            Comparing financial products in the Philippines is harder than it should be. Information is scattered, terms are confusing, and the fine print is hidden. Truva organizes all the facts into one plain-English view, so you can compare options clearly and choose what fits your life.
+            Comparing financial products in the Philippines is harder than it should be. Information is scattered, terms are confusing, and the fine print is hidden. Truva organizes all the facts into one clear, straightforward view, so you can compare options easily and choose what fits your life.
           </p>
         </div>
       </section>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                 </li>
                 <li className="flex gap-3">
                   <span className="text-brand-primary font-bold select-none">•</span>
-                  <span><strong>A Plain-English Translator:</strong> We take complicated banking jargon and turn it into simple, everyday terms that anyone can understand.</span>
+                  <span><strong>Everyday Language Translator:</strong> We translate complicated banking jargon into clear, everyday terms that anyone can understand.</span>
                 </li>
               </ul>
             </div>
@@ -267,13 +267,13 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
               <p>
-                People often ask how we chose the name **Truva**. The answer is simple: it stands for **True Value**.
+                People often ask how we chose our name. <strong>Truva</strong> was born from a simple promise: it stands for <strong>True Value</strong>.
               </p>
               <p>
-                We believe every Filipino deserves to know where their hard-earned money can go the furthest. Whether it is finding a savings account that pays honest interest, a credit card that gives real cashback, or insurance that actually protects your family, you deserve to get the true value out of every single peso.
+                We believe every Filipino deserves to know exactly where their hard-earned money will go the furthest. Whether it is finding a savings account that pays honest interest, a credit card with real cashback, or insurance that actually protects your family, you deserve to get the true value out of every single peso.
               </p>
               <p>
-                We are building Truva to be an independent, plain-English platform you can rely on. We hope you stay for the ride as we grow, build better tools, and create a stronger financial future for every Filipino.
+                We are building <strong>Truva</strong> to be an independent, clear, and straightforward platform you can always rely on. We hope you stay for the ride as we grow, build better tools, and create a stronger financial future for every Filipino.
               </p>
             </div>
           </div>

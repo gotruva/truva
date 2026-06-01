@@ -4,7 +4,7 @@ import { getBankingArticles, getGuideArticles } from '@/lib/editorial';
 
 export const metadata: Metadata = {
   title: 'Beto - Founder',
-  description: 'Meet the solo builder behind Truva, the Philippines\' plain-English personal finance comparison platform.',
+  description: 'Meet the solo builder behind Truva, the Philippines\' clear and simple personal finance comparison platform.',
   alternates: {
     canonical: '/authors/beto',
   },

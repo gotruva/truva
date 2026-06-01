@@ -138,7 +138,7 @@ export function CreditCardDeskVisual({ cards }: { cards: CreditCardType[] }) {
             Card check
           </p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white">
-            Plain-English details before the bank site.
+            Clear, simple details before the bank site.
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
             A card can look attractive, but fees, interest, and reward rules still matter.

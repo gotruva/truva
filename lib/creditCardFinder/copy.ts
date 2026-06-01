@@ -20,7 +20,7 @@ export const LANDING = {
   trustHeading: 'How Truva helps',
   trust: [
     {
-      title: 'Plain-English comparisons',
+      title: 'Clear and simple comparisons',
       body: 'No jargon. We explain rewards, fees, and interest in normal words.',
     },
     {

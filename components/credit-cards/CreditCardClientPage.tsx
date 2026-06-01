@@ -45,7 +45,7 @@ export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
           <p className="mx-auto mt-4 max-w-2xl text-slate-300">
             Truva is free for everyone. We may earn a referral fee from some of the banks listed on
             this page when you apply through our links. This does not change the data we show or how
-            we score products. Our mission is to provide accurate, plain-English comparison data for
+            we score products. Our mission is to provide accurate, easy-to-understand comparison data for
             Filipinos.
           </p>
           <div className="mt-8 flex justify-center gap-4">
