@@ -78,7 +78,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="max-w-3xl">
             <span className="inline-flex items-center rounded-full bg-brand-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-brand-primary dark:bg-brand-primary/20">
-              Our Vows
+              The Pledge
             </span>
             <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#07111f] dark:text-white sm:text-3xl md:text-4xl">
               Our Core Promises
