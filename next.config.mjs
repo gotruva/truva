@@ -46,9 +46,9 @@ const keystaticHeaders = [
       "style-src 'self' 'unsafe-inline'",
       'img-src \'self\' data: blob: https:',
       "font-src 'self' data:",
-      "connect-src 'self' https://keystatic.cloud https://api.github.com https://*.githubusercontent.com https://avatars.githubusercontent.com",
+      "connect-src 'self' https://keystatic.cloud https://*.keystatic.cloud https://api.github.com https://*.githubusercontent.com https://avatars.githubusercontent.com",
       "worker-src 'self' blob:",
-      "frame-src 'self'",
+      "frame-src 'self' https://keystatic.cloud https://*.keystatic.cloud",
     ].join('; '),
   },
 ];
