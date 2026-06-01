@@ -1,0 +1,72 @@
+[
+  {
+    "normalized_card_key": "eastwest_everyday_titanium_mastercard",
+    "bank": "East West Banking Corporation",
+    "card_name": "EastWest EveryDay Titanium Mastercard",
+    "availability": "open_market",
+    "source_url": "https://www.eastwestbanker.com/creditcards/everyday-titanium-mastercard"
+  },
+  {
+    "normalized_card_key": "eastwest_foodpanda_visa",
+    "bank": "East West Banking Corporation",
+    "card_name": "EastWest foodpanda Visa",
+    "availability": "open_market",
+    "source_url": "https://www.eastwestbanker.com/cards/creditcards/foodpanda-visa"
+  },
+  {
+    "normalized_card_key": "eastwest_platinum_mastercard",
+    "bank": "East West Banking Corporation",
+    "card_name": "EastWest Platinum Mastercard",
+    "availability": "open_market",
+    "source_url": "https://www.eastwestbanker.com/cards/creditcards/platinum-mastercard"
+  },
+  {
+    "normalized_card_key": "metrobank_cashback_visa",
+    "bank": "Metropolitan Bank and Trust Company",
+    "card_name": "Metrobank Cashback Visa",
+    "availability": "open",
+    "source_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/cashback"
+  },
+  {
+    "normalized_card_key": "metrobank_rewards_plus_visa",
+    "bank": "Metrobank Card Corporation",
+    "card_name": "Metrobank Rewards Plus Visa",
+    "availability": "open",
+    "source_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/rewards"
+  },
+  {
+    "normalized_card_key": "pnb_cashback_titanium_mastercard",
+    "bank": "Philippine National Bank",
+    "card_name": "PNB Cashback Titanium Mastercard",
+    "availability": "open",
+    "source_url": "https://www.pnb.com.ph/index.php/pnb-cashback-titanium-mastercard"
+  },
+  {
+    "normalized_card_key": "pnb_ze_lo_mastercard",
+    "bank": "Philippine National Bank",
+    "card_name": "PNB Ze-Lo Mastercard",
+    "availability": "open",
+    "source_url": "https://www.pnb.com.ph/index.php/credit-card/pnb-zelo-mastercard-no-annual-fee?tg=CC&tpl=revamp"
+  },
+  {
+    "normalized_card_key": "rcbc_flex_visa",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Flex Visa",
+    "availability": "open",
+    "source_url": "https://rcbccredit.com/credit-cards/gold-and-classic-cards/flex-visa"
+  },
+  {
+    "normalized_card_key": "security_bank_wave_mastercard",
+    "bank": "Security Bank Corporation",
+    "card_name": "Security Bank Wave Mastercard",
+    "availability": "open",
+    "source_url": "https://www.securitybank.com/news/security-bank-launches-new-sustainable-no-annual-fee-wave-mastercard-credit-card/"
+  },
+  {
+    "normalized_card_key": "unionbank_rewards_visa_platinum_credit_card",
+    "bank": "UnionBank of the Philippines",
+    "card_name": "UnionBank Rewards Visa Platinum Credit Card",
+    "availability": "open",
+    "source_url": "https://www.unionbankph.com/cards/credit-card?id=3716"
+  }
+]

@@ -40,6 +40,11 @@ from urllib.parse import urlparse, unquote
 from datetime import date, datetime
 from PIL import Image
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 TRUVA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLEAN_ASSET_DIR = os.path.join(TRUVA_ROOT, "public", "cards", "clean")
 REPORT_PATH = os.path.join(TRUVA_ROOT, "docs", "credit-card-image-scrape-report.json")
@@ -336,6 +341,26 @@ def heading_matches_card(heading: str, card_name: str, bank: str) -> bool:
 
     return False
 
+def image_candidate_matches_card(info: dict, card_name: str, card_key: str) -> bool:
+    """Require generic image candidates to carry card-specific text in URL or alt."""
+    haystack = normalize_name(" ".join([
+        info.get("src", ""),
+        info.get("alt", ""),
+    ]))
+    common_words = {
+        "bank", "card", "credit", "mastercard", "visa", "platinum", "gold",
+        "titanium", "classic", "rewards", "reward", "plus", "the", "and",
+        "of", "philippines", "corporation", "eastwest", "east", "west",
+        "metrobank", "pnb", "rcbc", "security", "unionbank",
+    }
+    card_words = set(normalize_name(card_name).split()) | set(normalize_key(card_key).split("_"))
+    identifying_words = {word for word in card_words if len(word) >= 4 and word not in common_words}
+
+    if not identifying_words:
+        return False
+
+    return any(word in haystack for word in identifying_words)
+
 # ─── Scraper: Extract card images from BDO compare page ───
 
 async def extract_bdo_cards(page) -> dict[str, dict]:
@@ -521,11 +546,41 @@ async def extract_bpi_card_image(page, url: str) -> dict | None:
         elif src.startswith('/'):
             parsed = urlparse(url)
             src = f'{parsed.scheme}://{parsed.netloc}{src}'
+        result["src"] = src
         return result
     return None
 
 
 # ─── Main scraper ───
+
+async def download_image_bytes(page, direct_url: str, source_url: str) -> bytes | None:
+    """Download an image through the browser context so issuer referers/cookies work."""
+    img_data = await page.evaluate(
+        """
+        async ({ directUrl, sourceUrl }) => {
+            try {
+                const resp = await fetch(directUrl, {
+                    headers: {
+                        'Referer': sourceUrl,
+                        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8'
+                    }
+                });
+                if (!resp.ok) return null;
+                const blob = await resp.blob();
+                const reader = new FileReader();
+                return await new Promise(resolve => {
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(blob);
+                });
+            } catch(e) {
+                return null;
+            }
+        }
+        """,
+        {"directUrl": direct_url, "sourceUrl": source_url},
+    )
+    return base64.b64decode(img_data) if img_data else None
+
 
 async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwrite: bool = False) -> list:
     """Scrape all cards and return report entries."""
@@ -573,10 +628,6 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
         bdo_name_to_url = {}
         for heading_lower, info in bdo_card_map.items():
             bdo_name_to_url[heading_lower] = info
-
-        chinabank_name_to_url = {}
-        for heading_lower, info in chinabank_card_map.items():
-            chinabank_name_to_url[heading_lower] = info
 
         # Deduplicate BDO card map by first occurrence per heading
         seen_heading = set()
@@ -933,6 +984,41 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
                     status = "needs-manual-review"
                     notes = f"Found context art on {TODAY}."
 
+            elif source_url:
+                # Generic per-card official page scraper for Stage 2 candidates.
+                result = await extract_bpi_card_image(page, source_url)
+                if result:
+                    direct_url = result["src"]
+                    ratio = result.get("ratio", 0)
+                    is_card_face = 1.3 < ratio < 2.0
+                    is_card_specific = result.get("isCardSpecific", False)
+                    print(f"  Generic image candidate: {direct_url} ({result['w']}x{result['h']}, ratio={ratio:.4f})")
+
+                    if not image_candidate_matches_card(result, card_name, card_key):
+                        status = "needs-manual-review"
+                        notes = f"Generic image candidate did not include card-specific URL/alt text on {TODAY}."
+                    elif is_card_face or is_card_specific:
+                        downloaded_bytes = await download_image_bytes(page, direct_url, source_url)
+                        if downloaded_bytes:
+                            pil_img = Image.open(io.BytesIO(downloaded_bytes))
+                            w, h = pil_img.size
+                            actual_ratio = w / h
+                            if 1.3 < actual_ratio < 2.0:
+                                status = "clean-card"
+                                notes = f"Downloaded from generic issuer source strategy on {TODAY}."
+                            else:
+                                status = "needs-manual-review"
+                                notes = f"Generic source image is context art on {TODAY} (ratio={actual_ratio:.4f})."
+                        else:
+                            status = "needs-manual-review"
+                            notes = f"Generic source image found but download failed on {TODAY}."
+                    else:
+                        status = "needs-manual-review"
+                        notes = f"Generic source image looked like context/banner art on {TODAY}."
+                else:
+                    status = "official-unavailable"
+                    notes = f"No usable image found by generic source strategy on {TODAY}."
+
             else:
                 status = "needs-manual-review"
                 notes = f"No scraping strategy for {bank} on {TODAY}."
@@ -1065,6 +1151,10 @@ def parse_args() -> argparse.Namespace:
         help="File containing normalized_card_key values, one per line or comma-delimited. # comments are ignored.",
     )
     parser.add_argument(
+        "--input-rows",
+        help="JSON file of candidate rows to process instead of live public truva_credit_cards rows.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Run the scraper without writing clean assets or the canonical report.",
@@ -1128,7 +1218,28 @@ def fetch_live_rows() -> list[dict]:
         return json.loads(resp.read().decode())
 
 
-def resolve_report_output(args: argparse.Namespace, selected_keys: list[str]) -> str | None:
+def load_input_rows(path: str) -> list[dict]:
+    input_path = path if os.path.isabs(path) else os.path.join(TRUVA_ROOT, path)
+    with open(input_path, encoding="utf-8") as f:
+        rows = json.load(f)
+    if not isinstance(rows, list):
+        raise ValueError("--input-rows must point to a JSON array")
+
+    required = {"normalized_card_key", "bank", "card_name", "source_url"}
+    missing_messages = []
+    for idx, row in enumerate(rows):
+        if not isinstance(row, dict):
+            missing_messages.append(f"row {idx + 1} is not an object")
+            continue
+        missing = sorted(required - set(row.keys()))
+        if missing:
+            missing_messages.append(f"row {idx + 1} missing: {', '.join(missing)}")
+    if missing_messages:
+        raise ValueError("; ".join(missing_messages))
+    return rows
+
+
+def resolve_report_output(args: argparse.Namespace, is_partial_run: bool) -> str | None:
     output = args.report_output
     if output:
         output = output if os.path.isabs(output) else os.path.join(TRUVA_ROOT, output)
@@ -1141,8 +1252,8 @@ def resolve_report_output(args: argparse.Namespace, selected_keys: list[str]) ->
     if args.dry_run and same_path(output, REPORT_PATH):
         return None
 
-    if selected_keys and same_path(output, REPORT_PATH):
-        raise ValueError("Curated --keys runs cannot write the canonical scrape report. Use --report-output.")
+    if is_partial_run and same_path(output, REPORT_PATH):
+        raise ValueError("Curated/input-row runs cannot write the canonical scrape report. Use --report-output.")
 
     return output
 
@@ -1186,17 +1297,23 @@ def main() -> int:
     print("=" * 60)
     print("Truva Batch Credit Card Image Scraper v2")
     print("=" * 60)
-    print("\nFetching live cards from Supabase...")
+    print("\nLoading card rows...")
 
     try:
-        live_rows = fetch_live_rows()
+        if args.input_rows:
+            live_rows = load_input_rows(args.input_rows)
+            source_label = args.input_rows
+        else:
+            live_rows = fetch_live_rows()
+            source_label = "Supabase public truva_credit_cards"
         rows_to_process = filter_rows_by_keys(live_rows, selected_keys)
-        report_output = None if args.list_source_urls else resolve_report_output(args, selected_keys)
+        is_partial_run = bool(selected_keys or args.input_rows)
+        report_output = None if args.list_source_urls else resolve_report_output(args, is_partial_run)
     except Exception as exc:
         print(f"  ERROR: {exc}")
         return 1
 
-    print(f"  Loaded {len(live_rows)} live card rows")
+    print(f"  Loaded {len(live_rows)} row(s) from {source_label}")
     if selected_keys:
         print(f"  Curated key mode: {len(rows_to_process)} selected row(s)")
     if args.dry_run:
