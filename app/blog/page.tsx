@@ -36,6 +36,17 @@ export default function BlogIndexPage() {
         ))}
       </section>
 
+      {posts.length === 0 && (
+        <section className="rounded-[1.75rem] border border-dashed border-brand-border bg-white/50 p-10 text-center dark:border-white/10 dark:bg-white/[0.02]">
+          <p className="text-lg font-semibold text-brand-textPrimary dark:text-white">
+            Fresh guides are on the way
+          </p>
+          <p className="mt-2 text-brand-textSecondary dark:text-gray-400">
+            We&rsquo;re writing plain-language money guides for Filipinos. Check back soon.
+          </p>
+        </section>
+      )}
+
       {featured && (
         <section>
           <FeaturedArticleCard article={featured} />
