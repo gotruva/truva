@@ -19,7 +19,7 @@ export default function TermsPage() {
           Legal Disclaimers & Terms
         </h1>
         <p className="text-brand-textSecondary dark:text-gray-400 mb-10">
-          Last updated: April 2026
+          Last updated: June 2026
         </p>
 
         <div className="space-y-12">
@@ -69,17 +69,16 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold text-brand-textPrimary dark:text-gray-200 mb-2 text-base">A. Role of Truva</h3>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li><strong>Information Aggregator:</strong> Truva acts strictly as a data aggregator, providing a directory and comparison tool for retail financial products (such as deposits, government bonds, UITFs, and decentralized finance protocols).</li>
+                  <li><strong>Information Aggregator:</strong> Truva acts strictly as a data aggregator, providing a directory and comparison tool for retail financial and credit products (such as deposits, credit cards, government bonds, and investment funds).</li>
                   <li><strong>Not a Financial Institution:</strong> Truva is <strong>not</strong> a bank, a deposit-taking institution, an investment broker, or a financial advisor. We do not sell securities and are not licensed by the Bangko Sentral ng Pilipinas (BSP) or the Securities and Exchange Commission (SEC) to perform such operations.</li>
-                  <li><strong>No Custody of Funds:</strong> Truva will never request deposits, handle financial transactions, or hold custody of your money. Any accounts opened or financial agreements entered into are strictly between you and the respective third-party financial institution.</li>
+                  <li><strong>No Custody of Funds or Credit Decisions:</strong> Truva will never request deposits, handle financial transactions, or hold custody of your money. Truva is not a credit card issuer and does not make credit decisions. Any bank accounts opened, credit cards applied for, or financial agreements entered into are strictly between you and the respective licensed bank or third-party institution.</li>
                 </ul>
               </div>
 
               <div>
                 <h3 className="font-semibold text-brand-textPrimary dark:text-gray-200 mb-2 text-base mt-6">B. Third-Party Links & Liability</h3>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li><strong>External Platforms:</strong> Our site contains links to third-party digital banks, government platforms, and decentralized finance (DeFi) protocols (e.g., Aave). We do not control these external websites, and you access them at your own risk.</li>
-                  <li><strong>DeFi Risks:</strong> Decentralized Finance (DeFi) products involve entirely different risk profiles than traditional banking, including smart contract vulnerabilities, stablecoin depegging risks, and a lack of regulatory safety nets. Truva is not liable for any losses incurred due to protocol exploits or market fluctuations.</li>
+                  <li><strong>External Platforms:</strong> Our site contains links to third-party digital banks, licensed financial institutions, and government platforms. We do not control these external websites, and you access them at your own risk.</li>
                   <li><strong>Limitation of Liability:</strong> To the maximum extent permitted by Philippine law, Truva, its founders, and affiliates shall not be liable for any direct, indirect, incidental, or consequential damages resulting from your use of the information provided on our site, platform outages, or the default, insolvency, or actions of any third-party institution listed on our site.</li>
                 </ul>
               </div>
@@ -87,7 +86,7 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold text-brand-textPrimary dark:text-gray-200 mb-2 text-base mt-6">C. Deposit Insurance Acknowledgment</h3>
                 <p>
-                  You acknowledge that financial products have different insurance statuses. Standard deposit accounts offered by licensed banks in the Philippines may be insured by the Philippine Deposit Insurance Corporation (PDIC) up to a maximum amount of <strong>₱1,000,000 per depositor per bank</strong>. However, certain products listed on Truva—such as Government Bonds, UITFs, and DeFi products—are <strong>NOT PDIC-insured</strong>, are not guaranteed by the platform, and are subject to capital loss.
+                  You acknowledge that financial products have different insurance statuses. Standard deposit accounts offered by licensed banks in the Philippines may be insured by the Philippine Deposit Insurance Corporation (PDIC) up to a maximum amount of <strong>₱1,000,000 per depositor per bank</strong>. However, certain products listed on Truva—such as Government Bonds and investment funds—are <strong>NOT PDIC-insured</strong>, are not guaranteed by the platform, and are subject to capital loss.
                 </p>
               </div>
               
