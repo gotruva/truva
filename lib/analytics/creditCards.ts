@@ -3,9 +3,24 @@
 /**
  * Privacy-safe GA funnel tracking for the Credit Card Finder.
  *
- * Rules:
- *  - No PII, no free text, no exact income — only coarse quiz category ids.
- *  - Income is sent as a band id (e.g. "50-100"), never an exact figure.
+ * Compliance posture (PH Data Privacy Act RA 10173 / NPC guidance):
+ *  - No personally identifying information is collected through the finder.
+ *  - No sensitive personal information per RA 10173 §3(l): no race, religion,
+ *    health, education, sexual life, offenses, or government IDs.
+ *  - Income is sent as a BAND id only (e.g. "50-100"), never an exact figure
+ *    or any value that could identify an individual.
+ *  - Quiz answers are coarse category ids ("cashback", "travel"), not free text.
+ *  - Search queries are sent as length + result count only, never the raw text.
+ *  - The user-level identifier is GA4's pseudonymous client_id (cookie).
+ *
+ * GAPS to address at the policy/UX layer (NOT in this file):
+ *  - Privacy Policy should disclose Truva's use of GA4, the dimensions
+ *    collected, and the user's rights under RA 10173.
+ *  - A cookie consent banner is recommended per current PH/global best
+ *    practice (no NPC circular mandates this yet, but enforcement is trending
+ *    in this direction).
+ *
+ * Implementation rules:
  *  - Every emit is exception-safe: a missing/blocked GA never throws.
  *  - Event names are lowercase and prefixed with `cc_`.
  *
@@ -103,17 +118,21 @@ export function trackFinderStepViewed(args: { step: number; questionId: string }
 
 /**
  * User left the quiz before finishing — Q1 back-out, mid-quiz tab close, or
- * navigating away. `reason` distinguishes the cause for funnel diagnosis.
+ * navigating away. `reason` distinguishes the cause; `partialAnswers` (the
+ * answers given before bouncing) lets us build the user-profile picture for
+ * incomplete sessions, not just completed ones. All values stay coarse.
  */
 export function trackFinderAbandoned(args: {
   step: number;
   questionId: string;
   reason?: 'cancel' | 'page_hidden' | 'navigated_away';
+  partialAnswers?: FinderAnswers;
 }) {
   emit('cc_finder_abandoned', {
     step: args.step,
     question_id: args.questionId,
     reason: args.reason ?? 'cancel',
+    ...(args.partialAnswers ? coarseAnswers(args.partialAnswers) : {}),
   });
 }
 

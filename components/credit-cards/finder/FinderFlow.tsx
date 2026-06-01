@@ -44,6 +44,10 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
   const [answers, setAnswers] = useState<FinderAnswers>(EMPTY_ANSWERS);
   const [resume, setResume] = useState<{ query: string } | null>(null);
   const matchFired = useRef(false);
+  // Live ref to the latest answers so the abandon handler (running in an
+  // effect cleanup / visibilitychange listener) can read the partial profile
+  // without the effect re-binding on every keystroke.
+  const answersRef = useRef(answers);
   // Track which step we've already fired `step_viewed` for, so StrictMode
   // double-invokes (and quick back-and-forth) don't produce duplicates.
   const viewedStepRef = useRef<number | null>(null);
@@ -87,6 +91,11 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
     });
     return () => cancelAnimationFrame(raf);
   }, []);
+
+  // Keep the live answers ref in sync — read by the abandon handler.
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
 
   const persistDraft = useCallback((next: FinderAnswers) => {
     try {
@@ -143,7 +152,12 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
       const step = currentStepRef.current;
       if (step === null) return; // not in the quiz
       const qid = QUESTIONS_FINAL[step - 1]?.id ?? 'unknown';
-      trackFinderAbandoned({ step, questionId: qid, reason });
+      trackFinderAbandoned({
+        step,
+        questionId: qid,
+        reason,
+        partialAnswers: answersRef.current, // user profile so far
+      });
       finishedOrLeftRef.current = true; // don't double-fire
     };
     const onVisibility = () => {
@@ -244,6 +258,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
           step: stepIndex + 1,
           questionId: qid ?? 'unknown',
           reason: 'cancel',
+          partialAnswers: answersRef.current, // any answers given so far
         });
         finishedOrLeftRef.current = true; // suppress the unmount/page-hide ping
         goToStep(null);
