@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About Truva — Our Mission and Core Promises',
+  title: 'About Truva: Our Mission and Core Promises',
   description:
     'Truva is a free, clear and simple comparison platform built to help Filipinos compare savings, credit cards, and insurance with clearer math and zero fine-print hunting.',
   alternates: {
@@ -45,7 +45,7 @@ const targetUsers = [
   },
   {
     title: 'Taking the Next Big Step',
-    description: 'You are hitting a milestone—like choosing your first credit card, getting travel insurance, or comparing borrowing costs. You want to quickly verify if you are getting a fair deal without the guesswork.',
+    description: 'You are hitting a milestone, such as choosing your first credit card, getting travel insurance, or comparing borrowing costs. You want to quickly verify if you are getting a fair deal without the guesswork.',
     image: '/images/life_transitioner.png',
   },
   {
@@ -249,7 +249,7 @@ export default function AboutPage() {
                       &ldquo;I started Truva because comparing financial products in the Philippines is harder than it should be. Information is scattered, terms are confusing, and people often have to make important money decisions without a clear view of their options. Truva exists to make those choices clearer, so Filipinos can save time, avoid costly mistakes, and choose products that actually fit their lives.&rdquo;
                     </p>
                     <p className="text-xs font-semibold text-brand-textSecondary dark:text-gray-400 mt-2">
-                      — Beto, Solo Founder and Developer at Truva
+                      Beto, Solo Founder and Developer at Truva
                     </p>
                   </div>
                 </div>
