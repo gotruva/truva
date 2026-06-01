@@ -224,7 +224,7 @@ export default function AboutPage() {
 
       {/* Founder Story */}
       <section className="border-t border-brand-border py-24 dark:border-white/5 sm:py-32">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 space-y-16">
           {/* Double-Bezel Card Layout */}
           <div className="rounded-[2rem] border border-slate-200/60 bg-slate-100/50 p-2 dark:border-white/10 dark:bg-white/[0.02]">
             <div className="rounded-[1.8rem] bg-white p-8 dark:bg-slate-950 sm:p-12 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
@@ -254,6 +254,27 @@ export default function AboutPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Meaning Behind the Name */}
+          <div className="max-w-3xl mx-auto space-y-6 md:px-8">
+            <span className="text-xs font-bold uppercase tracking-[0.24em] text-brand-primary block text-center md:text-left">
+              Behind the Name
+            </span>
+            <h2 className="text-xl font-bold text-[#07111f] dark:text-white sm:text-2xl text-center md:text-left">
+              Why we are called Truva
+            </h2>
+            <div className="space-y-4 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300 sm:text-base">
+              <p>
+                People often ask how we chose the name **Truva**. The answer is simple: it stands for **True Value**.
+              </p>
+              <p>
+                We believe every Filipino deserves to know where their hard-earned money can go the furthest. Whether it is finding a savings account that pays honest interest, a credit card that gives real cashback, or insurance that actually protects your family, you deserve to get the true value out of every single peso.
+              </p>
+              <p>
+                We are building Truva to be an independent, plain-English platform you can rely on. We hope you stay for the ride as we grow, build better tools, and create a stronger financial future for every Filipino.
+              </p>
             </div>
           </div>
         </div>
