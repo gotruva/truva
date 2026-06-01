@@ -248,9 +248,28 @@ export default function AboutPage() {
                     <p className="italic font-medium text-brand-textPrimary dark:text-white">
                       &ldquo;I started Truva because comparing financial products in the Philippines is harder than it should be. Information is scattered, terms are confusing, and people often have to make important money decisions without a clear view of their options. Truva exists to make those choices clearer, so Filipinos can save time, avoid costly mistakes, and choose products that actually fit their lives.&rdquo;
                     </p>
-                    <p className="text-xs font-semibold text-brand-textSecondary dark:text-gray-400 mt-2">
-                      Beto, Solo Founder and Developer at Truva
-                    </p>
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
+                      <span className="text-xs font-semibold text-brand-textSecondary dark:text-gray-400">
+                        Beto, Solo Founder and Developer at Truva
+                      </span>
+                      <span className="text-slate-300 dark:text-slate-700 select-none hidden sm:inline">•</span>
+                      <a 
+                        href="https://www.linkedin.com/in/aldaba-alberto/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary hover:text-brand-primaryDark transition-colors"
+                        aria-label="Aldaba Alberto's LinkedIn Profile"
+                      >
+                        <svg 
+                          className="h-3.5 w-3.5 fill-current" 
+                          viewBox="0 0 24 24" 
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                        <span>LinkedIn</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
