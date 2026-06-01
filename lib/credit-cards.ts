@@ -17,6 +17,7 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'Metropolitan Bank and Trust Company': '/logos/metrobank-mark.png',
   'RCBC': '/logos/rcbc.svg',
   'Rizal Commercial Banking Corporation (RCBC)': '/logos/rcbc.svg',
+  'Security Bank Corporation': '/logos/securitybank-mark.png',
   'HSBC Philippines': '/logos/hsbc.svg',
   'Asia United Bank': '/logos/aub.svg',
   'BDO Unibank, Inc.': '/logos/bdo.svg',

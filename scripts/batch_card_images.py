@@ -65,6 +65,7 @@ TRUSTED_GENERIC_IMAGE_URL_HINTS = {
     "eastwest_platinum_mastercard": ["platinum-mc-emv_2025"],
     "metrobank_cashback_visa": ["cashback-visa.png"],
     "metrobank_rewards_plus_visa": ["rewards-plus-card"],
+    "security_bank_wave_mastercard": ["CCV2-Wave_Contactless_2024.png"],
 }
 
 # Per-card source URLs (individual product pages for cards where listing page isn't enough)
@@ -90,6 +91,7 @@ PER_CARD_URLS = {
     "bpi signature card": "https://www.bpi.com.ph/personal/cards/credit-cards/visa-signature",
     "petron bpi card": "https://www.bpi.com.ph/personal/cards/credit-cards/petron-bpi-mastercard",
     "robinsons cashback card": "https://www.bpi.com.ph/personal/cards/credit-cards/robinsons-cashback-card-visa",
+    "security_bank_wave_mastercard": "https://www.securitybank.com/personal/credit-cards/",
 }
 
 # ─── Helper: normalize card key (match Supabase underscore or space) ───

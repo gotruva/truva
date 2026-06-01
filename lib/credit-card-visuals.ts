@@ -339,6 +339,13 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     checkedAt: '2026-06-01',
     status: 'official-art',
   },
+  {
+    cardKeys: ['security bank wave mastercard', 'security_bank_wave_mastercard'],
+    assetPath: '/cards/clean/security_bank_wave_mastercard.webp',
+    sourceUrl: 'https://www.securitybank.com/personal/credit-cards/rebate/wave-mastercard',
+    checkedAt: '2026-06-01',
+    status: 'official-art',
+  },
 ] as const satisfies CreditCardVisualSourceAsset[];
 
 const VISUAL_ASSET_INDEX = new Map<string, CreditCardVisualSourceAsset>();
