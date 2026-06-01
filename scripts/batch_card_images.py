@@ -2,32 +2,43 @@
 """
 Batch credit card image scraper + processor for Truva v2.
 
-This is a DEVELOPMENT/MANUAL tool — NOT part of normal build or runtime.
+This is a DEVELOPMENT/MANUAL tool - NOT part of normal build or runtime.
 Run it only when you want to re-scrape card images from official bank sources.
 
 Dependencies: Python 3.11+, playwright (pip install playwright), Pillow.
 Also requires valid Supabase credentials in the project's .env.local file.
 
 How it works:
-1. Loads the live list of 40 truva_credit_cards from Supabase via REST API.
-2. Visits official bank listing pages (BDO compare page, per-card product pages).
-3. Extracts card images by matching DOM headings to card names — no ratio heuristic.
+1. Loads the live truva_credit_cards rows from Supabase via REST API.
+2. Optionally narrows to an explicit curated key list with --keys/--keys-file.
+3. Resolves per-card source URLs with normalized keys, so space-form overrides
+   match Supabase underscore keys.
 4. Downloads matched images, converts to 960x606 WebP with 2% padding.
-5. Writes docs/credit-card-image-scrape-report.json with one row per live card.
-6. Validates: exact row count, no duplicate keys, no duplicate image hashes.
+5. Preserves existing clean assets unless --allow-overwrite is passed.
+6. Writes a report unless --dry-run is used; curated subsets require
+   --report-output so the canonical report cannot be replaced by a partial run.
 
-Usage: python3 scripts/batch_card_images.py
+Usage: python3 scripts/batch_card_images.py --dry-run --keys bpi_edge_card --list-source-urls
        (activate the hermes-agent venv first: source ~/.hermes/hermes-agent/venv/bin/activate)
 
 After running, also regenerate the status map:
   python3 scripts/generate-card-visual-status.py
 """
 
-import asyncio, json, os, sys, base64, re, hashlib
+import argparse
+import asyncio
+import base64
+import hashlib
+import io
+import json
+import os
+import re
+import shutil
+import sys
+import tempfile
 from urllib.parse import urlparse, unquote
 from datetime import date, datetime
 from PIL import Image
-import io
 
 TRUVA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLEAN_ASSET_DIR = os.path.join(TRUVA_ROOT, "public", "cards", "clean")
@@ -79,6 +90,53 @@ def normalize_name(name: str) -> str:
     return re.sub(r'[^a-z0-9]+', ' ', name.strip().lower()).strip()
 
 # ─── Image Processing ───
+
+PER_CARD_URLS_BY_KEY = {normalize_key(key): url for key, url in PER_CARD_URLS.items()}
+
+def resolve_source_url(row: dict) -> str:
+    """Resolve the curated source URL for a Supabase row."""
+    card_key = normalize_key(row.get("normalized_card_key", ""))
+    return PER_CARD_URLS_BY_KEY.get(card_key) or row.get("source_url") or ""
+
+def split_key_values(values: list[str] | None) -> list[str]:
+    """Split comma/newline/space-delimited key arguments into normalized keys."""
+    keys: list[str] = []
+    for value in values or []:
+        for part in re.split(r'[\s,]+', value.strip()):
+            if part:
+                keys.append(normalize_key(part))
+    return keys
+
+def load_selected_keys(keys_args: list[str] | None, keys_file: str | None) -> list[str]:
+    """Load requested keys from CLI flags, preserving first-seen order."""
+    keys = split_key_values(keys_args)
+    if keys_file:
+        with open(keys_file, encoding="utf-8") as f:
+            file_values = []
+            for line in f:
+                clean_line = line.split("#", 1)[0].strip()
+                if clean_line:
+                    file_values.append(clean_line)
+            keys.extend(split_key_values(file_values))
+
+    seen = set()
+    deduped = []
+    for key in keys:
+        if key not in seen:
+            seen.add(key)
+            deduped.append(key)
+    return deduped
+
+def filter_rows_by_keys(live_rows: list[dict], selected_keys: list[str]) -> list[dict]:
+    """Restrict live rows to an explicit curated key list."""
+    if not selected_keys:
+        return live_rows
+
+    by_key = {normalize_key(row["normalized_card_key"]): row for row in live_rows}
+    missing = [key for key in selected_keys if key not in by_key]
+    if missing:
+        raise ValueError(f"Requested key(s) not found in live truva_credit_cards: {', '.join(missing)}")
+    return [by_key[key] for key in selected_keys]
 
 def process_to_clean_card(raw_bytes: bytes, output_path: str) -> dict:
     """Convert raw image to 960x606 WebP with 2% transparent padding, after transparentizing the background and cropping."""
@@ -181,6 +239,60 @@ def process_to_clean_card(raw_bytes: bytes, output_path: str) -> dict:
 def image_hash(raw_bytes: bytes) -> str:
     """SHA-256 hash of image content for dedup detection."""
     return hashlib.sha256(raw_bytes).hexdigest()[:16]
+
+def clean_asset_hashes(exclude_keys: set[str] | None = None) -> dict[str, str]:
+    """Map final clean asset file hashes to card keys."""
+    exclude_keys = exclude_keys or set()
+    hashes: dict[str, str] = {}
+    if not os.path.isdir(CLEAN_ASSET_DIR):
+        return hashes
+
+    for filename in os.listdir(CLEAN_ASSET_DIR):
+        if not filename.endswith(".webp"):
+            continue
+        key = os.path.splitext(filename)[0]
+        if key in exclude_keys:
+            continue
+        path = os.path.join(CLEAN_ASSET_DIR, filename)
+        with open(path, "rb") as f:
+            hashes[image_hash(f.read())] = key
+    return hashes
+
+def process_clean_asset_candidate(
+    card_key: str,
+    raw_bytes: bytes,
+    clean_path: str,
+    dry_run: bool,
+    allow_overwrite: bool,
+) -> dict:
+    """Process a candidate image without overwriting existing assets by default."""
+    existing = os.path.exists(clean_path)
+    if existing and not allow_overwrite:
+        return {"preserved": True, "wrote": False, "would_write": False, "info": None, "duplicate_key": None}
+
+    os.makedirs(os.path.dirname(clean_path), exist_ok=True)
+    temp_dir = os.path.join(TRUVA_ROOT, ".codex-tmp", "card-image-candidates")
+    os.makedirs(temp_dir, exist_ok=True)
+    fd, temp_path = tempfile.mkstemp(prefix=f"{card_key}-", suffix=".webp", dir=temp_dir)
+    os.close(fd)
+
+    try:
+        info = process_to_clean_card(raw_bytes, temp_path)
+        with open(temp_path, "rb") as f:
+            candidate_hash = image_hash(f.read())
+        duplicate_key = clean_asset_hashes(exclude_keys={card_key} if allow_overwrite else set()).get(candidate_hash)
+        if duplicate_key:
+            return {"preserved": False, "wrote": False, "would_write": False, "info": info, "duplicate_key": duplicate_key}
+
+        if dry_run:
+            return {"preserved": False, "wrote": False, "would_write": True, "info": info, "duplicate_key": None}
+
+        shutil.move(temp_path, clean_path)
+        temp_path = ""
+        return {"preserved": False, "wrote": True, "would_write": False, "info": info, "duplicate_key": None}
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
 
 # ─── Card name matching ───
 
@@ -415,17 +527,22 @@ async def extract_bpi_card_image(page, url: str) -> dict | None:
 
 # ─── Main scraper ───
 
-async def scrape_all_cards(cards_list: list) -> list:
+async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwrite: bool = False) -> list:
     """Scrape all cards and return report entries."""
     from playwright.async_api import async_playwright
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            executable_path="/usr/bin/chromium-browser",
-            args=["--no-sandbox", "--disable-blink-features=AutomationControlled",
-                  "--disable-dev-shm-usage"]
-        )
+        launch_options = {
+            "headless": True,
+            "args": [
+                "--no-sandbox",
+                "--disable-blink-features=AutomationControlled",
+                "--disable-dev-shm-usage",
+            ],
+        }
+        if os.path.exists("/usr/bin/chromium-browser"):
+            launch_options["executable_path"] = "/usr/bin/chromium-browser"
+        browser = await p.chromium.launch(**launch_options)
         context = await browser.new_context(
             viewport={"width": 1920, "height": 5000},
             user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -437,12 +554,18 @@ async def scrape_all_cards(cards_list: list) -> list:
         page = await context.new_page()
 
         # Pre-extract BDO card mapping from compare page
-        print("\n🔍 Extracting BDO card images from compare page...")
-        bdo_card_map = await extract_bdo_cards(page)
+        needs_bdo_listing = any(
+            "bdo" in row["bank"].lower()
+            and "secured" not in normalize_key(row["normalized_card_key"])
+            and "world_elite" not in normalize_key(row["normalized_card_key"])
+            for row in cards_list
+        )
+        if needs_bdo_listing:
+            print("\nExtracting BDO card images from compare page...")
+            bdo_card_map = await extract_bdo_cards(page)
+        else:
+            bdo_card_map = {}
 
-        # Pre-extract Chinabank card mapping
-        print("\n🔍 Extracting Chinabank card images from listing page...")
-        chinabank_card_map = await extract_chinabank_cards(page)
 
         # Build a lookup: normalized card name -> BDO image URL
         # BDO headings on the compare page include things like:
@@ -478,7 +601,7 @@ async def scrape_all_cards(cards_list: list) -> list:
             card_key = normalize_key(raw_key)
             card_name = row["card_name"]
             bank = row["bank"]
-            source_url = PER_CARD_URLS.get(raw_key, "")
+            source_url = resolve_source_url(row)
 
             print(f"\n{'='*60}")
             print(f"[{idx+1}/{total}] 📇 {card_name} ({card_key})")
@@ -829,15 +952,34 @@ async def scrape_all_cards(cards_list: list) -> list:
             # ─── Process to clean WebP ───
             has_clean = False
             if downloaded_bytes:
-                info = process_to_clean_card(downloaded_bytes, clean_path)
-                print(f"  ✅ Saved clean WebP: {clean_rel_path} ({info['file_size_kb']} KB)")
-                has_clean = True
+                asset_result = process_clean_asset_candidate(
+                    card_key=card_key,
+                    raw_bytes=downloaded_bytes,
+                    clean_path=clean_path,
+                    dry_run=dry_run,
+                    allow_overwrite=allow_overwrite,
+                )
+                duplicate_key = asset_result.get("duplicate_key")
+                info = asset_result.get("info")
+                if duplicate_key:
+                    print(f"  DUPLICATE CLEAN ASSET: processed output matches {duplicate_key}. Marking needs-manual-review.")
+                    status = "needs-manual-review"
+                    notes = f"Processed clean asset hash matches {duplicate_key}. Possible duplicate or incorrect scrape."
+                elif asset_result.get("preserved"):
+                    print(f"  Preserved existing clean WebP: {clean_rel_path} (use --allow-overwrite to replace)")
+                    has_clean = True
+                elif asset_result.get("would_write"):
+                    print(f"  DRY RUN: would save clean WebP: {clean_rel_path} ({info['file_size_kb']} KB)")
+                    has_clean = os.path.exists(clean_path)
+                elif asset_result.get("wrote"):
+                    print(f"  Saved clean WebP: {clean_rel_path} ({info['file_size_kb']} KB)")
+                    has_clean = True
 
             results.append({
                 "normalized_card_key": card_key,
                 "bank": bank,
                 "card_name": card_name,
-                "source_page_url": source_url or BANK_PAGES.get("bdo", ""),
+                "source_page_url": source_url,
                 "direct_image_url": direct_url,
                 "local_asset_path": clean_rel_path if has_clean else None,
                 "status": status,
@@ -851,13 +993,13 @@ async def scrape_all_cards(cards_list: list) -> list:
 
 # ─── Validation ───
 
-def validate_report(results: list, live_rows: list) -> list[str]:
-    """Validate report against live Supabase rows. Returns list of issues."""
+def validate_report(results: list, live_rows: list, dry_run: bool = False) -> list[str]:
+    """Validate report against the rows intentionally processed."""
     issues = []
 
     # Check row count
     if len(results) != len(live_rows):
-        issues.append(f"ROW COUNT MISMATCH: report has {len(results)} rows, live DB has {len(live_rows)} rows")
+        issues.append(f"ROW COUNT MISMATCH: report has {len(results)} rows, expected rows has {len(live_rows)} rows")
 
     # Check for extra keys (keys in report not in live DB)
     report_keys = {r["normalized_card_key"] for r in results}
@@ -867,9 +1009,9 @@ def validate_report(results: list, live_rows: list) -> list[str]:
     missing = live_keys - report_keys
 
     if extra:
-        issues.append(f"EXTRA KEYS in report (not in live DB): {', '.join(sorted(extra))}")
+        issues.append(f"EXTRA KEYS in report (not in expected rows): {', '.join(sorted(extra))}")
     if missing:
-        issues.append(f"MISSING KEYS from live DB (not in report): {', '.join(sorted(missing))}")
+        issues.append(f"MISSING KEYS from expected rows (not in report): {', '.join(sorted(missing))}")
 
     # Check for duplicate keys in report
     seen_keys = {}
@@ -901,7 +1043,7 @@ def validate_report(results: list, live_rows: list) -> list[str]:
     for r in results:
         if r["status"] == "clean-card":
             path = os.path.join(CLEAN_ASSET_DIR, f"{r['normalized_card_key']}.webp")
-            if not os.path.exists(path):
+            if not dry_run and not os.path.exists(path):
                 issues.append(f"MISSING FILE: clean-card {r['normalized_card_key']} has no WebP at {path}")
 
     return issues
@@ -909,33 +1051,71 @@ def validate_report(results: list, live_rows: list) -> list[str]:
 
 # ─── Main ───
 
-if __name__ == "__main__":
-    print("=" * 60)
-    print("Truva Batch Credit Card Image Scraper v2")
-    print("=" * 60)
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Scrape and process official credit-card images with explicit Stage 2 safety rails."
+    )
+    parser.add_argument(
+        "--keys",
+        action="append",
+        help="Comma, space, or newline-delimited normalized_card_key values to process. Repeatable.",
+    )
+    parser.add_argument(
+        "--keys-file",
+        help="File containing normalized_card_key values, one per line or comma-delimited. # comments are ignored.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Run the scraper without writing clean assets or the canonical report.",
+    )
+    parser.add_argument(
+        "--allow-overwrite",
+        action="store_true",
+        help="Allow replacing existing public/cards/clean assets. Default preserves them.",
+    )
+    parser.add_argument(
+        "--report-output",
+        help="Optional JSON report path. Required for curated non-dry-run subsets.",
+    )
+    parser.add_argument(
+        "--list-source-urls",
+        action="store_true",
+        help="Resolve source URLs for the selected live rows and exit before launching the browser.",
+    )
+    return parser.parse_args()
 
-    # First, fetch live Supabase rows via direct REST API
-    print("\n📡 Fetching live cards from Supabase...")
 
-    # Read credentials from .env.local
+def same_path(left: str, right: str) -> bool:
+    return os.path.abspath(left).casefold() == os.path.abspath(right).casefold()
+
+
+def read_env_file() -> dict[str, str]:
     env_path = os.path.join(TRUVA_ROOT, ".env.local")
-    env_vars = {}
+    env_vars: dict[str, str] = {}
     if os.path.exists(env_path):
-        with open(env_path) as f:
+        with open(env_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if "=" in line and not line.startswith("#"):
-                    k, v = line.split("=", 1)
-                    env_vars[k.strip()] = v.strip()
+                    key, value = line.split("=", 1)
+                    env_vars[key.strip()] = value.strip().strip('"').strip("'")
+    return env_vars
 
+
+def fetch_live_rows() -> list[dict]:
+    env_vars = read_env_file()
     supabase_url = env_vars.get("NEXT_PUBLIC_SUPABASE_URL", "")
     service_key = env_vars.get("SUPABASE_SERVICE_ROLE_KEY", "")
     if not supabase_url or not service_key:
-        print("  ❌ Missing Supabase credentials in .env.local")
-        sys.exit(1)
+        raise RuntimeError("Missing Supabase credentials in .env.local")
 
     import urllib.request
-    api_url = f"{supabase_url}/rest/v1/truva_credit_cards?select=normalized_card_key,card_name,bank&order=normalized_card_key"
+
+    api_url = (
+        f"{supabase_url}/rest/v1/truva_credit_cards"
+        "?select=normalized_card_key,card_name,bank,source_url&order=normalized_card_key"
+    )
     req = urllib.request.Request(
         api_url,
         headers={
@@ -944,41 +1124,49 @@ if __name__ == "__main__":
             "Accept": "application/json",
         },
     )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            live_rows = json.loads(resp.read().decode())
-        print(f"  ✅ Loaded {len(live_rows)} card rows from Supabase")
-    except Exception as e:
-        print(f"  ❌ Failed to fetch Supabase rows: {e}")
-        sys.exit(1)
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.loads(resp.read().decode())
 
-    print(f"\n📊 Cards to process: {len(live_rows)}")
-    print(f"  Clean asset dir: {CLEAN_ASSET_DIR}")
-    print(f"  Report: {REPORT_PATH}")
-    print()
 
-    os.makedirs(CLEAN_ASSET_DIR, exist_ok=True)
-
-    results = asyncio.run(scrape_all_cards(live_rows))
-
-    # ─── Write report ───
-    with open(REPORT_PATH, "w") as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
-
-    # ─── Validation ───
-    print(f"\n{'='*60}")
-    print("🔍 REPORT VALIDATION")
-    issues = validate_report(results, live_rows)
-    if issues:
-        print(f"  ⚠️  {len(issues)} issue(s) found:")
-        for i in issues:
-            print(f"    • {i}")
+def resolve_report_output(args: argparse.Namespace, selected_keys: list[str]) -> str | None:
+    output = args.report_output
+    if output:
+        output = output if os.path.isabs(output) else os.path.join(TRUVA_ROOT, output)
     else:
-        print("  ✅ All validations passed!")
+        output = REPORT_PATH
 
-    # 📊 Summary
-    print(f"\n{'='*60}")
-    print("📊 SUMMARY")
+    if args.dry_run and args.report_output and same_path(output, REPORT_PATH):
+        raise ValueError("--dry-run cannot write the canonical scrape report. Use a scratch --report-output path.")
+
+    if args.dry_run and same_path(output, REPORT_PATH):
+        return None
+
+    if selected_keys and same_path(output, REPORT_PATH):
+        raise ValueError("Curated --keys runs cannot write the canonical scrape report. Use --report-output.")
+
+    return output
+
+
+def write_report(results: list[dict], output_path: str) -> None:
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+
+def print_source_url_plan(rows: list[dict]) -> int:
+    missing = 0
+    for row in rows:
+        key = normalize_key(row["normalized_card_key"])
+        source_url = resolve_source_url(row)
+        marker = "OK" if source_url else "MISSING"
+        if not source_url:
+            missing += 1
+        print(f"  {marker} {key} | {row['bank']} | {row['card_name']} | {source_url}")
+    return missing
+
+
+def print_summary(results: list[dict], expected_rows: list[dict]) -> None:
     clean = sum(1 for r in results if r["status"] == "clean-card")
     review = sum(1 for r in results if r["status"] == "needs-manual-review")
     unavailable = sum(1 for r in results if r["status"] == "official-unavailable")
@@ -988,4 +1176,84 @@ if __name__ == "__main__":
     print(f"  Unavailable:       {unavailable}")
     print(f"  With direct URL:   {with_direct}")
     print(f"  Report entries:    {len(results)}")
-    print(f"  Live DB rows:      {len(live_rows)}")
+    print(f"  Expected rows:     {len(expected_rows)}")
+
+
+def main() -> int:
+    args = parse_args()
+    selected_keys = load_selected_keys(args.keys, args.keys_file)
+
+    print("=" * 60)
+    print("Truva Batch Credit Card Image Scraper v2")
+    print("=" * 60)
+    print("\nFetching live cards from Supabase...")
+
+    try:
+        live_rows = fetch_live_rows()
+        rows_to_process = filter_rows_by_keys(live_rows, selected_keys)
+        report_output = None if args.list_source_urls else resolve_report_output(args, selected_keys)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return 1
+
+    print(f"  Loaded {len(live_rows)} live card rows")
+    if selected_keys:
+        print(f"  Curated key mode: {len(rows_to_process)} selected row(s)")
+    if args.dry_run:
+        print("  Dry run: clean assets and canonical report will not be written")
+    if not args.allow_overwrite:
+        print("  Existing clean assets will be preserved; use --allow-overwrite to replace them")
+
+    print(f"\nCards to process: {len(rows_to_process)}")
+    print(f"  Clean asset dir: {CLEAN_ASSET_DIR}")
+    print(f"  Report: {report_output or '(not written)'}")
+
+    if args.list_source_urls:
+        print("\nResolved source URLs:")
+        missing = print_source_url_plan(rows_to_process)
+        if missing:
+            print(f"\nERROR: {missing} selected row(s) have no source URL")
+            return 1
+        return 0
+
+    os.makedirs(CLEAN_ASSET_DIR, exist_ok=True)
+    try:
+        results = asyncio.run(
+            scrape_all_cards(
+                rows_to_process,
+                dry_run=args.dry_run,
+                allow_overwrite=args.allow_overwrite,
+            )
+        )
+    except ModuleNotFoundError as exc:
+        missing = exc.name or "dependency"
+        print(f"  ERROR: Missing Python dependency '{missing}'.")
+        print("  Install scraper dependencies with:")
+        print("    python -m pip install playwright Pillow")
+        print("    python -m playwright install chromium")
+        return 1
+
+    if report_output:
+        write_report(results, report_output)
+        print(f"\nWrote report: {report_output}")
+    else:
+        print("\nDry run: report not written")
+
+    print(f"\n{'='*60}")
+    print("REPORT VALIDATION")
+    issues = validate_report(results, rows_to_process, dry_run=args.dry_run)
+    if issues:
+        print(f"  {len(issues)} issue(s) found:")
+        for issue in issues:
+            print(f"    - {issue}")
+    else:
+        print("  All validations passed")
+
+    print(f"\n{'='*60}")
+    print("SUMMARY")
+    print_summary(results, rows_to_process)
+    return 1 if issues else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
