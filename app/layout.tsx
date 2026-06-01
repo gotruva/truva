@@ -8,6 +8,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { PublicChrome } from '@/components/PublicChrome';
+import { CookieConsent } from '@/components/CookieConsent';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -74,6 +75,36 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn('font-sans antialiased text-brand-textPrimary', spaceGrotesk.variable, inter.variable)}
     >
+      <head>
+        {shouldLoadHostedAnalytics && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                
+                var consentCookie = document.cookie.match(/(?:^|; )truva_cookie_consent=([^;]*)/);
+                var hasAnalytics = false;
+                if (consentCookie) {
+                  try {
+                    var consentVal = JSON.parse(decodeURIComponent(consentCookie[1]));
+                    if (consentVal && consentVal.analytics === true) {
+                      hasAnalytics = true;
+                    }
+                  } catch(e) {}
+                }
+                
+                gtag('consent', 'default', {
+                  'analytics_storage': hasAnalytics ? 'granted' : 'denied',
+                  'ad_storage': 'denied',
+                  'ad_user_data': 'denied',
+                  'ad_personalization': 'denied'
+                });
+              `
+            }}
+          />
+        )}
+      </head>
       <body className="flex flex-col min-h-screen bg-brand-surface dark:bg-slate-950 overflow-x-hidden transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <PublicChrome><Navbar /></PublicChrome>
@@ -81,6 +112,7 @@ export default function RootLayout({
             {children}
           </main>
           <PublicChrome><Footer /></PublicChrome>
+          <CookieConsent />
         </ThemeProvider>
         {shouldLoadHostedAnalytics && process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

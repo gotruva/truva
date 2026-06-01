@@ -50,6 +50,7 @@ export function Footer() {
               { href: '/about', label: 'About' },
               { href: '/articles', label: 'Blog' },
               { href: '/terms', label: 'Terms & Conditions' },
+              { href: '/privacy', label: 'Privacy Policy' },
             ]}
           />
         </div>

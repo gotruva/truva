@@ -41,11 +41,11 @@ export function CreditCardHeroCarousel({ cards }: { cards: CreditCardType[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  useEffect(() => {
-    if (activeIndex > Math.max(carouselCards.length - 1, 0)) {
-      setActiveIndex(0);
-    }
-  }, [activeIndex, carouselCards.length]);
+  // Clamped active index calculation during render to satisfy strict ESLint rules
+  const safeActiveIndex = activeIndex > Math.max(carouselCards.length - 1, 0) ? 0 : activeIndex;
+  if (activeIndex !== safeActiveIndex) {
+    setActiveIndex(safeActiveIndex);
+  }
 
   const showPrevious = useCallback(() => {
     setActiveIndex((current) =>
@@ -85,7 +85,7 @@ export function CreditCardHeroCarousel({ cards }: { cards: CreditCardType[] }) {
     );
   }
 
-  const activeCard = carouselCards[activeIndex];
+  const activeCard = carouselCards[safeActiveIndex];
 
   return (
     <div
@@ -102,7 +102,7 @@ export function CreditCardHeroCarousel({ cards }: { cards: CreditCardType[] }) {
         <div className="pointer-events-none absolute inset-x-8 top-6 h-24 rounded-full bg-emerald-400/10 blur-3xl dark:bg-emerald-400/15" />
         <div className="pointer-events-none absolute inset-x-0 top-9 h-56">
           {carouselCards.map((card, index) => {
-            const offset = getCircularOffset(index, activeIndex, carouselCards.length);
+            const offset = getCircularOffset(index, safeActiveIndex, carouselCards.length);
             const slot = getSlotStyle(offset);
 
             return (
@@ -153,7 +153,7 @@ export function CreditCardHeroCarousel({ cards }: { cards: CreditCardType[] }) {
             key={`${card.id || card.normalized_card_key || card.card_name}-dot`}
             className={cn(
               'h-1.5 rounded-full transition-all',
-              index === activeIndex
+              index === safeActiveIndex
                 ? 'w-6 bg-brand-primary'
                 : 'w-1.5 bg-brand-border dark:bg-white/20',
             )}
