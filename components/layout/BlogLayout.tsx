@@ -13,9 +13,15 @@ import type { EditorialArticle } from '@/types';
 interface BlogLayoutProps {
   children: ReactNode;
   article: EditorialArticle;
+  /**
+   * Pre-resolved related articles. Used by the file-based /blog pipeline whose
+   * related slugs live in content/blog (not lib/editorial). When omitted, falls
+   * back to the editorial.ts lookup used by the legacy MDX route pages.
+   */
+  relatedArticlesResolved?: EditorialArticle[];
 }
 
-export function BlogLayout({ children, article }: BlogLayoutProps) {
+export function BlogLayout({ children, article, relatedArticlesResolved }: BlogLayoutProps) {
   const sectionLabelMap: Record<EditorialArticle['section'], string> = {
     rates: 'Rates',
     reviews: 'Reviews',
@@ -42,9 +48,9 @@ export function BlogLayout({ children, article }: BlogLayoutProps) {
     return categoryMethodologyMap[category] ?? { label: 'View methodology', href: '/methodology' };
   };
 
-  const relatedArticles = getEditorialArticlesBySlugs(article.relatedArticles).filter(
-    (entry) => entry.slug !== article.slug
-  );
+  const relatedArticles = (
+    relatedArticlesResolved ?? getEditorialArticlesBySlugs(article.relatedArticles)
+  ).filter((entry) => entry.slug !== article.slug);
 
   const breadcrumbs = [
     { label: article.categoryLabel, href: `/${article.category}` },
