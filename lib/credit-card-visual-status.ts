@@ -1,4 +1,4 @@
-// Auto-generated from docs/credit-card-image-scrape-report.json — DO NOT EDIT MANUALLY.
+// Auto-generated from docs/credit-card-image-scrape-report.json - DO NOT EDIT MANUALLY.
 // Regenerate with: python3 scripts/generate-card-visual-status.py
 // Maps each card key to its current visual status from the scrape report.
 // The verify-credit-card-visuals.ts verifier cross-checks this against the live report
@@ -28,7 +28,6 @@ export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "bdo_world_elite_mastercard": "clean-card",
   "bpi_amore_cashback_card": "clean-card",
   "bpi_amore_platinum_cashback_card": "clean-card",
-  "bpi_corporate_card": "clean-card",
   "bpi_edge_card": "clean-card",
   "bpi_gold_rewards_card": "clean-card",
   "bpi_platinum_rewards_mastercard": "clean-card",
@@ -40,8 +39,6 @@ export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "chinabank_destinations_world_mastercard": "clean-card",
   "chinabank_freedom_mastercard": "clean-card",
   "equicom_gold_credit_card": "clean-card",
-  "hsbc_live_credit_card": "clean-card",
   "hsbc_live_plus_credit_card": "clean-card",
   "petron_bpi_card": "clean-card",
-  "robinsons_cashback_card": "clean-card",
 };

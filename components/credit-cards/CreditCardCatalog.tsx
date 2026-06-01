@@ -131,7 +131,7 @@ const QUICK_PILLS: QuickPill[] = [
 type SortMode = 'best' | 'fee' | 'income' | 'fx' | 'interest' | 'newest' | 'bank';
 
 const SORT_OPTIONS: Array<{ value: SortMode; label: string }> = [
-  { value: 'best', label: 'Best data first' },
+  { value: 'best', label: 'Most complete data first' },
   { value: 'fee', label: 'Lowest yearly fee' },
   { value: 'income', label: 'Lowest income' },
   { value: 'fx', label: 'Lowest foreign card fee' },
@@ -1009,7 +1009,7 @@ function BestForBadge({
         render={(
           <button
             type="button"
-            aria-label={`Best for ${fitLabel.label}. ${HELP.bestFor}`}
+            aria-label={`Good for ${fitLabel.label}. ${HELP.bestFor}`}
             className={cn(
               'inline-flex min-h-[24px] items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/40',
               fitLabel.color,
@@ -1018,7 +1018,7 @@ function BestForBadge({
           />
         )}
       >
-        Best for: {fitLabel.label}
+        Good for: {fitLabel.label}
         <Info className="h-3 w-3 shrink-0 opacity-70" aria-hidden="true" />
       </TooltipTrigger>
       <TooltipContent

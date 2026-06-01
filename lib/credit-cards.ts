@@ -11,6 +11,7 @@ export { getEditorialFor, type CardEditorial } from '@/lib/creditCardEditorial';
 
 const BANK_LOGO_MAP: Record<string, string> = {
   'Bank of the Philippine Islands': '/logos/bpi.svg',
+  'Bank of the Philippine Islands (BPI)': '/logos/bpi.svg',
   'RCBC': '/logos/rcbc.svg',
   'Rizal Commercial Banking Corporation (RCBC)': '/logos/rcbc.svg',
   'HSBC Philippines': '/logos/hsbc.svg',

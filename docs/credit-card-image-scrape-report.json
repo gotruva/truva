@@ -264,17 +264,6 @@
     "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
-    "normalized_card_key": "bpi_corporate_card",
-    "bank": "Bank of the Philippine Islands",
-    "card_name": "BPI Corporate Card",
-    "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/bpi-corporate-mastercard",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/image_corporate_mastercard?qlt=85&wid=600&ts=1685536479609&dpr=off",
-    "local_asset_path": "/cards/clean/bpi_corporate_card.webp",
-    "status": "clean-card",
-    "checked_at": "2026-05-25",
-    "notes": "Downloaded from issuer source on 2026-05-25."
-  },
-  {
     "normalized_card_key": "bpi_edge_card",
     "bank": "Bank of the Philippine Islands",
     "card_name": "BPI Edge Card",
@@ -396,17 +385,6 @@
     "notes": "Downloaded correct Gold Credit Card image from Equicom card products page. Shows 'Gold Card Valid Thru 0131' (560x472). Existing Business-Card.png was incorrect."
   },
   {
-    "normalized_card_key": "hsbc_live_credit_card",
-    "bank": "HSBC Philippines",
-    "card_name": "HSBC Live+ Credit Card",
-    "source_page_url": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
-    "direct_image_url": "/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg",
-    "local_asset_path": "/cards/clean/hsbc_live_credit_card.webp",
-    "status": "clean-card",
-    "checked_at": "2026-05-25",
-    "notes": "Downloaded from issuer source on 2026-05-25."
-  },
-  {
     "normalized_card_key": "hsbc_live_plus_credit_card",
     "bank": "The Hongkong and Shanghai Banking Corporation Limited (HSBC Philippines)",
     "card_name": "HSBC Live+ Credit Card",
@@ -415,7 +393,7 @@
     "local_asset_path": "/cards/clean/hsbc_live_plus_credit_card.webp",
     "status": "clean-card",
     "checked_at": "2026-05-25",
-    "notes": "Same card image as hsbc_live_credit_card (HSBC own two Supabase entries for the same product \u2014 Live+ Credit Card). Image is a lifestyle banner but is the best available from bank site."
+    "notes": "Downloaded from issuer source on 2026-05-25. Image is a lifestyle banner but is the best available from bank site."
   },
   {
     "normalized_card_key": "petron_bpi_card",
@@ -424,17 +402,6 @@
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/petron-bpi-mastercard",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Petron?qlt=85&wid=600&ts=1697442782623&dpr=off",
     "local_asset_path": "/cards/clean/petron_bpi_card.webp",
-    "status": "clean-card",
-    "checked_at": "2026-05-25",
-    "notes": "Downloaded from issuer source on 2026-05-25."
-  },
-  {
-    "normalized_card_key": "robinsons_cashback_card",
-    "bank": "Bank of the Philippine Islands",
-    "card_name": "Robinsons Cashback Card",
-    "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/robinsons-cashback-card-visa",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero-small-robinsons-platinum-cashback-card?qlt=85&wid=600&ts=1771488552857&dpr=off",
-    "local_asset_path": "/cards/clean/robinsons_cashback_card.webp",
     "status": "clean-card",
     "checked_at": "2026-05-25",
     "notes": "Downloaded from issuer source on 2026-05-25."

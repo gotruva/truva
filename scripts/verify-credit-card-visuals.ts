@@ -40,16 +40,6 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const cleanAssetRoot = path.join(projectRoot, 'public', CLEAN_CARD_ASSET_ROOT.replace(/^\/+/, ''));
 const scrapeReportPath = path.join(projectRoot, 'docs', 'credit-card-image-scrape-report.json');
 
-const allowedDuplicateCleanAssetPairs = new Set([
-  // HSBC has two live DB rows for the same Live+ product; both should resolve to
-  // the same bank-sourced image until the duplicate data row is consolidated.
-  ['hsbc_live_credit_card', 'hsbc_live_plus_credit_card'].sort().join('::'),
-]);
-
-function isAllowedDuplicateCleanAssetPair(firstKey: string, secondKey: string): boolean {
-  return allowedDuplicateCleanAssetPairs.has([firstKey, secondKey].sort().join('::'));
-}
-
 dotenv.config({ path: path.join(projectRoot, '.env.local') });
 dotenv.config({ path: path.join(projectRoot, '.env') });
 
@@ -222,7 +212,7 @@ for (const [key, entry] of reportByKey) {
         const hash = fileHash(fullPath);
         if (hash) {
           const existingKey = cleanFileHashes.get(hash);
-          if (existingKey && !isAllowedDuplicateCleanAssetPair(existingKey, key)) {
+          if (existingKey) {
             issues.push(
               `clean-card ${key} has identical file hash to ${existingKey}. One or both are not unique card-face images.`,
             );

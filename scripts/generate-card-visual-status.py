@@ -7,7 +7,8 @@ that powers the app's visual resolution logic. Run this whenever the report chan
 
 Usage: python3 scripts/generate-card-visual-status.py
 """
-import json, os
+import json
+import os
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 root = os.path.dirname(script_dir)
@@ -15,11 +16,11 @@ root = os.path.dirname(script_dir)
 report_path = os.path.join(root, "docs", "credit-card-image-scrape-report.json")
 out_path = os.path.join(root, "lib", "credit-card-visual-status.ts")
 
-with open(report_path) as f:
+with open(report_path, encoding="utf-8") as f:
     report = json.load(f)
 
 lines = [
-    "// Auto-generated from docs/credit-card-image-scrape-report.json — DO NOT EDIT MANUALLY.",
+    "// Auto-generated from docs/credit-card-image-scrape-report.json - DO NOT EDIT MANUALLY.",
     "// Regenerate with: python3 scripts/generate-card-visual-status.py",
     "// Maps each card key to its current visual status from the scrape report.",
     "// The verify-credit-card-visuals.ts verifier cross-checks this against the live report",
@@ -35,8 +36,8 @@ for entry in report:
 lines.append("};\n")
 
 content = "\n".join(lines)
-with open(out_path, "w") as f:
+with open(out_path, "w", encoding="utf-8", newline="\n") as f:
     f.write(content)
 
-print(f"✅ Generated {out_path}")
+print(f"Generated {out_path}")
 print(f"   {len(report)} entries from {report_path}")
