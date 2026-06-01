@@ -295,6 +295,31 @@ check(
   cashbackFit.lookElsewhere.some((l) => l.includes('travel points or airline miles')),
 );
 
+const categoryRewardsFit = deriveFitLists(
+  card({
+    rewards_type: 'cashback',
+    rewards_formula: {
+      earn_rate: 5,
+      earn_unit:
+        'percent cash rebate on supermarket, drugstore, and gas purchases after Php 10,000 non-essential spend',
+    },
+  }),
+  answers(),
+  false,
+);
+check(
+  'category rewards avoid the no-categories verdict',
+  !categoryRewardsFit.goodFit.some((g) => g.includes('without tracking categories')),
+);
+check(
+  'category rewards explain the bonus-category fit',
+  categoryRewardsFit.goodFit.some((g) => g.includes('bonus categories')),
+);
+check(
+  'category rewards warn about tracking rules',
+  categoryRewardsFit.lookElsewhere.some((l) => l.includes('qualifying spend rules')),
+);
+
 // ── 9. deriveCostRows ────────────────────────────────────────────────────────
 const fullCosts = deriveCostRows(completeCard);
 check('complete card has no pending primary rows', fullCosts.primary.every((r) => !r.pending));
@@ -334,6 +359,27 @@ const nafflWaiver = deriveCostRows(
   card({ naffl: true, annual_fee_recurring: 0, annual_fee_waiver_condition: 'naffl' }),
 ).more.find((r) => r.label === 'Fee waiver');
 eq('naffl waiver renders plainly', nafflWaiver?.value, 'No yearly fee for life.');
+
+const cleanedRawWaiver = deriveCostRows(
+  card({
+    annual_fee_recurring: 1_800,
+    annual_fee_waiver_condition: 'First-year waiver only; no unconditional NAFFL',
+  }),
+).more.find((r) => r.label === 'Fee waiver');
+eq(
+  'raw NAFFL fee waiver copy is made plain',
+  cleanedRawWaiver?.value,
+  'First-year waiver only; no automatic lifetime annual-fee waiver',
+);
+
+const noRewardsCost = deriveCostRows(
+  card({
+    rewards_type: null,
+    rewards_formula: { earn_rate: 0, earn_unit: 'No rewards program listed by the bank' },
+  }),
+).primary[0];
+eq('no-rewards cards use a rewards label', noRewardsCost.label, 'Rewards');
+eq('no-rewards cards do not show pending earn rate', noRewardsCost.pending, false);
 
 // ── 10. deriveQuickTakeChips ─────────────────────────────────────────────────
 const finderAnswers = answers({ first: 'yes', spend: 'online', priority: 'points', income: '100+' });

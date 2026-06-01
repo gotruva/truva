@@ -11,6 +11,7 @@ import type { FinderAnswers } from '@/lib/creditCardFinder/questions';
 import { EMPTY_ANSWERS } from '@/lib/creditCardFinder/questions';
 import { CONFIDENCE_LABELS } from '@/lib/creditCardFinder/copy';
 import { explainFinderResult } from '@/lib/creditCardFinder/explain';
+import { estimateAnnualValue } from '@/lib/creditCardValue';
 import {
   answersToQuery,
   buildScoredCard,
@@ -207,6 +208,28 @@ const stacked = scoreFinderCard(
 );
 check('stacked score clamped <= 1', stacked <= 1);
 check('eligible relevant card scores above threshold', stacked >= 0.55);
+
+const noRewardsValue = estimateAnnualValue(
+  card({
+    rewards_type: null,
+    rewards_formula: { earn_rate: 0, earn_unit: 'No rewards program listed by the bank' },
+    annual_fee_recurring: 1_000,
+  }),
+  30_000,
+  'groceries',
+);
+eq('no-rewards card does not fabricate gross rewards', noRewardsValue.grossRewards, 0);
+
+const explicitCashbackValue = estimateAnnualValue(
+  card({
+    rewards_type: 'cashback',
+    rewards_formula: { earn_rate: 5, earn_unit: 'percent rebate on groceries' },
+    annual_fee_recurring: 0,
+  }),
+  30_000,
+  'groceries',
+);
+check('explicit percent earn rate feeds value estimate', explicitCashbackValue.grossRewards > 0);
 
 const nearMissIncome = scoreFinderCard(
   card({

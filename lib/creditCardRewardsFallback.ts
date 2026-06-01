@@ -148,7 +148,7 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   },
   'bdo installment card': {
     rewards_type: null,
-    rewards_formula: null,
+    rewards_formula: { earn_rate: 0, earn_unit: 'No rewards program listed by the bank' },
     annual_fee_recurring: 1000,
     naffl: false,
     min_income_monthly: 15000,
@@ -240,6 +240,13 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
       earn_rate: 5,
       earn_unit:
         'percent cash rebate on supermarket, drugstore, and gas purchases after Php 10,000 non-essential spend in a statement period',
+    },
+  },
+  'eastwest platinum mastercard': {
+    rewards_type: 'points',
+    rewards_formula: {
+      earn_rate: 1,
+      earn_unit: 'Platinum Rewards Point per Php 40 spend',
     },
   },
 

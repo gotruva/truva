@@ -232,6 +232,17 @@ function dedupe(items: string[]): string[] {
   return [...new Set(items)];
 }
 
+function rewardsFormulaText(card: CreditCard): string {
+  return card.rewards_formula ? JSON.stringify(card.rewards_formula).toLowerCase() : '';
+}
+
+function hasCategoryRewardRules(card: CreditCard): boolean {
+  const text = rewardsFormulaText(card);
+  return /\b(supermarket|drugstore|gas|grocery|groceries|telecom|school|bookstore|online|gadget|internet|dining|restaurant|department|fuel|travel|hotel|airline|utilities|bonus|double points|after php|non-essential|categor(?:y|ies))\b/.test(
+    text,
+  );
+}
+
 // ── Quick Take: main benefit ─────────────────────────────────────────────────
 
 /** A short bold lead + plain sentence — one decision-relevant idea, no jargon. */
@@ -358,13 +369,18 @@ export function deriveFitLists(
   const lookElsewhere: string[] = [];
   const tags = deriveTags(card);
   const minIncome = cardMinIncomeMonthly(card);
+  const categoryRewardRules = hasCategoryRewardRules(card);
 
   // Good fit
   if (tags.includes('beginner')) {
     goodFit.push('You want a first credit card from a bank people recognize.');
   }
   if (card.rewards_type === 'cashback' || card.rewards_type === 'points') {
-    goodFit.push('You want simple rewards without tracking categories.');
+    goodFit.push(
+      categoryRewardRules
+        ? 'You spend in the bonus categories this card is built around.'
+        : 'You want simple rewards without tracking categories.',
+    );
   } else if (card.rewards_type === 'miles') {
     goodFit.push('You travel often and want your spending to earn miles.');
   }
@@ -385,6 +401,9 @@ export function deriveFitLists(
     lookElsewhere.push(
       'You often pay at merchants or checkout pages that only accept Visa or Mastercard.',
     );
+  }
+  if (categoryRewardRules) {
+    lookElsewhere.push('You do not want to track bonus categories or qualifying spend rules.');
   }
   if (card.rewards_type === 'points' || card.rewards_type === 'miles') {
     lookElsewhere.push("You'd rather earn straight cashback than points or miles.");
@@ -428,6 +447,14 @@ function costRow(label: string, value: string | null): CostRow {
     : { label, value: PENDING_VALUE, pending: true };
 }
 
+function cleanPublishedFeeWaiverCopy(raw: string): string {
+  return raw
+    .replace(/\bno unconditional NAFFL\b/gi, 'no automatic lifetime annual-fee waiver')
+    .replace(/\bNAFFL\b/gi, 'lifetime annual-fee waiver')
+    .replace(/\bunconditionally waived\b/gi, 'waived without spend requirement')
+    .replace(/\bPHP\b/g, 'Php');
+}
+
 function formatFeeWaiverCondition(card: CreditCard): string | null {
   const raw = card.annual_fee_waiver_condition?.trim();
   const normalized = normalizedWaiverCondition(card);
@@ -453,7 +480,7 @@ function formatFeeWaiverCondition(card: CreditCard): string | null {
       : 'Waiver depends on yearly spend.';
   }
 
-  return raw.replace(/\bPHP\b/g, 'Php');
+  return cleanPublishedFeeWaiverCopy(raw);
 }
 
 export function deriveCostRows(card: CreditCard): CostRows {
@@ -461,9 +488,10 @@ export function deriveCostRows(card: CreditCard): CostRows {
     typeof card.rewards_formula?.earn_unit === 'string'
       ? (card.rewards_formula.earn_unit as string).trim()
       : '';
+  const noRewardsListed = earnUnit.toLowerCase().includes('no rewards program listed');
 
   const primary: CostRow[] = [
-    costRow('Earn rate', earnUnit || null),
+    costRow(noRewardsListed ? 'Rewards' : 'Earn rate', earnUnit || null),
     { label: 'Annual fee', value: deriveAnnualFeeLabel(card), pending: false },
     costRow(
       'Interest if unpaid',

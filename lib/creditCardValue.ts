@@ -58,6 +58,20 @@ function deriveBaseRewardRate(card: CreditCard): number {
       return rateField / 100;
     }
 
+    const earnRate = (formula as Record<string, unknown>)['earn_rate'];
+    const earnUnit = String((formula as Record<string, unknown>)['earn_unit'] ?? '').toLowerCase();
+    if (earnUnit.includes('no rewards program listed')) {
+      return 0;
+    }
+    if (
+      typeof earnRate === 'number' &&
+      earnRate >= 0 &&
+      earnRate <= 30 &&
+      earnUnit.includes('percent')
+    ) {
+      return earnRate / 100;
+    }
+
     // Inline "X% cashback" pattern in stringified formula
     const pctMatch = str.match(/"([0-9]+(?:\.[0-9]+)?)%/);
     if (pctMatch) {
@@ -71,7 +85,7 @@ function deriveBaseRewardRate(card: CreditCard): number {
     case 'cashback': return 0.005;   // 0.5% base; many PH cashback cards
     case 'points':   return 0.008;   // ~1pt/₱20, ₱0.20 redemption value
     case 'miles':    return 0.012;   // ~1mi/₱30, ₱0.40 redemption value
-    default:         return 0.005;
+    default:         return 0;
   }
 }
 
