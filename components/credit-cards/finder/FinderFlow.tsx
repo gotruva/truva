@@ -22,6 +22,7 @@ import {
   trackFinderResume,
   trackFinderStarted,
   trackFinderStepCompleted,
+  trackFinderStepViewed,
 } from '@/lib/analytics/creditCards';
 import type { CreditCard } from '@/types';
 
@@ -43,6 +44,15 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
   const [answers, setAnswers] = useState<FinderAnswers>(EMPTY_ANSWERS);
   const [resume, setResume] = useState<{ query: string } | null>(null);
   const matchFired = useRef(false);
+  // Track which step we've already fired `step_viewed` for, so StrictMode
+  // double-invokes (and quick back-and-forth) don't produce duplicates.
+  const viewedStepRef = useRef<number | null>(null);
+  // Live ref for the abandon handler — reads the current step without making
+  // the effect re-bind on every navigation.
+  const currentStepRef = useRef<number | null>(null);
+  // Set to true the moment the quiz finishes (or the user explicitly leaves
+  // via Cancel). Suppresses the page-hide abandon ping in those cases.
+  const finishedOrLeftRef = useRef(false);
 
   // Hydrate draft answers + resume affordance once on mount. Storage is an
   // external system, so the read happens here; the state update is deferred
@@ -107,6 +117,46 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
     return { phase: 'landing' as const };
   }, [stepParam]);
 
+  // Fire `step_viewed` whenever the user arrives at a new quiz step. Paired
+  // with `step_completed`, this gives a per-step drop-off funnel
+  // (viewed_N - completed_N = users who saw step N but did not answer it).
+  useEffect(() => {
+    if (view.phase !== 'quiz') {
+      currentStepRef.current = null;
+      return;
+    }
+    const stepNumber = view.stepIndex + 1;
+    currentStepRef.current = stepNumber;
+    if (viewedStepRef.current === stepNumber) return;
+    viewedStepRef.current = stepNumber;
+    const qid = QUESTIONS_FINAL[view.stepIndex]?.id ?? 'unknown';
+    trackFinderStepViewed({ step: stepNumber, questionId: qid });
+  }, [view]);
+
+  // Catch mid-quiz abandonment: the user closed the tab, switched away, or
+  // navigated off the quiz without completing it. Uses `visibilitychange`
+  // (which fires reliably on mobile tab close, unlike `beforeunload`) and the
+  // unmount cleanup to cover SPA navigations.
+  useEffect(() => {
+    const fireAbandon = (reason: 'page_hidden' | 'navigated_away') => {
+      if (finishedOrLeftRef.current) return;
+      const step = currentStepRef.current;
+      if (step === null) return; // not in the quiz
+      const qid = QUESTIONS_FINAL[step - 1]?.id ?? 'unknown';
+      trackFinderAbandoned({ step, questionId: qid, reason });
+      finishedOrLeftRef.current = true; // don't double-fire
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') fireAbandon('page_hidden');
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      // SPA route change away from the finder → component unmount.
+      fireAbandon('navigated_away');
+    };
+  }, []);
+
   const handleStart = useCallback(() => {
     trackFinderStarted();
     goToStep(1);
@@ -134,6 +184,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
         /* ignore */
       }
       trackFinderCompleted(finalAnswers);
+      finishedOrLeftRef.current = true; // legitimate finish — suppress abandon
       goToStep('match');
     },
     [goToStep],
@@ -187,9 +238,14 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
   const handleBack = useCallback(
     (stepIndex: number) => {
       if (stepIndex <= 0) {
-        // Leaving Q1 back to the landing = abandoning the finder.
+        // Leaving Q1 back to the landing = explicit cancel.
         const qid = QUESTIONS_FINAL[stepIndex]?.id as QuestionId | undefined;
-        trackFinderAbandoned({ step: stepIndex + 1, questionId: qid ?? 'unknown' });
+        trackFinderAbandoned({
+          step: stepIndex + 1,
+          questionId: qid ?? 'unknown',
+          reason: 'cancel',
+        });
+        finishedOrLeftRef.current = true; // suppress the unmount/page-hide ping
         goToStep(null);
       } else {
         goToStep(stepIndex); // one-based prev = stepIndex (0-based prev +1)

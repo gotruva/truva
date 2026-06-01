@@ -93,9 +93,28 @@ export function trackFinderCompleted(answers: FinderAnswers) {
   emit('cc_finder_completed', { ...coarseAnswers(answers) });
 }
 
-/** User left the quiz back to the landing without finishing (Q1 bail-out). */
-export function trackFinderAbandoned(args: { step: number; questionId: string }) {
-  emit('cc_finder_abandoned', { step: args.step, question_id: args.questionId });
+/**
+ * User arrived at a quiz step. Together with `cc_finder_step_completed`, this
+ * gives a clean per-step drop-off funnel (viewed N vs. completed N).
+ */
+export function trackFinderStepViewed(args: { step: number; questionId: string }) {
+  emit('cc_finder_step_viewed', { step: args.step, question_id: args.questionId });
+}
+
+/**
+ * User left the quiz before finishing — Q1 back-out, mid-quiz tab close, or
+ * navigating away. `reason` distinguishes the cause for funnel diagnosis.
+ */
+export function trackFinderAbandoned(args: {
+  step: number;
+  questionId: string;
+  reason?: 'cancel' | 'page_hidden' | 'navigated_away';
+}) {
+  emit('cc_finder_abandoned', {
+    step: args.step,
+    question_id: args.questionId,
+    reason: args.reason ?? 'cancel',
+  });
 }
 
 // ── Browse / catalog (the "all cards" page) ───────────────────────────────────
