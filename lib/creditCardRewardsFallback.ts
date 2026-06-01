@@ -233,6 +233,16 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
     rewards_formula: { earn_rate: 1, earn_unit: 'Rewards Point per Php 20 spend' },
   },
 
+  // EastWest
+  'eastwest everyday titanium mastercard': {
+    rewards_type: 'cashback',
+    rewards_formula: {
+      earn_rate: 5,
+      earn_unit:
+        'percent cash rebate on supermarket, drugstore, and gas purchases after Php 10,000 non-essential spend in a statement period',
+    },
+  },
+
   // Equicom Savings Bank
   'equicom gold credit card': {
     rewards_type: 'points',
@@ -247,5 +257,32 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   'hsbc live plus credit card': {
     rewards_type: 'cashback',
     rewards_formula: { earn_rate: 8, earn_unit: 'percent on dining' },
+  },
+
+  // Metrobank
+  'metrobank cashback visa': {
+    rewards_type: 'cashback',
+    rewards_formula: {
+      earn_rate: 5,
+      earn_unit:
+        'percent rebate on groceries, telecom, school, and bookstore spend; 0.2 percent on other spend',
+    },
+  },
+  'metrobank rewards plus visa': {
+    rewards_type: 'points',
+    rewards_formula: {
+      earn_rate: 1,
+      earn_unit:
+        'point per Php 20 spend; double points on gadgets, internet, and online spend',
+    },
+  },
+
+  // Security Bank
+  'security bank wave mastercard': {
+    rewards_type: 'cashback',
+    rewards_formula: {
+      earn_rate: 1,
+      earn_unit: 'percent cashback on online spend, capped at Php 3,000 per year',
+    },
   },
 };

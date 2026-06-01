@@ -141,6 +141,22 @@ function formatList(items: string[]): string {
   return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
 }
 
+function normalizedWaiverCondition(card: CreditCard): string | null {
+  const raw = card.annual_fee_waiver_condition?.trim();
+  return raw ? raw.toLowerCase().replace(/\s+/g, ' ') : null;
+}
+
+function hasKnownFeeWaiverDetails(card: CreditCard): boolean {
+  if (isNoYearlyFee(card)) return true;
+
+  const normalized = normalizedWaiverCondition(card);
+  if (!normalized) return false;
+  if (normalized === 'spend_threshold') {
+    return card.annual_fee_waiver_threshold !== null;
+  }
+  return true;
+}
+
 /**
  * One calm sentence naming the key fields the bank has not clearly published,
  * or `null` when nothing important is missing. Replaces the scattered
@@ -152,10 +168,7 @@ export function deriveMissingDataNote(card: CreditCard): string | null {
   if (card.min_income_monthly === null && card.min_income_annual === null) {
     missing.push('the income requirement');
   }
-  if (
-    card.annual_fee_waiver_condition === null ||
-    card.annual_fee_waiver_threshold === null
-  ) {
+  if (!hasKnownFeeWaiverDetails(card)) {
     missing.push('fee-waiver details');
   }
   if (card.foreign_transaction_fee_pct === null) {
@@ -415,6 +428,34 @@ function costRow(label: string, value: string | null): CostRow {
     : { label, value: PENDING_VALUE, pending: true };
 }
 
+function formatFeeWaiverCondition(card: CreditCard): string | null {
+  const raw = card.annual_fee_waiver_condition?.trim();
+  const normalized = normalizedWaiverCondition(card);
+
+  if (
+    card.naffl === true ||
+    card.badge_inputs?.true_naffl === true ||
+    normalized === 'naffl'
+  ) {
+    return 'No yearly fee for life.';
+  }
+  if (card.annual_fee_recurring === 0) {
+    return 'No yearly fee.';
+  }
+  if (!raw) return null;
+
+  if (normalized === 'first_year_new_to_bank_only') {
+    return 'Waived for the first year for new-to-bank cardholders.';
+  }
+  if (normalized === 'spend_threshold') {
+    return card.annual_fee_waiver_threshold !== null
+      ? `Waived after ${formatPeso(card.annual_fee_waiver_threshold)} yearly spend.`
+      : 'Waiver depends on yearly spend.';
+  }
+
+  return raw.replace(/\bPHP\b/g, 'Php');
+}
+
 export function deriveCostRows(card: CreditCard): CostRows {
   const earnUnit =
     typeof card.rewards_formula?.earn_unit === 'string'
@@ -463,7 +504,7 @@ export function deriveCostRows(card: CreditCard): CostRows {
         ? `${card.interest_rate_effective_annual.toFixed(2)}%`
         : null,
     ),
-    costRow('Fee waiver', card.annual_fee_waiver_condition),
+    costRow('Fee waiver', formatFeeWaiverCondition(card)),
   ];
 
   return { primary, more };

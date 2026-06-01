@@ -192,6 +192,34 @@ const completeCard = card({
 eq('complete card has no missing-data note', deriveMissingDataNote(completeCard), null);
 check('sparse card returns a missing-data note', deriveMissingDataNote(card()) !== null);
 
+const firstYearWaiverCard = card({
+  min_income_monthly: 30_000,
+  annual_fee_recurring: 2_800,
+  annual_fee_waiver_condition: 'first_year_new_to_bank_only',
+  annual_fee_waiver_threshold: null,
+  foreign_transaction_fee_pct: 3,
+  interest_rate_pct: 3,
+  rewards_formula: { earn_unit: '5 percent rebate' },
+});
+check(
+  'first-year-only waiver does not require a waiver threshold',
+  !deriveMissingDataNote(firstYearWaiverCard)?.includes('fee-waiver details'),
+);
+
+const incompleteSpendWaiverCard = card({
+  min_income_monthly: 30_000,
+  annual_fee_recurring: 2_500,
+  annual_fee_waiver_condition: 'spend_threshold',
+  annual_fee_waiver_threshold: null,
+  foreign_transaction_fee_pct: 2.5,
+  interest_rate_pct: 3,
+  rewards_formula: { earn_unit: '1 point per Php 20' },
+});
+check(
+  'spend-threshold waiver still requires a threshold amount',
+  deriveMissingDataNote(incompleteSpendWaiverCard)?.includes('fee-waiver details') === true,
+);
+
 // ── 5. isLimitedAcceptanceNetwork ────────────────────────────────────────────
 check('JCB is a limited-acceptance network', isLimitedAcceptanceNetwork(card({ card_network: 'JCB' })));
 check('Amex is a limited-acceptance network', isLimitedAcceptanceNetwork(card({ card_network: 'American Express' })));
@@ -282,6 +310,30 @@ check(
   sparseCosts.primary.some((r) => r.pending && r.value.includes('Still being checked')),
 );
 check('costs table exposes long-tail fees', sparseCosts.more.length > 0);
+
+const firstYearWaiver = deriveCostRows(firstYearWaiverCard).more.find((r) => r.label === 'Fee waiver');
+eq(
+  'first-year waiver code renders as plain English',
+  firstYearWaiver?.value,
+  'Waived for the first year for new-to-bank cardholders.',
+);
+
+const spendWaiver = deriveCostRows(
+  card({
+    annual_fee_recurring: 3_500,
+    annual_fee_waiver_condition: 'spend_threshold',
+    annual_fee_waiver_threshold: 250_000,
+  }),
+).more.find((r) => r.label === 'Fee waiver');
+check(
+  'spend-threshold waiver renders the threshold amount',
+  spendWaiver?.value.includes('250,000') === true && spendWaiver.pending === false,
+);
+
+const nafflWaiver = deriveCostRows(
+  card({ naffl: true, annual_fee_recurring: 0, annual_fee_waiver_condition: 'naffl' }),
+).more.find((r) => r.label === 'Fee waiver');
+eq('naffl waiver renders plainly', nafflWaiver?.value, 'No yearly fee for life.');
 
 // ── 10. deriveQuickTakeChips ─────────────────────────────────────────────────
 const finderAnswers = answers({ first: 'yes', spend: 'online', priority: 'points', income: '100+' });
