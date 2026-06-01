@@ -1313,7 +1313,7 @@ export function SavingsLandingClient({
           <p className="rounded-2xl border border-brand-border bg-white p-6 text-sm text-brand-textSecondary dark:border-white/10 dark:bg-white/[0.03] dark:text-white/60">
             Rates are being refreshed. Try again in a few minutes.{' '}
             <a href="/banking/rates" className="font-semibold text-brand-primary hover:underline">
-              View full rate desk
+              View all rates
             </a>
           </p>
         ) : (

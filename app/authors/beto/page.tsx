@@ -20,8 +20,13 @@ export default function AuthorPage() {
     <div className="min-h-screen bg-brand-surface dark:bg-slate-950 py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="rounded-[2rem] border border-brand-primary/15 bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.14),_transparent_38%),linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(235,240,255,0.88))] p-8 shadow-[0_28px_80px_-52px_rgba(0,82,255,0.48)] dark:border-brand-primary/20 dark:bg-[radial-gradient(circle_at_top_left,_rgba(0,82,255,0.24),_transparent_34%),linear-gradient(140deg,_rgba(15,23,42,0.95),_rgba(2,6,23,0.98))] sm:p-10">
-          <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-brand-primary/10 text-4xl font-bold text-brand-primary ring-4 ring-brand-primary/20">
-            B
+          <div className="mx-auto mb-8 relative h-24 w-24 overflow-hidden rounded-full ring-4 ring-brand-primary/20">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/images/beto.jpg" 
+              alt="Beto" 
+              className="h-full w-full object-cover"
+            />
           </div>
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-4xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-5xl">

@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 export const metadata: Metadata = {
   title: 'Starter Credit Card Facts Philippines',
   description:
-    'Browse starter-card facts from the Truva card desk. Income matching is locked until minimum income data is populated.',
+    'Browse starter-card facts from the Truva credit cards hub. Income matching is locked until minimum income data is populated.',
   alternates: { canonical: '/credit-cards' },
 };
 

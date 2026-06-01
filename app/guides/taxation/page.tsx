@@ -48,7 +48,7 @@ export default function TaxationGuidePage() {
               Turn the tax rule into a better decision
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
-              Once you understand the withholding tax, move into the live rate desk or the calculator so
+              Once you understand the withholding tax, move into the live rate table or the calculator so
               you can compare net return instead of marketing copy.
             </p>
             <div className="mt-5 flex flex-col gap-3">

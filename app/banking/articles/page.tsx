@@ -25,7 +25,7 @@ export default function BankingArticlesPage() {
       <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 py-10 px-4 sm:py-16 sm:px-6">
         <div className="mx-auto max-w-5xl">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-blue-400">
-            The Truva Savings & Deposits Desk
+            The Truva Savings & Deposits Hub
           </p>
           <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             The sharpest takes on{' '}

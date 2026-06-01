@@ -163,12 +163,12 @@ export function ProductHubTemplate({
 
                   <span className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand-primary">
                     {isActive
-                      ? 'Current desk'
+                      ? 'Current hub'
                       : item.status === 'preview'
                         ? 'Open preview'
                         : item.status === 'coming-soon'
                           ? 'Coming soon'
-                          : 'Open desk'}
+                          : 'Open hub'}
                     <ArrowRight className="h-4 w-4" />
                   </span>
                 </div>

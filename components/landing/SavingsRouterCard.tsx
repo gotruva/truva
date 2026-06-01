@@ -54,7 +54,7 @@ export function SavingsRouterCard({ rates }: SavingsRouterCardProps) {
       );
       window.dispatchEvent(new CustomEvent(HUB_STATE_EVENT));
     } catch {
-      // Session storage is optional; the rate desk still works without the prefill.
+      // Session storage is optional; the comparison page still works without the prefill.
     }
   };
 
@@ -108,7 +108,7 @@ export function SavingsRouterCard({ rates }: SavingsRouterCardProps) {
                 Live preview unavailable
               </p>
               <p className="mt-2 text-[11px] leading-snug text-brand-textSecondary dark:text-gray-400">
-                The rate desk still opens with the full comparison table.
+                The comparison page still opens with the full rate table.
               </p>
             </>
           )}

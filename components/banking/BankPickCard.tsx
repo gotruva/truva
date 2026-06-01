@@ -86,7 +86,7 @@ export function BankPickCard({
   pick,
   amount,
   months,
-  compareHref = '/banking/rates#rate-desk',
+  compareHref = '/banking/rates#rate-table',
   className,
 }: BankPickCardProps) {
   const hasRequirements = pick.hasRequirements;

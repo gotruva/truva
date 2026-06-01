@@ -38,7 +38,7 @@ export default async function CreditCardReviewsPage() {
               className="mb-6 inline-flex items-center text-sm text-white/80 transition-colors hover:text-white"
             >
               <ChevronLeft className="mr-1 h-4 w-4" />
-              Back to card desk
+              Back to credit cards
             </Link>
             <div>
               <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white/90">

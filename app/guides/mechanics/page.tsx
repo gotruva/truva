@@ -94,7 +94,7 @@ export default function MechanicsGuidePage() {
             <ArrowRight className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
             <p className="text-sm leading-relaxed text-brand-textSecondary dark:text-gray-300">
               This section is where rate comparison starts to become useful. Once you understand the mechanics,
-              the calculator and the rate desk can actually answer the question you care about.
+              the calculator and the rate table can actually answer the question you care about.
             </p>
           </div>
         </section>

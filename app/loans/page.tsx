@@ -78,7 +78,7 @@ export default function LoansHubPage() {
         { id: 'methodology', label: 'Methodology' },
       ]}
       hero={{
-        eyebrow: 'Loans preview desk',
+        eyebrow: 'Loans preview hub',
         icon: HandCoins,
         title: 'Loans should be compared on total pain, not just on the teaser rate that got the ad click.',
         directAnswer:

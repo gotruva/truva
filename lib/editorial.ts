@@ -271,7 +271,7 @@ export const BANKING_EDITORIAL_ARTICLES: EditorialArticle[] = [
       },
     ],
     primaryCta: {
-      label: 'Open the live rate desk',
+      label: 'Compare live rates',
       href: '/#deposit-rates',
       description: 'Check the current rates behind the comparison before you move money.',
     },

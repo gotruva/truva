@@ -55,7 +55,7 @@ export default function BankingComparePage() {
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
-                  href="/banking/rates#rate-desk"
+                  href="/banking/rates#rate-table"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20"
                 >
                   Compare savings rates now
@@ -123,7 +123,7 @@ export default function BankingComparePage() {
           {[
             {
               title: 'Rates hub',
-              description: 'Use the live rate desk when you need the fastest answer right now.',
+              description: 'Use the live rate table when you need the fastest answer right now.',
               href: '/banking/rates',
               icon: TrendingUp,
             },

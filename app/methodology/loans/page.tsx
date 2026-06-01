@@ -188,7 +188,7 @@ export default function LoansMethodologyPage() {
               href="/loans"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
             >
-              Open loans desk
+              Open loans hub
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

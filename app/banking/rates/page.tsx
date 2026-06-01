@@ -55,7 +55,7 @@ export default async function BankingRatesHub() {
 
       <SectionHub
         title="Digital Bank Rates"
-        description="Lead with the rate desk, then move into the explainers and reviews that tell you whether the headline number is actually worth chasing."
+        description="Lead with the rate comparison table, then move into the explainers and reviews that tell you whether the headline number is actually worth chasing."
         breadcrumbItems={[
           { label: 'Savings & Deposits', href: '/banking' },
           { label: 'Rates', href: '/banking/rates' },
@@ -68,7 +68,7 @@ export default async function BankingRatesHub() {
             <div className="space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-brand-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary dark:border-brand-primary/20 dark:bg-brand-primary/15">
                 <Sparkles className="h-4 w-4" />
-                Live rate desk + editorial support
+                Live rate comparison + editorial support
               </div>
               <div className="space-y-3">
                 <h2 className="max-w-xl text-3xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-4xl">
@@ -106,10 +106,10 @@ export default async function BankingRatesHub() {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
-                  href="#rate-desk"
+                  href="#rate-table"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-transform hover:-translate-y-0.5"
                 >
-                  Open the rate desk
+                  Open the rate table
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
@@ -133,10 +133,10 @@ export default async function BankingRatesHub() {
           {featuredArticle && <FeaturedArticleCard article={featuredArticle} />}
         </section>
 
-        <section id="rate-desk" className="scroll-mt-28 space-y-4">
+        <section id="rate-table" className="scroll-mt-28 space-y-4">
           <div className="max-w-3xl space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-primary">
-              Rate desk
+              Rate table
             </p>
             <h2 className="text-2xl font-bold tracking-tight text-brand-textPrimary dark:text-white sm:text-3xl">
               Compare digital bank rates
