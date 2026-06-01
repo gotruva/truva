@@ -334,7 +334,16 @@ check(
   'pending rows render the checking message',
   sparseCosts.primary.some((r) => r.pending && r.value.includes('Still being checked')),
 );
-check('costs table exposes long-tail fees', sparseCosts.more.length > 0);
+eq('costs table hides unknown long-tail fees', sparseCosts.more.length, 0);
+
+const knownMoreCosts = deriveCostRows(
+  card({
+    cash_advance_fee_pct: 5,
+    cash_advance_fee_amount: 200,
+    annual_fee_waiver_condition: 'First year waived',
+  }),
+);
+check('costs table keeps known long-tail fees', knownMoreCosts.more.length >= 2);
 
 const firstYearWaiver = deriveCostRows(firstYearWaiverCard).more.find((r) => r.label === 'Fee waiver');
 eq(

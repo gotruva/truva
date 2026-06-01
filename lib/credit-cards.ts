@@ -67,6 +67,10 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
     rewards_formula: finalFormula,
     annual_fee_recurring: row.annual_fee_recurring ?? (fallback?.annual_fee_recurring ?? null),
     naffl: row.naffl ?? (fallback?.naffl ?? null),
+    annual_fee_waiver_condition:
+      row.annual_fee_waiver_condition ?? (fallback?.annual_fee_waiver_condition ?? null),
+    annual_fee_waiver_threshold:
+      row.annual_fee_waiver_threshold ?? (fallback?.annual_fee_waiver_threshold ?? null),
     min_income_monthly: row.min_income_monthly ?? (fallback?.min_income_monthly ?? null),
     foreign_transaction_fee_pct: row.foreign_transaction_fee_pct ?? (fallback?.foreign_transaction_fee_pct ?? null),
   };

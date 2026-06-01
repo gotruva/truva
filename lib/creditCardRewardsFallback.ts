@@ -18,6 +18,8 @@ export interface FallbackReward {
   } | null;
   annual_fee_recurring?: number | null;
   naffl?: boolean | null;
+  annual_fee_waiver_condition?: string | null;
+  annual_fee_waiver_threshold?: number | null;
   min_income_monthly?: number | null;
   foreign_transaction_fee_pct?: number | null;
 }
@@ -219,14 +221,17 @@ export const REWARDS_FALLBACK_REGISTRY: Record<string, FallbackReward> = {
   'chinabank destinations platinum mastercard': {
     rewards_type: 'miles',
     rewards_formula: { earn_rate: 1, earn_unit: 'Destination Mile per Php 30 spend' },
+    annual_fee_waiver_condition: 'Rewards points can be converted to annual membership fee waiver.',
   },
   'chinabank destinations world dollar mastercard': {
     rewards_type: 'miles',
     rewards_formula: { earn_rate: 1, earn_unit: 'Destination Mile per USD 1 spend' },
+    annual_fee_waiver_condition: 'Rewards points can be converted to annual membership fee waiver.',
   },
   'chinabank destinations world mastercard': {
     rewards_type: 'miles',
     rewards_formula: { earn_rate: 1, earn_unit: 'Destination Mile per Php 30 spend' },
+    annual_fee_waiver_condition: 'Rewards points can be converted to annual membership fee waiver.',
   },
   'chinabank freedom mastercard': {
     rewards_type: 'points',

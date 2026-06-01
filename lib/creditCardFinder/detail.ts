@@ -533,7 +533,7 @@ export function deriveCostRows(card: CreditCard): CostRows {
         : null,
     ),
     costRow('Fee waiver', formatFeeWaiverCondition(card)),
-  ];
+  ].filter((row) => !row.pending);
 
   return { primary, more };
 }
