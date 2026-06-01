@@ -33,6 +33,7 @@ const DIMENSIONS = [
   ['question_id', 'Finder Question'],
   ['answer_value', 'Finder Answer'],
   ['skipped', 'Finder Step Skipped'],
+  ['reason', 'Finder Abandon Reason'],
   ['first_card', 'First Card'],
   ['income_band', 'Income Band'],
   ['spend', 'Spend Profile'],
