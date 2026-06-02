@@ -5,27 +5,27 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { sendGAEvent } from '@next/third-parties/google';
 import { useTheme } from 'next-themes';
-import { BookOpenText, ChevronDown, Landmark, BarChart2, GraduationCap, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
+import { ArrowRight, BookOpenText, ChevronDown, CreditCard, Landmark, GraduationCap, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useHasMounted } from '@/lib/use-has-mounted';
 
-const READ_LINKS = [
+const BLOG_LINKS = [
   {
     label: 'Savings & Deposits',
     description: 'Rate guides, digital bank reviews, and account comparisons.',
-    href: '/banking/articles',
+    href: '/blog/category/banking',
     icon: Landmark,
   },
   {
-    label: 'Investing',
-    description: 'Money market funds, T-Bills, UITFs, and investing strategies.',
-    href: '/investing',
-    icon: BarChart2,
+    label: 'Credit Cards',
+    description: 'Cashback, rewards, and travel card breakdowns.',
+    href: '/blog/category/credit-cards',
+    icon: CreditCard,
   },
   {
-    label: 'Finance & Lifestyle',
-    description: 'Tax explainers, PDIC basics, and practical money guides.',
-    href: '/guides',
+    label: 'Guides',
+    description: 'Tax, PDIC, and plain-language money guides.',
+    href: '/blog/category/guides',
     icon: GraduationCap,
   },
 ];
@@ -130,7 +130,7 @@ export function Navbar() {
               onFocus={openReadMenu}
             >
               <BookOpenText className="h-4 w-4" />
-              Articles
+              Blog
               <ChevronDown className={`h-4 w-4 transition-transform ${isReadOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -141,7 +141,7 @@ export function Navbar() {
                 onMouseLeave={closeReadMenu}
               >
                 <div className="space-y-1">
-                  {READ_LINKS.map((link) => (
+                  {BLOG_LINKS.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
@@ -160,6 +160,15 @@ export function Navbar() {
                       </div>
                     </Link>
                   ))}
+                </div>
+                <div className="mt-1 border-t border-brand-border/70 pt-1 dark:border-white/10">
+                  <Link
+                    href="/blog"
+                    className="flex items-center justify-between rounded-[1.15rem] px-3 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-surface dark:hover:bg-white/5"
+                  >
+                    Browse all articles
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             )}
@@ -237,14 +246,14 @@ export function Navbar() {
                 >
                   <span className="inline-flex items-center gap-2">
                     <BookOpenText className="h-4 w-4 text-brand-primary" />
-                    Articles
+                    Blog
                   </span>
                   <ChevronDown className={`h-4 w-4 text-brand-textSecondary transition-transform dark:text-gray-400 ${isMobileReadOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isMobileReadOpen && (
                   <div className="space-y-1 px-2 pb-2">
-                    {READ_LINKS.map((link) => (
+                    {BLOG_LINKS.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
@@ -260,6 +269,14 @@ export function Navbar() {
                         </div>
                       </Link>
                     ))}
+                    <Link
+                      href="/blog"
+                      onClick={closeMobileMenu}
+                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:bg-white dark:hover:bg-slate-800"
+                    >
+                      Browse all articles
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
                 )}
               </div>
