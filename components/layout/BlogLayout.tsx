@@ -39,13 +39,7 @@ export function BlogLayout({ children, article, relatedArticlesResolved }: BlogL
   };
 
   const getMethodologyCta = (category: EditorialArticle['category']) => {
-    const categoryMethodologyMap: Record<EditorialArticle['category'], { label: string; href: string }> = {
-      banking: { label: 'View savings methodology', href: '/methodology/banking' },
-      'credit-cards': { label: 'View card methodology', href: '/methodology/credit-cards' },
-      guides: { label: 'View trust hub', href: '/methodology' },
-    };
-
-    return categoryMethodologyMap[category] ?? { label: 'View methodology', href: '/methodology' };
+    return { label: 'About Truva', href: '/about' };
   };
 
   const relatedArticles = (

@@ -9,7 +9,7 @@ const TRUST_ITEMS = [
   {
     icon: Eye,
     title: 'We show our work',
-    body: 'Every ₱/year estimate is explained. Our full methodology is public at gotruva.com/methodology/credit-cards.',
+    body: 'Every ₱/year estimate is explained. Read our transparency pledge and core promises at gotruva.com/about.',
   },
   {
     icon: Lock,

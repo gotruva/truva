@@ -73,6 +73,45 @@ const nextConfig = {
       { source: '/keystatic/:path*', headers: keystaticHeaders },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/loans',
+        destination: '/#categories',
+        permanent: false,
+      },
+      {
+        source: '/investing',
+        destination: '/banking/money-market-funds',
+        permanent: true,
+      },
+      {
+        source: '/optimizer',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/tracker',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/banking/articles',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/methodology',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/methodology/:path*',
+        destination: '/about',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({

@@ -28,9 +28,9 @@ const utilityActions = [
     href: '/calculator',
   },
   {
-    title: 'See the methodology',
-    description: 'Understand how Truva verifies rates, disclosures, and product conditions.',
-    href: '/methodology',
+    title: 'Our transparency promises',
+    description: 'Read our core promises, founder story, and monetization policies.',
+    href: '/about',
   },
 ];
 

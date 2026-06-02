@@ -69,16 +69,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   addStaticRoute(routes, '/banking/compare', path.join(APP_ROOT, 'banking', 'compare', 'page.tsx'), 'weekly', 0.9);
   addStaticRoute(routes, '/credit-cards', path.join(APP_ROOT, 'credit-cards', 'page.tsx'), 'weekly', 0.85);
   addStaticRoute(routes, '/credit-cards/reviews', path.join(APP_ROOT, 'credit-cards', 'reviews', 'page.tsx'), 'weekly', 0.85);
-  addStaticRoute(routes, '/loans', path.join(APP_ROOT, 'loans', 'page.tsx'), 'monthly', 0.7);
+  addStaticRoute(routes, '/banking/money-market-funds', path.join(APP_ROOT, 'banking', 'money-market-funds', 'page.tsx'), 'weekly', 0.9);
   addStaticRoute(routes, '/guides', path.join(APP_ROOT, 'guides', 'page.tsx'), 'weekly', 0.9);
   addStaticRoute(routes, '/guides/taxation', path.join(APP_ROOT, 'guides', 'taxation', 'page.tsx'), 'weekly', 0.8);
   addStaticRoute(routes, '/guides/safety', path.join(APP_ROOT, 'guides', 'safety', 'page.tsx'), 'weekly', 0.8);
   addStaticRoute(routes, '/guides/mechanics', path.join(APP_ROOT, 'guides', 'mechanics', 'page.tsx'), 'weekly', 0.8);
-  addStaticRoute(routes, '/methodology', path.join(APP_ROOT, 'methodology', 'page.tsx'), 'monthly', 0.7);
-  addStaticRoute(routes, '/methodology/banking', path.join(APP_ROOT, 'methodology', 'banking', 'page.tsx'), 'monthly', 0.65);
-  addStaticRoute(routes, '/methodology/credit-cards', path.join(APP_ROOT, 'methodology', 'credit-cards', 'page.tsx'), 'monthly', 0.65);
-  addStaticRoute(routes, '/methodology/loans', path.join(APP_ROOT, 'methodology', 'loans', 'page.tsx'), 'monthly', 0.6);
-  addStaticRoute(routes, '/methodology/editorial-integrity', path.join(APP_ROOT, 'methodology', 'editorial-integrity', 'page.tsx'), 'monthly', 0.65);
   addStaticRoute(routes, '/authors/beto', path.join(APP_ROOT, 'authors', 'beto', 'page.tsx'), 'monthly', 0.6);
 
   addMDXRoutes(routes, path.join(APP_ROOT, 'banking', 'reviews'), 'banking/reviews');

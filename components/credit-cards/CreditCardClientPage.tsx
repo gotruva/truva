@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { FinderFlow } from './finder/FinderFlow';
 import { CreditCardLabelExplainer } from './CreditCardLabelExplainer';
-import { CreditCardMethodologySection } from './CreditCardMethodologySection';
+
 import { EducationalGuidesSection } from './EducationalGuidesSection';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 import { CreditCardHero } from './CreditCardHero';
@@ -33,9 +33,7 @@ export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
       {/* Below-the-fold context — unchanged from the previous page */}
       <CreditCardLabelExplainer />
 
-      <div className="bg-brand-surface/30 dark:bg-white/5">
-        <CreditCardMethodologySection />
-      </div>
+
 
       <EducationalGuidesSection />
 
@@ -50,7 +48,7 @@ export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link
-              href="/methodology/editorial-integrity"
+              href="/about"
               className="text-sm font-semibold underline underline-offset-4 transition-colors hover:text-brand-primary"
             >
               Read our Editorial Integrity

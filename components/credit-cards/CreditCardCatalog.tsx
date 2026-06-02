@@ -1313,7 +1313,7 @@ function ExpandedDetails({
           )}{' '}
           · checked {formatDate(card.last_scraped_at)}
         </span>
-        <Link href="/methodology/credit-cards" className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline">
+        <Link href="/about" className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline">
           How we check this card
           <ArrowRight className="h-3 w-3" />
         </Link>
