@@ -107,6 +107,7 @@ export function MiniCreditCardVisual({
   const tone = getIssuerTone(card.bank);
   const visualAsset = getCreditCardVisualAsset(card);
   const imagePath = visualAsset?.assetPath;
+  const visualStatus = visualAsset?.status ?? 'truva-fallback';
 
   return (
     <div
@@ -114,6 +115,7 @@ export function MiniCreditCardVisual({
         'relative shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-black/5 dark:ring-white/10',
         className,
       )}
+      data-visual-status={visualStatus}
       aria-hidden="true"
     >
       {imagePath ? (

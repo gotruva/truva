@@ -68,6 +68,10 @@ TRUSTED_GENERIC_IMAGE_URL_HINTS = {
     "security_bank_wave_mastercard": ["CCV2-Wave_Contactless_2024.png"],
 }
 
+DIRECT_IMAGE_URL_OVERRIDES = {
+    "rcbc_flex_visa": "https://rcbccredit.com/img/card/flex-visa.png",
+}
+
 # Per-card source URLs (individual product pages for cards where listing page isn't enough)
 PER_CARD_URLS = {
     "bdo_secured_credit_card": "https://www.bdo.com.ph/personal/cards/credit-cards/secured-credit-card",
@@ -588,7 +592,36 @@ async def download_image_bytes(page, direct_url: str, source_url: str) -> bytes 
         """,
         {"directUrl": direct_url, "sourceUrl": source_url},
     )
-    return base64.b64decode(img_data) if img_data else None
+    if img_data:
+        return base64.b64decode(img_data)
+
+    try:
+        import urllib.request
+
+        req = urllib.request.Request(
+            direct_url,
+            headers={
+                "Referer": source_url,
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "image/webp,image/apng,image/*,*/*;q=0.8",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            content_type = (resp.headers.get("content-type") or "").lower()
+            data = resp.read()
+
+        is_image_bytes = (
+            data.startswith(b"\x89PNG")
+            or data.startswith(b"\xff\xd8")
+            or data.startswith(b"RIFF")
+            or data.startswith(b"GIF")
+        )
+        if data and ("image/" in content_type or is_image_bytes):
+            return data
+    except Exception:
+        return None
+
+    return None
 
 
 async def extract_generic_card_image(page, url: str, card_name: str, card_key: str) -> dict | None:
@@ -1050,8 +1083,19 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
 
             elif source_url:
                 # Generic per-card official page scraper for Stage 2 candidates.
-                result = await extract_generic_card_image(page, source_url, card_name, card_key)
-                if result:
+                direct_override_url = DIRECT_IMAGE_URL_OVERRIDES.get(card_key)
+                result = None if direct_override_url else await extract_generic_card_image(page, source_url, card_name, card_key)
+                if direct_override_url:
+                    print(f"  Curated direct image override: {direct_override_url}")
+                    downloaded_bytes = await download_image_bytes(page, direct_override_url, source_url)
+                    if downloaded_bytes:
+                        direct_url = direct_override_url
+                        status = "clean-card"
+                        notes = f"Downloaded from curated issuer card-face image on {TODAY}."
+                    else:
+                        status = "needs-manual-review"
+                        notes = f"Curated issuer card-face image download failed on {TODAY}."
+                elif result:
                     direct_url = result["src"]
                     ratio = result.get("ratio", 0)
                     is_card_face = 1.3 < ratio < 2.0

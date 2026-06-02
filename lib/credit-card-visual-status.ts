@@ -45,5 +45,6 @@ export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "metrobank_cashback_visa": "clean-card",
   "metrobank_rewards_plus_visa": "clean-card",
   "petron_bpi_card": "clean-card",
+  "rcbc_flex_visa": "clean-card",
   "security_bank_wave_mastercard": "clean-card",
 };

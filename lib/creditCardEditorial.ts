@@ -45,6 +45,7 @@ export const BANK_PROMO_TC_URL: Record<string, string> = {
   'Asia United Bank': 'https://www.aub.com.ph/creditcards/no-annual-fee',
   'East West Banking Corporation': 'https://www.eastwestbanker.com/promos',
   'Equicom Savings Bank': 'https://www.equicomsavings.com/product-and-services/card-products/',
+  'Rizal Commercial Banking Corporation': 'https://rcbccredit.com/promos/welcomegifts',
 };
 
 const BPI_BACK_TO_BACK_PERKS_URL = 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos/back-to-back-perks';
@@ -84,6 +85,7 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'chinabank_destinations_world_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world',
   'aub_gold_mastercard': 'https://online.aub.ph/creditcards/goldandplatinum',
   'equicom_gold_credit_card': 'https://www.equicomsavings.com/product-and-services/card-products/',
+  'rcbc_flex_visa': 'https://rcbccredit.com/promos/welcomegifts',
 };
 
 /**
@@ -782,6 +784,25 @@ const editorial: Record<string, CardEditorial> = {
       'Has a yearly fee of ₱2,500 starting from the second year.',
       'High foreign card fee of 2.50% makes buying in foreign currencies expensive.',
       'You need to spend on specific categories to get the higher 4x points rate.',
+    ],
+  },
+
+  // -- RCBC ------------------------------------------------------------------
+
+  'rcbc_flex_visa': {
+    why: 'This is a lower-fee RCBC rewards card for people who want points to follow their real spending habits.',
+    targetUser: 'Suited for first-card or everyday cardholders who can name two regular spend categories, such as dining, clothing, travel, or transportation.',
+    valueAdd: 'You can earn 2x rewards points in two preferred categories while keeping the regular yearly fee at Php 1,500.',
+    welcomePromo: 'RCBC lists a temporary no-yearly-fee-for-life promo for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 30,000 within 60 days from card receipt.',
+    pros: [
+      'Earns 2x rewards points in two preferred categories chosen from dining, clothing, travel, or transportation.',
+      'Regular yearly fee is Php 1,500, lower than many premium rewards cards.',
+      'Rewards can be redeemed in several ways, including shopping vouchers, cash rebates, account credit, donations, or airmiles enrollment.',
+    ],
+    cons: [
+      'The higher earn rate depends on choosing categories that match your actual spending.',
+      'The lifetime-fee waiver is a temporary promo, not a permanent published waiver for every applicant.',
+      'Outside the active promo, the card still has a Php 1,500 yearly fee.',
     ],
   },
 };

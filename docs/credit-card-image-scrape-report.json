@@ -451,6 +451,17 @@
     "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
+    "normalized_card_key": "rcbc_flex_visa",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Flex Visa",
+    "source_page_url": "https://rcbccredit.com/credit-cards/gold-and-classic-cards/flex-visa",
+    "direct_image_url": "https://rcbccredit.com/img/card/flex-visa.png",
+    "local_asset_path": "/cards/clean/rcbc_flex_visa.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-02",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-02."
+  },
+  {
     "normalized_card_key": "security_bank_wave_mastercard",
     "bank": "Security Bank Corporation",
     "card_name": "Security Bank Wave Mastercard",

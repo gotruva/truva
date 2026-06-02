@@ -448,6 +448,12 @@ function costRow(label: string, value: string | null): CostRow {
 }
 
 function cleanPublishedFeeWaiverCopy(raw: string): string {
+  if (/temporary\s+n(?:af){2}l\s+promo/i.test(raw)) {
+    return raw
+      .replace(/\bTemporary\s+NAFFL\s+promo\b/gi, 'Temporary no-yearly-fee-for-life promo')
+      .replace(/\bPHP\b/g, 'Php');
+  }
+
   return raw
     .replace(/\bno unconditional NAFFL\b/gi, 'no automatic lifetime fee waiver')
     .replace(/\bNAFFL\b/gi, 'no yearly fee for life')
