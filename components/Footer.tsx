@@ -40,8 +40,8 @@ export function Footer() {
             title="Products"
             links={[
               { href: '/banking', label: 'Savings & Deposits' },
+              { href: '/banking/money-market-funds', label: 'Money Market Funds' },
               { href: '/credit-cards', label: 'Credit Cards' },
-              { href: '/loans', label: 'Loans' },
             ]}
           />
           <FooterGroup
