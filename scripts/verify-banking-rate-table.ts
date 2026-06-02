@@ -60,21 +60,21 @@ assert(
   'Salmon 12-month headline rate should not be used as the display rate at PHP 50,000',
 );
 
-assertClose(tonikMetrics.amountFitGrossRate, 0.07, 'Tonik 9-month amount-fit gross rate');
-assertClose(tonikMetrics.grossInterest, 3_500, 'Tonik 9-month gross interest', 0.01);
+assertClose(tonikMetrics.amountFitGrossRate, 0.06, 'Tonik 9-month amount-fit gross rate');
+assertClose(tonikMetrics.grossInterest, 3_000, 'Tonik 9-month gross interest', 0.01);
 assert(
-  tonikMetrics.amountFitGrossRate > salmonMetrics.amountFitGrossRate,
-  'Tonik 9-month should visibly show a higher amount-fit rate than Salmon 12-month at PHP 50,000',
+  salmonMetrics.amountFitGrossRate > tonikMetrics.amountFitGrossRate,
+  'Salmon 12-month should visibly show a higher amount-fit rate than Tonik 9-month at PHP 50,000',
 );
 assert(
-  tonikMetrics.grossInterest > salmonMetrics.grossInterest,
-  'Tonik 9-month should rank above Salmon 12-month by gross interest at PHP 50,000 / 12 months',
+  salmonMetrics.grossInterest > tonikMetrics.grossInterest,
+  'Salmon 12-month should rank above Tonik 9-month by gross interest at PHP 50,000 / 12 months',
 );
 
 const ranked = [salmon12, tonik9].sort(compareBankingRateTableProducts(amount, months));
 assert(
-  ranked[0]?.id === tonik9.id,
-  `Expected Tonik 9-month to sort above Salmon 12-month, received ${ranked.map((p) => p.id).join(', ')}`,
+  ranked[0]?.id === salmon12.id,
+  `Expected Salmon 12-month to sort above Tonik 9-month, received ${ranked.map((p) => p.id).join(', ')}`,
 );
 
 console.log(
