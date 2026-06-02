@@ -378,7 +378,7 @@ const cleanedRawWaiver = deriveCostRows(
 eq(
   'raw NAFFL fee waiver copy is made plain',
   cleanedRawWaiver?.value,
-  'First-year waiver only; no automatic lifetime annual-fee waiver',
+  'First-year waiver only; no automatic lifetime fee waiver',
 );
 
 const noRewardsCost = deriveCostRows(

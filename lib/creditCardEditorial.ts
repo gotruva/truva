@@ -39,13 +39,23 @@ export interface CardEditorial {
 export const BANK_PROMO_TC_URL: Record<string, string> = {
   'HSBC Philippines': 'https://www.hsbc.com.ph/credit-cards/promotions/',
   'Bank of the Philippine Islands': 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos',
+  'Bank of the Philippine Islands (BPI)': 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos',
   'BDO Unibank, Inc.': 'https://www.deals.bdo.com.ph',
   'China Banking Corporation (Chinabank)': 'https://www.chinabank.ph/credit-cards',
   'Asia United Bank': 'https://www.aub.com.ph/creditcards/no-annual-fee',
+  'East West Banking Corporation': 'https://www.eastwestbanker.com/promos',
   'Equicom Savings Bank': 'https://www.equicomsavings.com/product-and-services/card-products/',
 };
 
+const BPI_BACK_TO_BACK_PERKS_URL = 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos/back-to-back-perks';
+
 export const CARD_PROMO_TC_URL: Record<string, string> = {
+  'petron_bpi_card': BPI_BACK_TO_BACK_PERKS_URL,
+  'bpi_rewards_card': BPI_BACK_TO_BACK_PERKS_URL,
+  'bpi_gold_rewards_card': BPI_BACK_TO_BACK_PERKS_URL,
+  'bpi_amore_cashback_card': BPI_BACK_TO_BACK_PERKS_URL,
+  'bpi_platinum_rewards_mastercard': BPI_BACK_TO_BACK_PERKS_URL,
+  'bpi_signature_card': BPI_BACK_TO_BACK_PERKS_URL,
   'bdo_visa_classic': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/classic',
   'bdo_visa_gold': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/gold',
   'bdo_visa_platinum': 'https://www.bdo.com.ph/personal/cards/credit-cards/visa/platinum',
@@ -778,119 +788,103 @@ const editorial: Record<string, CardEditorial> = {
 
 export default editorial;
 
-function getWelcomePromoFor(key: string, bank: string, cardName: string): string {
-  const normalizedKey = key.toLowerCase();
-  const normalizedBank = bank.toLowerCase();
+function getWelcomePromoFor(key: string): string | undefined {
+  const normalizedKey = key.toLowerCase().replace(/\s+/g, '_');
 
-  // ─── HSBC ─────────────────────────────────────────────────────────────────
-  // QA verified May 2026: HSBC current offer is tiered Universal eGC (not cashback),
-  // requiring ₱40k–₱145k spend. Previous ₱5k/₱20k cashback figures were from an older campaign.
-  if (normalizedKey === 'hsbc live credit card' || normalizedKey.includes('hsbc_live')) {
-    return 'New cardholders can earn a welcome gift of Universal eGCs when you meet a minimum spend within 60 days of card approval. Check the current offer tiers on the HSBC promotions page.';
-  }
-  if (normalizedKey === 'hsbc red platinum mastercard' || normalizedKey.includes('hsbc_red')) {
-    return 'New cardholders may qualify for a welcome gift when you spend a minimum amount within your first 60 days. Check the HSBC promotions page for the current offer and required spend threshold.';
-  }
+  const bpiBackToBackPerks: Record<string, string> = {
+    petron_bpi_card:
+      'BPI lists a Php 6,000 eGC welcome gift after Php 30,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+    bpi_rewards_card:
+      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+    bpi_gold_rewards_card:
+      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+    bpi_amore_cashback_card:
+      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+    bpi_platinum_rewards_mastercard:
+      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+    bpi_signature_card:
+      'BPI lists a Php 18,000 eGC welcome gift after Php 90,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+  };
 
-  // ─── BPI ──────────────────────────────────────────────────────────────────
-  // QA verified May 2026: BPI welcome offer (Mar–Jun 2026) is eGC-based, not points/cashback.
-  // Signature: ₱18,000 eGC / ₱90,000 spend. Amore Platinum being rebranded Jun 24, 2026.
-  // Specific amounts are time-limited — use conservative language.
-  if (normalizedKey === 'bpi signature card' || normalizedKey.includes('bpi_signature')) {
-    return 'New cardholders may earn an eGC welcome gift when you meet the minimum spend requirement within 60 days. Visit the BPI promotions page for the current offer amount and qualifying spend.';
-  }
-  // BPI Amore Platinum (being rebranded to Robinsons Cashback Card Jun 24 2026)
-  if (normalizedKey === 'bpi amore platinum cashback card') {
-    return 'New cardholders may earn an eGC welcome gift upon reaching the minimum spend within 60 days of approval. Visit the BPI promotions page to confirm the current offer.';
-  }
-  // BPI Amore Cashback
-  if (normalizedKey === 'bpi amore cashback card') {
-    return 'New cardholders may earn an eGC welcome gift upon reaching the minimum spend within 60 days of approval. Check the BPI promotions page for the active offer.';
-  }
-  // BPI Platinum Rewards
-  if (normalizedKey.includes('bpi_platinum') || normalizedKey.includes('bpi platinum')) {
-    return 'New cardholders may earn a rewards points welcome gift when you meet the minimum spend in your first 60 days. Visit the BPI promotions page for current qualifying spend amounts.';
-  }
-  // BPI Petron — verifiable product feature (fuel voucher on activation)
-  if (normalizedKey.includes('petron')) {
-    return 'Get a fuel voucher welcome gift upon card approval and activation. Verify the current voucher value on the BPI promotions page.';
-  }
-  // BPI Robinsons
-  if (normalizedKey.includes('robinsons')) {
-    return 'New cardholders may earn a cashback welcome gift when you reach the minimum spend at Robinsons stores. Check the BPI promotions page for current offer details.';
-  }
-  // BPI General
-  if (normalizedBank.includes('philippine islands') || normalizedKey.startsWith('bpi')) {
-    return 'New cardholders may qualify for a welcome gift when you meet the minimum spend within your first 60 days. Visit the BPI promotions page for the current offer.';
-  }
-
-  // ─── BDO ──────────────────────────────────────────────────────────────────
-  // QA verified May 2026: BDO.com.ph timed out for crawlers; offers are time-limited.
-  // BDO Explorer miles and fee waivers are historically plausible but unconfirmed as active.
-  if (normalizedKey === 'bdo_american_express_cashback_credit_card') {
-    return 'New cardholders may receive a welcome benefit of waived annual fees. Verify the current offer on the BDO deals page.';
-  }
-  if (normalizedKey === 'bdo_american_express_explorer_credit_card') {
-    return 'New cardholders may earn a miles welcome bonus when you meet the minimum spend within 60 days. Check the BDO deals page for the current miles amount and qualifying spend.';
-  }
-  if (normalizedKey === 'bdo_american_express_platinum_credit_card') {
-    return 'New cardholders may receive complimentary airport lounge access passes and a waived yearly fee as a welcome benefit. Confirm current offers on the BDO deals page.';
-  }
-  // BDO Visa Signature / World Elite
-  if (normalizedKey.includes('visa_signature') || normalizedKey.includes('world_elite')) {
-    return 'New cardholders may receive complimentary lounge access and a rewards points welcome bonus. Check the BDO deals page for current welcome offer details.';
-  }
-  // BDO JCB
-  if (normalizedKey.includes('jcb')) {
-    return 'New JCB cardholders may receive complimentary lounge access in Japan and Hawaii as a welcome benefit. Verify the current offer on the BDO deals page.';
-  }
-  // BDO General
-  if (normalizedBank.includes('bdo') || normalizedKey.startsWith('bdo')) {
-    const isFirstYearFree = normalizedKey.includes('classic') || 
-                            normalizedKey.includes('gold') || 
-                            normalizedKey.includes('standard') || 
-                            normalizedKey.includes('lucky_cat') ||
-                            normalizedKey.includes('signature') ||
-                            normalizedKey.includes('diners');
-    if (isFirstYearFree) {
-      return 'Free membership fee for the first year for both principal and supplementary cardholders.';
-    }
-    if (normalizedKey.includes('platinum')) {
-      return 'Free membership fee for the first year, with subsequent years waived automatically if you spend at least ₱600,000 annually.';
-    }
-    return 'New cardholders may receive a welcome benefit such as waived yearly fees. Check the BDO deals page for the latest offer available on this card.';
-  }
-
-  // ─── Chinabank ────────────────────────────────────────────────────────────
-  // Freedom NAFFL is a verified permanent product feature — always safe.
-  if (normalizedKey === 'chinabank_freedom_mastercard') {
-    return 'No yearly fee forever (NAFFL) is a permanent standard feature of this card — you will never pay an annual membership fee.';
-  }
-  // Destinations: QA corrected — welcome gift is Accor Plus Membership (NOT 5,000 air miles).
-  if (normalizedKey.includes('destinations')) {
-    return 'New cardholders may receive a complimentary travel membership as a welcome gift upon meeting the minimum spend. Visit the Chinabank credit cards page for current offer details.';
-  }
-  // Chinabank General
-  if (normalizedBank.includes('china') || normalizedKey.startsWith('chinabank')) {
-    return 'New cardholders may receive rewards points or vouchers as a welcome gift upon meeting a minimum spend. Verify the current offer on the Chinabank credit cards page.';
-  }
-
-  // ─── AUB ──────────────────────────────────────────────────────────────────
-  // NAFFL is a verified permanent product feature across all AUB cards — always safe.
-  if (normalizedBank.includes('asia united') || normalizedKey.startsWith('aub')) {
-    return 'No yearly fee for life is a permanent standard feature of all AUB credit cards — not a time-limited promotion.';
-  }
-
-  // ─── Equicom ──────────────────────────────────────────────────────────────
-  // QA verified May 2026: No public welcome fee waiver promo found on equicomsavings.com.
-  // Previous claim was unverifiable. Removed — using safe generic fallback.
-  if (normalizedBank.includes('equicom') || normalizedKey.startsWith('equicom')) {
-    return 'Check the Equicom Savings Bank website for any active introductory welcome offers available upon card application.';
-  }
-
-  return 'Check the bank\'s promotions page for any active introductory welcome offers available to new cardholders.';
+  return bpiBackToBackPerks[normalizedKey];
 }
 
+function cleanEditorialLine(line: string): string {
+  return line
+    .replace(/\bIts unique benefit is /g, '')
+    .replace(/\bunique benefit\b/gi, 'main upside')
+    .replace(/\bcomplete peace of mind\b/gi, 'added protection')
+    .replace(/\btotal peace of mind\b/gi, 'a lower ongoing cost')
+    .replace(/\bfree flights\b/gi, 'flight redemptions')
+    .replace(/\bmassive cashback\b/gi, 'higher cashback')
+    .replace(/\bstretch your family budget further\b/gi, 'reduce some everyday costs')
+    .replace(/\bdream vacations\b/gi, 'future trips')
+    .replace(/\btrue value\b/gi, 'lower cost')
+    .replace(/\bglobal adventures\b/gi, 'overseas trips')
+    .replace(/\bexcellent miles rewards\b/gi, 'a stronger miles earn rate')
+    .replace(/\bexceptionally low\b/gi, 'low')
+    .replace(/\bextremely low\b/gi, 'low')
+    .replace(/\btiny\b/gi, 'low')
+    .replace(/\bhighly competitive\b/gi, 'competitive')
+    .replace(/\bmassive worldwide merchant network\b/gi, 'wide merchant network')
+    .replace(/\bNo annual fee for life \(NAFFL\)\b/gi, 'No yearly fee for life')
+    .replace(/\bNAFFL\b/gi, 'no yearly fee for life')
+    .replace(/\bAnnual fee\b/g, 'Yearly fee')
+    .replace(/\bannual fee\b/g, 'yearly fee');
+}
+
+function cleanEditorialCopy(copy: CardEditorial): CardEditorial {
+  return {
+    ...copy,
+    why: cleanEditorialLine(copy.why),
+    targetUser: copy.targetUser ? cleanEditorialLine(copy.targetUser) : undefined,
+    valueAdd: copy.valueAdd ? cleanEditorialLine(copy.valueAdd) : undefined,
+    welcomePromo: copy.welcomePromo ? cleanEditorialLine(copy.welcomePromo) : undefined,
+    pros: copy.pros.map(cleanEditorialLine),
+    cons: copy.cons.map(cleanEditorialLine),
+  };
+}
+
+function rewardKind(card: CreditCard): 'cashback' | 'miles' | 'points' | null {
+  const raw = card.rewards_type?.toLowerCase() ?? '';
+  if (raw.includes('cashback')) return 'cashback';
+  if (raw.includes('mile')) return 'miles';
+  if (raw.includes('point') || raw.includes('reward')) return 'points';
+  return null;
+}
+
+function rewardCopy(card: CreditCard): string {
+  switch (rewardKind(card)) {
+    case 'cashback':
+      return 'Earns cashback on eligible purchases.';
+    case 'miles':
+      return 'Earns miles on eligible purchases.';
+    case 'points':
+      return 'Earns rewards points on eligible purchases.';
+    default:
+      return 'Keeps the value simple, with fees and payment habits doing most of the work.';
+  }
+}
+
+function fallbackWhy(card: CreditCard, goalLabel: string, topCatLabel: string): string {
+  const bankName = card.bank.replace(/\s*\([^)]*\)\s*/g, '').trim();
+  const kind = rewardKind(card);
+
+  if (card.naffl === true || card.annual_fee_recurring === 0) {
+    return `This is mainly a low-maintenance card from ${bankName}, useful if you want something you can keep long term without watching for yearly-fee waiver rules.`;
+  }
+  if (kind === 'cashback') {
+    return `This is a practical cashback card to compare if you spend often on ${topCatLabel}, but the yearly fee still needs to make sense for your budget.`;
+  }
+  if (kind === 'miles') {
+    return `This is a travel-leaning card to compare if you can use the miles and benefits often enough to offset the yearly fee.`;
+  }
+  if (kind === 'points') {
+    return `This is a points card to compare if you already like ${bankName}'s rewards setup and want ordinary purchases to earn something back.`;
+  }
+
+  return `This is a basic credit-card option from ${bankName}, worth checking mainly for fees, eligibility, and how easy it is to maintain.`;
+}
 /**
  * Returns per-card editorial copy, or a generic data-driven fallback.
  * Never returns fabricated content — fallback is grounded in real DB fields.
@@ -904,10 +898,10 @@ export function getEditorialFor(
   const key = card.normalized_card_key;
   if (editorial[key]) {
     const base = editorial[key];
-    return {
+    return cleanEditorialCopy({
       ...base,
-      welcomePromo: base.welcomePromo || getWelcomePromoFor(key, card.bank, card.card_name),
-    };
+      welcomePromo: base.welcomePromo ?? getWelcomePromoFor(key),
+    });
   }
 
   // Fallback: build a minimal-but-honest generic entry
@@ -919,13 +913,13 @@ export function getEditorialFor(
         'first-card': 'getting your first card',
         'low-fee': 'keeping fees low',
       }[answers.goal]
-    : 'getting value from your spending';
+    : 'a card that fits everyday spending';
 
   const catMap = deriveCategoryMatch(card);
   const topCat = (Object.entries(catMap) as [SpendingCategory, number][])
     .sort((a, b) => b[1] - a[1])[0][0];
   const topCatLabel = {
-    groceries: 'grocery',
+    groceries: 'groceries',
     dining: 'dining',
     online: 'online shopping',
     fuel: 'fuel',
@@ -936,16 +930,14 @@ export function getEditorialFor(
   let yearlyFeePro: string | null = null;
   let yearlyFeeCon: string | null = null;
   if (card.naffl === true || card.annual_fee_recurring === 0) {
-    yearlyFeePro = 'No annual fee for life (NAFFL) — zero cost to keep this card.';
+    yearlyFeePro = 'No yearly fee for life, so the ongoing card cost is Php 0.';
   } else if (card.annual_fee_recurring !== null && card.annual_fee_recurring !== undefined && card.annual_fee_recurring > 0) {
     yearlyFeeCon = `Has a yearly fee of ₱${card.annual_fee_recurring.toLocaleString('en-PH')} — check if the rewards match this cost.`;
   } else if ((card.naffl === null || card.naffl === undefined) && (card.annual_fee_recurring === null || card.annual_fee_recurring === undefined)) {
     yearlyFeeCon = 'Yearly fee details are not confirmed — check the bank\'s terms before applying.';
   }
 
-  const rewardsPro = card.rewards_type
-    ? `Earns ${card.rewards_type} on your purchases.`
-    : 'A simple starter card designed to help you build credit and manage payments safely.';
+  const rewardsPro = rewardCopy(card);
 
   let incomePro: string | null = null;
   let incomeCon: string | null = null;
@@ -964,7 +956,7 @@ export function getEditorialFor(
     ? `Charges a foreign card fee of ${card.foreign_transaction_fee_pct}% when you spend overseas or shop online in foreign currencies.`
     : 'Foreign card fee is not confirmed — check overseas transaction terms before traveling.';
 
-  const networkPro = `Accepted wherever ${card.card_network || 'major networks'} is used`;
+  const networkPro = `Can be used anywhere ${card.card_network || 'major card networks'} is accepted.`;
 
   const pros = [
     yearlyFeePro,
@@ -979,11 +971,11 @@ export function getEditorialFor(
     foreignFeeCon,
   ].filter(Boolean) as string[];
 
-  return {
-    why: `This card fits your goal of ${goalLabel} and gives you the most value when spending on ${topCatLabel}.`,
-    welcomePromo: getWelcomePromoFor(key, card.bank, card.card_name),
+  return cleanEditorialCopy({
+    why: fallbackWhy(card, goalLabel, topCatLabel),
+    welcomePromo: getWelcomePromoFor(key),
     pros,
     cons,
-  };
+  });
 }
 

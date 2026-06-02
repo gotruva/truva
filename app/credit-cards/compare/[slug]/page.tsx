@@ -6,6 +6,7 @@ import { CheckCircle2, ChevronLeft, ExternalLink, Minus } from 'lucide-react';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
 import { getPromoTCUrlFor } from '@/lib/creditCardEditorial';
+import { formatFeeWaiverCondition } from '@/lib/creditCardFinder/detail';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import type { CreditCard } from '@/types';
 
@@ -158,19 +159,23 @@ export default async function CreditCardComparePage(
               <CompareRow
                 label="Welcome promo"
                 values={editorials.map((e, idx) => {
-                  const promoText = e.welcomePromo ?? 'Verify active bank promotions upon application';
+                  const promoText = e.welcomePromo ?? 'No current welcome offer tracked by Truva.';
                   return (
                     <span key={cards[idx].id}>
                       {promoText}
-                      {' '}
-                      <a
-                        href={getPromoTCUrlFor(cards[idx].bank)}
-                        target="_blank"
-                        rel="nofollow noopener noreferrer"
-                        className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
-                      >
-                        Terms &amp; Conditions
-                      </a>
+                      {e.welcomePromo && (
+                        <>
+                          {' '}
+                          <a
+                            href={getPromoTCUrlFor(cards[idx].bank, cards[idx].normalized_card_key)}
+                            target="_blank"
+                            rel="nofollow noopener noreferrer"
+                            className="inline text-[11px] font-semibold text-brand-textSecondary underline decoration-brand-textSecondary/40 underline-offset-2 transition-colors hover:text-brand-primary hover:decoration-brand-primary/40 dark:text-gray-400 dark:hover:text-blue-400"
+                          >
+                            Terms &amp; Conditions
+                          </a>
+                        </>
+                      )}
                     </span>
                   );
                 })}
@@ -194,8 +199,8 @@ export default async function CreditCardComparePage(
               <CompareRow label="Yearly fee" values={cards.map((c) => formatAnnualFee(c))} n={cards.length} cards={cards} />
               <CompareRow
                 label="Waiver condition"
-                values={cards.map((c) => c.annual_fee_waiver_condition ?? 'No public data')}
-                muted={cards.map((c) => c.annual_fee_waiver_condition === null)}
+                values={cards.map((c) => formatFeeWaiverCondition(c) ?? 'No public data')}
+                muted={cards.map((c) => !formatFeeWaiverCondition(c))}
                 n={cards.length}
                 cards={cards}
               />
@@ -311,7 +316,7 @@ function parseCompareSlug(slug: string): string[] | null {
 
 function computeFitLabel(card: CreditCard): { label: string; color: string } | null {
   if (card.naffl || card.annual_fee_recurring === 0)
-    return { label: 'No Annual Fee', color: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-500/20' };
+    return { label: 'No yearly fee', color: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-500/20' };
   if (card.min_income_monthly !== null && card.min_income_monthly <= 21000)
     return { label: 'First Card', color: 'bg-brand-primaryLight text-brand-primary border-brand-primary/15 dark:bg-brand-primary/10 dark:border-brand-primary/25' };
   if (card.rewards_type === 'miles' || card.card_tier === 'signature' || card.card_tier === 'infinite')
@@ -324,7 +329,7 @@ function computeFitLabel(card: CreditCard): { label: string; color: string } | n
 }
 
 function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
-  function findWinnerIdx(vals: (number | null)[]): number | null {
+  function findHighlightIdx(vals: (number | null)[]): number | null {
     const valid = vals
       .map((v, i) => (v !== null ? ([v, i] as [number, number]) : null))
       .filter(Boolean) as [number, number][];
@@ -340,13 +345,13 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
   );
   const fxFees = cards.map((c) => c.foreign_transaction_fee_pct);
 
-  type DiffRow = { label: string; values: string[]; winnerIdx: number | null; note?: string };
+  type DiffRow = { label: string; values: string[]; highlightIdx: number | null; note?: string };
 
   const rows: DiffRow[] = [
-    { label: 'Annual fee', values: cards.map((c) => formatAnnualFee(c)), winnerIdx: findWinnerIdx(annualFees), note: 'Lower is better' },
-    { label: 'Min. income / mo', values: cards.map((c) => formatIncome(c)), winnerIdx: findWinnerIdx(incomes), note: 'Lower = more accessible' },
-    { label: 'Rewards', values: cards.map((c) => `${formatRewardType(c.rewards_type)} — ${formatRewardFormula(c.rewards_formula)}`), winnerIdx: null },
-    { label: 'Foreign fee', values: cards.map((c) => formatPercent(c.foreign_transaction_fee_pct)), winnerIdx: findWinnerIdx(fxFees), note: 'Lower is better for overseas use' },
+    { label: 'Annual fee', values: cards.map((c) => formatAnnualFee(c)), highlightIdx: findHighlightIdx(annualFees), note: 'Lower is better' },
+    { label: 'Min. income / mo', values: cards.map((c) => formatIncome(c)), highlightIdx: findHighlightIdx(incomes), note: 'Lower = more accessible' },
+    { label: 'Rewards', values: cards.map((c) => `${formatRewardType(c.rewards_type)} — ${formatRewardFormula(c.rewards_formula)}`), highlightIdx: null },
+    { label: 'Foreign fee', values: cards.map((c) => formatPercent(c.foreign_transaction_fee_pct)), highlightIdx: findHighlightIdx(fxFees), note: 'Lower is better for overseas use' },
   ];
 
   const gridClass =
@@ -395,7 +400,7 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
               )}
             </div>
             {row.values.map((val, idx) => (
-              <KeyDiffCell key={idx} value={val} winner={row.winnerIdx === idx} last={idx === row.values.length - 1} />
+              <KeyDiffCell key={idx} value={val} highlighted={row.highlightIdx === idx} last={idx === row.values.length - 1} />
             ))}
           </div>
         ))}
@@ -404,18 +409,18 @@ function KeyDiffsBlock({ cards }: { cards: CreditCard[] }) {
   );
 }
 
-function KeyDiffCell({ value, winner, last = false }: { value: string; winner: boolean; last?: boolean }) {
+function KeyDiffCell({ value, highlighted, last = false }: { value: string; highlighted: boolean; last?: boolean }) {
   return (
     <div
       className={`flex min-h-[3.5rem] flex-col justify-center border-b border-brand-border px-4 py-3 dark:border-white/10 md:border-b-0 ${last ? '' : 'border-r'}`}
     >
       <div className="flex items-start gap-1.5">
-        {winner ? (
+        {highlighted ? (
           <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
         ) : (
           <Minus className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-border dark:text-white/20" />
         )}
-        <p className={winner ? 'text-[12px] md:text-sm font-semibold text-emerald-700 dark:text-emerald-300' : 'text-[12px] md:text-sm font-medium text-brand-textSecondary dark:text-gray-400'}>
+        <p className={highlighted ? 'text-[12px] md:text-sm font-semibold text-emerald-700 dark:text-emerald-300' : 'text-[12px] md:text-sm font-medium text-brand-textSecondary dark:text-gray-400'}>
           {value}
         </p>
       </div>
@@ -502,7 +507,7 @@ function formatCardMeta(card: CreditCard) {
 }
 
 function formatAnnualFee(card: CreditCard): string {
-  if (card.naffl) return 'PHP 0 NAFFL';
+  if (card.naffl) return 'PHP 0 yearly fee';
   if (card.annual_fee_recurring === 0) return 'PHP 0';
 
   const isUsd = card.normalized_card_key === 'chinabank_destinations_world_dollar_mastercard';
@@ -530,9 +535,15 @@ function formatRewardFormula(formula: CreditCard['rewards_formula']) {
 }
 
 function formatCheckSummary(card: CreditCard) {
+  const hasNoYearlyFee =
+    card.naffl === true ||
+    card.annual_fee_recurring === 0;
+  const needsFeeWaiverCheck =
+    !hasNoYearlyFee &&
+    (card.annual_fee_waiver_condition === null || card.annual_fee_waiver_threshold === null);
   const items = [
     card.min_income_monthly === null && card.min_income_annual === null ? 'income requirement' : null,
-    card.annual_fee_waiver_condition === null || card.annual_fee_waiver_threshold === null ? 'fee-waiver details' : null,
+    needsFeeWaiverCheck ? 'fee-waiver details' : null,
     card.foreign_transaction_fee_pct === null ? 'foreign fee' : null,
     !card.rewards_formula ? 'reward rules' : null,
   ].filter(Boolean);

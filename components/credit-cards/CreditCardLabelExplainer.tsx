@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 const FEES = [
   {
     title: 'Annual Fee',
-    desc: 'The cost of owning the card for a year. Many cards offer NAFFL (No Annual Fee For Life) as a promo or for certain tiers.',
-    tip: 'Look for NAFFL or cards with easy waiver conditions (e.g., spend ₱100k/year).',
+    desc: 'The cost of owning the card for a year. Some cards have no yearly fee for life, while others waive the fee only after you meet a spend rule.',
+    tip: 'Look for cards with no yearly fee for life or easy waiver conditions, such as a yearly spend target.',
   },
   {
     title: 'Interest Rate',

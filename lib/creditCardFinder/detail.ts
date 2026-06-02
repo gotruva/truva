@@ -449,13 +449,13 @@ function costRow(label: string, value: string | null): CostRow {
 
 function cleanPublishedFeeWaiverCopy(raw: string): string {
   return raw
-    .replace(/\bno unconditional NAFFL\b/gi, 'no automatic lifetime annual-fee waiver')
-    .replace(/\bNAFFL\b/gi, 'lifetime annual-fee waiver')
+    .replace(/\bno unconditional NAFFL\b/gi, 'no automatic lifetime fee waiver')
+    .replace(/\bNAFFL\b/gi, 'no yearly fee for life')
     .replace(/\bunconditionally waived\b/gi, 'waived without spend requirement')
     .replace(/\bPHP\b/g, 'Php');
 }
 
-function formatFeeWaiverCondition(card: CreditCard): string | null {
+export function formatFeeWaiverCondition(card: CreditCard): string | null {
   const raw = card.annual_fee_waiver_condition?.trim();
   const normalized = normalizedWaiverCondition(card);
 

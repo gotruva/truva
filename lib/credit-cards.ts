@@ -46,6 +46,13 @@ function canonicalCardKey(card: Pick<CreditCard, 'card_name'>): string {
     .trim();
 }
 
+function cleanPublicFeeWaiverCondition(raw: string | null): string | null {
+  if (!raw) return raw;
+  return raw
+    .replace(/\bno unconditional NAFFL\b/gi, 'no automatic lifetime fee waiver')
+    .replace(/\bNAFFL\b/gi, 'no yearly fee for life');
+}
+
 function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
   const normType = normalizeRewardType(row.rewards_type);
   const canonKey = canonicalCardKey(row);
@@ -59,6 +66,8 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
     : (fallback?.rewards_formula ?? dbFormula);
 
   const finalType = normType || (fallback?.rewards_type ?? null);
+  const finalWaiverCondition =
+    row.annual_fee_waiver_condition ?? (fallback?.annual_fee_waiver_condition ?? null);
 
   return {
     ...row,
@@ -67,8 +76,7 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
     rewards_formula: finalFormula,
     annual_fee_recurring: row.annual_fee_recurring ?? (fallback?.annual_fee_recurring ?? null),
     naffl: row.naffl ?? (fallback?.naffl ?? null),
-    annual_fee_waiver_condition:
-      row.annual_fee_waiver_condition ?? (fallback?.annual_fee_waiver_condition ?? null),
+    annual_fee_waiver_condition: cleanPublicFeeWaiverCondition(finalWaiverCondition),
     annual_fee_waiver_threshold:
       row.annual_fee_waiver_threshold ?? (fallback?.annual_fee_waiver_threshold ?? null),
     min_income_monthly: row.min_income_monthly ?? (fallback?.min_income_monthly ?? null),

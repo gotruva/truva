@@ -20,6 +20,7 @@ import { MiniCreditCardVisual } from '@/components/credit-cards/CreditCardVisual
 import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import { getEditorialFor, getPromoTCUrlFor } from '@/lib/creditCardEditorial';
+import { formatFeeWaiverCondition } from '@/lib/creditCardFinder/detail';
 import {
   trackBrowseCardExpanded,
   trackBrowseFilterChanged,
@@ -1195,6 +1196,8 @@ function ExpandedDetails({
   facts: SharedCardProps['facts'];
   sourceHost: string | null;
 }) {
+  const feeWaiver = formatFeeWaiverCondition(card);
+
   return (
     <div className="space-y-4 border-t border-brand-border bg-white px-4 py-4 dark:border-white/10 dark:bg-white/[0.02]">
       {/* Truva Advisor Verdict Bento Box */}
@@ -1285,7 +1288,7 @@ function ExpandedDetails({
       )}
 
       <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-        <DetailTile label="Fee waiver" value={card.annual_fee_waiver_condition ?? NULL_NO_DATA} />
+        <DetailTile label="Fee waiver" value={feeWaiver ?? NULL_NO_DATA} missing={!feeWaiver} />
         <DetailTile label="Cash advance" value={formatCashAdvanceFee(card)} />
         <DetailTile
           label="Late payment"

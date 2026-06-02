@@ -164,7 +164,7 @@ function MiniFact({ label, value }: { label: string; value: string }) {
 }
 
 function formatAnnualFee(card: CreditCardType): string {
-  if (card.naffl) return 'PHP 0 NAFFL';
+  if (card.naffl) return 'PHP 0 yearly fee';
   if (card.annual_fee_recurring === 0) return 'PHP 0';
 
   const isUsd = card.normalized_card_key === 'chinabank_destinations_world_dollar_mastercard';

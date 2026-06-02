@@ -11,7 +11,7 @@ const GUIDES = [
   },
   {
     title: 'How to get your first credit card',
-    desc: 'Practical tips on getting approved by Philippine banks, even with no credit history.',
+    desc: 'Practical tips on eligibility, documents, and what banks usually check for first-time applicants.',
     href: '/guides/getting-approved-ph',
   },
   {
