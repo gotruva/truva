@@ -126,10 +126,10 @@ const editorial: Record<string, CardEditorial> = {
     pros: [
       'Gives you 1% cashback on all local purchases to lower your daily costs.',
       'Earns 2% cashback on all overseas spending to save you money when traveling.',
-      'Yearly fee is waived for the first year of using the card.',
+      'Monthly fee is waived any month you spend at least ₱15,000, and the first year is free.',
     ],
     cons: [
-      'Has a yearly fee of ₱3,000 starting from the second year.',
+      'Charges a ₱250 monthly fee (₱3,000 a year) for any month you spend less than ₱15,000.',
       'Requires a minimum monthly income of ₱33,000 to apply.',
       'Charges a foreign card fee of 2.50% which eats into your overseas cashback.',
     ],
