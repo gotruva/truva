@@ -764,36 +764,50 @@ export function SavingsLandingClient({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // ── URL state ──────────────────────────────────────────────────────────────
+  // ── URL & Local React State ────────────────────────────────────────────────
   const rawAmount = searchParams.get('amount');
   const rawHorizon = searchParams.get('horizon');
   const rawLiquidity = searchParams.get('liquidity');
 
-  const amount = clampAmount(rawAmount ? Number(rawAmount) : DEFAULT_AMOUNT);
-  const horizon: Horizon = isHorizon(rawHorizon) ? rawHorizon : 'year';
-  const liquidity: Liquidity = isLiquidity(rawLiquidity) ? rawLiquidity : 'flexible';
+  const [amount, setAmountState] = useState<number>(() =>
+    clampAmount(rawAmount ? Number(rawAmount) : DEFAULT_AMOUNT)
+  );
+  const [horizon, setHorizonState] = useState<Horizon>(() =>
+    isHorizon(rawHorizon) ? rawHorizon : 'year'
+  );
+  const [liquidity, setLiquidityState] = useState<Liquidity>(() =>
+    isLiquidity(rawLiquidity) ? rawLiquidity : 'flexible'
+  );
   const months = HORIZON_MONTHS[horizon];
 
+  // Silently synchronizes local changes to URL search parameters without triggering RSC fetching
   function setParam(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     params.set(key, value);
-    router.replace(`?${params.toString()}`, { scroll: false });
+    window.history.replaceState(null, '', `?${params.toString()}`);
   }
 
   function setAmount(n: number) {
-    setParam('amount', String(clampAmount(n)));
+    const clamped = clampAmount(n);
+    setAmountState(clamped);
+    setParam('amount', String(clamped));
   }
 
   function setHorizon(h: Horizon) {
-    trackFormStarted();
-    const params = new URLSearchParams(searchParams.toString());
+    trackFormStarted(h, liquidity, amount);
+    setHorizonState(h);
+    const params = new URLSearchParams(window.location.search);
     params.set('horizon', h);
-    if (h === 'anytime') params.set('liquidity', 'flexible');
-    router.replace(`?${params.toString()}`, { scroll: false });
+    if (h === 'anytime') {
+      params.set('liquidity', 'flexible');
+      setLiquidityState('flexible');
+    }
+    window.history.replaceState(null, '', `?${params.toString()}`);
   }
 
   function setLiquidity(l: Liquidity) {
-    trackFormStarted();
+    trackFormStarted(horizon, l, amount);
+    setLiquidityState(l);
     setParam('liquidity', l);
   }
 
@@ -815,10 +829,10 @@ export function SavingsLandingClient({
   const recommendationSectionRef = useRef<HTMLElement>(null);
   const allProductsSectionRef = useRef<HTMLElement>(null);
 
-  function trackFormStarted() {
+  function trackFormStarted(h = horizon, l = liquidity, a = amount) {
     if (formStartedFiredRef.current) return;
     formStartedFiredRef.current = true;
-    trackBankingEvent({ event_type: 'form_started', horizon, liquidity, amount });
+    trackBankingEvent({ event_type: 'form_started', horizon: h, liquidity: l, amount: a });
   }
 
   // ── localStorage ───────────────────────────────────────────────────────────
@@ -887,7 +901,22 @@ export function SavingsLandingClient({
     }
   }, [openProductId, visibleProductIds]);
 
-  // On mount: sync amountInput with URL and check localStorage
+  // Sync React state from URL when browser navigation (Back/Forward popstate) changes search parameters
+  useEffect(() => {
+    if (rawAmount !== null) {
+      const parsedAmount = clampAmount(Number(rawAmount));
+      setAmountState(parsedAmount);
+      setAmountInput(String(parsedAmount));
+    }
+    if (rawHorizon !== null && isHorizon(rawHorizon)) {
+      setHorizonState(rawHorizon);
+    }
+    if (rawLiquidity !== null && isLiquidity(rawLiquidity)) {
+      setLiquidityState(rawLiquidity);
+    }
+  }, [rawAmount, rawHorizon, rawLiquidity]);
+
+  // On mount: sync amountInput with URL and check localStorage without RSC roundtrip
   useEffect(() => {
     setAmountInput(String(amount));
 
@@ -907,21 +936,29 @@ export function SavingsLandingClient({
           setIsPillSaved(true);
           // Only pre-fill if URL has no params set (fresh visit)
           if (!rawAmount && !rawHorizon && !rawLiquidity) {
+            const loadedAmount = parsed.amount ? clampAmount(parsed.amount) : DEFAULT_AMOUNT;
+            const loadedHorizon = parsed.horizon && isHorizon(parsed.horizon) ? parsed.horizon : 'year';
+            const loadedLiquidity = parsed.liquidity && isLiquidity(parsed.liquidity) ? parsed.liquidity : 'flexible';
+
+            // Instantly update states to bypass RSC fetch
+            setAmountState(loadedAmount);
+            setAmountInput(String(loadedAmount));
+            setHorizonState(loadedHorizon);
+            setLiquidityState(loadedLiquidity);
+
+            // Sync URL parameters silently
             const params = new URLSearchParams();
-            if (parsed.amount) params.set('amount', String(parsed.amount));
-            if (parsed.horizon && isHorizon(parsed.horizon)) params.set('horizon', parsed.horizon);
-            if (parsed.liquidity && isLiquidity(parsed.liquidity)) params.set('liquidity', parsed.liquidity);
-            if (params.toString()) {
-              router.replace(`?${params.toString()}`, { scroll: false });
-              setShowSavedBanner(true);
-            }
+            params.set('amount', String(loadedAmount));
+            params.set('horizon', loadedHorizon);
+            params.set('liquidity', loadedLiquidity);
+            window.history.replaceState(null, '', `?${params.toString()}`);
+            setShowSavedBanner(true);
           }
         }
       }
     } catch {
       // ignore storage errors
     }
-    // intentionally run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -932,15 +969,15 @@ export function SavingsLandingClient({
     trackBankingEvent({ event_type: 'landing_view' });
   }, []);
 
-  // form_completed — once all 3 URL params are explicitly set
+  // form_completed — once all 3 params are explicitly set in the URL (checked reactively on state updates)
   useEffect(() => {
     if (formCompletedFiredRef.current) return;
-    if (rawAmount !== null && rawHorizon !== null && rawLiquidity !== null) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('amount') && params.has('horizon') && params.has('liquidity')) {
       formCompletedFiredRef.current = true;
       trackBankingEvent({ event_type: 'form_completed', horizon, liquidity, amount });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawAmount, rawHorizon, rawLiquidity]);
+  }, [amount, horizon, liquidity]);
 
   // recommendation_view — IntersectionObserver on the recommendation section
   useEffect(() => {
@@ -1003,11 +1040,19 @@ export function SavingsLandingClient({
     localStorage.removeItem(SAVED_KEY);
     setIsPillSaved(false);
     setShowSavedBanner(false);
+
+    // Instantly reset local states
+    setAmountState(DEFAULT_AMOUNT);
+    setAmountInput(String(DEFAULT_AMOUNT));
+    setHorizonState('year');
+    setLiquidityState('flexible');
+
+    // Sync URL silently without triggering RSC load
     const params = new URLSearchParams();
     params.set('amount', String(DEFAULT_AMOUNT));
     params.set('horizon', 'year');
     params.set('liquidity', 'flexible');
-    router.replace(`?${params.toString()}`, { scroll: false });
+    window.history.replaceState(null, '', `?${params.toString()}`);
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -1050,10 +1095,15 @@ export function SavingsLandingClient({
                 step={1000}
                 value={amountInput}
                 onChange={(e) => setAmountInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.currentTarget.blur();
+                  }
+                }}
                 onBlur={() => {
-                  trackFormStarted();
                   const n = Number(amountInput);
                   const clamped = clampAmount(Number.isFinite(n) ? n : DEFAULT_AMOUNT);
+                  trackFormStarted(horizon, liquidity, clamped);
                   setAmountInput(String(clamped));
                   setAmount(clamped);
                 }}
