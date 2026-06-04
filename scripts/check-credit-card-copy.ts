@@ -12,6 +12,10 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOTS = [
+  'app/credit-cards/page.tsx',
+  'app/credit-cards/all/page.tsx',
+  'app/credit-cards/results/page.tsx',
+  'app/credit-cards/no-annual-fee/page.tsx',
   'app/credit-cards/compare',
   'app/credit-cards/reviews',
   'components/credit-cards',
@@ -33,6 +37,11 @@ function isTechnicalLine(line: string): boolean {
   return (
     t.includes('.replace(') ||
     t.startsWith('href:') ||
+    t.includes('ApprovalVerdict') ||
+    t.includes('.verdict') ||
+    t.includes("['verdict']") ||
+    t.includes('bestFor') ||
+    t.includes('BestForBadge') ||
     t.includes("id: 'naffl'") ||
     t.includes('card.naffl') ||
     t.includes('true_naffl') ||
@@ -50,6 +59,13 @@ const FORBIDDEN: Array<{ label: string; re: RegExp; uiOnly?: boolean }> = [
   { label: 'recommended', re: /\brecommended\b/i },
   { label: 'top pick', re: /\btop pick\b/i },
   { label: 'winner', re: /\bwinner\b/i },
+  { label: 'advisor framing', re: /\badvisor\b/i, uiOnly: true },
+  { label: 'verdict framing', re: /\bverdict\b/i, uiOnly: true },
+  { label: 'ultimate claim', re: /\bultimate\b/i },
+  { label: 'unmatched claim', re: /\bunmatched\b/i },
+  { label: 'massive claim', re: /\bmassive\b/i },
+  { label: 'impressive claim', re: /\bimpressive\b/i },
+  { label: 'peace of mind claim', re: /\bpeace of mind\b/i },
   { label: 'perfect card', re: /\bperfect card\b/i },
   { label: 'best card ever', re: /\bbest card ever\b/i },
   { label: 'NAFFL acronym', re: /\bNAFFL\b/ },

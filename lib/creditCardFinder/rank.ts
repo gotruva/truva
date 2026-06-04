@@ -206,6 +206,7 @@ export function deriveAnnualFeeLabel(card: CreditCard): string {
 }
 
 export function deriveMinIncomeLabel(card: CreditCard): string {
+  if (card.normalized_card_key === 'bdo_secured_credit_card') return 'Deposit holdout from ₱10,000';
   const monthly = cardMinIncomeMonthly(card);
   if (monthly === null) return 'Check bank terms';
   return `₱${monthly.toLocaleString('en-PH')}/mo`;

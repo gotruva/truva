@@ -146,6 +146,7 @@ const SORT_VALUES = new Set<SortMode>(SORT_OPTIONS.map((option) => option.value)
 const REWARD_FILTER_VALUES = new Set(['all', 'cashback', 'points', 'miles']);
 const FEE_FILTER_VALUES = new Set(['all', 'free', 'free-or-low', 'paid', 'not-disclosed']);
 const FX_FILTER_VALUES = new Set(['all', 'disclosed', 'low', 'not-disclosed']);
+const DEPOSIT_HOLDOUT_CARD_KEYS = new Set(['bdo_secured_credit_card']);
 
 const URL_PARAMS = {
   query: 'q',
@@ -164,8 +165,11 @@ const CATALOG_URL_PARAMS = Object.values(URL_PARAMS);
 function hasAnnualFee(card: CreditCardType): boolean {
   return card.naffl === true || card.annual_fee_recurring !== null;
 }
+function isDepositHoldoutCard(card: CreditCardType): boolean {
+  return DEPOSIT_HOLDOUT_CARD_KEYS.has(card.normalized_card_key);
+}
 function hasIncome(card: CreditCardType): boolean {
-  return card.min_income_monthly !== null || card.min_income_annual !== null;
+  return isDepositHoldoutCard(card) || card.min_income_monthly !== null || card.min_income_annual !== null;
 }
 function hasRewards(card: CreditCardType): boolean {
   return card.rewards_type !== null;
@@ -849,6 +853,9 @@ function feeFact(card: CreditCardType): Fact {
 }
 
 function incomeFact(card: CreditCardType): Fact {
+  if (isDepositHoldoutCard(card)) {
+    return { value: 'Deposit holdout', sub: 'from PHP 10,000', missing: false };
+  }
   if (card.min_income_monthly !== null)
     return { value: formatPhpAmount(card.min_income_monthly), sub: '/ month', missing: false };
   if (card.min_income_annual !== null)
@@ -1200,13 +1207,13 @@ function ExpandedDetails({
 
   return (
     <div className="space-y-4 border-t border-brand-border bg-white px-4 py-4 dark:border-white/10 dark:bg-white/[0.02]">
-      {/* Truva Advisor Verdict Bento Box */}
+      {/* Plain-English notes */}
       {(editorial.why || editorial.targetUser || editorial.valueAdd || editorial.welcomePromo) && (
         <div className="rounded-2xl border border-brand-primary/20 bg-brand-primary-light/40 p-4 dark:border-blue-500/20 dark:bg-blue-950/10">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-2 w-2 rounded-full bg-brand-primary animate-pulse" />
             <p className="font-header text-xs font-bold uppercase tracking-[0.16em] text-brand-primary dark:text-blue-400">
-              TRUVA ADVISOR VERDICT
+              TRUVA NOTES
             </p>
           </div>
           <div className="mt-3 space-y-2">
@@ -1219,7 +1226,7 @@ function ExpandedDetails({
               <div className="text-[12.5px] leading-relaxed text-brand-textSecondary space-y-1 dark:text-gray-300">
                 {editorial.welcomePromo && (
                   <p>
-                    <span className="font-semibold text-brand-textPrimary dark:text-white">Welcome offer: </span>
+                    <span className="font-semibold text-brand-textPrimary dark:text-white">Bank-listed promo: </span>
                     <span className="text-brand-primary dark:text-blue-400 font-medium">{editorial.welcomePromo}</span>
                     {' '}
                     <a

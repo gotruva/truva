@@ -12,6 +12,8 @@ import type { CreditCard } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
+const DEPOSIT_HOLDOUT_CARD_KEYS = new Set(['bdo_secured_credit_card']);
+
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> | { slug: string } },
 ): Promise<Metadata> {
@@ -149,17 +151,17 @@ export default async function CreditCardComparePage(
 
           <div className="w-full overflow-x-auto scrollbar-thin border border-brand-border rounded-[1.4rem] dark:border-white/10 shadow-sm bg-white dark:bg-[#111827]">
             <section className="min-w-max md:min-w-0">
-              <CompareSectionTitle title="Truva Advisor Verdict" n={cards.length} cards={cards} />
+              <CompareSectionTitle title="Truva Notes" n={cards.length} cards={cards} />
               <CompareRow
-                label="Truva's Take"
+                label="Plain-English note"
                 values={editorials.map((e) => e.why)}
                 n={cards.length}
                 cards={cards}
               />
               <CompareRow
-                label="Welcome promo"
+                label="Bank-listed promo"
                 values={editorials.map((e, idx) => {
-                  const promoText = e.welcomePromo ?? 'No current welcome offer tracked by Truva.';
+                  const promoText = e.welcomePromo ?? 'No current welcome promo tracked by Truva.';
                   return (
                     <span key={cards[idx].id}>
                       {promoText}
@@ -218,7 +220,12 @@ export default async function CreditCardComparePage(
               <CompareRow
                 label="Minimum income"
                 values={cards.map((c) => formatIncome(c))}
-                muted={cards.map((c) => c.min_income_monthly === null && c.min_income_annual === null)}
+                muted={cards.map(
+                  (c) =>
+                    !isDepositHoldoutCard(c) &&
+                    c.min_income_monthly === null &&
+                    c.min_income_annual === null,
+                )}
                 n={cards.length}
                 cards={cards}
               />
@@ -241,7 +248,7 @@ export default async function CreditCardComparePage(
               <CompareRow
                 label="Cash advance fee"
                 values={cards.map((c) => formatCashAdvance(c))}
-                muted={cards.map((c) => c.cash_advance_fee_amount === null && c.cash_advance_fee_pct === null)}
+                muted={cards.map((c) => !formatCashAdvanceFeeLabel(c))}
                 n={cards.length}
                 cards={cards}
               />
@@ -542,7 +549,9 @@ function formatCheckSummary(card: CreditCard) {
     !hasNoYearlyFee &&
     (card.annual_fee_waiver_condition === null || card.annual_fee_waiver_threshold === null);
   const items = [
-    card.min_income_monthly === null && card.min_income_annual === null ? 'income requirement' : null,
+    !isDepositHoldoutCard(card) && card.min_income_monthly === null && card.min_income_annual === null
+      ? 'income requirement'
+      : null,
     needsFeeWaiverCheck ? 'fee-waiver details' : null,
     card.foreign_transaction_fee_pct === null ? 'foreign fee' : null,
     !card.rewards_formula ? 'reward rules' : null,
@@ -570,7 +579,12 @@ function formatCashAdvance(card: CreditCard) {
   return formatCashAdvanceFeeLabel(card) ?? 'Not disclosed';
 }
 
+function isDepositHoldoutCard(card: CreditCard) {
+  return DEPOSIT_HOLDOUT_CARD_KEYS.has(card.normalized_card_key);
+}
+
 function formatIncome(card: CreditCard) {
+  if (isDepositHoldoutCard(card)) return 'Deposit holdout from PHP 10,000';
   if (card.min_income_monthly !== null) return `${formatPhpAmount(card.min_income_monthly)} / mo`;
   if (card.min_income_annual !== null) return `${formatPhpAmount(card.min_income_annual)} / yr`;
   return 'No public data';

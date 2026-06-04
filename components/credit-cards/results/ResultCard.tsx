@@ -116,7 +116,7 @@ export function ResultCard({
             <Gift className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <div>
               <dt className="text-[10px] font-semibold uppercase tracking-[0.05em] text-emerald-700 dark:text-emerald-300">
-                Welcome offer
+                Bank-listed promo
               </dt>
               <dd className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-textPrimary dark:text-white">
                 {welcomePromo}

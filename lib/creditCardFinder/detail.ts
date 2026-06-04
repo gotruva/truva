@@ -92,6 +92,10 @@ function formatPeso(amount: number): string {
   return `₱${amount.toLocaleString('en-PH')}`;
 }
 
+function isDepositHoldoutCard(card: CreditCard): boolean {
+  return card.normalized_card_key === 'bdo_secured_credit_card';
+}
+
 /**
  * Compares the income range a user shared in the finder against the card's
  * listed minimum income. Honest by design: when anything is unknown, it
@@ -103,6 +107,16 @@ export function assessApproval(
 ): ApprovalAssessment {
   const cardMin = cardMinIncomeMonthly(card);
   const bracketMin = incomeBracketMin(income);
+
+  if (isDepositHoldoutCard(card)) {
+    return {
+      verdict: 'cannot-confirm',
+      headline: 'Deposit holdout.',
+      detail:
+        'BDO lists a deposit holdout instead of a salary requirement for this card. The bank still makes the final approval decision.',
+      cardMinIncomeMonthly: cardMin,
+    };
+  }
 
   if (bracketMin === null || cardMin === null || card.income_filter_ready === false) {
     return {
@@ -165,7 +179,11 @@ function hasKnownFeeWaiverDetails(card: CreditCard): boolean {
 export function deriveMissingDataNote(card: CreditCard): string | null {
   const missing: string[] = [];
 
-  if (card.min_income_monthly === null && card.min_income_annual === null) {
+  if (
+    !isDepositHoldoutCard(card) &&
+    card.min_income_monthly === null &&
+    card.min_income_annual === null
+  ) {
     missing.push('the income requirement');
   }
   if (!hasKnownFeeWaiverDetails(card)) {
@@ -452,6 +470,13 @@ export function normalizeCashAdvanceFeePct(value: number | null): number | null 
   return value > 100 ? value / 100 : value;
 }
 
+function hasNoCashAdvanceFeature(card: Pick<CreditCard, 'bank' | 'normalized_card_key'>): boolean {
+  return (
+    card.normalized_card_key === 'aub_gold_mastercard' ||
+    card.bank.toLowerCase().includes('asia united bank')
+  );
+}
+
 export function formatCashAdvanceFeeLabel(
   card: Pick<
     CreditCard,
@@ -459,6 +484,10 @@ export function formatCashAdvanceFeeLabel(
   >,
 ): string | null {
   const pct = normalizeCashAdvanceFeePct(card.cash_advance_fee_pct);
+  if (hasNoCashAdvanceFeature(card) && pct === null && card.cash_advance_fee_amount === null) {
+    return 'Not available';
+  }
+
   const pieces = [
     pct !== null ? `${pct.toFixed(2)}%` : null,
     card.cash_advance_fee_amount !== null ? formatPeso(card.cash_advance_fee_amount) : null,

@@ -104,7 +104,7 @@ const editorial: Record<string, CardEditorial> = {
   // ── Asia United Bank ──────────────────────────────────────────────────────
 
   'aub_gold_mastercard': {
-    why: 'This card helps you build your credit profile with zero yearly fees so you can enjoy total peace of mind.',
+    why: 'This card helps you build your credit profile with zero yearly fees and a lower ongoing cost.',
     targetUser: 'Suited for everyday buyers who want a straightforward card without worrying about recurring ownership costs.',
     valueAdd: 'Its unique benefit is having no yearly fee for life without any minimum spending rules.',
     pros: [
@@ -154,7 +154,7 @@ const editorial: Record<string, CardEditorial> = {
   },
 
   'bdo_american_express_platinum_credit_card': {
-    why: 'This card provides premium travel comforts and purchase protection to give you complete peace of mind when traveling abroad.',
+    why: 'This card provides premium travel comforts and purchase protection when traveling abroad.',
     targetUser: 'Suited for high earners who value airport lounge access and strong travel insurance coverage.',
     valueAdd: 'Its unique benefit is providing automatic yearly fee waivers if you spend at least ₱600,000 a year.',
     pros: [
@@ -382,7 +382,7 @@ const editorial: Record<string, CardEditorial> = {
   'bdo_visa_classic': {
     why: 'This card provides a safe and universally recognized payment option for your everyday household shopping.',
     targetUser: 'Suited for budget-conscious families who want a basic card for emergencies and routine bills.',
-    valueAdd: 'Its unique benefit is a low 1.50% foreign card fee on Visa\'s massive worldwide merchant network.',
+    valueAdd: 'Its unique benefit is a low 1.50% foreign card fee on Visa\'s wide merchant network.',
     pros: [
       'Low foreign card fee of 1.50% keeps overseas transactions and online subscriptions cheaper.',
       'Accepted globally at almost all stores and cash machines that take Visa.',
@@ -428,7 +428,7 @@ const editorial: Record<string, CardEditorial> = {
   },
 
   'bdo_visa_signature': {
-    why: 'This card provides elite travel privileges and unmatched foreign exchange savings for the seasoned global traveler.',
+    why: 'This card provides premium travel privileges and a low 0.70% foreign card fee for frequent overseas spending.',
     targetUser: 'Suited for high-spending individuals who want the lowest currency fees and premium concierge services.',
     valueAdd: 'Its unique benefit is a tiny 0.70% foreign card fee, which is one of the lowest in the country.',
     pros: [
@@ -444,8 +444,8 @@ const editorial: Record<string, CardEditorial> = {
   },
 
   'bdo_world_elite_mastercard': {
-    why: 'This card offers the ultimate level of personalized luxury travel services and global recognition.',
-    targetUser: 'Suited for ultra-high-net-worth individuals who want bespoke concierge assistance and top-tier travel perks.',
+    why: 'This card offers premium travel services and worldwide card acceptance for very high-spend travelers.',
+    targetUser: 'Suited for high-income cardholders who want dedicated concierge assistance and premium travel perks.',
     valueAdd: 'Its unique benefit is giving you access to dedicated 24/7 personal travel and lifestyle concierges.',
     pros: [
       'Includes unlimited free access to premium airport lounges worldwide for you and a guest.',
@@ -455,7 +455,7 @@ const editorial: Record<string, CardEditorial> = {
     cons: [
       'Has an extremely high yearly fee of ₱7,000 that you must pay annually.',
       'Only available by special invitation from BDO.',
-      'Best suited only for those who spend very heavily on premium luxury travel.',
+      'Mainly suited for people who spend very heavily on premium travel.',
     ],
   },
 
@@ -656,11 +656,11 @@ const editorial: Record<string, CardEditorial> = {
   },
 
   'chinabank_cash_rewards_mastercard': {
-    why: 'This card boosts your household budget by providing massive cashback on groceries and family meals.',
+    why: 'This card can reduce some household costs by providing higher cashback on groceries and family meals.',
     targetUser: 'Suited for families who spend heavily on dining out and weekly grocery trips.',
-    valueAdd: 'Its unique benefit is a massive 6% cashback on all dining and grocery spending.',
+    valueAdd: 'Its unique benefit is a 6% cashback rate on dining and grocery spending.',
     pros: [
-      'Earns an impressive 6% cashback on groceries and dining purchases.',
+      'Earns 6% cashback on groceries and dining purchases.',
       'Requires a low minimum monthly income of only ₱20,833 to apply.',
       'Cash rewards are credited directly to your card statement to reduce your bill.',
     ],
@@ -738,7 +738,7 @@ const editorial: Record<string, CardEditorial> = {
   // ── Equicom ──────────────────────────────────────────────────────────────
 
   'equicom_gold_credit_card': {
-    why: 'This card offers reliable daily payment convenience and local healthcare privileges for your family\'s peace of mind.',
+    why: 'This card offers reliable daily payment convenience and local healthcare privileges for families who value medical discounts.',
     targetUser: 'Suited for middle-income families who value hospital and medical benefits alongside standard credit.',
     valueAdd: 'Its unique benefit is offering exclusive medical discounts and emergency health services.',
     pros: [
@@ -793,7 +793,6 @@ const editorial: Record<string, CardEditorial> = {
     why: 'This is a lower-fee RCBC rewards card for people who want points to follow their real spending habits.',
     targetUser: 'Suited for first-card or everyday cardholders who can name two regular spend categories, such as dining, clothing, travel, or transportation.',
     valueAdd: 'You can earn 2x rewards points in two preferred categories while keeping the regular yearly fee at Php 1,500.',
-    welcomePromo: 'RCBC lists a temporary no-yearly-fee-for-life promo for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 30,000 within 60 days from card receipt.',
     pros: [
       'Earns 2x rewards points in two preferred categories chosen from dining, clothing, travel, or transportation.',
       'Regular yearly fee is Php 1,500, lower than many premium rewards cards.',
@@ -809,25 +808,52 @@ const editorial: Record<string, CardEditorial> = {
 
 export default editorial;
 
+type TimedPromo = {
+  validThrough: string;
+  text: string;
+};
+
+function promoStillCurrent(validThrough: string): boolean {
+  const validThroughManila = new Date(`${validThrough}T23:59:59+08:00`);
+  return Number.isFinite(validThroughManila.getTime()) && Date.now() <= validThroughManila.getTime();
+}
+
 function getWelcomePromoFor(key: string): string | undefined {
   const normalizedKey = key.toLowerCase().replace(/\s+/g, '_');
 
-  const bpiBackToBackPerks: Record<string, string> = {
-    petron_bpi_card:
-      'BPI lists a Php 6,000 eGC welcome gift after Php 30,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
-    bpi_rewards_card:
-      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
-    bpi_gold_rewards_card:
-      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
-    bpi_amore_cashback_card:
-      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
-    bpi_platinum_rewards_mastercard:
-      'BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
-    bpi_signature_card:
-      'BPI lists a Php 18,000 eGC welcome gift after Php 90,000 spend for eligible new cardholders during the March 10 to June 30, 2026 Back-to-Back Perks promo.',
+  const promos: Record<string, TimedPromo> = {
+    petron_bpi_card: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: BPI lists a Php 6,000 eGC welcome gift after Php 30,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+    },
+    bpi_rewards_card: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+    },
+    bpi_gold_rewards_card: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+    },
+    bpi_amore_cashback_card: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+    },
+    bpi_platinum_rewards_mastercard: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+    },
+    bpi_signature_card: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: BPI lists a Php 18,000 eGC welcome gift after Php 90,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+    },
+    rcbc_flex_visa: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: RCBC lists a temporary no-yearly-fee-for-life promo for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and meet the spend requirement within 60 days from card receipt.',
+    },
   };
 
-  return bpiBackToBackPerks[normalizedKey];
+  const promo = promos[normalizedKey];
+  return promo && promoStillCurrent(promo.validThrough) ? promo.text : undefined;
 }
 
 function cleanEditorialLine(line: string): string {
@@ -836,8 +862,20 @@ function cleanEditorialLine(line: string): string {
     .replace(/\bunique benefit\b/gi, 'main upside')
     .replace(/\bcomplete peace of mind\b/gi, 'added protection')
     .replace(/\btotal peace of mind\b/gi, 'a lower ongoing cost')
+    .replace(/\bpeace of mind\b/gi, 'added protection')
     .replace(/\bfree flights\b/gi, 'flight redemptions')
     .replace(/\bmassive cashback\b/gi, 'higher cashback')
+    .replace(/\bmassive\b/gi, 'higher')
+    .replace(/\bimpressive\b/gi, 'published')
+    .replace(/\bunmatched\b/gi, 'low')
+    .replace(/\bthe ultimate level of\b/gi, 'a set of')
+    .replace(/\bultimate level of\b/gi, 'a set of')
+    .replace(/\belite travel privileges\b/gi, 'premium travel privileges')
+    .replace(/\belite\b/gi, 'premium')
+    .replace(/\bglobal recognition\b/gi, 'worldwide card acceptance')
+    .replace(/\bbespoke\b/gi, 'dedicated')
+    .replace(/\bultra-high-net-worth individuals\b/gi, 'high-income cardholders')
+    .replace(/\bBest suited only for\b/gi, 'Mainly suited for')
     .replace(/\bstretch your family budget further\b/gi, 'reduce some everyday costs')
     .replace(/\bdream vacations\b/gi, 'future trips')
     .replace(/\btrue value\b/gi, 'lower cost')

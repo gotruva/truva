@@ -8,6 +8,7 @@
 import type { CreditCard } from '@/types';
 import type { FinderAnswers } from '@/lib/creditCardFinder/questions';
 import { EMPTY_ANSWERS } from '@/lib/creditCardFinder/questions';
+import { deriveMinIncomeLabel } from '@/lib/creditCardFinder/rank';
 import {
   assessApproval,
   deriveCardSummary,
@@ -165,6 +166,14 @@ eq(
   'cannot-confirm',
 );
 
+const securedApproval = assessApproval(card({ normalized_card_key: 'bdo_secured_credit_card' }), '100+');
+eq('deposit-holdout secured card uses neutral approval status', securedApproval.headline, 'Deposit holdout.');
+eq(
+  'deposit-holdout secured card income label is not unknown',
+  deriveMinIncomeLabel(card({ normalized_card_key: 'bdo_secured_credit_card' })),
+  'Deposit holdout from ₱10,000',
+);
+
 for (const verdictCard of [
   assessApproval(card({ min_income_monthly: 30_000 }), '100+'),
   assessApproval(card({ min_income_monthly: 50_000 }), '15-30'),
@@ -191,6 +200,10 @@ const completeCard = card({
 });
 eq('complete card has no missing-data note', deriveMissingDataNote(completeCard), null);
 check('sparse card returns a missing-data note', deriveMissingDataNote(card()) !== null);
+check(
+  'deposit-holdout secured card does not flag salary income as missing',
+  !deriveMissingDataNote(card({ normalized_card_key: 'bdo_secured_credit_card' }))?.includes('income requirement'),
+);
 
 const firstYearWaiverCard = card({
   min_income_monthly: 30_000,
@@ -363,6 +376,14 @@ eq(
   basisPointCashAdvance?.value,
   '3.00% finance charge + ₱200 flat fee',
 );
+
+const unavailableCashAdvance = deriveCostRows(
+  card({
+    bank: 'Asia United Bank',
+    normalized_card_key: 'aub_gold_mastercard',
+  }),
+).more.find((r) => r.label === 'Cash advance fee');
+eq('AUB unavailable cash advance feature renders as not available', unavailableCashAdvance?.value, 'Not available');
 
 const firstYearWaiver = deriveCostRows(firstYearWaiverCard).more.find((r) => r.label === 'Fee waiver');
 eq(
