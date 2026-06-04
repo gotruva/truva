@@ -20,7 +20,7 @@ import { MiniCreditCardVisual } from '@/components/credit-cards/CreditCardVisual
 import { ApplyOnBankSiteButton } from '@/components/credit-cards/shared/ApplyOnBankSiteButton';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import { getEditorialFor, getPromoTCUrlFor } from '@/lib/creditCardEditorial';
-import { formatFeeWaiverCondition } from '@/lib/creditCardFinder/detail';
+import { formatCashAdvanceFeeLabel, formatFeeWaiverCondition } from '@/lib/creditCardFinder/detail';
 import {
   trackBrowseCardExpanded,
   trackBrowseFilterChanged,
@@ -1816,11 +1816,7 @@ function formatDate(value: string | null): string {
 }
 
 function formatCashAdvanceFee(card: CreditCardType): string {
-  const pieces = [
-    card.cash_advance_fee_pct !== null ? `${card.cash_advance_fee_pct.toFixed(2)}%` : null,
-    card.cash_advance_fee_amount !== null ? formatPhpAmount(card.cash_advance_fee_amount) : null,
-  ].filter(Boolean);
-  return pieces.length > 0 ? pieces.join(' or ') : NULL_NOT_DISCLOSED;
+  return formatCashAdvanceFeeLabel(card) ?? NULL_NOT_DISCLOSED;
 }
 
 function extractHost(url: string | null | undefined): string | null {

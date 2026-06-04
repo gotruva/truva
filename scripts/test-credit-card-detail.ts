@@ -344,6 +344,25 @@ const knownMoreCosts = deriveCostRows(
   }),
 );
 check('costs table keeps known long-tail fees', knownMoreCosts.more.length >= 2);
+eq(
+  'generic cash advance percentage and amount keeps or wording',
+  knownMoreCosts.more.find((r) => r.label === 'Cash advance fee')?.value,
+  '5.00% or ₱200',
+);
+
+const basisPointCashAdvance = deriveCostRows(
+  card({
+    bank: 'Bank of the Philippine Islands',
+    normalized_card_key: 'petron_bpi_card',
+    cash_advance_fee_pct: 300,
+    cash_advance_fee_amount: 200,
+  }),
+).more.find((r) => r.label === 'Cash advance fee');
+eq(
+  'cash advance basis-point values render as BPI finance charge plus flat fee',
+  basisPointCashAdvance?.value,
+  '3.00% finance charge + ₱200 flat fee',
+);
 
 const firstYearWaiver = deriveCostRows(firstYearWaiverCard).more.find((r) => r.label === 'Fee waiver');
 eq(

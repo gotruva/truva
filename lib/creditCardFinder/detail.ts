@@ -447,6 +447,33 @@ function costRow(label: string, value: string | null): CostRow {
     : { label, value: PENDING_VALUE, pending: true };
 }
 
+export function normalizeCashAdvanceFeePct(value: number | null): number | null {
+  if (value === null || !Number.isFinite(value)) return null;
+  return value > 100 ? value / 100 : value;
+}
+
+export function formatCashAdvanceFeeLabel(
+  card: Pick<
+    CreditCard,
+    'bank' | 'normalized_card_key' | 'cash_advance_fee_pct' | 'cash_advance_fee_amount'
+  >,
+): string | null {
+  const pct = normalizeCashAdvanceFeePct(card.cash_advance_fee_pct);
+  const pieces = [
+    pct !== null ? `${pct.toFixed(2)}%` : null,
+    card.cash_advance_fee_amount !== null ? formatPeso(card.cash_advance_fee_amount) : null,
+  ].filter(Boolean);
+
+  const isBpi =
+    card.normalized_card_key.includes('bpi') ||
+    card.bank.toLowerCase().includes('bank of the philippine islands');
+  if (isBpi && pct !== null && card.cash_advance_fee_amount !== null) {
+    return `${pct.toFixed(2)}% finance charge + ${formatPeso(card.cash_advance_fee_amount)} flat fee`;
+  }
+
+  return pieces.length > 0 ? pieces.join(' or ') : null;
+}
+
 function cleanPublishedFeeWaiverCopy(raw: string): string {
   if (/temporary\s+n(?:af){2}l\s+promo/i.test(raw)) {
     return raw
@@ -519,15 +546,8 @@ export function deriveCostRows(card: CreditCard): CostRows {
     ),
   ];
 
-  const cashAdvance = [
-    card.cash_advance_fee_pct !== null ? `${card.cash_advance_fee_pct.toFixed(2)}%` : null,
-    card.cash_advance_fee_amount !== null
-      ? formatPeso(card.cash_advance_fee_amount)
-      : null,
-  ].filter(Boolean);
-
   const more: CostRow[] = [
-    costRow('Cash advance fee', cashAdvance.length ? cashAdvance.join(' or ') : null),
+    costRow('Cash advance fee', formatCashAdvanceFeeLabel(card)),
     costRow(
       'Over-limit fee',
       card.overlimit_fee_amount !== null ? formatPeso(card.overlimit_fee_amount) : null,

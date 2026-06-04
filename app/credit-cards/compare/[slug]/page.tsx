@@ -6,7 +6,7 @@ import { CheckCircle2, ChevronLeft, ExternalLink, Minus } from 'lucide-react';
 import { CreditCardVisual } from '@/components/credit-cards/CreditCardVisual';
 import { getCreditCardBySlug, getEditorialFor } from '@/lib/credit-cards';
 import { getPromoTCUrlFor } from '@/lib/creditCardEditorial';
-import { formatFeeWaiverCondition } from '@/lib/creditCardFinder/detail';
+import { formatCashAdvanceFeeLabel, formatFeeWaiverCondition } from '@/lib/creditCardFinder/detail';
 import { AffiliateDisclosure } from '@/components/credit-cards/shared/AffiliateDisclosure';
 import type { CreditCard } from '@/types';
 
@@ -567,11 +567,7 @@ function formatPhpNullable(value: number | null) {
 }
 
 function formatCashAdvance(card: CreditCard) {
-  const pieces = [
-    card.cash_advance_fee_pct !== null ? `${card.cash_advance_fee_pct.toFixed(2)}%` : null,
-    card.cash_advance_fee_amount !== null ? formatPhpAmount(card.cash_advance_fee_amount) : null,
-  ].filter(Boolean);
-  return pieces.length > 0 ? pieces.join(' or ') : 'Not disclosed';
+  return formatCashAdvanceFeeLabel(card) ?? 'Not disclosed';
 }
 
 function formatIncome(card: CreditCard) {
