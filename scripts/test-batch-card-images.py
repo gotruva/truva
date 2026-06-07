@@ -43,6 +43,16 @@ class BatchCardImageSafetyTests(unittest.TestCase):
                 }
                 self.assertEqual(batch_card_images.resolve_source_url(row), expected_url)
 
+    def test_stage2d_eastwest_hints_are_registered(self):
+        self.assertIn(
+            "gold-mc-emv_2025",
+            batch_card_images.TRUSTED_GENERIC_IMAGE_URL_HINTS["eastwest_gold_mastercard"],
+        )
+        self.assertIn(
+            "visa-platinum-emv_2025",
+            batch_card_images.TRUSTED_GENERIC_IMAGE_URL_HINTS["eastwest_visa_platinum"],
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")

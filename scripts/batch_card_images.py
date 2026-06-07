@@ -63,7 +63,9 @@ BANK_PAGES = {
 
 TRUSTED_GENERIC_IMAGE_URL_HINTS = {
     "eastwest_everyday_titanium_mastercard": ["everyday-mc_2025"],
+    "eastwest_gold_mastercard": ["gold-mc-emv_2025"],
     "eastwest_platinum_mastercard": ["platinum-mc-emv_2025"],
+    "eastwest_visa_platinum": ["visa-platinum-emv_2025"],
     "metrobank_cashback_visa": ["cashback-visa.png"],
     "metrobank_rewards_plus_visa": ["rewards-plus-card"],
     "security_bank_wave_mastercard": ["CCV2-Wave_Contactless_2024.png"],

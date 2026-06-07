@@ -735,6 +735,40 @@ const editorial: Record<string, CardEditorial> = {
     ],
   },
 
+  // -- EastWest --------------------------------------------------------------
+
+  'eastwest_gold_mastercard': {
+    why: 'This is a straightforward rewards card for people who want EastWest points without moving into a premium income tier.',
+    targetUser: 'Suited for cardholders with regular shopping or bill spend who want rewards points and a moderate yearly fee.',
+    valueAdd: 'You earn 1 EastWest Rewards Point for every Php 100 spend, with a first-year fee waiver for new-to-bank cardholders.',
+    pros: [
+      'Earns 1 EastWest Rewards Point for every Php 100 charged to the card.',
+      'First-year yearly fee is waived for new-to-bank cardholders.',
+      'Requires a minimum gross annual income of Php 480,000, lower than EastWest Platinum cards.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 2,500 after the first year.',
+      'Cash advance costs include a Php 200 service fee plus interest from the date you take the advance.',
+      'Foreign card fee is 2.50%, so overseas purchases need extra care.',
+    ],
+  },
+
+  'eastwest_visa_platinum': {
+    why: 'This card is mainly for people who want cashback-style rewards and can comfortably meet a higher income and spending requirement.',
+    targetUser: 'Suited for higher-income cardholders who spend enough each year to make the fee waiver realistic.',
+    valueAdd: 'Its key trade-off is clear: a Php 3,600 yearly fee today, with automatic waiver after Php 1.5 million accumulated spend over the prior 12 months.',
+    pros: [
+      'Uses EastWest Cash Rewards, which is easier to understand than points for many users.',
+      'Yearly fee is automatically waived after Php 1.5 million accumulated spend in the prior 12 months from card anniversary.',
+      'Includes the same published Php 200 cash advance service fee used across many EastWest cards.',
+    ],
+    cons: [
+      'Requires a minimum gross annual income of Php 1,000,000.',
+      'Regular yearly fee is Php 3,600 and is scheduled to become Php 4,000 on August 20, 2026.',
+      'The fee waiver spend threshold is high, so light spenders may still pay the yearly fee.',
+    ],
+  },
+
   // ── Equicom ──────────────────────────────────────────────────────────────
 
   'equicom_gold_credit_card': {

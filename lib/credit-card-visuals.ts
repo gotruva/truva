@@ -298,10 +298,24 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['eastwest gold mastercard', 'eastwest_gold_mastercard'],
+    assetPath: '/cards/clean/eastwest_gold_mastercard.webp',
+    sourceUrl: 'https://www.eastwestbanker.com/cards/creditcards/eastwest-gold-mastercard',
+    checkedAt: '2026-06-07',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['eastwest platinum mastercard', 'eastwest_platinum_mastercard'],
     assetPath: '/cards/clean/eastwest_platinum_mastercard.webp',
     sourceUrl: 'https://www.eastwestbanker.com/cards/creditcards/platinum-mastercard',
     checkedAt: '2026-06-01',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['eastwest visa platinum', 'eastwest_visa_platinum'],
+    assetPath: '/cards/clean/eastwest_visa_platinum.webp',
+    sourceUrl: 'https://www.eastwestbanker.com/cards/creditcards/visa-platinum',
+    checkedAt: '2026-06-07',
     status: 'official-art',
   },
   {
