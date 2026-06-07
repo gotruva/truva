@@ -19,6 +19,7 @@
     "banking:verify": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/verify-banking-rate-table.ts",
     "cc:visuals": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/verify-credit-card-visuals.ts",
     "cc:data-quality": "tsx scripts/verify-credit-card-data-quality.ts",
+    "test:card-images": "py -3 scripts/test-batch-card-images.py",
     "mmf:verify": "tsx scripts/verify-mmf-automation.ts",
     "mmf:backfill": "tsx scripts/backfill-mmf-official-data.ts",
     "banners:json": "node --experimental-strip-types --no-warnings --loader ./scripts/alias-loader.mjs scripts/generate-banner-payload.ts",

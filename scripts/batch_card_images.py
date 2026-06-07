@@ -10,7 +10,8 @@ Also requires valid Supabase credentials in the project's .env.local file.
 
 How it works:
 1. Loads the live truva_credit_cards rows from Supabase via REST API.
-2. Optionally narrows to an explicit curated key list with --keys/--keys-file.
+2. Optionally narrows to an explicit curated key list with
+   --curated-keys/--keys/--keys-file.
 3. Resolves per-card source URLs with normalized keys, so space-form overrides
    match Supabase underscore keys.
 4. Downloads matched images, converts to 960x606 WebP with 2% padding.
@@ -18,7 +19,7 @@ How it works:
 6. Writes a report unless --dry-run is used; curated subsets require
    --report-output so the canonical report cannot be replaced by a partial run.
 
-Usage: python3 scripts/batch_card_images.py --dry-run --keys bpi_edge_card --list-source-urls
+Usage: python3 scripts/batch_card_images.py --dry-run --curated-keys bpi_edge_card --list-source-urls
        (activate the hermes-agent venv first: source ~/.hermes/hermes-agent/venv/bin/activate)
 
 After running, also regenerate the status map:
@@ -1251,6 +1252,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--keys",
+        "--curated-keys",
+        dest="keys",
         action="append",
         help="Comma, space, or newline-delimited normalized_card_key values to process. Repeatable.",
     )
