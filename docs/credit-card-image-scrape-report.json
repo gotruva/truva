@@ -44,6 +44,17 @@
     "notes": "Downloaded from BDO compare page on 2026-05-25. Matched heading: \"American Express® Platinum Credit Card\""
   },
   {
+    "normalized_card_key": "bdo_blue_from_american_express",
+    "bank": "BDO Unibank, Inc.",
+    "card_name": "Blue from American Express",
+    "source_page_url": "https://www.bdo.com.ph/personal/cards/credit-cards/compare-credit-cards",
+    "direct_image_url": "https://www.bdo.com.ph/content/dam/bdounibank/en-ph/cbg-marketing/cards/credit-and-debit/amex/blue-american-express/Card-amex-blue-01162023.png",
+    "local_asset_path": "/cards/clean/bdo_blue_from_american_express.webp",
+    "status": "clean-card",
+    "checked_at": "2026-05-25",
+    "notes": "Downloaded from BDO compare page on 2026-05-25. Matched heading: \"Blue from American Express®\""
+  },
+  {
     "normalized_card_key": "bdo_diamond_unionpay",
     "bank": "BDO Unibank, Inc.",
     "card_name": "BDO Diamond UnionPay Credit Card",
@@ -231,17 +242,6 @@
     "notes": "Luxury BDO World Elite card face cropped and polished from official bank asset."
   },
   {
-    "normalized_card_key": "bdo_blue_from_american_express",
-    "bank": "BDO Unibank, Inc.",
-    "card_name": "Blue from American Express",
-    "source_page_url": "https://www.bdo.com.ph/personal/cards/credit-cards/compare-credit-cards",
-    "direct_image_url": "https://www.bdo.com.ph/content/dam/bdounibank/en-ph/cbg-marketing/cards/credit-and-debit/amex/blue-american-express/Card-amex-blue-01162023.png",
-    "local_asset_path": "/cards/clean/bdo_blue_from_american_express.webp",
-    "status": "clean-card",
-    "checked_at": "2026-05-25",
-    "notes": "Downloaded from BDO compare page on 2026-05-25. Matched heading: \"Blue from American Express®\""
-  },
-  {
     "normalized_card_key": "bpi_amore_cashback_card",
     "bank": "Bank of the Philippine Islands",
     "card_name": "BPI Amore Cashback Card",
@@ -303,17 +303,6 @@
     "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/visa-signature",
     "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/revised_hero_small_bpi_signature_card?qlt=85&wid=600&ts=1697787742150&dpr=off",
     "local_asset_path": "/cards/clean/bpi_signature_card.webp",
-    "status": "clean-card",
-    "checked_at": "2026-05-25",
-    "notes": "Downloaded from issuer source on 2026-05-25."
-  },
-  {
-    "normalized_card_key": "petron_bpi_card",
-    "bank": "Bank of the Philippine Islands",
-    "card_name": "Petron BPI Card",
-    "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/petron-bpi-mastercard",
-    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Petron?qlt=85&wid=600&ts=1697442782623&dpr=off",
-    "local_asset_path": "/cards/clean/petron_bpi_card.webp",
     "status": "clean-card",
     "checked_at": "2026-05-25",
     "notes": "Downloaded from issuer source on 2026-05-25."
@@ -440,15 +429,26 @@
     "notes": "Downloaded correct Gold Credit Card image from Equicom card products page. Shows 'Gold Card Valid Thru 0131' (560x472). Existing Business-Card.png was incorrect."
   },
   {
-    "normalized_card_key": "metrobank_rewards_plus_visa",
-    "bank": "Metrobank Card Corporation",
-    "card_name": "Metrobank Rewards Plus Visa",
-    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/rewards",
-    "direct_image_url": "https://web-assets.metrobank.com.ph/1770229689-rewards-plus-card.png",
-    "local_asset_path": "/cards/clean/metrobank_rewards_plus_visa.webp",
+    "normalized_card_key": "hsbc_live_plus_credit_card",
+    "bank": "The Hongkong and Shanghai Banking Corporation Limited (HSBC Philippines)",
+    "card_name": "HSBC Live+ Credit Card",
+    "source_page_url": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
+    "direct_image_url": "https://www.hsbc.com.ph/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg",
+    "local_asset_path": "/cards/clean/hsbc_live_plus_credit_card.webp",
     "status": "clean-card",
-    "checked_at": "2026-06-01",
-    "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
+    "checked_at": "2026-05-25",
+    "notes": "Downloaded from issuer source on 2026-05-25. Image is a lifestyle banner but is the best available from bank site."
+  },
+  {
+    "normalized_card_key": "m_free_credit_card",
+    "bank": "Metrobank",
+    "card_name": "M Free Credit Card",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/mfree",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1769684136-mfree-mastercard-card.png",
+    "local_asset_path": "/cards/clean/m_free_credit_card.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-07",
+    "notes": "Downloaded from generic issuer source strategy on 2026-06-07."
   },
   {
     "normalized_card_key": "metrobank_cashback_visa",
@@ -460,6 +460,39 @@
     "status": "clean-card",
     "checked_at": "2026-06-01",
     "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
+  },
+  {
+    "normalized_card_key": "metrobank_rewards_plus_visa",
+    "bank": "Metrobank Card Corporation",
+    "card_name": "Metrobank Rewards Plus Visa",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/rewards",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1770229689-rewards-plus-card.png",
+    "local_asset_path": "/cards/clean/metrobank_rewards_plus_visa.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-01",
+    "notes": "Promoted from Stage 2A curated dry-run using a trusted card-specific issuer image URL."
+  },
+  {
+    "normalized_card_key": "metrobank_titanium_mastercard",
+    "bank": "Metrobank Card Corporation",
+    "card_name": "Metrobank Titanium Mastercard",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/titanium",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1769684137-titanium-mastercard-card.png",
+    "local_asset_path": "/cards/clean/metrobank_titanium_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-07",
+    "notes": "Downloaded from generic issuer source strategy on 2026-06-07."
+  },
+  {
+    "normalized_card_key": "petron_bpi_card",
+    "bank": "Bank of the Philippine Islands",
+    "card_name": "Petron BPI Card",
+    "source_page_url": "https://www.bpi.com.ph/personal/cards/credit-cards/petron-bpi-mastercard",
+    "direct_image_url": "https://s7ap1.scene7.com/is/image/bpi/hero_xs_Petron?qlt=85&wid=600&ts=1697442782623&dpr=off",
+    "local_asset_path": "/cards/clean/petron_bpi_card.webp",
+    "status": "clean-card",
+    "checked_at": "2026-05-25",
+    "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
     "normalized_card_key": "rcbc_flex_visa",
@@ -482,16 +515,5 @@
     "status": "clean-card",
     "checked_at": "2026-06-01",
     "notes": "Promoted from Stage 2B curated audit using a trusted card-specific issuer image URL from the Security Bank credit-card listing."
-  },
-  {
-    "normalized_card_key": "hsbc_live_plus_credit_card",
-    "bank": "The Hongkong and Shanghai Banking Corporation Limited (HSBC Philippines)",
-    "card_name": "HSBC Live+ Credit Card",
-    "source_page_url": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
-    "direct_image_url": "https://www.hsbc.com.ph/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg",
-    "local_asset_path": "/cards/clean/hsbc_live_plus_credit_card.webp",
-    "status": "clean-card",
-    "checked_at": "2026-05-25",
-    "notes": "Downloaded from issuer source on 2026-05-25. Image is a lifestyle banner but is the best available from bank site."
   }
 ]

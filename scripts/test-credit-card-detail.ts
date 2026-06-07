@@ -445,6 +445,14 @@ const noRewardsCost = deriveCostRows(
 eq('no-rewards cards use a rewards label', noRewardsCost.label, 'Rewards');
 eq('no-rewards cards do not show pending earn rate', noRewardsCost.pending, false);
 
+const pointsEarnRate = deriveCostRows(
+  card({
+    rewards_type: 'points',
+    rewards_formula: { earn_rate: 1, earn_unit: 'point per PHP 20' },
+  }),
+).primary[0];
+eq('point earn rate is formatted cleanly', pointsEarnRate.value, '1 pt / ₱20');
+
 // ── 10. deriveQuickTakeChips ─────────────────────────────────────────────────
 const finderAnswers = answers({ first: 'yes', spend: 'online', priority: 'points', income: '100+' });
 const likelyApproval = assessApproval(card({ min_income_monthly: 30_000 }), '100+');

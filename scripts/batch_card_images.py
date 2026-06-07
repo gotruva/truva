@@ -67,6 +67,8 @@ TRUSTED_GENERIC_IMAGE_URL_HINTS = {
     "eastwest_platinum_mastercard": ["platinum-mc-emv_2025"],
     "eastwest_visa_platinum": ["visa-platinum-emv_2025"],
     "metrobank_cashback_visa": ["cashback-visa.png"],
+    "metrobank_titanium_mastercard": ["titanium-mastercard-card"],
+    "m_free_credit_card": ["mfree-mastercard-card"],
     "metrobank_rewards_plus_visa": ["rewards-plus-card"],
     "security_bank_wave_mastercard": ["CCV2-Wave_Contactless_2024.png"],
 }
@@ -98,6 +100,8 @@ PER_CARD_URLS = {
     "bpi signature card": "https://www.bpi.com.ph/personal/cards/credit-cards/visa-signature",
     "petron bpi card": "https://www.bpi.com.ph/personal/cards/credit-cards/petron-bpi-mastercard",
     "robinsons cashback card": "https://www.bpi.com.ph/personal/cards/credit-cards/robinsons-cashback-card-visa",
+    "metrobank_titanium_mastercard": "https://www.metrobank.com.ph/personal/cards/credit-cards/titanium",
+    "m_free_credit_card": "https://www.metrobank.com.ph/personal/cards/credit-cards/mfree",
     "security_bank_wave_mastercard": "https://www.securitybank.com/personal/credit-cards/",
 }
 

@@ -13,6 +13,7 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'Bank of the Philippine Islands': '/logos/bpi.svg',
   'Bank of the Philippine Islands (BPI)': '/logos/bpi.svg',
   'East West Banking Corporation': '/logos/eastwest-mark.png',
+  'Metrobank': '/logos/metrobank-mark.png',
   'Metrobank Card Corporation': '/logos/metrobank-mark.png',
   'Metropolitan Bank and Trust Company': '/logos/metrobank-mark.png',
   'RCBC': '/logos/rcbc.svg',

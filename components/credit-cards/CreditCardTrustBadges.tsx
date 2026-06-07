@@ -128,7 +128,7 @@ function buildCatchItems(card: CreditCard): string[] {
     items.push('Fee-waiver details need checking');
   }
 
-  if (!hasRewardValue(card)) {
+  if (hasRewardProgram(card) && !hasRewardValue(card)) {
     items.push('Reward peso value is not ready yet');
   }
 
@@ -147,6 +147,10 @@ function hasRewardValue(card: CreditCard) {
   const formula = card.rewards_formula;
   if (!formula) return false;
   return Boolean(formula.redeem_rate || formula.redeem_unit);
+}
+
+function hasRewardProgram(card: CreditCard) {
+  return card.rewards_type === 'cashback' || card.rewards_type === 'points' || card.rewards_type === 'miles';
 }
 
 export function MissingDataLabel({ children = 'Not yet verified' }: { children?: string }) {

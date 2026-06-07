@@ -876,11 +876,21 @@ function incomeFact(card: CreditCardType): Fact {
 }
 
 function rewardFact(card: CreditCardType): Fact {
+  const noRewards = noRewardsProgramLabel(card);
+  if (noRewards) return { value: noRewards, missing: false };
   const rate = earnRateString(card);
   if (rate) return { value: rate, missing: false };
   const type = rewardTypeLabel(card.rewards_type);
   if (type) return { value: type, missing: false };
   return { value: NULL_REWARDS, missing: true };
+}
+
+function noRewardsProgramLabel(card: CreditCardType): string | null {
+  const unit =
+    typeof card.rewards_formula?.earn_unit === 'string'
+      ? card.rewards_formula.earn_unit.trim()
+      : '';
+  return unit.toLowerCase().includes('no rewards program listed') ? unit : null;
 }
 
 function fxFact(card: CreditCardType): Fact {

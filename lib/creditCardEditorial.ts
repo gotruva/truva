@@ -44,6 +44,10 @@ export const BANK_PROMO_TC_URL: Record<string, string> = {
   'China Banking Corporation (Chinabank)': 'https://www.chinabank.ph/credit-cards',
   'Asia United Bank': 'https://www.aub.com.ph/creditcards/no-annual-fee',
   'East West Banking Corporation': 'https://www.eastwestbanker.com/promos',
+  'Metrobank': 'https://www.metrobank.com.ph/promos',
+  'Metrobank Card Corporation': 'https://www.metrobank.com.ph/promos',
+  'Metropolitan Bank & Trust Company': 'https://www.metrobank.com.ph/promos',
+  'Metropolitan Bank and Trust Company': 'https://www.metrobank.com.ph/promos',
   'Equicom Savings Bank': 'https://www.equicomsavings.com/product-and-services/card-products/',
   'Rizal Commercial Banking Corporation': 'https://rcbccredit.com/promos/welcomegifts',
 };
@@ -85,6 +89,8 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'chinabank_destinations_world_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world',
   'aub_gold_mastercard': 'https://online.aub.ph/creditcards/goldandplatinum',
   'equicom_gold_credit_card': 'https://www.equicomsavings.com/product-and-services/card-products/',
+  'm_free_credit_card': 'https://www.metrobank.com.ph/personal/cards/credit-cards/mfree',
+  'metrobank_titanium_mastercard': 'https://www.metrobank.com.ph/promos/mastercard-welcome-gift-2026',
   'rcbc_flex_visa': 'https://rcbccredit.com/promos/welcomegifts',
 };
 
@@ -766,6 +772,41 @@ const editorial: Record<string, CardEditorial> = {
       'Requires a minimum gross annual income of Php 1,000,000.',
       'Regular yearly fee is Php 3,600 and is scheduled to become Php 4,000 on August 20, 2026.',
       'The fee waiver spend threshold is high, so light spenders may still pay the yearly fee.',
+    ],
+  },
+
+  // -- Metrobank -------------------------------------------------------------
+
+  'm_free_credit_card': {
+    why: 'This is a low-maintenance Metrobank card for people who mainly want payment convenience and no yearly fee, not a rewards program.',
+    targetUser: 'Suited for applicants who already have another principal credit card and meet Metrobank\'s listed Php 867,000 gross annual income requirement.',
+    valueAdd: 'The main value is simple: Metrobank lists the principal and supplementary yearly fees as perpetually waived.',
+    pros: [
+      'No yearly fee for the principal card and supplementary card.',
+      'Includes Metrobank installment and balance-conversion access for larger purchases.',
+      'Keeps the card simple by focusing on ownership cost instead of points tracking.',
+    ],
+    cons: [
+      'No documented points, miles, or cashback program on the official product page.',
+      'Requires an existing principal credit card from another bank for at least 9 months.',
+      'Cash advance still has a Php 200 fee and interest starts from the cash advance date.',
+    ],
+  },
+
+  'metrobank_titanium_mastercard': {
+    why: 'This is a Metrobank rewards card for people who spend often on online shopping, department stores, and dining.',
+    targetUser: 'Suited for cardholders who want points and can meet Metrobank\'s listed Php 180,000 minimum annual income requirement.',
+    valueAdd: 'It earns 1 point for every Php 20 spend, with 2x points on listed online, department-store, and dining transactions.',
+    welcomePromo: 'Metrobank lists a 2026 Mastercard welcome promo for eligible new Titanium Mastercard applicants who apply from March 1 to June 30, 2026 and spend Php 30,000 within 90 days.',
+    pros: [
+      'Earns 1 never-expiring point for every Php 20 spend.',
+      'Earns 2x points on listed online, department-store, and dining transactions.',
+      'Has a current Metrobank-published welcome promo for eligible new Titanium applicants.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 2,500 after the standard first-year waiver.',
+      'The lifetime fee-waiver promo is conditional and time-limited, not automatic for everyone.',
+      'Foreign card fees combine a 1.00% cross-border service fee and 2.50% forex processing fee.',
     ],
   },
 

@@ -53,6 +53,24 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             batch_card_images.TRUSTED_GENERIC_IMAGE_URL_HINTS["eastwest_visa_platinum"],
         )
 
+    def test_stage2e_metrobank_hints_and_urls_are_registered(self):
+        self.assertIn(
+            "mfree-mastercard-card",
+            batch_card_images.TRUSTED_GENERIC_IMAGE_URL_HINTS["m_free_credit_card"],
+        )
+        self.assertIn(
+            "titanium-mastercard-card",
+            batch_card_images.TRUSTED_GENERIC_IMAGE_URL_HINTS["metrobank_titanium_mastercard"],
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["m_free_credit_card"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/mfree",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["metrobank_titanium_mastercard"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/titanium",
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")

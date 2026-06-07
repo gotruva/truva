@@ -347,10 +347,24 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['m free credit card', 'm_free_credit_card'],
+    assetPath: '/cards/clean/m_free_credit_card.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/mfree',
+    checkedAt: '2026-06-07',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['metrobank rewards plus visa', 'metrobank_rewards_plus_visa'],
     assetPath: '/cards/clean/metrobank_rewards_plus_visa.webp',
     sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/rewards',
     checkedAt: '2026-06-01',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['metrobank titanium mastercard', 'metrobank_titanium_mastercard'],
+    assetPath: '/cards/clean/metrobank_titanium_mastercard.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/titanium',
+    checkedAt: '2026-06-07',
     status: 'official-art',
   },
   {

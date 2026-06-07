@@ -560,11 +560,36 @@ export function formatFeeWaiverCondition(card: CreditCard): string | null {
   return cleanPublishedFeeWaiverCopy(raw);
 }
 
-export function deriveCostRows(card: CreditCard): CostRows {
+function formatEarnUnit(card: CreditCard): string {
+  const formula = card.rewards_formula;
   const earnUnit =
-    typeof card.rewards_formula?.earn_unit === 'string'
-      ? (card.rewards_formula.earn_unit as string).trim()
+    typeof formula?.earn_unit === 'string'
+      ? (formula.earn_unit as string).trim()
       : '';
+  const earnRate = typeof formula?.earn_rate === 'number' ? formula.earn_rate : null;
+
+  if (!earnUnit || earnRate === null || earnRate <= 0) return earnUnit;
+
+  const lower = earnUnit.toLowerCase();
+  const perMatch = earnUnit.match(/per\s*(?:php|₱)\s*([\d,]+)/i);
+  const perAmount = perMatch ? Number(perMatch[1].replace(/,/g, '')) : null;
+  const perLabel = perAmount !== null && Number.isFinite(perAmount) ? ` / ${formatPeso(perAmount)}` : '';
+
+  if (lower.includes('point')) {
+    return `${earnRate} ${earnRate === 1 ? 'pt' : 'pts'}${perLabel}`;
+  }
+  if (lower.includes('mile')) {
+    return `${earnRate} ${earnRate === 1 ? 'mile' : 'miles'}${perLabel}`;
+  }
+  if (lower.includes('percent') || lower.includes('%')) {
+    return `${earnRate}%`;
+  }
+
+  return earnUnit;
+}
+
+export function deriveCostRows(card: CreditCard): CostRows {
+  const earnUnit = formatEarnUnit(card);
   const noRewardsListed = earnUnit.toLowerCase().includes('no rewards program listed');
 
   const primary: CostRow[] = [
