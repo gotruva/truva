@@ -174,6 +174,17 @@ eq(
   'Deposit holdout from ₱10,000',
 );
 
+const invitationOnlyApproval = assessApproval(
+  card({ normalized_card_key: 'bdo_world_elite_mastercard' }),
+  '100+',
+);
+eq('invitation-only card uses neutral approval status', invitationOnlyApproval.headline, 'By invitation only.');
+eq(
+  'invitation-only card income label is not unknown',
+  deriveMinIncomeLabel(card({ normalized_card_key: 'bdo_world_elite_mastercard' })),
+  'By invitation only',
+);
+
 for (const verdictCard of [
   assessApproval(card({ min_income_monthly: 30_000 }), '100+'),
   assessApproval(card({ min_income_monthly: 50_000 }), '15-30'),
@@ -203,6 +214,10 @@ check('sparse card returns a missing-data note', deriveMissingDataNote(card()) !
 check(
   'deposit-holdout secured card does not flag salary income as missing',
   !deriveMissingDataNote(card({ normalized_card_key: 'bdo_secured_credit_card' }))?.includes('income requirement'),
+);
+check(
+  'invitation-only card does not flag salary income as missing',
+  !deriveMissingDataNote(card({ normalized_card_key: 'bdo_world_elite_mastercard' }))?.includes('income requirement'),
 );
 
 const firstYearWaiverCard = card({

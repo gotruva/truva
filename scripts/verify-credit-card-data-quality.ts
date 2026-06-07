@@ -54,7 +54,10 @@ function addIf(condition: boolean, list: string[], message: string) {
 }
 
 const CASH_ADVANCE_NOT_AVAILABLE_KEYS = new Set(['aub_gold_mastercard']);
-const INCOME_NOT_APPLICABLE_KEYS = new Set(['bdo_secured_credit_card']);
+const INCOME_NOT_APPLICABLE_KEYS = new Set([
+  'bdo_secured_credit_card',
+  'bdo_world_elite_mastercard',
+]);
 
 async function main() {
   const supabase = createClient(requiredEnv('NEXT_PUBLIC_SUPABASE_URL'), supabaseKey(), {

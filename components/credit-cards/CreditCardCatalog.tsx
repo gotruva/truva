@@ -147,6 +147,7 @@ const REWARD_FILTER_VALUES = new Set(['all', 'cashback', 'points', 'miles']);
 const FEE_FILTER_VALUES = new Set(['all', 'free', 'free-or-low', 'paid', 'not-disclosed']);
 const FX_FILTER_VALUES = new Set(['all', 'disclosed', 'low', 'not-disclosed']);
 const DEPOSIT_HOLDOUT_CARD_KEYS = new Set(['bdo_secured_credit_card']);
+const INVITATION_ONLY_CARD_KEYS = new Set(['bdo_world_elite_mastercard']);
 
 const URL_PARAMS = {
   query: 'q',
@@ -168,8 +169,16 @@ function hasAnnualFee(card: CreditCardType): boolean {
 function isDepositHoldoutCard(card: CreditCardType): boolean {
   return DEPOSIT_HOLDOUT_CARD_KEYS.has(card.normalized_card_key);
 }
+function isInvitationOnlyCard(card: CreditCardType): boolean {
+  return INVITATION_ONLY_CARD_KEYS.has(card.normalized_card_key);
+}
 function hasIncome(card: CreditCardType): boolean {
-  return isDepositHoldoutCard(card) || card.min_income_monthly !== null || card.min_income_annual !== null;
+  return (
+    isDepositHoldoutCard(card) ||
+    isInvitationOnlyCard(card) ||
+    card.min_income_monthly !== null ||
+    card.min_income_annual !== null
+  );
 }
 function hasRewards(card: CreditCardType): boolean {
   return card.rewards_type !== null;
@@ -855,6 +864,9 @@ function feeFact(card: CreditCardType): Fact {
 function incomeFact(card: CreditCardType): Fact {
   if (isDepositHoldoutCard(card)) {
     return { value: 'Deposit holdout', sub: 'from PHP 10,000', missing: false };
+  }
+  if (isInvitationOnlyCard(card)) {
+    return { value: 'By invitation only', missing: false };
   }
   if (card.min_income_monthly !== null)
     return { value: formatPhpAmount(card.min_income_monthly), sub: '/ month', missing: false };

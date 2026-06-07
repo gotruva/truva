@@ -13,6 +13,7 @@ import type { CreditCard } from '@/types';
 export const dynamic = 'force-dynamic';
 
 const DEPOSIT_HOLDOUT_CARD_KEYS = new Set(['bdo_secured_credit_card']);
+const INVITATION_ONLY_CARD_KEYS = new Set(['bdo_world_elite_mastercard']);
 
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> | { slug: string } },
@@ -223,6 +224,7 @@ export default async function CreditCardComparePage(
                 muted={cards.map(
                   (c) =>
                     !isDepositHoldoutCard(c) &&
+                    !isInvitationOnlyCard(c) &&
                     c.min_income_monthly === null &&
                     c.min_income_annual === null,
                 )}
@@ -549,7 +551,10 @@ function formatCheckSummary(card: CreditCard) {
     !hasNoYearlyFee &&
     (card.annual_fee_waiver_condition === null || card.annual_fee_waiver_threshold === null);
   const items = [
-    !isDepositHoldoutCard(card) && card.min_income_monthly === null && card.min_income_annual === null
+    !isDepositHoldoutCard(card) &&
+    !isInvitationOnlyCard(card) &&
+    card.min_income_monthly === null &&
+    card.min_income_annual === null
       ? 'income requirement'
       : null,
     needsFeeWaiverCheck ? 'fee-waiver details' : null,
@@ -583,8 +588,13 @@ function isDepositHoldoutCard(card: CreditCard) {
   return DEPOSIT_HOLDOUT_CARD_KEYS.has(card.normalized_card_key);
 }
 
+function isInvitationOnlyCard(card: CreditCard) {
+  return INVITATION_ONLY_CARD_KEYS.has(card.normalized_card_key);
+}
+
 function formatIncome(card: CreditCard) {
   if (isDepositHoldoutCard(card)) return 'Deposit holdout from PHP 10,000';
+  if (isInvitationOnlyCard(card)) return 'By invitation only';
   if (card.min_income_monthly !== null) return `${formatPhpAmount(card.min_income_monthly)} / mo`;
   if (card.min_income_annual !== null) return `${formatPhpAmount(card.min_income_annual)} / yr`;
   return 'No public data';

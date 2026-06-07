@@ -96,6 +96,10 @@ function isDepositHoldoutCard(card: CreditCard): boolean {
   return card.normalized_card_key === 'bdo_secured_credit_card';
 }
 
+function isInvitationOnlyCard(card: CreditCard): boolean {
+  return card.normalized_card_key === 'bdo_world_elite_mastercard';
+}
+
 /**
  * Compares the income range a user shared in the finder against the card's
  * listed minimum income. Honest by design: when anything is unknown, it
@@ -114,6 +118,16 @@ export function assessApproval(
       headline: 'Deposit holdout.',
       detail:
         'BDO lists a deposit holdout instead of a salary requirement for this card. The bank still makes the final approval decision.',
+      cardMinIncomeMonthly: cardMin,
+    };
+  }
+
+  if (isInvitationOnlyCard(card)) {
+    return {
+      verdict: 'cannot-confirm',
+      headline: 'By invitation only.',
+      detail:
+        'BDO lists this card as by invitation only, so Truva does not show a salary threshold. The bank still makes the final approval decision.',
       cardMinIncomeMonthly: cardMin,
     };
   }
@@ -181,6 +195,7 @@ export function deriveMissingDataNote(card: CreditCard): string | null {
 
   if (
     !isDepositHoldoutCard(card) &&
+    !isInvitationOnlyCard(card) &&
     card.min_income_monthly === null &&
     card.min_income_annual === null
   ) {
