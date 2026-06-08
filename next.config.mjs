@@ -65,6 +65,12 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Explicit MIME type for BIMI SVG (must come before the catch-all so it
+        // is not overridden by a text/plain default from Next.js's static file handler).
+        source: '/logo-bimi.svg',
+        headers: [{ key: 'Content-Type', value: 'image/svg+xml' }],
+      },
+      {
         // Every public route except the Keystatic admin + its API.
         source: '/((?!keystatic|api/keystatic).*)',
         headers: securityHeaders,
