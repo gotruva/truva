@@ -284,7 +284,47 @@ export interface QuickTakeRow {
   body: string;
 }
 
+function exactMainBenefit(card: CreditCard): QuickTakeRow | null {
+  switch (card.normalized_card_key) {
+    case 'rcbc_classic_mastercard':
+      return {
+        lead: 'Lower-fee RCBC points.',
+        body: 'You get RCBC Rewards on a simpler Mastercard with a Php 1,500 regular yearly fee.',
+      };
+    case 'rcbc_gold_mastercard':
+      return {
+        lead: 'Mid-tier RCBC rewards.',
+        body: 'You get RCBC Rewards plus RCBC-listed travel and purchase-protection features.',
+      };
+    case 'rcbc_diamond_card_platinum_mastercard':
+      return {
+        lead: 'Donation-linked rewards.',
+        body: 'You earn RCBC Rewards while eligible spend is linked to automatic Diamond Cares donations.',
+      };
+    case 'rcbc_airmiles_visa_signature':
+      return {
+        lead: 'Direct travel miles.',
+        body: 'You earn Signature Airmiles on local and overseas spend with RCBC-listed 1:1 partner mileage conversion.',
+      };
+    case 'rcbc_flex_visa':
+      return {
+        lead: 'Choose-your-category points.',
+        body: 'You can earn higher points in two preferred spend categories if they match your routine.',
+      };
+    case 'rcbc_black_card_platinum_mastercard':
+      return {
+        lead: 'Premium RCBC points.',
+        body: 'You earn flexible RCBC Rewards with stronger earning on international spend.',
+      };
+    default:
+      return null;
+  }
+}
+
 export function deriveMainBenefit(card: CreditCard): QuickTakeRow {
+  const exact = exactMainBenefit(card);
+  if (exact) return exact;
+
   switch (card.rewards_type) {
     case 'cashback':
       return {
@@ -387,6 +427,73 @@ export interface FitLists {
   lookElsewhere: string[];
 }
 
+function exactFitLists(card: CreditCard): FitLists | null {
+  switch (card.normalized_card_key) {
+    case 'rcbc_classic_mastercard':
+      return {
+        goodFit: [
+          'You want a lower-fee RCBC Mastercard that still earns rewards points.',
+          'You meet the published Php 180,000 annual income requirement.',
+          'You can use the temporary lifetime yearly-fee waiver promo only if you meet RCBC\'s rules.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want cashback instead of rewards points.',
+          'You want a card with stronger travel perks.',
+          'You often spend in foreign currency and want a lower foreign card fee.',
+          'You expect to carry a balance from month to month.',
+        ],
+      };
+    case 'rcbc_gold_mastercard':
+      return {
+        goodFit: [
+          'You want RCBC Rewards with a mid-tier Mastercard package.',
+          'You meet the published Php 600,000 annual income requirement.',
+          'You can benefit from RCBC-listed travel and purchase-protection features.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want the lower fee and lower income gate of RCBC Classic.',
+          'You want cashback instead of rewards points.',
+          'You often spend in foreign currency and want a lower foreign card fee.',
+          'You expect to carry a balance from month to month.',
+        ],
+      };
+    case 'rcbc_diamond_card_platinum_mastercard':
+      return {
+        goodFit: [
+          'You want RCBC Rewards with a donation-linked card angle.',
+          'You meet the published Php 1,000,000 annual income requirement.',
+          'You value the Diamond Cares donation feature more than pure travel perks.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want a travel-first card with stronger miles mechanics.',
+          'You prefer cashback over points and donation-linked benefits.',
+          'You often spend in foreign currency and want a lower foreign card fee.',
+          'You earn below Php 83,333 a month.',
+        ],
+      };
+    case 'rcbc_airmiles_visa_signature':
+      return {
+        goodFit: [
+          'You travel enough to use Signature Airmiles, lounge access, and travel insurance.',
+          'You meet the published Php 1,000,000 annual income requirement.',
+          'You can use direct miles better than general rewards points.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want cashback or simple points instead of airline-mile redemptions.',
+          'You do not expect to use lounge access or travel insurance.',
+          'You want a lower yearly fee than Php 5,500.',
+          'You earn below Php 83,333 a month.',
+        ],
+      };
+    default:
+      return null;
+  }
+}
+
 /**
  * "Good fit if" / "Look elsewhere if" bullets. Derived from real card traits
  * and — when the user came from the finder — lightly tuned to their answers.
@@ -398,6 +505,9 @@ export function deriveFitLists(
   answers: FinderAnswers,
   fromFinder: boolean,
 ): FitLists {
+  const exact = exactFitLists(card);
+  if (exact) return exact;
+
   const goodFit: string[] = [];
   const lookElsewhere: string[] = [];
   const tags = deriveTags(card);

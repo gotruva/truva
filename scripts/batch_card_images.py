@@ -76,6 +76,10 @@ TRUSTED_GENERIC_IMAGE_URL_HINTS = {
 DIRECT_IMAGE_URL_OVERRIDES = {
     "rcbc_flex_visa": "https://rcbccredit.com/img/card/flex-visa.png",
     "rcbc_black_card_platinum_mastercard": "https://rcbccredit.com/img/card/black-MC.png",
+    "rcbc_classic_mastercard": "https://rcbccredit.com/img/card/Mastercard%20Classic(1).png",
+    "rcbc_gold_mastercard": "https://rcbccredit.com/img/card/RCBC%20Gold%20Credit%20Card%20Mastercard.png",
+    "rcbc_diamond_card_platinum_mastercard": "https://rcbccredit.com/img/card/diamond-mastercard.png",
+    "rcbc_airmiles_visa_signature": "https://rcbccredit.com/img/card/RCBC-Airmiles-Visa-Signature.png",
 }
 
 # Per-card source URLs (individual product pages for cards where listing page isn't enough)

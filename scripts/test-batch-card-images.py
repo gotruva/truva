@@ -77,6 +77,18 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             "https://rcbccredit.com/img/card/black-MC.png",
         )
 
+    def test_stage2g_rcbc_direct_image_overrides_are_registered(self):
+        expected = {
+            "rcbc_classic_mastercard": "https://rcbccredit.com/img/card/Mastercard%20Classic(1).png",
+            "rcbc_gold_mastercard": "https://rcbccredit.com/img/card/RCBC%20Gold%20Credit%20Card%20Mastercard.png",
+            "rcbc_diamond_card_platinum_mastercard": "https://rcbccredit.com/img/card/diamond-mastercard.png",
+            "rcbc_airmiles_visa_signature": "https://rcbccredit.com/img/card/RCBC-Airmiles-Visa-Signature.png",
+        }
+
+        for key, image_url in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(batch_card_images.DIRECT_IMAGE_URL_OVERRIDES[key], image_url)
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")

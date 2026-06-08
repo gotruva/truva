@@ -50,6 +50,10 @@ export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "metrobank_titanium_mastercard": "clean-card",
   "petron_bpi_card": "clean-card",
   "rcbc_black_card_platinum_mastercard": "clean-card",
+  "rcbc_classic_mastercard": "clean-card",
+  "rcbc_gold_mastercard": "clean-card",
+  "rcbc_diamond_card_platinum_mastercard": "clean-card",
+  "rcbc_airmiles_visa_signature": "clean-card",
   "rcbc_flex_visa": "clean-card",
   "security_bank_wave_mastercard": "clean-card",
 };

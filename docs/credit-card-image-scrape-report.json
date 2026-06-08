@@ -506,6 +506,50 @@
     "notes": "Downloaded from curated issuer card-face image on 2026-06-08."
   },
   {
+    "normalized_card_key": "rcbc_classic_mastercard",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Classic Mastercard",
+    "source_page_url": "https://rcbccredit.com/credit-cards/gold-and-classic-cards/classic-card",
+    "direct_image_url": "https://rcbccredit.com/img/card/Mastercard%20Classic(1).png",
+    "local_asset_path": "/cards/clean/rcbc_classic_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-08",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-08."
+  },
+  {
+    "normalized_card_key": "rcbc_gold_mastercard",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Gold Mastercard",
+    "source_page_url": "https://rcbccredit.com/credit-cards/gold-and-classic-cards/gold-card",
+    "direct_image_url": "https://rcbccredit.com/img/card/RCBC%20Gold%20Credit%20Card%20Mastercard.png",
+    "local_asset_path": "/cards/clean/rcbc_gold_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-08",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-08."
+  },
+  {
+    "normalized_card_key": "rcbc_diamond_card_platinum_mastercard",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Diamond Card Platinum Mastercard",
+    "source_page_url": "https://rcbccredit.com/credit-cards/premium-cards/diamond-card-platinum-mastercard",
+    "direct_image_url": "https://rcbccredit.com/img/card/diamond-mastercard.png",
+    "local_asset_path": "/cards/clean/rcbc_diamond_card_platinum_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-08",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-08."
+  },
+  {
+    "normalized_card_key": "rcbc_airmiles_visa_signature",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Airmiles Visa Signature",
+    "source_page_url": "https://rcbccredit.com/credit-cards/premium-cards/airmiles-visa-signature",
+    "direct_image_url": "https://rcbccredit.com/img/card/RCBC-Airmiles-Visa-Signature.png",
+    "local_asset_path": "/cards/clean/rcbc_airmiles_visa_signature.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-08",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-08."
+  },
+  {
     "normalized_card_key": "rcbc_flex_visa",
     "bank": "Rizal Commercial Banking Corporation",
     "card_name": "RCBC Flex Visa",

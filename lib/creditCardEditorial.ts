@@ -93,6 +93,10 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'metrobank_titanium_mastercard': 'https://www.metrobank.com.ph/promos/mastercard-welcome-gift-2026',
   'rcbc_flex_visa': 'https://rcbccredit.com/promos/welcomegifts',
   'rcbc_black_card_platinum_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
+  'rcbc_classic_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
+  'rcbc_gold_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
+  'rcbc_diamond_card_platinum_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
+  'rcbc_airmiles_visa_signature': 'https://rcbccredit.com/promos/welcome-gift-up-to-15-000-signature-airmiles-3466',
 };
 
 /**
@@ -896,6 +900,71 @@ const editorial: Record<string, CardEditorial> = {
       'Foreign card fee is 3.50%, so overseas rewards should be weighed against the added currency cost.',
     ],
   },
+
+  'rcbc_classic_mastercard': {
+    why: 'This is RCBC\'s simpler Mastercard rewards card for people who want points without moving into a premium fee tier.',
+    targetUser: 'Suited for first-card shoppers or light everyday spenders who meet the Php 180,000 annual income requirement and want a familiar Mastercard setup.',
+    valueAdd: 'The regular Php 1,500 yearly fee is lower than RCBC\'s Gold and Platinum cards while still earning non-expiring rewards points.',
+    pros: [
+      'Earns rewards points that RCBC lets cardholders redeem for vouchers, rebates, account credit, donations, deposits, airmiles enrollment, or fee-waiver credits.',
+      'Has a lower regular yearly fee than RCBC Gold, Diamond, and Black cards.',
+      'RCBC lists a temporary lifetime yearly-fee waiver promo for eligible new-to-RCBC applicants who meet the published spend rule.',
+    ],
+    cons: [
+      'The lifetime yearly-fee waiver is conditional and time-limited, not automatic for every applicant.',
+      'Foreign card fee is 3.50%, so it is not the cheapest RCBC option for foreign-currency purchases.',
+      'It has fewer premium travel and protection benefits than RCBC\'s higher-tier cards.',
+    ],
+  },
+
+  'rcbc_gold_mastercard': {
+    why: 'This is a mid-tier RCBC rewards card for people who want everyday points plus some travel and purchase-protection benefits.',
+    targetUser: 'Suited for cardholders who can meet the Php 600,000 annual income requirement and expect enough spend to justify a Php 3,000 yearly fee.',
+    valueAdd: 'It keeps the flexible RCBC Rewards setup while adding a higher-tier Mastercard package than Classic.',
+    pros: [
+      'Earns non-expiring RCBC Rewards Points for eligible purchases.',
+      'Includes RCBC-listed travel and purchase-protection benefits when the bank\'s conditions are met.',
+      'Eligible new-to-RCBC applicants can qualify for RCBC\'s temporary lifetime yearly-fee waiver promo if they meet the published spend rule.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 3,000 if you do not qualify for the temporary lifetime yearly-fee waiver promo.',
+      'Requires a higher annual income than RCBC Classic Mastercard.',
+      'Foreign card fee is 3.50%, which can reduce the value of rewards on overseas spend.',
+    ],
+  },
+
+  'rcbc_diamond_card_platinum_mastercard': {
+    why: 'This is a Platinum Mastercard for cardholders who like RCBC Rewards and also want part of their spending linked to automatic charity donations.',
+    targetUser: 'Suited for high-income cardholders who meet the Php 1,000,000 annual income requirement and prefer a donation-linked card over a pure travel card.',
+    valueAdd: 'For every Php 100 charged, RCBC says Php 0.10 is automatically donated to the cardholder\'s selected Diamond Cares partner charity.',
+    pros: [
+      'Earns flexible, non-expiring RCBC Rewards Points for eligible purchases.',
+      'Automatically links eligible spend to donations through RCBC\'s Diamond Cares program.',
+      'Regular yearly fee is Php 2,500, lower than several other RCBC premium cards.',
+    ],
+    cons: [
+      'Requires a high annual income of Php 1,000,000 to apply.',
+      'Foreign card fee is 3.50%, so overseas spending has a meaningful added cost.',
+      'The donation angle is narrow; if you want a travel-first card, RCBC Airmiles or other travel cards may be easier to compare.',
+    ],
+  },
+
+  'rcbc_airmiles_visa_signature': {
+    why: 'This is RCBC\'s travel-focused Visa Signature card for high-income cardholders who want direct mileage earning and lounge access.',
+    targetUser: 'Suited for frequent travelers who can meet the Php 1,000,000 annual income requirement and can use the card enough to offset a Php 5,500 yearly fee.',
+    valueAdd: 'It earns 1 Signature Airmile per Php 25 overseas spend or Php 48 local spend, with RCBC listing 1:1 conversion to partner mileage programs.',
+    welcomePromo: 'No active RCBC welcome-gift application window was confirmed for new Airmiles applications on June 8, 2026; the last listed promo covered March 11 to May 31, 2026 applications.',
+    pros: [
+      'Earns Signature Airmiles directly instead of general rewards points.',
+      'RCBC lists a limited-time 1.50% foreign card fee until December 31, 2026, lower than its standard 1.70% for this card.',
+      'Includes published travel benefits such as Priority Pass membership, local lounge access, and travel insurance when conditions are met.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 5,500 after the first-year waiver.',
+      'Requires a high annual income of Php 1,000,000 to apply.',
+      'The latest official welcome-gift application period we confirmed has already ended for new applicants.',
+    ],
+  },
 };
 
 export default editorial;
@@ -940,11 +1009,23 @@ function getWelcomePromoFor(key: string): string | undefined {
     },
     rcbc_flex_visa: {
       validThrough: '2026-06-30',
-      text: 'Bank-listed promo to verify: RCBC lists a temporary no-yearly-fee-for-life promo for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and meet the spend requirement within 60 days from card receipt.',
+      text: 'RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and meet the spend requirement within 60 days from card receipt.',
     },
     rcbc_black_card_platinum_mastercard: {
       validThrough: '2026-06-30',
-      text: 'Bank-listed promo to verify: RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 60,000 within 60 days from card receipt.',
+      text: 'RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 60,000 within 60 days from card receipt.',
+    },
+    rcbc_classic_mastercard: {
+      validThrough: '2026-06-30',
+      text: 'RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 30,000 within 60 days from card receipt.',
+    },
+    rcbc_gold_mastercard: {
+      validThrough: '2026-06-30',
+      text: 'RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 40,000 within 60 days from card receipt.',
+    },
+    rcbc_diamond_card_platinum_mastercard: {
+      validThrough: '2026-06-30',
+      text: 'RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 60,000 within 60 days from card receipt.',
     },
   };
 
