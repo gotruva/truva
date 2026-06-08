@@ -75,6 +75,7 @@ TRUSTED_GENERIC_IMAGE_URL_HINTS = {
 
 DIRECT_IMAGE_URL_OVERRIDES = {
     "rcbc_flex_visa": "https://rcbccredit.com/img/card/flex-visa.png",
+    "rcbc_black_card_platinum_mastercard": "https://rcbccredit.com/img/card/black-MC.png",
 }
 
 # Per-card source URLs (individual product pages for cards where listing page isn't enough)

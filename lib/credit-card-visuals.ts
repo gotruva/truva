@@ -375,6 +375,13 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['rcbc black card platinum mastercard', 'rcbc_black_card_platinum_mastercard'],
+    assetPath: '/cards/clean/rcbc_black_card_platinum_mastercard.webp',
+    sourceUrl: 'https://rcbccredit.com/credit-cards/premium-cards/black-card-platinum-mastercard',
+    checkedAt: '2026-06-08',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['security bank wave mastercard', 'security_bank_wave_mastercard'],
     assetPath: '/cards/clean/security_bank_wave_mastercard.webp',
     sourceUrl: 'https://www.securitybank.com/personal/credit-cards/rebate/wave-mastercard',

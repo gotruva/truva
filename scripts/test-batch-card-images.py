@@ -71,6 +71,12 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             "https://www.metrobank.com.ph/personal/cards/credit-cards/titanium",
         )
 
+    def test_stage2f_rcbc_black_direct_image_override_is_registered(self):
+        self.assertEqual(
+            batch_card_images.DIRECT_IMAGE_URL_OVERRIDES["rcbc_black_card_platinum_mastercard"],
+            "https://rcbccredit.com/img/card/black-MC.png",
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")

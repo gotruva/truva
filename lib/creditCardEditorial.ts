@@ -92,6 +92,7 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'm_free_credit_card': 'https://www.metrobank.com.ph/personal/cards/credit-cards/mfree',
   'metrobank_titanium_mastercard': 'https://www.metrobank.com.ph/promos/mastercard-welcome-gift-2026',
   'rcbc_flex_visa': 'https://rcbccredit.com/promos/welcomegifts',
+  'rcbc_black_card_platinum_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
 };
 
 /**
@@ -879,6 +880,22 @@ const editorial: Record<string, CardEditorial> = {
       'Outside the active promo, the card still has a Php 1,500 yearly fee.',
     ],
   },
+
+  'rcbc_black_card_platinum_mastercard': {
+    why: 'This is a premium RCBC rewards card for high-income cardholders who want travel protection, flexible rewards, and Mastercard acceptance.',
+    targetUser: 'Suited for cardholders who spend locally and overseas, value travel-related protection, and can meet the Php 1,000,000 annual income requirement.',
+    valueAdd: 'Its main upside is a flexible points program with stronger earning on international spend and several redemption paths.',
+    pros: [
+      'Earns 1 rewards point for every Php 30 local spend, and 1 point for every Php 10 international spend.',
+      'Rewards can be redeemed for vouchers, rebates, account credit, donations, deposits, or airmiles enrollment.',
+      'Includes travel insurance, purchase protection, and Mastercard e-commerce purchase protection when the published conditions are met.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 3,600 for the peso card if you do not qualify for the active lifetime-fee waiver promo.',
+      'Requires a high annual income of Php 1,000,000 to apply.',
+      'Foreign card fee is 3.50%, so overseas rewards should be weighed against the added currency cost.',
+    ],
+  },
 };
 
 export default editorial;
@@ -924,6 +941,10 @@ function getWelcomePromoFor(key: string): string | undefined {
     rcbc_flex_visa: {
       validThrough: '2026-06-30',
       text: 'Bank-listed promo to verify: RCBC lists a temporary no-yearly-fee-for-life promo for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and meet the spend requirement within 60 days from card receipt.',
+    },
+    rcbc_black_card_platinum_mastercard: {
+      validThrough: '2026-06-30',
+      text: 'Bank-listed promo to verify: RCBC lists a temporary lifetime yearly-fee waiver for eligible new-to-RCBC principal applicants who apply from April 1 to June 30, 2026 and spend Php 60,000 within 60 days from card receipt.',
     },
   };
 

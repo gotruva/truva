@@ -495,6 +495,17 @@
     "notes": "Downloaded from issuer source on 2026-05-25."
   },
   {
+    "normalized_card_key": "rcbc_black_card_platinum_mastercard",
+    "bank": "Rizal Commercial Banking Corporation",
+    "card_name": "RCBC Black Card Platinum Mastercard",
+    "source_page_url": "https://rcbccredit.com/credit-cards/premium-cards/black-card-platinum-mastercard",
+    "direct_image_url": "https://rcbccredit.com/img/card/black-MC.png",
+    "local_asset_path": "/cards/clean/rcbc_black_card_platinum_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-08",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-08."
+  },
+  {
     "normalized_card_key": "rcbc_flex_visa",
     "bank": "Rizal Commercial Banking Corporation",
     "card_name": "RCBC Flex Visa",
