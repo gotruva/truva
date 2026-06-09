@@ -73,6 +73,10 @@ export function ResultsView({
 
   const topCard = result.cards[0]?.scored.card;
 
+  // B3: lead with one confident pick, then lighter "other options".
+  const [topEntry, ...otherEntries] = result.cards;
+  const topMeta = ROLE_META[topEntry.role];
+
   // B4: lead section echoes the user's stated priority. Still honest — it
   // restates their own answer, not a claim about the card.
   const leadSub =
@@ -100,14 +104,47 @@ export function ResultsView({
       <ResultsHeader answers={answers} editHref={editHref} />
 
       <div className="mx-auto max-w-3xl px-4 py-6">
-        {result.cards.map((entry, idx) => {
+        {/* B3: the top match leads, prominently. */}
+        <ResultSection
+          label={RESULTS.topMatchLabel}
+          sub={leadSub}
+          toneClass="text-brand-primary"
+          prominent
+        >
+          <ResultCard
+            scored={topEntry.scored}
+            why={topEntry.why}
+            watchOut={topEntry.watchOut}
+            approval={topEntry.approval}
+            welcomePromo={topEntry.welcomePromo}
+            fitLabel={RESULTS.fitLabels[topMeta.idx]}
+            fitTone={topMeta.fitTone}
+            highlight
+            fromQuery={fromQuery}
+            rank={1}
+            role={topEntry.role}
+          />
+        </ResultSection>
+
+        {/* B3: remaining matches as lighter "other options". */}
+        {otherEntries.length > 0 && (
+          <div className="mb-4 mt-1 border-t border-dashed border-brand-border pt-5 dark:border-white/10">
+            <h2 className="px-1 text-sm font-bold text-brand-textPrimary dark:text-white">
+              {RESULTS.otherOptionsHeading}
+            </h2>
+            <p className="mt-0.5 px-1 text-xs text-brand-textSecondary dark:text-gray-400">
+              {RESULTS.otherOptionsSub}
+            </p>
+          </div>
+        )}
+
+        {otherEntries.map((entry, i) => {
           const meta = ROLE_META[entry.role];
           return (
             <ResultSection
               key={entry.scored.card.id}
-              index={idx + 1}
               label={RESULTS.sections[meta.idx].label}
-              sub={entry.role === 'first' ? leadSub : RESULTS.sections[meta.idx].sub}
+              sub={RESULTS.sections[meta.idx].sub}
               toneClass={meta.toneClass}
             >
               <ResultCard
@@ -118,9 +155,9 @@ export function ResultsView({
                 welcomePromo={entry.welcomePromo}
                 fitLabel={RESULTS.fitLabels[meta.idx]}
                 fitTone={meta.fitTone}
-                highlight={entry.role === 'first'}
+                highlight={false}
                 fromQuery={fromQuery}
-                rank={idx + 1}
+                rank={i + 2}
                 role={entry.role}
               />
             </ResultSection>
