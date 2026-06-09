@@ -51,6 +51,9 @@ export const MATCHING = {
 export const RESULTS = {
   h1: 'Here are cards that may fit you',
   sub: 'These matches are based on your answers and available card details. Bank approval is still required.',
+  topMatchLabel: 'Your top match',
+  otherOptionsHeading: 'Other options to compare',
+  otherOptionsSub: 'Worth a look next to your top match — same checks, more conditions.',
   sections: [
     { label: 'First-card fit', sub: 'Closest fit to your answers' },
     { label: 'No-yearly-fee fit', sub: 'If you want to keep it free' },
