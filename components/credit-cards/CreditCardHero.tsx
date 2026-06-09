@@ -2,6 +2,7 @@
 
 import { ArrowRight, BadgeCheck, ShieldCheck, Sparkles } from 'lucide-react';
 import { CreditCardHeroCarousel } from './CreditCardHeroCarousel';
+import { SavedCardsEntry } from './shared/SavedCardsEntry';
 import { LANDING } from '@/lib/creditCardFinder/copy';
 import type { CreditCard as CreditCardType } from '@/types';
 
@@ -71,6 +72,8 @@ export function CreditCardHero({
                 {LANDING.resumeCta} →
               </button>
             )}
+
+            <SavedCardsEntry className="mt-3" />
 
             {/* Trust block */}
             <div className="mt-9 w-full">

@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { CreditCardVisual } from '../CreditCardVisual';
 import { AffiliateDisclosure } from '../shared/AffiliateDisclosure';
 import { ApplyOnBankSiteButton } from '../shared/ApplyOnBankSiteButton';
+import { SaveCardButton } from '../shared/SaveCardButton';
 import { TrackedLink } from '../shared/TrackedLink';
 import { RESULTS, CONFIDENCE_LABELS } from '@/lib/creditCardFinder/copy';
 import type { ScoredCard, ResultRole } from '@/lib/creditCardFinder/rank';
@@ -77,12 +78,23 @@ export function ResultCard({
           <CreditCardVisual card={card} compact />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.05em] text-brand-textSecondary dark:text-gray-400">
-            {card.bank}
-          </p>
-          <h3 className="text-base font-bold leading-tight tracking-tight text-brand-textPrimary dark:text-white">
-            {card.card_name}
-          </h3>
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.05em] text-brand-textSecondary dark:text-gray-400">
+                {card.bank}
+              </p>
+              <h3 className="text-base font-bold leading-tight tracking-tight text-brand-textPrimary dark:text-white">
+                {card.card_name}
+              </h3>
+            </div>
+            <SaveCardButton
+              cardKey={card.normalized_card_key}
+              bank={card.bank}
+              sourcePage="credit-card-results"
+              compact
+              className="shrink-0"
+            />
+          </div>
           <span
             className={cn(
               'mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ring-inset',
