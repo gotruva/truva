@@ -246,6 +246,20 @@ export function trackResultsCompare(args: { count: number }) {
   emit('cc_results_compare_clicked', { count: args.count });
 }
 
+// ── Saved / shortlist ────────────────────────────────────────────────────────
+
+export function trackCardSaved(args: { cardKey: string; bank: string; sourcePage: string }) {
+  emit('cc_card_saved', { card_key: args.cardKey, bank: args.bank, source_page: args.sourcePage });
+}
+
+export function trackCardUnsaved(args: { cardKey: string; bank: string; sourcePage: string }) {
+  emit('cc_card_unsaved', { card_key: args.cardKey, bank: args.bank, source_page: args.sourcePage });
+}
+
+export function trackSavedPageViewed(args: { count: number }) {
+  emit('cc_saved_viewed', { count: args.count });
+}
+
 // ── Apply + detail ───────────────────────────────────────────────────────────
 
 export function trackApplyClick(args: {

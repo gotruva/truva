@@ -1,4 +1,5 @@
 import { TrackedLink } from '../shared/TrackedLink';
+import { SavedCardsEntry } from '../shared/SavedCardsEntry';
 import {
   ANSWER_CHIP_LABELS,
   CHIP_QUESTION_LABELS,
@@ -75,6 +76,7 @@ export function ResultsHeader({ answers, editHref }: Props) {
             ))}
           </div>
         )}
+        <SavedCardsEntry className="mt-4" />
       </div>
     </div>
   );
