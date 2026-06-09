@@ -70,7 +70,7 @@ export function coarseAnswers(a: FinderAnswers) {
   return {
     first_card: a.first ?? 'na',
     income_band: a.income ?? 'na', // band id only, e.g. "50-100"
-    spend: a.spend ?? 'na',
+    spend: a.spend.length ? a.spend.join(',') : 'na',
     priority: a.priority ?? 'na',
     avoid: a.avoid ?? 'na',
   };

@@ -454,7 +454,7 @@ const pointsEarnRate = deriveCostRows(
 eq('point earn rate is formatted cleanly', pointsEarnRate.value, '1 pt / ₱20');
 
 // ── 10. deriveQuickTakeChips ─────────────────────────────────────────────────
-const finderAnswers = answers({ first: 'yes', spend: 'online', priority: 'points', income: '100+' });
+const finderAnswers = answers({ first: 'yes', spend: ['online'], priority: 'points', income: '100+' });
 const likelyApproval = assessApproval(card({ min_income_monthly: 30_000 }), '100+');
 const chips = deriveQuickTakeChips(finderAnswers, likelyApproval);
 check('chips include first-card', chips.includes('First card'));

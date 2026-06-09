@@ -13,7 +13,12 @@ interface Props {
   stepIndex: number;
   total: number;
   selectedId: string | null;
+  /** Selected option ids for a multiSelect question. */
+  selectedIds?: string[];
+  multiSelect?: boolean;
   onSelect: (optionId: string) => void;
+  /** Advance from a multiSelect question (single-select auto-advances). */
+  onContinue?: () => void;
   onBack: () => void;
   onSkip: () => void;
 }
@@ -23,7 +28,10 @@ export function QuizQuestion({
   stepIndex,
   total,
   selectedId,
+  selectedIds,
+  multiSelect,
   onSelect,
+  onContinue,
   onBack,
   onSkip,
 }: Props) {
@@ -49,9 +57,14 @@ export function QuizQuestion({
       }
     };
 
+  const multi = Boolean(multiSelect ?? question.multiSelect);
+  const maxSelect = question.maxSelect ?? 2;
+  const selectedList = selectedIds ?? [];
+  const isSelected = (id: string) =>
+    multi ? selectedList.includes(id) : selectedId === id;
   const activeIndex = Math.max(
     0,
-    question.options.findIndex((o) => o.id === selectedId),
+    question.options.findIndex((o) => isSelected(o.id)),
   );
 
   return (
@@ -101,7 +114,7 @@ export function QuizQuestion({
         )}
 
         <div
-          role="radiogroup"
+          role={multi ? 'group' : 'radiogroup'}
           aria-label={question.title}
           className="flex flex-col gap-2.5"
         >
@@ -114,13 +127,37 @@ export function QuizQuestion({
               id={o.id}
               label={o.label}
               subtle={o.subtle}
-              selected={selectedId === o.id}
+              selected={isSelected(o.id)}
+              multi={multi}
+              disabled={
+                multi &&
+                !isSelected(o.id) &&
+                selectedList.length >= maxSelect &&
+                !o.exclusive
+              }
               tabIndex={i === activeIndex ? 0 : -1}
               onSelect={() => onSelect(o.id)}
               onKeyDown={handleKeyDown(i)}
             />
           ))}
         </div>
+
+        {multi && (
+          <button
+            type="button"
+            onClick={onContinue}
+            disabled={selectedList.length === 0}
+            className={cn(
+              'mt-4 flex min-h-[52px] w-full items-center justify-center rounded-2xl px-4 py-3 text-[15px] font-bold transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950',
+              selectedList.length === 0
+                ? 'cursor-not-allowed bg-brand-surface text-brand-textSecondary dark:bg-white/5 dark:text-gray-500'
+                : 'bg-brand-primary text-white hover:bg-brand-primary/90',
+            )}
+          >
+            Continue
+          </button>
+        )}
       </div>
 
       <div className="pt-5">

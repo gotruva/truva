@@ -17,6 +17,7 @@ import type {
   FinderAnswers,
   IncomeAnswer,
   PriorityAnswer,
+  SpendAnswer,
 } from '@/lib/creditCardFinder/questions';
 
 export type FinderTag =
@@ -262,6 +263,12 @@ function clamp01(n: number): number {
   return Math.max(0, Math.min(1, n));
 }
 
+function selectedSpendAnswers(answers: FinderAnswers): SpendAnswer[] {
+  const rawSpend = answers.spend as SpendAnswer[] | SpendAnswer | null | undefined;
+  if (Array.isArray(rawSpend)) return rawSpend;
+  return rawSpend ? [rawSpend] : [];
+}
+
 function isScoringSuppressed(card: CreditCard): boolean {
   return (
     card.methodology_ready === false ||
@@ -300,12 +307,16 @@ export function scoreFinderCard(card: CreditCard, answers: FinderAnswers): numbe
     s += 0.25;
   }
 
-  // Spend match (skip "general" / "unsure" — no penalty)
+  // Spend match (skip "general" / "unsure" — no penalty). The user may pick
+  // up to two categories; any specific one the card serves earns the bonus once.
+  const spendAnswers = selectedSpendAnswers(answers);
   if (
-    answers.spend &&
-    answers.spend !== 'general' &&
-    answers.spend !== 'unsure' &&
-    spendingCategories.includes(answers.spend as SpendingCategory)
+    spendAnswers.some(
+      (sp) =>
+        sp !== 'general' &&
+        sp !== 'unsure' &&
+        spendingCategories.includes(sp as SpendingCategory),
+    )
   ) {
     s += 0.15;
   }
@@ -450,10 +461,25 @@ export function parseFinderAnswers(
     allowed: Set<string>,
   ): T | null => (raw && allowed.has(raw) ? (raw as T) : null);
 
+  // Multi-value (comma-separated), validated, de-duped, capped.
+  const pickList = (
+    raw: string | null,
+    allowed: Set<string>,
+    max: number,
+  ): string[] => {
+    if (!raw) return [];
+    const out: string[] = [];
+    for (const part of raw.split(',')) {
+      const v = part.trim();
+      if (allowed.has(v) && !out.includes(v)) out.push(v);
+    }
+    return out.slice(0, max);
+  };
+
   return {
     first: pick(get('first'), FIRST),
     income: pick(get('income'), INCOME),
-    spend: pick(get('spend'), SPEND),
+    spend: pickList(get('spend'), SPEND, 2) as SpendAnswer[],
     priority: pick(get('priority'), PRIORITY),
     avoid: pick(get('avoid'), AVOID),
   };
@@ -463,7 +489,8 @@ export function answersToQuery(answers: FinderAnswers): string {
   const p = new URLSearchParams();
   if (answers.first) p.set('first', answers.first);
   if (answers.income) p.set('income', answers.income);
-  if (answers.spend) p.set('spend', answers.spend);
+  const spendAnswers = selectedSpendAnswers(answers);
+  if (spendAnswers.length) p.set('spend', spendAnswers.join(','));
   if (answers.priority) p.set('priority', answers.priority);
   if (answers.avoid) p.set('avoid', answers.avoid);
   return p.toString();

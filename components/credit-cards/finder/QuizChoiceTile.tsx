@@ -10,7 +10,11 @@ interface Props {
   label: string;
   subtle?: boolean;
   selected: boolean;
-  /** roving tabindex within the radiogroup */
+  /** Render as a checkbox (multi-select) instead of a radio. */
+  multi?: boolean;
+  /** At the selection cap and not selected — dimmed and non-interactive. */
+  disabled?: boolean;
+  /** roving tabindex within the group */
   tabIndex: number;
   onSelect: () => void;
   onKeyDown: React.KeyboardEventHandler<HTMLButtonElement>;
@@ -23,22 +27,24 @@ interface Props {
  */
 export const QuizChoiceTile = forwardRef<HTMLButtonElement, Props>(
   function QuizChoiceTile(
-    { id, label, subtle, selected, tabIndex, onSelect, onKeyDown },
+    { id, label, subtle, selected, multi, disabled, tabIndex, onSelect, onKeyDown },
     ref,
   ) {
     return (
       <button
         ref={ref}
         type="button"
-        role="radio"
+        role={multi ? 'checkbox' : 'radio'}
         aria-checked={selected}
+        aria-disabled={disabled || undefined}
         tabIndex={tabIndex}
-        onClick={onSelect}
+        onClick={disabled ? undefined : onSelect}
         onKeyDown={onKeyDown}
         className={cn(
           'flex min-h-[56px] w-full items-center gap-3.5 rounded-2xl border px-4 py-3.5 text-left transition-all duration-150',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950',
           'active:scale-[0.99]',
+          disabled && 'cursor-not-allowed opacity-50 active:scale-100',
           selected
             ? 'border-brand-primary bg-brand-primaryLight ring-2 ring-brand-primary/20 dark:bg-brand-primary/15'
             : subtle
@@ -75,7 +81,8 @@ export const QuizChoiceTile = forwardRef<HTMLButtonElement, Props>(
         <span
           aria-hidden="true"
           className={cn(
-            'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors',
+            'flex h-5 w-5 shrink-0 items-center justify-center border transition-colors',
+            multi ? 'rounded-md' : 'rounded-full',
             selected
               ? 'border-brand-primary bg-brand-primary text-white'
               : 'border-brand-border bg-transparent dark:border-white/20',

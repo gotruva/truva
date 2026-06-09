@@ -20,10 +20,26 @@ const ORDER: (keyof FinderAnswers)[] = [
 ];
 
 export function ResultsHeader({ answers, editHref }: Props) {
-  const chips = ORDER.filter((k) => answers[k]).map((k) => ({
-    q: CHIP_QUESTION_LABELS[k],
-    a: ANSWER_CHIP_LABELS[answers[k] as string] ?? String(answers[k]),
-  }));
+  const chips = ORDER.flatMap((k) => {
+    const v = answers[k];
+    if (k === 'spend') {
+      const arr = (v as string[]) ?? [];
+      if (arr.length === 0) return [];
+      return [
+        {
+          q: CHIP_QUESTION_LABELS[k],
+          a: arr.map((s) => ANSWER_CHIP_LABELS[s] ?? s).join(', '),
+        },
+      ];
+    }
+    if (!v) return [];
+    return [
+      {
+        q: CHIP_QUESTION_LABELS[k],
+        a: ANSWER_CHIP_LABELS[v as string] ?? String(v),
+      },
+    ];
+  });
 
   return (
     <div className="border-b border-brand-border bg-white px-4 pb-6 pt-2 dark:border-white/10 dark:bg-slate-950">

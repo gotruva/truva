@@ -6,7 +6,7 @@ import { getCreditCards } from '../lib/credit-cards';
 import { scoreFinderCard, deriveTags, incomeBracketMin } from '../lib/creditCardFinder/rank';
 
 const ANSWER = {
-  first: 'yes' as const, income: '50-100' as const, spend: 'groceries' as const,
+  first: 'yes' as const, income: '50-100' as const, spend: ['groceries' as const],
   priority: 'naf' as const, avoid: null,
 };
 

@@ -11,7 +11,7 @@
  */
 
 import type { CreditCard } from '@/types';
-import type { FinderAnswers, IncomeAnswer } from '@/lib/creditCardFinder/questions';
+import type { FinderAnswers, IncomeAnswer, SpendAnswer } from '@/lib/creditCardFinder/questions';
 import {
   cardMinIncomeMonthly,
   deriveAnnualFeeLabel,
@@ -962,6 +962,12 @@ const PRIORITY_CHIP: Record<string, string> = {
   easy: 'Beginner-friendly',
 };
 
+function selectedSpendAnswers(answers: FinderAnswers): SpendAnswer[] {
+  const rawSpend = answers.spend as SpendAnswer[] | SpendAnswer | null | undefined;
+  if (Array.isArray(rawSpend)) return rawSpend;
+  return rawSpend ? [rawSpend] : [];
+}
+
 /**
  * Short chips echoing the finder answers. The income chip is a derived status,
  * never the user's raw bracket — keeps the page from exposing what they typed.
@@ -972,7 +978,9 @@ export function deriveQuickTakeChips(
 ): string[] {
   const chips: string[] = [];
   if (answers.first === 'yes') chips.push('First card');
-  if (answers.spend && SPEND_CHIP[answers.spend]) chips.push(SPEND_CHIP[answers.spend]);
+  for (const sp of selectedSpendAnswers(answers)) {
+    if (SPEND_CHIP[sp]) chips.push(SPEND_CHIP[sp]);
+  }
   if (answers.priority && PRIORITY_CHIP[answers.priority]) {
     chips.push(PRIORITY_CHIP[answers.priority]);
   }
