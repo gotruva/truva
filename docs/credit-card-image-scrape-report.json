@@ -407,6 +407,28 @@
     "notes": "Premium customized high-fidelity card-face asset generated for Truva."
   },
   {
+    "normalized_card_key": "chinabank_prime_mastercard",
+    "bank": "China Banking Corporation (Chinabank)",
+    "card_name": "Chinabank Prime Mastercard",
+    "source_page_url": "https://www.chinabank.ph/credit-cards-prime",
+    "direct_image_url": "https://www.chinabank.ph/view-file/product-gallery/rZFGClk5QLJRCgfxnPN77c4g5eZIvT-metacHJpbWUucG5n-.png",
+    "local_asset_path": "/cards/clean/chinabank_prime_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-09",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-09."
+  },
+  {
+    "normalized_card_key": "chinabank_platinum_mastercard",
+    "bank": "China Banking Corporation (Chinabank)",
+    "card_name": "Chinabank Platinum Mastercard",
+    "source_page_url": "https://www.chinabank.ph/credit-cards-platinum",
+    "direct_image_url": "https://www.chinabank.ph/view-file/product-gallery/dNBRmE5Edj2J3Ek0h23u7QI1Sv7IRS-metacGxhdGludW0ucG5n-.png",
+    "local_asset_path": "/cards/clean/chinabank_platinum_mastercard.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-09",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-09."
+  },
+  {
     "normalized_card_key": "eastwest_everyday_titanium_mastercard",
     "bank": "East West Banking Corporation",
     "card_name": "EastWest EveryDay Titanium Mastercard",

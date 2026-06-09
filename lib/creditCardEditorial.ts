@@ -87,6 +87,8 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'chinabank_destinations_platinum_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-platinum',
   'chinabank_destinations_world_dollar_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world-dollar',
   'chinabank_destinations_world_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world',
+  'chinabank_prime_mastercard': 'https://www.chinabank.ph/credit-cards-prime',
+  'chinabank_platinum_mastercard': 'https://www.chinabank.ph/credit-cards-platinum',
   'aub_easy_mastercard': 'https://online.aub.ph/creditcards/easyandclassic',
   'aub_classic_mastercard': 'https://online.aub.ph/creditcards/easyandclassic#classic',
   'aub_gold_mastercard': 'https://online.aub.ph/creditcards/goldandplatinum',
@@ -799,6 +801,40 @@ const editorial: Record<string, CardEditorial> = {
       'High foreign card fee of 2.50% makes buying from international websites expensive.',
       'Rewards points require a large amount of spending before you can exchange them.',
       'Does not include travel benefits like free insurance or lounge access.',
+    ],
+  },
+
+  'chinabank_prime_mastercard': {
+    why: 'This is Chinabank\'s straightforward points card for people who want a lower yearly fee than its premium Mastercard line.',
+    targetUser: 'Suited for applicants who already hold another principal credit card and meet Chinabank\'s Php 250,000 gross annual income requirement.',
+    valueAdd: 'It earns 1 Rewards Point per Php 30 qualified spend, with a Php 1,500 yearly fee after the first year.',
+    welcomePromo: 'No active public welcome gift was confirmed on Chinabank\'s product or rewards pages on June 9, 2026.',
+    pros: [
+      'Earns 1 Rewards Point for every Php 30 qualified spend.',
+      'First-year yearly fee is waived, based on Chinabank\'s fees page.',
+      'Has a lower regular yearly fee than Chinabank Platinum Mastercard.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 1,500 after the first year.',
+      'Foreign-currency transactions carry a 2.50% fee.',
+      'The value is plain points; it does not include Platinum fuel rebate or travel insurance benefits.',
+    ],
+  },
+
+  'chinabank_platinum_mastercard': {
+    why: 'This card adds fuel rebate and travel-insurance benefits to Chinabank\'s standard points program.',
+    targetUser: 'Suited for applicants who meet Chinabank\'s Php 250,000 gross annual income requirement and can use fuel or travel-related perks.',
+    valueAdd: 'It earns 1 Rewards Point per Php 30 qualified spend and Chinabank lists a 5% fuel rebate at local gas stations, subject to caps and terms.',
+    welcomePromo: 'No active public welcome gift was confirmed on Chinabank\'s product or rewards pages on June 9, 2026.',
+    pros: [
+      'Earns 1 Rewards Point for every Php 30 qualified spend.',
+      'Chinabank lists a 5% fuel rebate at local gas stations for eligible Platinum cardholders.',
+      'Includes travel accident and inconvenience insurance when eligible travel tickets are purchased with the card.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 3,500 after the first year.',
+      'Fuel rebates are capped at Php 250 per transaction and Php 500 per cycle month.',
+      'Foreign-currency transactions carry a 2.50% fee.',
     ],
   },
 

@@ -16,13 +16,14 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'Metrobank': '/logos/metrobank-mark.png',
   'Metrobank Card Corporation': '/logos/metrobank-mark.png',
   'Metropolitan Bank and Trust Company': '/logos/metrobank-mark.png',
-  'RCBC': '/logos/rcbc.svg',
-  'Rizal Commercial Banking Corporation': '/logos/rcbc.svg',
-  'Rizal Commercial Banking Corporation (RCBC)': '/logos/rcbc.svg',
+  'RCBC': '/logos/rcbc-mark.png',
+  'Rizal Commercial Banking Corporation': '/logos/rcbc-mark.png',
+  'Rizal Commercial Banking Corporation (RCBC)': '/logos/rcbc-mark.png',
   'Security Bank Corporation': '/logos/securitybank-mark.png',
   'HSBC Philippines': '/logos/hsbc.svg',
   'Asia United Bank': '/logos/aub.svg',
   'BDO Unibank, Inc.': '/logos/bdo.svg',
+  'China Banking Corporation (Chinabank)': '/logos/chinabank.svg',
 };
 
 function deriveLogo(bank: string): string {

@@ -301,6 +301,16 @@ function exactMainBenefit(card: CreditCard): QuickTakeRow | null {
         lead: 'No-fee Platinum access.',
         body: 'You get AUB Platinum benefits, flexible billing, and lounge access without a yearly fee.',
       };
+    case 'chinabank_prime_mastercard':
+      return {
+        lead: 'Simple Chinabank points.',
+        body: 'You earn 1 Rewards Point per Php 30 qualified spend with a lower regular yearly fee than Chinabank Platinum.',
+      };
+    case 'chinabank_platinum_mastercard':
+      return {
+        lead: 'Points plus fuel rebate.',
+        body: 'You earn Chinabank Rewards Points and can use the listed 5% local fuel rebate if your fuel spend fits the caps.',
+      };
     case 'metrobank_travel_signature_visa':
       return {
         lead: 'Miles with lower forex.',
@@ -512,6 +522,36 @@ function exactFitLists(card: CreditCard): FitLists | null {
           'You want a lower income requirement than Php 100,000 a month.',
           'You want a dedicated miles card instead of flexible rewards points.',
           'You often spend in foreign currency and want a lower foreign-card fee than 2.50%.',
+        ],
+      };
+    case 'chinabank_prime_mastercard':
+      return {
+        goodFit: [
+          'You want a simple Chinabank points card with a lower regular yearly fee.',
+          'You meet Chinabank\'s Php 250,000 gross annual income requirement.',
+          'You already hold another principal credit card for at least 12 months.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want cashback or miles as the main reward.',
+          'You want fuel rebate, travel insurance, or premium Mastercard benefits.',
+          'You often spend in foreign currency and want a lower foreign-card fee than 2.50%.',
+          'You are applying for your first credit card.',
+        ],
+      };
+    case 'chinabank_platinum_mastercard':
+      return {
+        goodFit: [
+          'You want Chinabank points plus a local fuel rebate.',
+          'You meet Chinabank\'s Php 250,000 gross annual income requirement.',
+          'You can use Platinum travel insurance or dining privileges.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want a lower regular yearly fee than Php 3,500.',
+          'Your fuel spend is low or often exceeds the rebate caps.',
+          'You want a dedicated miles card instead of regular rewards points.',
+          'You are applying for your first credit card.',
         ],
       };
     case 'metrobank_travel_signature_visa':

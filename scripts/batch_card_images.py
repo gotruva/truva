@@ -77,6 +77,8 @@ DIRECT_IMAGE_URL_OVERRIDES = {
     "aub_easy_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/EASY_image.png",
     "aub_classic_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/CLASSIC_image.png",
     "aub_platinum_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/PLATINUM_image.png",
+    "chinabank_prime_mastercard": "https://www.chinabank.ph/view-file/product-gallery/rZFGClk5QLJRCgfxnPN77c4g5eZIvT-metacHJpbWUucG5n-.png",
+    "chinabank_platinum_mastercard": "https://www.chinabank.ph/view-file/product-gallery/dNBRmE5Edj2J3Ek0h23u7QI1Sv7IRS-metacGxhdGludW0ucG5n-.png",
     "metrobank_travel_signature_visa": "https://web-assets.metrobank.com.ph/1770229047-travel-signature-visa.png",
     "metrobank_platinum_mastercard": "https://web-assets.metrobank.com.ph/1770347894-platinum-mastercard.png",
     "metrobank_world_mastercard": "https://web-assets.metrobank.com.ph/1769684137-world-mastercard-card.png",
@@ -107,6 +109,8 @@ PER_CARD_URLS = {
     "chinabank_destinations_world_dollar_mastercard": "https://www.chinabank.ph/credit-cards-destinations-world-dollar",
     "chinabank_destinations_world_mastercard": "https://www.chinabank.ph/credit-cards-destinations-world",
     "chinabank_freedom_mastercard": "https://www.chinabank.ph/credit-cards-freedom",
+    "chinabank_prime_mastercard": "https://www.chinabank.ph/credit-cards-prime",
+    "chinabank_platinum_mastercard": "https://www.chinabank.ph/credit-cards-platinum",
     "bpi amore cashback card": "https://www.bpi.com.ph/personal/cards/credit-cards/amore-visa-classic",
     "bpi amore platinum cashback card": "https://www.bpi.com.ph/personal/cards/credit-cards/amore-visa-platinum",
     "bpi corporate card": "https://www.bpi.com.ph/personal/cards/credit-cards/bpi-corporate-mastercard",
@@ -977,10 +981,23 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
                         notes = f"No usable card-face image found on {TODAY}."
 
             elif "chinabank" in bank_lower:
-                # Chinabank - known to have context art only
-                status = "needs-manual-review"
-                notes = "Official Chinabank pages expose context/banner art, not clean card-face images. Verified on previous runs."
-                print(f"  📝 Chinabank: context art only (no clean card-face)")
+                # Chinabank product pages use context art, but selected listing-page
+                # gallery images are clean card faces.
+                direct_override_url = DIRECT_IMAGE_URL_OVERRIDES.get(card_key)
+                if direct_override_url:
+                    print(f"  Curated direct image override: {direct_override_url}")
+                    downloaded_bytes = await download_image_bytes(page, direct_override_url, source_url)
+                    if downloaded_bytes:
+                        direct_url = direct_override_url
+                        status = "clean-card"
+                        notes = f"Downloaded from curated issuer card-face image on {TODAY}."
+                    else:
+                        status = "needs-manual-review"
+                        notes = f"Curated issuer card-face image download failed on {TODAY}."
+                else:
+                    status = "needs-manual-review"
+                    notes = "Official Chinabank product pages expose context/banner art, not clean card-face images. Verified on previous runs."
+                    print(f"  📝 Chinabank: context art only (no clean card-face)")
 
             elif "hsbc" in bank_lower:
                 # HSBC - check per-card page

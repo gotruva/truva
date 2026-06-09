@@ -312,6 +312,20 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['chinabank prime mastercard', 'chinabank_prime_mastercard'],
+    assetPath: '/cards/clean/chinabank_prime_mastercard.webp',
+    sourceUrl: 'https://www.chinabank.ph/credit-cards-prime',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['chinabank platinum mastercard', 'chinabank_platinum_mastercard'],
+    assetPath: '/cards/clean/chinabank_platinum_mastercard.webp',
+    sourceUrl: 'https://www.chinabank.ph/credit-cards-platinum',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['eastwest everyday titanium mastercard', 'eastwest_everyday_titanium_mastercard'],
     assetPath: '/cards/clean/eastwest_everyday_titanium_mastercard.webp',
     sourceUrl: 'https://www.eastwestbanker.com/creditcards/everyday-titanium-mastercard',

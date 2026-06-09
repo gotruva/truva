@@ -156,6 +156,25 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             "https://online.aub.ph/creditcards/goldandplatinum#platinum",
         )
 
+    def test_stage2k_chinabank_direct_image_overrides_are_registered(self):
+        expected = {
+            "chinabank_prime_mastercard": "https://www.chinabank.ph/view-file/product-gallery/rZFGClk5QLJRCgfxnPN77c4g5eZIvT-metacHJpbWUucG5n-.png",
+            "chinabank_platinum_mastercard": "https://www.chinabank.ph/view-file/product-gallery/dNBRmE5Edj2J3Ek0h23u7QI1Sv7IRS-metacGxhdGludW0ucG5n-.png",
+        }
+
+        for key, image_url in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(batch_card_images.DIRECT_IMAGE_URL_OVERRIDES[key], image_url)
+
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["chinabank_prime_mastercard"],
+            "https://www.chinabank.ph/credit-cards-prime",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["chinabank_platinum_mastercard"],
+            "https://www.chinabank.ph/credit-cards-platinum",
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")
