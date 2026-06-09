@@ -42,7 +42,7 @@ export const BANK_PROMO_TC_URL: Record<string, string> = {
   'Bank of the Philippine Islands (BPI)': 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos',
   'BDO Unibank, Inc.': 'https://www.deals.bdo.com.ph',
   'China Banking Corporation (Chinabank)': 'https://www.chinabank.ph/credit-cards',
-  'Asia United Bank': 'https://www.aub.com.ph/creditcards/no-annual-fee',
+  'Asia United Bank': 'https://online.aub.ph/creditcards/feesAndCharges',
   'East West Banking Corporation': 'https://www.eastwestbanker.com/promos',
   'Metrobank': 'https://www.metrobank.com.ph/promos',
   'Metrobank Card Corporation': 'https://www.metrobank.com.ph/promos',
@@ -87,7 +87,10 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'chinabank_destinations_platinum_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-platinum',
   'chinabank_destinations_world_dollar_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world-dollar',
   'chinabank_destinations_world_mastercard': 'https://www.chinabank.ph/credit-cards-destinations-world',
+  'aub_easy_mastercard': 'https://online.aub.ph/creditcards/easyandclassic',
+  'aub_classic_mastercard': 'https://online.aub.ph/creditcards/easyandclassic#classic',
   'aub_gold_mastercard': 'https://online.aub.ph/creditcards/goldandplatinum',
+  'aub_platinum_mastercard': 'https://online.aub.ph/creditcards/goldandplatinum#platinum',
   'equicom_gold_credit_card': 'https://www.equicomsavings.com/product-and-services/card-products/',
   'm_free_credit_card': 'https://www.metrobank.com.ph/personal/cards/credit-cards/mfree',
   'metrobank_titanium_mastercard': 'https://www.metrobank.com.ph/promos/mastercard-welcome-gift-2026',
@@ -119,19 +122,67 @@ export function getPromoTCUrlFor(bank: string, key?: string): string {
 const editorial: Record<string, CardEditorial> = {
   // ── Asia United Bank ──────────────────────────────────────────────────────
 
+  'aub_easy_mastercard': {
+    why: 'This is AUB\'s flexible-payment card for people who want no yearly fee and control over when their bill is due.',
+    targetUser: 'Suited for applicants who meet AUB\'s Php 50,000 monthly income requirement and value payment schedule flexibility over premium perks.',
+    valueAdd: 'AUB lists no yearly fee for life and lets cardholders choose their due date and payment cycle.',
+    pros: [
+      'No yearly fee for life keeps the card inexpensive to own.',
+      'Lets you choose your due date and payment frequency, which can help match your cash flow.',
+      'AUB says its credit cards do not have a cash advance facility, which avoids cash advance fees but also removes that option.',
+    ],
+    cons: [
+      'Requires a minimum monthly income of Php 50,000 to apply.',
+      'Foreign-currency transactions include a 2.50% fee stack based on AUB\'s service fee plus Mastercard assessment.',
+      'The value is mostly payment flexibility; it is not a strong category-rewards card.',
+    ],
+  },
+
+  'aub_classic_mastercard': {
+    why: 'This is a no-yearly-fee AUB card for people who want simple Mastercard access with a flexible due-date setup.',
+    targetUser: 'Suited for applicants who want a low-maintenance card and meet AUB\'s Php 50,000 monthly income requirement.',
+    valueAdd: 'It keeps the yearly fee at zero while still giving access to AUB\'s flexible payment schedule.',
+    pros: [
+      'No yearly fee for life means there is no recurring ownership cost.',
+      'Supplementary cards are also listed as yearly-fee-free.',
+      'Lets you choose your due date from the 1st to the 30th of the month.',
+    ],
+    cons: [
+      'Requires a minimum monthly income of Php 50,000 to apply.',
+      'Foreign-currency transactions include a 2.50% fee stack based on AUB\'s service fee plus Mastercard assessment.',
+      'AUB says its credit cards do not have a cash advance facility, so this is not useful if you need that feature.',
+    ],
+  },
+
+  'aub_platinum_mastercard': {
+    why: 'This is AUB\'s higher-income no-yearly-fee card for people who want flexible billing plus a simple travel perk.',
+    targetUser: 'Suited for applicants who meet AUB\'s Php 100,000 monthly income requirement and want a no-yearly-fee Platinum-tier card.',
+    valueAdd: 'AUB lists no yearly fee for life, flexible due-date control, rewards points, and complimentary airport lounge access.',
+    pros: [
+      'No yearly fee for life keeps the long-term cost low for a Platinum-tier card.',
+      'Includes complimentary airport lounge access according to AUB\'s product page.',
+      'Lets you choose your due date from the 1st to the 30th of the month.',
+    ],
+    cons: [
+      'Requires a minimum monthly income of Php 100,000 to apply.',
+      'Foreign-currency transactions include a 2.50% fee stack based on AUB\'s service fee plus Mastercard assessment.',
+      'AUB says its credit cards do not have a cash advance facility, so this is not useful if you need that feature.',
+    ],
+  },
+
   'aub_gold_mastercard': {
-    why: 'This card helps you build your credit profile with zero yearly fees and a lower ongoing cost.',
+    why: 'This card gives you AUB\'s no-yearly-fee setup with basic rewards and flexible billing control.',
     targetUser: 'Suited for everyday buyers who want a straightforward card without worrying about recurring ownership costs.',
     valueAdd: 'Its unique benefit is having no yearly fee for life without any minimum spending rules.',
     pros: [
       'No yearly fee for life means you never pay to keep the card active.',
-      'Low foreign card fee of 1.50% makes buying items from overseas websites cheaper.',
+      'Earns 1 AUB Rewards Point for every Php 50 spend, based on AUB\'s rewards page.',
       'Gives you the freedom to choose your own monthly due date to match your pay day.',
     ],
     cons: [
-      'Requires a minimum monthly income of ₱50,000 to apply.',
-      'Rewards program earns points slowly with only 1 point for every ₱20 spent.',
-      'Cash advance option charges high fees if you need quick emergency cash.',
+      'Requires a minimum monthly income of Php 50,000 to apply.',
+      'The rewards rate is modest unless your spending fits AUB\'s bonus-point rules.',
+      'AUB says its credit cards do not have a cash advance facility, so this is not useful if you need that feature.',
     ],
   },
 
@@ -1303,4 +1354,3 @@ export function getEditorialFor(
     cons,
   });
 }
-

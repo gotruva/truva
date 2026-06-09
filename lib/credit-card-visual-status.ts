@@ -5,6 +5,9 @@
 // and will fail if they diverge.
 export const SCRAPE_REPORT_STATUS_MAP: Record<string, string> = {
   "aub_gold_mastercard": "clean-card",
+  "aub_easy_mastercard": "clean-card",
+  "aub_classic_mastercard": "clean-card",
+  "aub_platinum_mastercard": "clean-card",
   "bdo_american_express_cashback_credit_card": "clean-card",
   "bdo_american_express_explorer_credit_card": "clean-card",
   "bdo_american_express_platinum_credit_card": "clean-card",

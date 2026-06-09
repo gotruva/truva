@@ -53,7 +53,12 @@ function addIf(condition: boolean, list: string[], message: string) {
   if (condition) list.push(message);
 }
 
-const CASH_ADVANCE_NOT_AVAILABLE_KEYS = new Set(['aub_gold_mastercard']);
+const CASH_ADVANCE_NOT_AVAILABLE_KEYS = new Set([
+  'aub_easy_mastercard',
+  'aub_classic_mastercard',
+  'aub_gold_mastercard',
+  'aub_platinum_mastercard',
+]);
 const INCOME_NOT_APPLICABLE_KEYS = new Set([
   'bdo_secured_credit_card',
   'bdo_world_elite_mastercard',

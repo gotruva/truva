@@ -74,6 +74,9 @@ TRUSTED_GENERIC_IMAGE_URL_HINTS = {
 }
 
 DIRECT_IMAGE_URL_OVERRIDES = {
+    "aub_easy_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/EASY_image.png",
+    "aub_classic_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/CLASSIC_image.png",
+    "aub_platinum_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/PLATINUM_image.png",
     "metrobank_travel_signature_visa": "https://web-assets.metrobank.com.ph/1770229047-travel-signature-visa.png",
     "metrobank_platinum_mastercard": "https://web-assets.metrobank.com.ph/1770347894-platinum-mastercard.png",
     "metrobank_world_mastercard": "https://web-assets.metrobank.com.ph/1769684137-world-mastercard-card.png",
@@ -91,7 +94,10 @@ DIRECT_IMAGE_URL_OVERRIDES = {
 PER_CARD_URLS = {
     "bdo_secured_credit_card": "https://www.bdo.com.ph/personal/cards/credit-cards/secured-credit-card",
     "bdo_world_elite_mastercard": "https://www.bdo.com.ph/personal/cards/credit-cards/mastercard/world-elite",
+    "aub_easy_mastercard": "https://online.aub.ph/creditcards/easyandclassic",
+    "aub_classic_mastercard": "https://online.aub.ph/creditcards/easyandclassic#classic",
     "aub_gold_mastercard": "https://online.aub.ph/creditcards/goldandplatinum",
+    "aub_platinum_mastercard": "https://online.aub.ph/creditcards/goldandplatinum#platinum",
     "equicom_gold_credit_card": "https://www.equicomsavings.com/product-and-services/card-products/",
     "hsbc live credit card": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
     "hsbc_live_plus_credit_card": "https://www.hsbc.com.ph/credit-cards/products/liveplus/",
@@ -1066,9 +1072,20 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
                     notes = f"No usable card-face image found on {TODAY}."
 
             elif "asia united" in bank_lower or "aub" in bank_lower:
-                # AUB - known context art
-                result = await extract_bpi_card_image(page, source_url)
-                if result:
+                # AUB - prefer curated card-face assets when available.
+                direct_override_url = DIRECT_IMAGE_URL_OVERRIDES.get(card_key)
+                result = None if direct_override_url else await extract_bpi_card_image(page, source_url)
+                if direct_override_url:
+                    print(f"  Curated direct image override: {direct_override_url}")
+                    downloaded_bytes = await download_image_bytes(page, direct_override_url, source_url)
+                    if downloaded_bytes:
+                        direct_url = direct_override_url
+                        status = "clean-card"
+                        notes = f"Downloaded from curated issuer card-face image on {TODAY}."
+                    else:
+                        status = "needs-manual-review"
+                        notes = f"Curated issuer card-face image download failed on {TODAY}."
+                elif result:
                     direct_url = result["src"]
                     ratio = result.get("ratio", 0)
                     is_card_face = 1.3 < ratio < 2.0

@@ -39,6 +39,27 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['aub easy mastercard', 'aub_easy_mastercard'],
+    assetPath: '/cards/clean/aub_easy_mastercard.webp',
+    sourceUrl: 'https://online.aub.ph/creditcards/easyandclassic',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['aub classic mastercard', 'aub_classic_mastercard'],
+    assetPath: '/cards/clean/aub_classic_mastercard.webp',
+    sourceUrl: 'https://online.aub.ph/creditcards/easyandclassic#classic',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['aub platinum mastercard', 'aub_platinum_mastercard'],
+    assetPath: '/cards/clean/aub_platinum_mastercard.webp',
+    sourceUrl: 'https://online.aub.ph/creditcards/goldandplatinum#platinum',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['bpi amore cashback card'],
     assetPath: '/cards/bpi-amore-cashback-card.png',
     sourceUrl: 'https://www.bpi.com.ph/personal/cards/credit-cards/amore-visa-classic',

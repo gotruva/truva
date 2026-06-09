@@ -132,6 +132,30 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota-classic",
         )
 
+    def test_stage2j_aub_direct_image_overrides_are_registered(self):
+        expected = {
+            "aub_easy_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/EASY_image.png",
+            "aub_classic_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/CLASSIC_image.png",
+            "aub_platinum_mastercard": "https://online.aub.ph/creditcards/resources/images/cards/PLATINUM_image.png",
+        }
+
+        for key, image_url in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(batch_card_images.DIRECT_IMAGE_URL_OVERRIDES[key], image_url)
+
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["aub_easy_mastercard"],
+            "https://online.aub.ph/creditcards/easyandclassic",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["aub_classic_mastercard"],
+            "https://online.aub.ph/creditcards/easyandclassic#classic",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["aub_platinum_mastercard"],
+            "https://online.aub.ph/creditcards/goldandplatinum#platinum",
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")
