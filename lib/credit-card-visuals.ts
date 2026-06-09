@@ -368,6 +368,27 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     status: 'official-art',
   },
   {
+    cardKeys: ['metrobank travel signature visa', 'metrobank_travel_signature_visa'],
+    assetPath: '/cards/clean/metrobank_travel_signature_visa.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/travel-signature-visa',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['metrobank platinum mastercard', 'metrobank_platinum_mastercard'],
+    assetPath: '/cards/clean/metrobank_platinum_mastercard.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/platinum',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['metrobank world mastercard', 'metrobank_world_mastercard'],
+    assetPath: '/cards/clean/metrobank_world_mastercard.webp',
+    sourceUrl: 'https://www.metrobank.com.ph/personal/cards/credit-cards/world',
+    checkedAt: '2026-06-09',
+    status: 'official-art',
+  },
+  {
     cardKeys: ['rcbc flex visa', 'rcbc_flex_visa'],
     assetPath: '/cards/clean/rcbc_flex_visa.webp',
     sourceUrl: 'https://rcbccredit.com/credit-cards/gold-and-classic-cards/flex-visa',

@@ -91,6 +91,9 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'equicom_gold_credit_card': 'https://www.equicomsavings.com/product-and-services/card-products/',
   'm_free_credit_card': 'https://www.metrobank.com.ph/personal/cards/credit-cards/mfree',
   'metrobank_titanium_mastercard': 'https://www.metrobank.com.ph/promos/mastercard-welcome-gift-2026',
+  'metrobank_travel_signature_visa': 'https://www.metrobank.com.ph/promos/unlock-free-worldwide-lounge-access',
+  'metrobank_platinum_mastercard': 'https://www.metrobank.com.ph/promos/unlock-free-worldwide-lounge-access',
+  'metrobank_world_mastercard': 'https://www.metrobank.com.ph/promos',
   'rcbc_flex_visa': 'https://rcbccredit.com/promos/welcomegifts',
   'rcbc_black_card_platinum_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
   'rcbc_classic_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
@@ -812,6 +815,58 @@ const editorial: Record<string, CardEditorial> = {
       'Regular yearly fee is Php 2,500 after the standard first-year waiver.',
       'The lifetime fee-waiver promo is conditional and time-limited, not automatic for everyone.',
       'Foreign card fees combine a 1.00% cross-border service fee and 2.50% forex processing fee.',
+    ],
+  },
+
+  // -- Metrobank premium/travel ---------------------------------------------
+
+  'metrobank_travel_signature_visa': {
+    why: 'This is a travel-focused Metrobank card for people who value miles, lounge access, travel insurance, and a lower listed foreign-currency fee.',
+    targetUser: 'Suited for applicants who meet Metrobank\'s Php 700,000 minimum annual income requirement and already hold another principal credit card.',
+    valueAdd: 'It earns 1 mile for every Php 30 spend and Metrobank lists a 1.68% foreign-currency fee on the product page.',
+    welcomePromo: 'Metrobank lists a LoungeKey promo for existing and new Travel Signature Visa cardholders from July 25, 2025 to July 24, 2026, with one pass after a Php 50,000 single-receipt airline transaction.',
+    pros: [
+      'Earns 1 mile for every Php 30 spend on all purchases.',
+      'Includes unlimited local lounge access at partner lounges and travel insurance coverage listed by Metrobank.',
+      'Has a lower listed foreign-currency fee than many peso credit cards.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 5,500 after the first-year waiver.',
+      'Requires another principal credit card with at least Php 150,000 credit limit, based on Metrobank\'s eligibility rules.',
+      'The LoungeKey promo needs a Php 50,000 single-receipt airline transaction and is capped at three passes.',
+    ],
+  },
+
+  'metrobank_platinum_mastercard': {
+    why: 'This is a Metrobank lifestyle card for people who want points, dining privileges, and e-commerce protection without moving into a travel-miles card.',
+    targetUser: 'Suited for applicants who meet Metrobank\'s Php 700,000 minimum annual income requirement and want Mastercard Platinum benefits.',
+    valueAdd: 'It earns Metrobank Rewards Points and lists a Php 400,000 yearly spend waiver path for the following year.',
+    welcomePromo: 'Metrobank lists a LoungeKey promo for existing and new Platinum Mastercard cardholders from July 25, 2025 to July 24, 2026, with one pass after a Php 50,000 single-receipt airline transaction.',
+    pros: [
+      'Earns Metrobank Rewards Points for everyday purchases.',
+      'Includes dining deals, a free first supplementary card, and e-commerce protection listed by Metrobank.',
+      'Yearly fee can be waived for the following year after Php 400,000 spend, based on Metrobank\'s listed condition.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 5,000 after the first-year waiver.',
+      'Foreign-currency purchases can be costly once the cross-border and forex processing fees are combined.',
+      'The lounge promo is airline-spend specific, so it may not help if you do not buy flights with the card.',
+    ],
+  },
+
+  'metrobank_world_mastercard': {
+    why: 'This is a premium Metrobank card for people who spend in foreign currency, book hotels, or shop online often enough to use the 3x rewards categories.',
+    targetUser: 'Suited for applicants who meet Metrobank\'s Php 700,000 minimum annual income requirement and can make use of travel and online-spend benefits.',
+    valueAdd: 'It earns 3 rewards points for every Php 20 on foreign-currency, hotel, and online transactions, with 1 point per Php 20 on other purchases.',
+    pros: [
+      'Earns higher points on foreign-currency, hotel, and online transactions.',
+      'Includes two global lounge passes per year through Mastercard Travel Pass and unlimited local lounge access at partner lounges.',
+      'Lists a lower 1.85% foreign-currency transaction fee than many standard peso credit cards.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 6,000 after the first-year waiver.',
+      'Higher rewards depend on the listed bonus categories, so ordinary local spend is less distinctive.',
+      'Requires another principal credit card with at least Php 150,000 credit limit, based on Metrobank\'s eligibility rules.',
     ],
   },
 

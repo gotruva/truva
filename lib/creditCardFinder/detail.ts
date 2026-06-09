@@ -286,6 +286,21 @@ export interface QuickTakeRow {
 
 function exactMainBenefit(card: CreditCard): QuickTakeRow | null {
   switch (card.normalized_card_key) {
+    case 'metrobank_travel_signature_visa':
+      return {
+        lead: 'Miles with lower forex.',
+        body: 'You earn miles on every purchase while Metrobank lists a lower 1.68% foreign-currency fee.',
+      };
+    case 'metrobank_platinum_mastercard':
+      return {
+        lead: 'Lifestyle rewards.',
+        body: 'You earn Metrobank Rewards Points with dining privileges, e-commerce protection, and a spend-based fee-waiver path.',
+      };
+    case 'metrobank_world_mastercard':
+      return {
+        lead: 'Travel and online points.',
+        body: 'You earn higher points on foreign-currency, hotel, and online transactions with Metrobank travel privileges.',
+      };
     case 'rcbc_classic_mastercard':
       return {
         lead: 'Lower-fee RCBC points.',
@@ -429,6 +444,51 @@ export interface FitLists {
 
 function exactFitLists(card: CreditCard): FitLists | null {
   switch (card.normalized_card_key) {
+    case 'metrobank_travel_signature_visa':
+      return {
+        goodFit: [
+          'You travel often enough to use miles, local lounge access, and travel insurance.',
+          'You meet the published Php 700,000 annual income requirement.',
+          'You already hold another principal credit card with at least Php 150,000 credit limit.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want cashback or simple points instead of miles.',
+          'You want a lower regular yearly fee than Php 5,500.',
+          'You do not expect to use airport or travel benefits.',
+          'You are applying for your first credit card.',
+        ],
+      };
+    case 'metrobank_platinum_mastercard':
+      return {
+        goodFit: [
+          'You want Metrobank Rewards Points with dining and shopping privileges.',
+          'You meet the published Php 700,000 annual income requirement.',
+          'You can realistically spend Php 400,000 a year if you want the following year fee waived.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You want miles or cashback as the main reward.',
+          'You often spend in foreign currency and want a lower foreign-card fee.',
+          'You want a lower regular yearly fee than Php 5,000.',
+          'You are applying for your first credit card.',
+        ],
+      };
+    case 'metrobank_world_mastercard':
+      return {
+        goodFit: [
+          'You regularly spend on foreign-currency, hotel, or online transactions.',
+          'You meet the published Php 700,000 annual income requirement.',
+          'You can use lounge access and premium Mastercard travel benefits.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'Most of your spending is ordinary local spend without travel or online purchases.',
+          'You want a lower regular yearly fee than Php 6,000.',
+          'You prefer cashback over rewards points.',
+          'You are applying for your first credit card.',
+        ],
+      };
     case 'rcbc_classic_mastercard':
       return {
         goodFit: [

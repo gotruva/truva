@@ -89,6 +89,30 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             with self.subTest(key=key):
                 self.assertEqual(batch_card_images.DIRECT_IMAGE_URL_OVERRIDES[key], image_url)
 
+    def test_stage2h_metrobank_direct_image_overrides_are_registered(self):
+        expected = {
+            "metrobank_travel_signature_visa": "https://web-assets.metrobank.com.ph/1770229047-travel-signature-visa.png",
+            "metrobank_platinum_mastercard": "https://web-assets.metrobank.com.ph/1770347894-platinum-mastercard.png",
+            "metrobank_world_mastercard": "https://web-assets.metrobank.com.ph/1769684137-world-mastercard-card.png",
+        }
+
+        for key, image_url in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(batch_card_images.DIRECT_IMAGE_URL_OVERRIDES[key], image_url)
+
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["metrobank_travel_signature_visa"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/travel-signature-visa",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["metrobank_platinum_mastercard"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/platinum",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["metrobank_world_mastercard"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/world",
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")
