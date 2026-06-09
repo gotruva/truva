@@ -29,6 +29,11 @@ export interface QuizOption {
   label: string;
   /** Subtle styling for "Prefer not to say" / "I'm not sure" — no penalty. */
   subtle?: boolean;
+  /**
+   * In a multiSelect question, picking this clears every other choice (and any
+   * other choice clears it). Used for "General spending" / "I'm not sure".
+   */
+  exclusive?: boolean;
 }
 
 export interface QuizQuestionDef {
@@ -36,12 +41,16 @@ export interface QuizQuestionDef {
   title: string;
   helper: string | null;
   options: QuizOption[];
+  /** When true, the user may pick up to `maxSelect` options (default single-select). */
+  multiSelect?: boolean;
+  /** Max selections when `multiSelect` is true. Ignored otherwise. */
+  maxSelect?: number;
 }
 
 export interface FinderAnswers {
   first: FirstAnswer | null;
   income: IncomeAnswer | null;
-  spend: SpendAnswer | null;
+  spend: SpendAnswer[];
   priority: PriorityAnswer | null;
   avoid: AvoidAnswer | null;
 }
@@ -49,7 +58,7 @@ export interface FinderAnswers {
 export const EMPTY_ANSWERS: FinderAnswers = {
   first: null,
   income: null,
-  spend: null,
+  spend: [],
   priority: null,
   avoid: null,
 };
@@ -83,15 +92,17 @@ export const QUESTIONS_FINAL: readonly QuizQuestionDef[] = [
     id: 'spend',
     title: 'Where do you spend most?',
     helper:
-      'Pick the closest one. This helps us avoid recommending rewards you won’t use.',
+      'Pick up to 2. This helps us avoid recommending rewards you won’t use.',
+    multiSelect: true,
+    maxSelect: 2,
     options: [
       { id: 'groceries', label: 'Groceries / daily spending' },
       { id: 'dining', label: 'Dining / food delivery' },
       { id: 'online', label: 'Online shopping' },
       { id: 'bills', label: 'Bills / subscriptions' },
       { id: 'travel', label: 'Travel' },
-      { id: 'general', label: 'General spending' },
-      { id: 'unsure', label: 'I’m not sure', subtle: true },
+      { id: 'general', label: 'General spending', exclusive: true },
+      { id: 'unsure', label: 'I’m not sure', subtle: true, exclusive: true },
     ],
   },
   {

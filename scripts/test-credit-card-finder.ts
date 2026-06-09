@@ -194,7 +194,7 @@ const hardShortfallEligibleSignals = scoreFinderCard(
     min_income_monthly: 100_000,
     last_scraped_at: RECENT,
   }),
-  answers({ first: 'yes', income: '<15', priority: 'naf', spend: 'groceries' }),
+  answers({ first: 'yes', income: '<15', priority: 'naf', spend: ['groceries'] }),
 );
 check('hard shortfall fails match threshold even with otherwise perfect signals', hardShortfallEligibleSignals < 0.35);
 const stacked = scoreFinderCard(
@@ -204,7 +204,7 @@ const stacked = scoreFinderCard(
     min_income_monthly: 15_000,
     last_scraped_at: RECENT,
   }),
-  answers({ first: 'yes', income: '100+', priority: 'naf', spend: 'general' }),
+  answers({ first: 'yes', income: '100+', priority: 'naf', spend: ['general'] }),
 );
 check('stacked score clamped <= 1', stacked <= 1);
 check('eligible relevant card scores above threshold', stacked >= 0.55);
@@ -239,7 +239,7 @@ const nearMissIncome = scoreFinderCard(
     min_income_monthly: 33_000,
     last_scraped_at: RECENT,
   }),
-  answers({ first: 'yes', income: '30-50', priority: 'cashback', spend: 'groceries' }),
+  answers({ first: 'yes', income: '30-50', priority: 'cashback', spend: ['groceries'] }),
 );
 check('near-miss income still qualifies when other signals are strong', nearMissIncome >= 0.35);
 
@@ -283,7 +283,7 @@ const third = card({
 });
 const sel = selectFinderResults(
   [strong, freeCard, third],
-  answers({ income: '50-100', priority: 'cashback', spend: 'groceries', first: 'no' }),
+  answers({ income: '50-100', priority: 'cashback', spend: ['groceries'], first: 'no' }),
 );
 check('matched kind', sel.kind === 'matched');
 if (sel.kind === 'matched') {
@@ -348,7 +348,7 @@ const emptyEditorial: CardEditorial = { why: '', pros: [], cons: [] };
 const explainAnswers = answers({
   first: 'yes',
   income: '30-50',
-  spend: 'groceries',
+  spend: ['groceries'],
   priority: 'cashback',
   avoid: 'fees',
 });
@@ -452,7 +452,7 @@ const resultBackQuery = answersToQuery(
   answers({
     first: 'yes',
     income: '30-50',
-    spend: 'groceries',
+    spend: ['groceries'],
     priority: 'cashback',
     avoid: 'fees',
   }),

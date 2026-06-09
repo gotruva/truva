@@ -1,6 +1,6 @@
 import type { CreditCard } from '@/types';
 import type { CardEditorial } from '@/lib/creditCardEditorial';
-import type { FinderAnswers, PriorityAnswer } from '@/lib/creditCardFinder/questions';
+import type { FinderAnswers, PriorityAnswer, SpendAnswer } from '@/lib/creditCardFinder/questions';
 import {
   cardMinIncomeMonthly,
   hasNoYearlyFeeConflict,
@@ -31,6 +31,12 @@ const SPEND_LABEL: Record<string, string> = {
   bills: 'bill payment',
   travel: 'travel',
 };
+
+function selectedSpendAnswers(answers: FinderAnswers): SpendAnswer[] {
+  const rawSpend = answers.spend as SpendAnswer[] | SpendAnswer | null | undefined;
+  if (Array.isArray(rawSpend)) return rawSpend;
+  return rawSpend ? [rawSpend] : [];
+}
 
 function hasYearlyFee(card: CreditCard): boolean {
   return !isNoYearlyFee(card) && (card.annual_fee_recurring ?? 0) > 0;
@@ -83,11 +89,12 @@ function priorityReason(section: ScoredSection, answers: FinderAnswers): string 
 }
 
 function spendReason(section: ScoredSection, answers: FinderAnswers): string | null {
-  if (!answers.spend || answers.spend === 'general' || answers.spend === 'unsure') {
-    return null;
-  }
-  if (!section.spendingCategories.includes(answers.spend)) return null;
-  return `it lines up with your ${SPEND_LABEL[answers.spend] ?? answers.spend} spending`;
+  const matched = selectedSpendAnswers(answers).find(
+    (sp) =>
+      sp !== 'general' && sp !== 'unsure' && section.spendingCategories.includes(sp),
+  );
+  if (!matched) return null;
+  return `it lines up with your ${SPEND_LABEL[matched] ?? matched} spending`;
 }
 
 function incomeReason(section: ScoredSection, answers: FinderAnswers): string | null {
@@ -246,7 +253,7 @@ function pickEditorialCon(
 
   const keywordGroups: string[][] = [];
   if (answers.avoid === 'fees') keywordGroups.push(['fee', 'yearly', 'annual']);
-  if (answers.avoid === 'forex' || answers.spend === 'travel') {
+  if (answers.avoid === 'forex' || selectedSpendAnswers(answers).includes('travel')) {
     keywordGroups.push(['foreign', 'overseas', 'travel']);
   }
   if (answers.avoid === 'complex') {

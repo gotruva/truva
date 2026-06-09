@@ -13,6 +13,7 @@ import {
   TOTAL_STEPS,
   type FinderAnswers,
   type QuestionId,
+  type SpendAnswer,
 } from '@/lib/creditCardFinder/questions';
 import { answersToQuery } from '@/lib/creditCardFinder/rank';
 import {
@@ -28,6 +29,21 @@ import type { CreditCard } from '@/types';
 
 const DRAFT_KEY = 'truva.cards.finderDraft';
 const MATCH_MIN_MS = 1200;
+
+/**
+ * Drafts/saved runs written before multi-select shipped may hold `spend` as a
+ * single string. Coerce any stored answers to the current array shape so
+ * `answersToQuery` and the UI never choke on legacy values.
+ */
+function coerceAnswers(a: FinderAnswers): FinderAnswers {
+  const raw = (a as { spend?: unknown }).spend;
+  const spend = Array.isArray(raw)
+    ? (raw as SpendAnswer[])
+    : raw
+      ? [raw as SpendAnswer]
+      : [];
+  return { ...a, spend };
+}
 
 /**
  * Owns the finder. Navigation position lives in the URL `?step=` param so
@@ -67,7 +83,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
 
     try {
       const draft = sessionStorage.getItem(DRAFT_KEY);
-      if (draft) draftAnswers = { ...EMPTY_ANSWERS, ...JSON.parse(draft) };
+      if (draft) draftAnswers = coerceAnswers({ ...EMPTY_ANSWERS, ...JSON.parse(draft) });
     } catch {
       /* ignore corrupt draft */
     }
@@ -76,7 +92,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
       if (raw) {
         const saved = JSON.parse(raw) as { at: number; answers: FinderAnswers };
         if (saved?.at && Date.now() - saved.at < FINDER_STORAGE_TTL_MS) {
-          resumeQuery = answersToQuery(saved.answers);
+          resumeQuery = answersToQuery(coerceAnswers(saved.answers));
         } else {
           localStorage.removeItem(FINDER_STORAGE_KEY);
         }
@@ -232,10 +248,62 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
     [answers, advanceFrom, persistDraft],
   );
 
-  const handleSkip = useCallback(
+  // Multi-select: toggle a value without advancing. "Exclusive" options
+  // ("General spending" / "I'm not sure") clear the rest and vice-versa.
+  const handleToggle = useCallback(
+    (stepIndex: number, value: string) => {
+      const q = QUESTIONS_FINAL[stepIndex];
+      const qid = q.id as QuestionId;
+      const current = (answers[qid] as string[] | null) ?? [];
+      const max = q.maxSelect ?? 2;
+      const opt = q.options.find((o) => o.id === value);
+      let list: string[];
+      if (opt?.exclusive) {
+        list = current.length === 1 && current[0] === value ? [] : [value];
+      } else {
+        const exclusiveIds = new Set(
+          q.options.filter((o) => o.exclusive).map((o) => o.id),
+        );
+        const base = current.filter((v) => !exclusiveIds.has(v));
+        if (base.includes(value)) {
+          list = base.filter((v) => v !== value);
+        } else if (base.length >= max) {
+          list = base; // at the cap — ignore the extra pick
+        } else {
+          list = [...base, value];
+        }
+      }
+      const next = { ...answers, [qid]: list } as FinderAnswers;
+      setAnswers(next);
+      persistDraft(next);
+    },
+    [answers, persistDraft],
+  );
+
+  // Multi-select: commit the current selection and advance.
+  const handleContinue = useCallback(
     (stepIndex: number) => {
       const qid = QUESTIONS_FINAL[stepIndex].id as QuestionId;
-      const next = { ...answers, [qid]: null } as FinderAnswers;
+      const value = answers[qid];
+      const answerValue = Array.isArray(value)
+        ? value.join(',') || null
+        : (value ?? null);
+      trackFinderStepCompleted({
+        step: stepIndex + 1,
+        questionId: qid,
+        answerValue,
+        skipped: false,
+      });
+      advanceFrom(stepIndex, answers);
+    },
+    [answers, advanceFrom],
+  );
+
+  const handleSkip = useCallback(
+    (stepIndex: number) => {
+      const q = QUESTIONS_FINAL[stepIndex];
+      const qid = q.id as QuestionId;
+      const next = { ...answers, [qid]: q.multiSelect ? [] : null } as FinderAnswers;
       setAnswers(next);
       persistDraft(next);
       trackFinderStepCompleted({
@@ -278,7 +346,7 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
     if (!effective.first && !effective.income && !effective.priority) {
       try {
         const draft = sessionStorage.getItem(DRAFT_KEY);
-        if (draft) effective = { ...EMPTY_ANSWERS, ...JSON.parse(draft) };
+        if (draft) effective = coerceAnswers({ ...EMPTY_ANSWERS, ...JSON.parse(draft) });
       } catch {
         /* ignore */
       }
@@ -317,8 +385,10 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
 
   const stepIndex = view.stepIndex;
   const question = QUESTIONS_FINAL[stepIndex];
-  const selectedId =
-    (answers[question.id as QuestionId] as string | null) ?? null;
+  const multi = Boolean(question.multiSelect);
+  const rawValue = answers[question.id as QuestionId];
+  const selectedId = multi ? null : ((rawValue as string | null) ?? null);
+  const selectedIds = multi ? ((rawValue as string[] | null) ?? []) : [];
 
   return (
     <div className="bg-white py-6 dark:bg-slate-950">
@@ -327,7 +397,12 @@ export function FinderFlow({ cards }: { cards: CreditCard[] }) {
         stepIndex={stepIndex}
         total={TOTAL_STEPS}
         selectedId={selectedId}
-        onSelect={(v) => handleSelect(stepIndex, v)}
+        selectedIds={selectedIds}
+        multiSelect={multi}
+        onSelect={(v) =>
+          multi ? handleToggle(stepIndex, v) : handleSelect(stepIndex, v)
+        }
+        onContinue={() => handleContinue(stepIndex)}
         onBack={() => handleBack(stepIndex)}
         onSkip={() => handleSkip(stepIndex)}
       />
