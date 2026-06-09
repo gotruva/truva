@@ -26,6 +26,14 @@ export function CreditCardClientPage({ cards }: { cards: CreditCardType[] }) {
   return (
     <div className="bg-white dark:bg-slate-950">
       {/* Guided finder: landing → 5-question quiz → matching */}
+      {/*
+        Dev-only note: under `next dev`, the finder can appear to mount twice in
+        the DOM (a second, zero-size copy). That is a dev artifact of
+        useSearchParams() + `export const dynamic = 'force-dynamic'` streaming
+        into this Suspense boundary. It does NOT reproduce in a production build
+        (verified: 1 mount in `next start`), so finder analytics are not
+        double-counted in prod. Do not "fix" it by restructuring this boundary.
+      */}
       <Suspense fallback={<FinderFallback cards={cards} />}>
         <FinderFlow cards={cards} />
       </Suspense>
