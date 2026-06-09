@@ -232,6 +232,9 @@ for (const [key, entry] of reportByKey) {
         if (asset.status === 'truva-fallback') {
           issues.push(`clean-card ${key}: getCreditCardVisualAsset returned truva-fallback instead of real artwork`);
         }
+        if (asset.status !== 'clean-card') {
+          issues.push(`clean-card ${key}: getCreditCardVisualAsset returned ${asset.status} instead of clean-card`);
+        }
         if (!asset.assetPath) {
           issues.push(`clean-card ${key}: getCreditCardVisualAsset returned no assetPath`);
         } else if (entry.local_asset_path && asset.assetPath !== entry.local_asset_path) {

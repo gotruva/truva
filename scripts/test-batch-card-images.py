@@ -113,6 +113,25 @@ class BatchCardImageSafetyTests(unittest.TestCase):
             "https://www.metrobank.com.ph/personal/cards/credit-cards/world",
         )
 
+    def test_stage2i_metrobank_toyota_direct_image_overrides_are_registered(self):
+        expected = {
+            "metrobank_toyota_platinum_card": "https://web-assets.metrobank.com.ph/1773049237-mb_toyotaplatmc_1412x1412.png",
+            "metrobank_toyota_card": "https://web-assets.metrobank.com.ph/1769684136-toyota-card.png",
+        }
+
+        for key, image_url in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(batch_card_images.DIRECT_IMAGE_URL_OVERRIDES[key], image_url)
+
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["metrobank_toyota_platinum_card"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota",
+        )
+        self.assertEqual(
+            batch_card_images.PER_CARD_URLS_BY_KEY["metrobank_toyota_card"],
+            "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota-classic",
+        )
+
     def test_selected_keys_are_normalized_deduped_and_ordered(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as temp:
             temp.write("bpi_gold_rewards_card # keep comments out\n")

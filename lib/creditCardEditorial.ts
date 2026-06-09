@@ -94,6 +94,8 @@ export const CARD_PROMO_TC_URL: Record<string, string> = {
   'metrobank_travel_signature_visa': 'https://www.metrobank.com.ph/promos/unlock-free-worldwide-lounge-access',
   'metrobank_platinum_mastercard': 'https://www.metrobank.com.ph/promos/unlock-free-worldwide-lounge-access',
   'metrobank_world_mastercard': 'https://www.metrobank.com.ph/promos',
+  'metrobank_toyota_platinum_card': 'https://www.metrobank.com.ph/personal/cards/credit-cards/toyota',
+  'metrobank_toyota_card': 'https://www.metrobank.com.ph/personal/cards/credit-cards/toyota-classic',
   'rcbc_flex_visa': 'https://rcbccredit.com/promos/welcomegifts',
   'rcbc_black_card_platinum_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
   'rcbc_classic_mastercard': 'https://rcbccredit.com/promos/welcomegifts',
@@ -867,6 +869,38 @@ const editorial: Record<string, CardEditorial> = {
       'Regular yearly fee is Php 6,000 after the first-year waiver.',
       'Higher rewards depend on the listed bonus categories, so ordinary local spend is less distinctive.',
       'Requires another principal credit card with at least Php 150,000 credit limit, based on Metrobank\'s eligibility rules.',
+    ],
+  },
+
+  'metrobank_toyota_platinum_card': {
+    why: 'This is a Metrobank card for Toyota owners who can use fuel, toll, and Toyota dealer benefits often enough to justify a co-branded card.',
+    targetUser: 'Suited for applicants who meet Metrobank\'s Php 350,000 minimum annual income requirement and already hold another principal credit card.',
+    valueAdd: 'It lists a 3% fuel and toll rebate globally, up to Php 15,000 a year on combined fuel and toll spend.',
+    pros: [
+      'Lists 3% fuel and toll rebates globally, subject to Metrobank\'s yearly cap.',
+      'Includes 10% off genuine parts, accessories, and labor at Toyota dealers.',
+      'Earns 2x rewards points at a preferred Toyota dealer.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 2,800 after the first-year waiver.',
+      'The strongest value is tied to Toyota ownership and car-related spend.',
+      'Foreign-currency purchases carry Metrobank\'s combined foreign-card fee.',
+    ],
+  },
+
+  'metrobank_toyota_card': {
+    why: 'This is a lower-income-gate Toyota card for drivers who mostly want Petron fuel rebates and Toyota dealer discounts.',
+    targetUser: 'Suited for applicants who meet Metrobank\'s Php 180,000 minimum annual income requirement and already hold another principal credit card.',
+    valueAdd: 'It lists a 3% fuel rebate at Petron plus Toyota dealer discounts, with a lower listed income requirement than Toyota Platinum.',
+    pros: [
+      'Lists 3% fuel rebate at Petron.',
+      'Includes 10% off parts, accessories, and labor at Toyota dealers.',
+      'Has a lower published income requirement than Toyota Platinum.',
+    ],
+    cons: [
+      'Regular yearly fee is Php 2,500 after the first-year waiver.',
+      'Fuel rebate value is narrower if you do not use Petron often.',
+      'The card is less compelling if Toyota dealer benefits are not part of your routine.',
     ],
   },
 

@@ -495,6 +495,28 @@
     "notes": "Downloaded from generic issuer source strategy on 2026-06-07."
   },
   {
+    "normalized_card_key": "metrobank_toyota_card",
+    "bank": "Metrobank Card Corporation",
+    "card_name": "Metrobank Toyota Card",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota-classic",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1769684136-toyota-card.png",
+    "local_asset_path": "/cards/clean/metrobank_toyota_card.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-09",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-09."
+  },
+  {
+    "normalized_card_key": "metrobank_toyota_platinum_card",
+    "bank": "Metrobank Card Corporation",
+    "card_name": "Metrobank Toyota Platinum Card",
+    "source_page_url": "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota",
+    "direct_image_url": "https://web-assets.metrobank.com.ph/1773049237-mb_toyotaplatmc_1412x1412.png",
+    "local_asset_path": "/cards/clean/metrobank_toyota_platinum_card.webp",
+    "status": "clean-card",
+    "checked_at": "2026-06-09",
+    "notes": "Downloaded from curated issuer card-face image on 2026-06-09."
+  },
+  {
     "normalized_card_key": "metrobank_travel_signature_visa",
     "bank": "Metrobank",
     "card_name": "Metrobank Travel Signature Visa",

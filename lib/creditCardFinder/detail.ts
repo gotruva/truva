@@ -301,6 +301,16 @@ function exactMainBenefit(card: CreditCard): QuickTakeRow | null {
         lead: 'Travel and online points.',
         body: 'You earn higher points on foreign-currency, hotel, and online transactions with Metrobank travel privileges.',
       };
+    case 'metrobank_toyota_platinum_card':
+      return {
+        lead: 'Toyota and driving rebates.',
+        body: 'You get Toyota dealer benefits plus a Metrobank-listed 3% fuel and toll rebate.',
+      };
+    case 'metrobank_toyota_card':
+      return {
+        lead: 'Petron fuel rebates.',
+        body: 'You get a lower-income-gate Toyota card with a Metrobank-listed 3% fuel rebate at Petron.',
+      };
     case 'rcbc_classic_mastercard':
       return {
         lead: 'Lower-fee RCBC points.',
@@ -486,6 +496,36 @@ function exactFitLists(card: CreditCard): FitLists | null {
           'Most of your spending is ordinary local spend without travel or online purchases.',
           'You want a lower regular yearly fee than Php 6,000.',
           'You prefer cashback over rewards points.',
+          'You are applying for your first credit card.',
+        ],
+      };
+    case 'metrobank_toyota_platinum_card':
+      return {
+        goodFit: [
+          'You own or regularly maintain a Toyota vehicle.',
+          'You can use fuel, toll, and Toyota dealer benefits often enough.',
+          'You meet the published Php 350,000 annual income requirement.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You do not spend much on fuel, tolls, or Toyota dealer services.',
+          'You want general cashback instead of car-related benefits.',
+          'You want a lower regular yearly fee than Php 2,800.',
+          'You are applying for your first credit card.',
+        ],
+      };
+    case 'metrobank_toyota_card':
+      return {
+        goodFit: [
+          'You want Petron fuel rebates and Toyota dealer discounts.',
+          'You meet the published Php 180,000 annual income requirement.',
+          'You want a Toyota card with a lower income requirement than Toyota Platinum.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You do not usually fuel up at Petron.',
+          'You want travel, lounge, or premium insurance benefits.',
+          'You prefer a no-yearly-fee card over car-related perks.',
           'You are applying for your first credit card.',
         ],
       };

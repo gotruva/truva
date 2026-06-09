@@ -77,6 +77,8 @@ DIRECT_IMAGE_URL_OVERRIDES = {
     "metrobank_travel_signature_visa": "https://web-assets.metrobank.com.ph/1770229047-travel-signature-visa.png",
     "metrobank_platinum_mastercard": "https://web-assets.metrobank.com.ph/1770347894-platinum-mastercard.png",
     "metrobank_world_mastercard": "https://web-assets.metrobank.com.ph/1769684137-world-mastercard-card.png",
+    "metrobank_toyota_platinum_card": "https://web-assets.metrobank.com.ph/1773049237-mb_toyotaplatmc_1412x1412.png",
+    "metrobank_toyota_card": "https://web-assets.metrobank.com.ph/1769684136-toyota-card.png",
     "rcbc_flex_visa": "https://rcbccredit.com/img/card/flex-visa.png",
     "rcbc_black_card_platinum_mastercard": "https://rcbccredit.com/img/card/black-MC.png",
     "rcbc_classic_mastercard": "https://rcbccredit.com/img/card/Mastercard%20Classic(1).png",
@@ -113,6 +115,8 @@ PER_CARD_URLS = {
     "metrobank_travel_signature_visa": "https://www.metrobank.com.ph/personal/cards/credit-cards/travel-signature-visa",
     "metrobank_platinum_mastercard": "https://www.metrobank.com.ph/personal/cards/credit-cards/platinum",
     "metrobank_world_mastercard": "https://www.metrobank.com.ph/personal/cards/credit-cards/world",
+    "metrobank_toyota_platinum_card": "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota",
+    "metrobank_toyota_card": "https://www.metrobank.com.ph/personal/cards/credit-cards/toyota-classic",
     "security_bank_wave_mastercard": "https://www.securitybank.com/personal/credit-cards/",
 }
 
