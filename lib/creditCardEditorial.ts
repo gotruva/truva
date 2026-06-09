@@ -1165,15 +1165,15 @@ function getWelcomePromoFor(key: string): string | undefined {
     },
     bpi_rewards_card: {
       validThrough: '2026-06-30',
-      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+      text: 'Bank-listed promo to verify: BPI lists a Php 6,000 eGC welcome gift after Php 30,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
     },
     bpi_gold_rewards_card: {
       validThrough: '2026-06-30',
-      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+      text: 'Bank-listed promo to verify: BPI lists a Php 6,000 eGC welcome gift after Php 30,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
     },
     bpi_amore_cashback_card: {
       validThrough: '2026-06-30',
-      text: 'Bank-listed promo to verify: BPI lists a Php 12,000 eGC welcome gift after Php 60,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
+      text: 'Bank-listed promo to verify: BPI lists a Php 6,000 eGC welcome gift after Php 30,000 spend for eligible new cardholders. Application period is March 10 to June 30, 2026.',
     },
     bpi_platinum_rewards_mastercard: {
       validThrough: '2026-06-30',
