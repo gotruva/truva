@@ -253,7 +253,6 @@ const PRIORITY_TAG: Record<PriorityAnswer, FinderTag> = {
   points: 'points',
   travel: 'travel',
   easy: 'beginner',
-  simple: 'beginner',
 };
 
 const INCOME_SHORTFALL_PENALTY = -0.15;
@@ -314,8 +313,15 @@ export function scoreFinderCard(card: CreditCard, answers: FinderAnswers): numbe
   // Avoidance — penalize, never disqualify
   s += avoidPenalty(card, tags, answers.avoid);
 
-  // First-card friendliness
-  if (answers.first === 'yes' && tags.includes('beginner')) s += 0.15;
+  // First-card friendliness. "Helping someone choose" is treated like a
+  // first-timer here — people using the finder to help someone are usually
+  // guiding a newcomer (assessment A3). "No, I already have a card" is not.
+  if (
+    (answers.first === 'yes' || answers.first === 'helping') &&
+    tags.includes('beginner')
+  ) {
+    s += 0.15;
+  }
 
   // Slight bias toward cards we can stand behind
   if (deriveDataConfidence(card) === CONFIDENCE_LABELS.sourceChecked) s += 0.05;
@@ -430,7 +436,7 @@ const SPEND = new Set([
   'general',
   'unsure',
 ]);
-const PRIORITY = new Set(['naf', 'cashback', 'points', 'travel', 'easy', 'simple']);
+const PRIORITY = new Set(['naf', 'cashback', 'points', 'travel', 'easy']);
 const AVOID = new Set(['fees', 'income', 'complex', 'promo', 'forex', 'unsure']);
 
 export function parseFinderAnswers(

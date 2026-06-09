@@ -22,7 +22,6 @@ const PRIORITY_TAG: Record<PriorityAnswer, FinderTag> = {
   points: 'points',
   travel: 'travel',
   easy: 'beginner',
-  simple: 'beginner',
 };
 
 const SPEND_LABEL: Record<string, string> = {
@@ -77,7 +76,6 @@ function priorityReason(section: ScoredSection, answers: FinderAnswers): string 
     case 'travel':
       return 'it matches your travel priority';
     case 'easy':
-    case 'simple':
       return 'it has first-card friendly signals';
     default:
       return null;
@@ -131,7 +129,12 @@ function avoidReason(section: ScoredSection, answers: FinderAnswers): string | n
 }
 
 function firstCardReason(section: ScoredSection, answers: FinderAnswers): string | null {
-  if (answers.first !== 'yes' || !section.tags.includes('beginner')) return null;
+  if (
+    (answers.first !== 'yes' && answers.first !== 'helping') ||
+    !section.tags.includes('beginner')
+  ) {
+    return null;
+  }
   return 'it has first-card friendly signals';
 }
 

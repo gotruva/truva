@@ -63,12 +63,16 @@ export const RESULTS = {
     minIncome: 'Min. income',
     bestFor: 'Good for',
     watchOut: 'What to watch out for',
+    qualify: 'Can you qualify?',
   },
   ctaDetails: 'See details',
   ctaApply: 'Apply on bank site',
   browseHeading: 'Want to compare more?',
   browseSub: 'Open the full catalog with filters for yearly fee, rewards, and bank.',
   browseCta: 'Browse all credit cards',
+  compareHeading: 'Compare your top matches',
+  compareSub: 'See these cards side by side — fees, rewards, and income notes.',
+  compareCta: 'Compare these cards',
   notAdvice: 'This is not financial advice.',
 } as const;
 
@@ -160,7 +164,6 @@ export const ANSWER_CHIP_LABELS: Record<string, string> = {
   cashback: 'Cashback',
   points: 'Rewards / points',
   easy: 'Beginner-friendly',
-  simple: 'Simple card',
   // avoid
   fees: 'Avoid yearly fees',
   income: 'Avoid high income req.',
@@ -175,4 +178,18 @@ export const CHIP_QUESTION_LABELS: Record<string, string> = {
   spend: 'Spends most on',
   priority: 'Priority',
   avoid: 'Avoid',
+};
+
+/**
+ * Lead-section sub-label that honestly echoes the user's stated priority while
+ * staying true to the role ("closest overall fit"). Restates the user's own
+ * answer, so it never over-claims about the card. Falls back to the static
+ * RESULTS.sections[0].sub when no priority was given (assessment B4).
+ */
+export const PRIORITY_LEAD_SUB: Record<string, string> = {
+  naf: 'Closest overall fit — you said no yearly fee matters most',
+  cashback: 'Closest overall fit — you said cashback matters most',
+  points: 'Closest overall fit — you said rewards points matter most',
+  travel: 'Closest overall fit — you said travel perks matter most',
+  easy: 'Closest overall fit — you said a beginner-friendly card matters most',
 };

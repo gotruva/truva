@@ -19,7 +19,7 @@ export type SpendAnswer =
   | 'travel'
   | 'general'
   | 'unsure';
-export type PriorityAnswer = 'naf' | 'cashback' | 'points' | 'travel' | 'easy' | 'simple';
+export type PriorityAnswer = 'naf' | 'cashback' | 'points' | 'travel' | 'easy';
 export type AvoidAnswer = 'fees' | 'income' | 'complex' | 'promo' | 'forex' | 'unsure';
 
 export type QuestionId = 'first' | 'income' | 'spend' | 'priority' | 'avoid';
@@ -104,8 +104,9 @@ export const QUESTIONS_FINAL: readonly QuizQuestionDef[] = [
       { id: 'points', label: 'Rewards / points' },
       { id: 'travel', label: 'Travel perks' },
       // Locked-copy override: "Easier approval" -> plain-language, no promise.
+      // `easy` and `simple` both mapped to the same `beginner` tag, so the two
+      // tiles were functionally identical — merged into one (assessment A2).
       { id: 'easy', label: 'Beginner-friendly card' },
-      { id: 'simple', label: 'Simple card for beginners' },
     ],
   },
   {

@@ -6,6 +6,7 @@ import {
   parseFinderAnswers,
 } from '@/lib/creditCardFinder/rank';
 import { explainFinderResult } from '@/lib/creditCardFinder/explain';
+import { assessApproval } from '@/lib/creditCardFinder/detail';
 import { ResultsView, type PreparedCard } from '@/components/credit-cards/results/ResultsView';
 
 export const dynamic = 'force-dynamic';
@@ -47,6 +48,7 @@ export default async function CreditCardResultsPage({ searchParams }: Props) {
               why: explanation.why,
               watchOut: explanation.watchOut,
               welcomePromo: editorial.welcomePromo,
+              approval: assessApproval(section.card, answers.income),
             };
           }),
         }

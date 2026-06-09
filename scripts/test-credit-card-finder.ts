@@ -243,6 +243,22 @@ const nearMissIncome = scoreFinderCard(
 );
 check('near-miss income still qualifies when other signals are strong', nearMissIncome >= 0.35);
 
+// ── 4b. First-card branch: "helping" is treated like a first-timer (A3) ───────
+const helpingBeginnerScore = scoreFinderCard(
+  card({ naffl: true, min_income_monthly: 15_000, last_scraped_at: RECENT }),
+  answers({ first: 'helping', income: '100+' }),
+);
+const noFirstBeginnerScore = scoreFinderCard(
+  card({ naffl: true, min_income_monthly: 15_000, last_scraped_at: RECENT }),
+  answers({ first: 'no', income: '100+' }),
+);
+const yesBeginnerScore = scoreFinderCard(
+  card({ naffl: true, min_income_monthly: 15_000, last_scraped_at: RECENT }),
+  answers({ first: 'yes', income: '100+' }),
+);
+check('helping gets the first-card beginner boost', helpingBeginnerScore > noFirstBeginnerScore);
+eq('helping and yes score the same first-card boost', helpingBeginnerScore, yesBeginnerScore);
+
 // ── 5. Slot selection ────────────────────────────────────────────────────────
 const strong = card({
   id: 'strong',

@@ -286,6 +286,21 @@ export interface QuickTakeRow {
 
 function exactMainBenefit(card: CreditCard): QuickTakeRow | null {
   switch (card.normalized_card_key) {
+    case 'aub_easy_mastercard':
+      return {
+        lead: 'Flexible payment setup.',
+        body: 'AUB lets you choose your due date and payment cycle while keeping the yearly fee at zero.',
+      };
+    case 'aub_classic_mastercard':
+      return {
+        lead: 'No-fee AUB access.',
+        body: 'You get a simple Mastercard with no yearly fee for life and AUB flexible billing controls.',
+      };
+    case 'aub_platinum_mastercard':
+      return {
+        lead: 'No-fee Platinum access.',
+        body: 'You get AUB Platinum benefits, flexible billing, and lounge access without a yearly fee.',
+      };
     case 'metrobank_travel_signature_visa':
       return {
         lead: 'Miles with lower forex.',
@@ -454,6 +469,51 @@ export interface FitLists {
 
 function exactFitLists(card: CreditCard): FitLists | null {
   switch (card.normalized_card_key) {
+    case 'aub_easy_mastercard':
+      return {
+        goodFit: [
+          'You want a starter-friendly AUB card with no yearly fee for life.',
+          'You meet AUB\'s Php 50,000 gross monthly income requirement for Easy, Classic, and Gold.',
+          'You value choosing your due date and payment frequency more than premium perks.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You need a card with cash advance access.',
+          'You want strong category rewards or cashback.',
+          'You often spend in foreign currency and want a lower foreign-card fee than 2.50%.',
+          'You want airport lounge access or premium travel benefits.',
+        ],
+      };
+    case 'aub_classic_mastercard':
+      return {
+        goodFit: [
+          'You want a simple Mastercard with no yearly fee for life.',
+          'You meet AUB\'s Php 50,000 gross monthly income requirement for Easy, Classic, and Gold.',
+          'You want supplementary-card flexibility without adding yearly fees.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You need a card with cash advance access.',
+          'You want cashback or bonus-category rewards as the main value.',
+          'You often spend in foreign currency and want a lower foreign-card fee than 2.50%.',
+          'You want travel perks beyond basic Mastercard acceptance.',
+        ],
+      };
+    case 'aub_platinum_mastercard':
+      return {
+        goodFit: [
+          'You want a Platinum-tier AUB card with no yearly fee for life.',
+          'You meet AUB\'s Php 100,000 gross monthly income requirement for Platinum.',
+          'You can use lounge access and AUB Rewards Points.',
+          'You pay your balance in full each month to avoid interest.',
+        ],
+        lookElsewhere: [
+          'You need a card with cash advance access.',
+          'You want a lower income requirement than Php 100,000 a month.',
+          'You want a dedicated miles card instead of flexible rewards points.',
+          'You often spend in foreign currency and want a lower foreign-card fee than 2.50%.',
+        ],
+      };
     case 'metrobank_travel_signature_visa':
       return {
         goodFit: [
@@ -860,7 +920,6 @@ const PRIORITY_CHIP: Record<string, string> = {
   points: 'Simple rewards',
   travel: 'Travel perks',
   easy: 'Beginner-friendly',
-  simple: 'Simple rewards',
 };
 
 /**
