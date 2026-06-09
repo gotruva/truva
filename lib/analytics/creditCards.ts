@@ -242,6 +242,10 @@ export function trackResultsBrowseAll() {
   emit('cc_results_browse_all_clicked', {});
 }
 
+export function trackResultsCompare(args: { count: number }) {
+  emit('cc_results_compare_clicked', { count: args.count });
+}
+
 // ── Apply + detail ───────────────────────────────────────────────────────────
 
 export function trackApplyClick(args: {

@@ -1,4 +1,4 @@
-import { AlertTriangle, Gift } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CreditCardVisual } from '../CreditCardVisual';
 import { AffiliateDisclosure } from '../shared/AffiliateDisclosure';
@@ -6,6 +6,7 @@ import { ApplyOnBankSiteButton } from '../shared/ApplyOnBankSiteButton';
 import { TrackedLink } from '../shared/TrackedLink';
 import { RESULTS, CONFIDENCE_LABELS } from '@/lib/creditCardFinder/copy';
 import type { ScoredCard, ResultRole } from '@/lib/creditCardFinder/rank';
+import type { ApprovalAssessment } from '@/lib/creditCardFinder/detail';
 
 import { getPromoTCUrlFor } from '@/lib/creditCardEditorial';
 
@@ -15,6 +16,7 @@ interface Props {
   scored: ScoredCard;
   why: string;
   watchOut: string;
+  approval: ApprovalAssessment;
   welcomePromo?: string;
   fitLabel: string;
   fitTone: FitTone;
@@ -47,6 +49,7 @@ export function ResultCard({
   scored,
   why,
   watchOut,
+  approval,
   welcomePromo,
   fitLabel,
   fitTone,
@@ -134,6 +137,31 @@ export function ResultCard({
           </div>
         )}
       </dl>
+
+      {/* Can you qualify? — income fit, reused from the detail page's read */}
+      {(approval.verdict === 'likely-meet' ||
+        approval.verdict === 'may-need-higher') && (
+        <div className="mb-3 flex items-start gap-1.5 px-1">
+          {approval.verdict === 'likely-meet' ? (
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          ) : (
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
+          )}
+          <p className="text-[12px] leading-relaxed text-brand-textSecondary dark:text-gray-300">
+            <span
+              className={cn(
+                'font-bold',
+                approval.verdict === 'likely-meet'
+                  ? 'text-emerald-700 dark:text-emerald-300'
+                  : 'text-amber-700 dark:text-amber-300',
+              )}
+            >
+              {RESULTS.blockLabels.qualify} {approval.headline}
+            </span>{' '}
+            {approval.detail}
+          </p>
+        </div>
+      )}
 
       {/* Watch out */}
       <div className="flex items-start gap-2 rounded-xl bg-amber-50/70 p-3 dark:bg-amber-900/15">

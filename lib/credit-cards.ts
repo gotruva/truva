@@ -30,6 +30,25 @@ function deriveLogo(bank: string): string {
 }
 
 /**
+ * Collapses issuer name variants to one display name so the catalog bank
+ * filter, finder, and analytics treat a bank as a single entity (assessment
+ * C5). Code-level only — never written back to web_weaver (read-only data
+ * boundary). Canonical targets stay keyed in BANK_LOGO_MAP and (in
+ * creditCardEditorial) BANK_PROMO_TC_URL so logo and promo-T&C lookups keep
+ * resolving.
+ */
+const BANK_NAME_CANONICAL: Record<string, string> = {
+  'Bank of the Philippine Islands (BPI)': 'Bank of the Philippine Islands',
+  'Metrobank Card Corporation': 'Metrobank',
+  'Metropolitan Bank & Trust Company': 'Metrobank',
+  'Metropolitan Bank and Trust Company': 'Metrobank',
+};
+
+function canonicalizeBankName(bank: string): string {
+  return BANK_NAME_CANONICAL[bank] ?? bank;
+}
+
+/**
  * Canonical key for deduping rows that describe the same product but were
  * upserted under inconsistent `normalized_card_key` values (e.g. "hsbc live
  * credit card" vs "hsbc_live_plus_credit_card"). The WebWeaver v2 contract is
@@ -59,6 +78,7 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
   const normType = normalizeRewardType(row.rewards_type);
   const canonKey = canonicalCardKey(row);
   const fallback = REWARDS_FALLBACK_REGISTRY[canonKey];
+  const bank = canonicalizeBankName(row.bank);
 
   const dbFormula = row.rewards_formula as Record<string, unknown> | null;
   const hasDbEarnRate = dbFormula && typeof dbFormula.earn_rate === 'number' && dbFormula.earn_rate > 0;
@@ -73,7 +93,8 @@ function attachLogo(row: Omit<CreditCard, 'logo'>): CreditCard {
 
   return {
     ...row,
-    logo: deriveLogo(row.bank),
+    bank,
+    logo: deriveLogo(bank),
     rewards_type: finalType,
     rewards_formula: finalFormula,
     annual_fee_recurring: row.annual_fee_recurring ?? (fallback?.annual_fee_recurring ?? null),
