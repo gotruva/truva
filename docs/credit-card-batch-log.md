@@ -130,9 +130,34 @@ rows — check it before and after every batch; migration
 - Display-label special cases for `bdo_secured` / `bdo_world_elite` in
   `deriveMinIncomeLabel` are factual, display-only (no score impact).
 
+## 2026-06-10 — Stage 2P: RCBC remainder (15 listed, 1 held)
+
+Catalog: 107 → 122 live cards. All 16 rows official-sourced (rcbccredit.com);
+source-violations view confirmed zero after listing.
+
+Listed: AirAsia (Classic + Platinum), Classic/Gold/Platinum JCB, Flex Gold
+Visa, Visa Platinum, World Mastercard (income published annually, app
+derives monthly), Visa Infinite, UnionPay Diamond, YGC Rewards Plus, ZALORA,
+Landmark Anson's (income unpublished — cannot-confirm verdict), Hexagon Club
+Priority + Privilege (relationship-based NAFFL, income unpublished by
+design).
+
+⚠️ **HELD: rcbc_visa_infinite_dollar — USD-denominated card stored with
+`annual_fee_currency = 'PHP'` and fee 120.** Listing it would show
+"₱120/yr", factually wrong (it is USD 120). Needs the currency fixed
+upstream AND multi-currency support in `deriveAnnualFeeLabel` (currently
+hardcodes the peso sign). Override row exists with `listed = false`.
+
+Data-quality flags for WebWeaver: `rewards_type = 'cashback_via_points'` on
+ZALORA + Landmark Anson's is a nonstandard type — those cards currently earn
+neither the cashback nor points finder tag (neutral but lossy; normalize the
+type upstream).
+
 ## Remaining queue (raw cards not yet listed)
 
-RCBC (~16) → Metrobank (~10) → BDO (~5) → EastWest (~7) → Chinabank (~4) →
-BPI (~2) → HSBC (~2) → small issuers (Equicom, Landbank, Home Credit, Maya,
-Robinsons — Robinsons Bank merged into BPI, verify before listing) → relist
-pnb_visa_classic/gold once re-scraped from pnb.com.ph.
+Metrobank (~10, incl. metrobankcard.com legacy-domain rows) → BDO (~5) →
+EastWest (~7) → Chinabank (~4) → BPI (~2) → HSBC (~2) → small issuers
+(Equicom, Landbank, Home Credit, Maya, Robinsons — Robinsons Bank merged
+into BPI, verify before listing) → relist pnb_visa_classic/gold once
+re-scraped from pnb.com.ph → relist rcbc_visa_infinite_dollar once currency
+is fixed and the fee label supports USD.
