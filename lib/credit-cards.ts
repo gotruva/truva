@@ -25,6 +25,8 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'BDO Unibank, Inc.': '/logos/bdo.svg',
   'China Banking Corporation (Chinabank)': '/logos/chinabank.svg',
   'UnionBank of the Philippines': '/logos/unionbank-mark.png',
+  'Philippine National Bank': '/logos/pnb-mark.png',
+  'Maybank Philippines': '/logos/maybank-mark.png',
 };
 
 function deriveLogo(bank: string): string {
@@ -44,6 +46,7 @@ const BANK_NAME_CANONICAL: Record<string, string> = {
   'Metrobank Card Corporation': 'Metrobank',
   'Metropolitan Bank & Trust Company': 'Metrobank',
   'Metropolitan Bank and Trust Company': 'Metrobank',
+  'Maybank Philippines, Inc.': 'Maybank Philippines',
 };
 
 function canonicalizeBankName(bank: string): string {

@@ -60,9 +60,50 @@ profile is U Platinum Mastercard (correct); detail page renders with
 affiliate disclosure and official apply URL; zero horizontal overflow at
 375px; production build green.
 
+## 2026-06-10 — Stages 2M/2N/2O: Security Bank, PNB, Maybank (26 listed, 2 held)
+
+Catalog: 81 → 107 live cards. Verification method as in Stage 2L (WebWeaver
+official-page captures of Jun 3–9 + consistency audit; all three bank sites
+403 plain fetchers).
+
+**Stage 2M — Security Bank (7 listed, 8 total live).** Classic, Gold,
+Platinum, World, Next (NAFFL; dual income threshold noted), Complete Cashback
+Platinum (FLAG: FX fee not captured), Fast Track Secured (FLAG: fee/rewards
+not captured — sparse row; income NULL correct, deposit-secured).
+
+**Stage 2N — PNB (11 listed, 2 HELD).** Ze-Lo + Cart (NAFFL, PHP 10k/mo
+income — now the finder's top picks for the 15–30k no-fee profile),
+Essentials, Cashback Titanium, Diamond UnionPay, Platinum, PAL Mabuhay Miles
+NOW/Platinum/World/World Elite (PHP 50k/yr fee, income unpublished), LSGH
+Alumni (relationship_based affinity card).
+⚠️ **HELD: pnb_visa_classic + pnb_visa_gold — their `source_url` points to
+moneymax.ph (a competitor comparison site, not PNB).** Fee figures
+unverifiable against an official page and the Apply CTA would link to a
+competitor. Override rows exist with `listed = false`; relist only after
+WebWeaver re-scrapes them from pnb.com.ph.
+
+**Stage 2O — Maybank Philippines (8 listed).** Visa Classic/Gold/Platinum/
+Infinite, Standard/Gold/Platinum Mastercard, Manchester United. All rows
+clean (income text ↔ numeric consistent, usage-based waivers, FX 1.75–2.5%).
+Bank-name variant "Maybank Philippines, Inc." canonicalized app-side.
+
+App glue this round: PNB + Maybank logos and `BANK_LOGO_MAP` entries
+(Maybank mark from Wikimedia), `BANK_NAME_CANONICAL` Maybank variant,
+`BANK_PROMO_TC_URL` for Security Bank, PNB (URL confirmed via site search),
+and Maybank.
+
+Observation for later tuning: the finder's `<15` income band uses
+bracketMin = 0, so even PHP 10k-requirement cards score as a near-miss for
+below-15k users — conservative but means Ze-Lo/Cart don't surface for the
+lowest band. Scoring design predates sub-15k-income cards existing.
+
+QA: 107 cards on `/credit-cards/all`; no "Inc." variant leaks; finder
+15–30k no-fee profile → PNB Cart top match with Ze-Lo + U Platinum
+alternatives; 375px clean; production build green.
+
 ## Remaining queue (raw cards not yet listed)
 
-Security Bank (7) → PNB (13, logo exists) → Maybank (8, needs logo) → RCBC
-(~16) → Metrobank (~10) → BDO (~5) → EastWest (~7) → Chinabank (~4) → BPI
-(~2) → HSBC (~2) → small issuers (Equicom, Landbank, Home Credit, Maya,
-Robinsons — Robinsons Bank merged into BPI, verify before listing).
+RCBC (~16) → Metrobank (~10) → BDO (~5) → EastWest (~7) → Chinabank (~4) →
+BPI (~2) → HSBC (~2) → small issuers (Equicom, Landbank, Home Credit, Maya,
+Robinsons — Robinsons Bank merged into BPI, verify before listing) → relist
+pnb_visa_classic/gold once re-scraped from pnb.com.ph.

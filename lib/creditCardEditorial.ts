@@ -51,6 +51,10 @@ export const BANK_PROMO_TC_URL: Record<string, string> = {
   'Equicom Savings Bank': 'https://www.equicomsavings.com/product-and-services/card-products/',
   'Rizal Commercial Banking Corporation': 'https://rcbccredit.com/promos/welcomegifts',
   'UnionBank of the Philippines': 'https://www.unionbankph.com/promos',
+  'Security Bank Corporation': 'https://www.securitybank.com/promos/',
+  'Philippine National Bank': 'https://www.pnb.com.ph/index.php/pnb-credit-card-promos',
+  'Maybank Philippines': 'https://www.maybank.com.ph/en/personal/cards/promotions-contests-events.page',
+  'Maybank Philippines, Inc.': 'https://www.maybank.com.ph/en/personal/cards/promotions-contests-events.page',
 };
 
 const BPI_BACK_TO_BACK_PERKS_URL = 'https://www.bpi.com.ph/personal/rewards-and-promotions/promos/back-to-back-perks';
