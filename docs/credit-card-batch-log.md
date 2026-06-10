@@ -153,11 +153,54 @@ ZALORA + Landmark Anson's is a nonstandard type — those cards currently earn
 neither the cashback nor points finder tag (neutral but lossy; normalize the
 type upstream).
 
-## Remaining queue (raw cards not yet listed)
+## 2026-06-10 — Stages 2Q/2R: Metrobank + all remaining issuers (catalog sweep complete)
 
-Metrobank (~10, incl. metrobankcard.com legacy-domain rows) → BDO (~5) →
-EastWest (~7) → Chinabank (~4) → BPI (~2) → HSBC (~2) → small issuers
-(Equicom, Landbank, Home Credit, Maya, Robinsons — Robinsons Bank merged
-into BPI, verify before listing) → relist pnb_visa_classic/gold once
-re-scraped from pnb.com.ph → relist rcbc_visa_infinite_dollar once currency
-is fixed and the fee label supports USD.
+Catalog: 122 → 145 live cards. Source-violations view: zero. Every raw card
+in `web_weaver.credit_cards` now has an explicit listed/held decision.
+
+**Stage 2Q — Metrobank (1 listed, 9 HELD).** Listed Travel Platinum Visa
+(current-domain product page, complete data). Held the rest on availability
+evidence, not data gaps: M Lite + Vantage Visa are sourced from the
+card-conversion-program article (retired-card signal); Vantage Mastercard
+from a 2019 launch news article; Femme ×2, NCCC, ON Virtual, Robinsons,
+PSBank exist only on the legacy metrobankcard.com domain and are absent from
+the current metrobank.com.ph lineup — they appear in promo-eligibility lists
+(existing cardholders) but new-application availability is unconfirmed.
+
+**Stage 2R — remaining issuers (22 listed, 7 held).**
+- BPI: eCredit (companion virtual card). HELD Corporate Card (business scope).
+- BDO: Bench, HOPE, ShopMore. HELD Amex Gold (availability = discontinued)
+  and Amex The Platinum Card (fee 750 likely USD stored as PHP — same
+  currency bug class as the RCBC Dollar card).
+- Chinabank: World Mastercard, Landers Executive (membership-gated NAFFL,
+  S&R precedent). HELD Wealth World Elite (near-empty row) and Velvet
+  (no fee captured).
+- EastWest: foodpanda, JCB Gold/Platinum, KrisFlyer Platinum/World,
+  Dolce Vita, Priority Visa Infinite (relationship NAFFL).
+- HSBC: Red Platinum, Premier (relationship card).
+- LANDBANK: Classic + Gold (150k/yr income — lowest entry tier with PNB).
+- Maya Bank: Maya Black, Landers Cashback Everywhere (NAFFL).
+- Home Credit: Aling Puring, Home Credit Card. HELD Red Puregold
+  (source_url points at the wrong product page).
+- HELD Robinsons Cashback (Robinsons Bank merged into BPI 2023; issuing
+  entity + application availability unconfirmed).
+
+Glue: 9 new bank-name canonicalizations (EastWest/LANDBANK/HSBC ×2/
+Chinabank/Maya/Home Credit ×2/Metrobank long-form), Landbank + Maya logo
+map entries, homecredit.ph + landbank.com + mayabank.ph added to the
+official-source registry. Home Credit + Equicom render the default bank
+mark (logo assets TODO).
+
+QA: 145 on browse, zero variant leaks, 375px clean, build green.
+
+## Remaining queue
+
+Catalog sweep is complete — every scraped card is now listed or held with a
+documented reason. Reopen when: (1) WebWeaver re-scrapes pnb_visa_classic/
+gold from pnb.com.ph, (2) currency fix lands for rcbc_visa_infinite_dollar +
+bdo_the_platinum_card (and fee label gains USD support), (3) Metrobank
+legacy-domain cards are confirmed open for new applications, (4) Chinabank
+Velvet/Wealth fee data is captured, (5) Red Puregold gets a correct-page
+scrape, (6) Robinsons Cashback issuing entity is confirmed post-merger.
+New banks (Citibank-replacement entrants, digital banks launching cards)
+enter via the standard runbook.

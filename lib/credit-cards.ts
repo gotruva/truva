@@ -27,6 +27,8 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'UnionBank of the Philippines': '/logos/unionbank-mark.png',
   'Philippine National Bank': '/logos/pnb-mark.png',
   'Maybank Philippines': '/logos/maybank-mark.png',
+  'Land Bank of the Philippines': '/logos/landbank.svg',
+  'Maya Bank': '/logos/maya.svg',
 };
 
 function deriveLogo(bank: string): string {
@@ -46,7 +48,16 @@ const BANK_NAME_CANONICAL: Record<string, string> = {
   'Metrobank Card Corporation': 'Metrobank',
   'Metropolitan Bank & Trust Company': 'Metrobank',
   'Metropolitan Bank and Trust Company': 'Metrobank',
+  'Metropolitan Bank and Trust Company (Metrobank)': 'Metrobank',
   'Maybank Philippines, Inc.': 'Maybank Philippines',
+  'EastWest Bank': 'East West Banking Corporation',
+  'Land Bank of the Philippines (LANDBANK)': 'Land Bank of the Philippines',
+  'The Hongkong and Shanghai Banking Corporation Limited (HSBC Philippines)': 'HSBC Philippines',
+  'The Hongkong and Shanghai Banking Corporation Limited - Philippines Branch': 'HSBC Philippines',
+  'China Banking Corporation': 'China Banking Corporation (Chinabank)',
+  'Maya Bank Inc.': 'Maya Bank',
+  'HC Consumer Finance Philippines, Inc.': 'Home Credit Philippines',
+  'HC Consumer Finance Philippines, Inc. (Home Credit Philippines)': 'Home Credit Philippines',
 };
 
 function canonicalizeBankName(bank: string): string {
