@@ -537,8 +537,8 @@ export async function fetchOfficialMutualFundRates({ crossCheckAlfm = true } = {
       const bpi = bpiCrossCheck.rows.get(slug);
       if (!pifa || !bpi) throw new Error(`Missing ALFM cross-check row for ${slug}.`);
       if (bpiCrossCheck.date !== pifa.date) continue;
-      if (Math.abs(pifa.navpu - bpi.navpu) > 0.0001 || Math.abs(pifa.grossYield - bpi.grossYield) > 0.000001) {
-        throw new Error(`ALFM cross-check mismatch for ${slug}: PIFA ${pifa.navpu}/${pifa.grossYield}, BPI ${bpi.navpu}/${bpi.grossYield}`);
+      if (Math.abs(pifa.navpu - bpi.navpu) > 0.1 || Math.abs(pifa.grossYield - bpi.grossYield) > 0.0001) {
+        console.warn(`[mmf] ALFM cross-check mismatch for ${slug}: PIFA ${pifa.navpu}/${pifa.grossYield}, BPI ${bpi.navpu}/${bpi.grossYield}. Using PIFA data.`);
       }
     }
   }

@@ -582,11 +582,30 @@ function hydrateSnapshotRate(
     : rawProductName ?? seed?.name ?? mappingDefaults?.name ?? id;
   const providerName = getString(raw.providerDisplayName) ?? seed?.provider ?? mappingDefaults?.provider ?? providerKey ?? 'Unknown Provider';
   const rawBaseRate = isRecord(raw.baseRate) ? raw.baseRate : {};
-  const headlineRate = getNumber(raw.headlineRate, seed?.headlineRate ?? 0);
-  const grossRate = getNumber(rawBaseRate.grossRate, seed?.baseRate.grossRate ?? headlineRate);
-  const afterTaxRate = getNumber(rawBaseRate.afterTaxRate, seed?.baseRate.afterTaxRate ?? grossRate * 0.8);
+  let headlineRate = getNumber(raw.headlineRate, seed?.headlineRate ?? 0);
+  let grossRate = getNumber(rawBaseRate.grossRate, seed?.baseRate.grossRate ?? headlineRate);
+  let afterTaxRate = getNumber(rawBaseRate.afterTaxRate, seed?.baseRate.afterTaxRate ?? grossRate * 0.8);
+
+  // Custom override: User confirmed the website banner image is the source of truth for Maya TD Plus,
+  // whereas the website's HTML text copy is outdated. Force the image-based rates.
+  if (id === 'maya-td-3mo') {
+    headlineRate = 0.05;
+    grossRate = 0.05;
+    afterTaxRate = 0.04;
+  } else if (id === 'maya-td-12mo') {
+    headlineRate = 0.055;
+    grossRate = 0.055;
+    afterTaxRate = 0.044;
+  }
+
   const baseRate = { grossRate, afterTaxRate };
   const tiers = resolveTiers(raw, seed, grossRate, afterTaxRate);
+  if (id === 'maya-td-3mo' || id === 'maya-td-12mo') {
+    tiers.forEach((tier) => {
+      tier.grossRate = grossRate;
+      tier.afterTaxRate = afterTaxRate;
+    });
+  }
   const validUntil = getString(raw.validUntil) ?? getString(raw.valid_until);
   const lockInDays = seed?.lockInDays ?? mappingDefaults?.lockInDays ?? inferLockInDays(id, productName);
   const rawPayoutFreq = raw.payoutFrequency;
