@@ -93,7 +93,7 @@ interface AffiliateLink {
   baseUrl: string;
   payoutAmount: number;
   utmSource: 'tool' | 'newsletter' | 'article';
-  utmMedium: 'comparison-table' | 'calculator' | 'pdic-optimizer';
+  utmMedium: 'comparison-table' | 'calculator';
   utmCampaign: string;
 }
 
@@ -347,8 +347,6 @@ Also includes Schema.org JSON-LD structured data block per Section 11 of the bri
 ### `app/calculator/page.tsx`
 Stub — placeholder heading + correct SEO metadata. (Week 3)
 
-### `app/optimizer/page.tsx`
-Stub — protected route. Middleware redirects unauthenticated users to `/`. (Week 4)
 
 ### `app/tracker/page.tsx`
 Stub — protected route. (Week 6)
@@ -366,7 +364,7 @@ const PUBLIC_ROUTES = ['/', '/calculator'];
 const PUBLIC_PREFIXES = ['/api/rates', '/api/defi', '/api/newsletter', '/_next', '/logos', '/favicon'];
 ```
 
-- Unauthenticated requests to `/optimizer` or `/tracker` redirect to `/`
+- Unauthenticated requests to `/tracker` redirect to `/`
 - Uses `supabase.auth.getUser()` NOT `getSession()` (getSession only reads local JWT without server validation)
 - New pages added in future weeks are automatically protected — must be consciously allowlisted to make public
 
@@ -436,7 +434,6 @@ Per the briefing (do not build unless explicitly instructed):
 - Yield calculator (logic) — Week 3
 - Supabase auth UI — Week 3
 - Resend email wiring — Week 3
-- PDIC optimizer — Week 4
 - MP2, RTBs, T-Bills, UITFs — Week 5
 - TD Tracker — Week 6
 - Palago Score algorithm — Week 7
@@ -481,7 +478,7 @@ Run through every item after the build before declaring Week 1 done.
 - [ ] POST to `/api/rates` returns 405
 - [ ] POST to `/api/newsletter` with invalid email returns 400
 - [ ] 6th newsletter POST within 1 minute returns 429
-- [ ] `/optimizer` and `/tracker` redirect to `/` when unauthenticated
+- [ ] `/tracker` redirects to `/` when unauthenticated
 - [ ] `npm run build` produces no `.js.map` files in `.next/static/chunks/`
 
 ### Production (after Vercel deploy)

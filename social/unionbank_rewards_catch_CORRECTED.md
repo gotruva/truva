@@ -1,15 +1,28 @@
+<!-- AI-AGENT METADATA
+doc_type: template
+system: truva-marketing
+read_order: 5
+audience_agents: [claude, founder, hermes]
+consumes: FACT_PACK
+produces: COPY_PACK
+pipeline_stages: [S2, S4]
+pillar: A
+status: draft-verify-before-posting
+authority: subordinate-to TRUVA_MASTER.md
+-->
+
 # Social Content Template: "What's the Catch?" — UnionBank Rewards Card (Corrected)
 **Category:** Pillar A (Fine-Print Teardown) | **Status:** ⚠️ DRAFT — verify all numbers before posting
 **Supersedes:** `unionbank_rewards_catch.md`
 
-> **Why this was corrected:** The original built the whole post on a "catch" — *"the No Annual Fee is NOT automatic, you must spend ₱20,000 in 60 days."* UnionBank currently markets this card as **"No Annual Fees Forever,"** and card guides describe the waiver as automatic. That ₱20k/60-day condition is **unverified and likely outdated.** Per Beto: treat as **needs verification.** Putting a false "catch" on our flagship "What's the catch" pillar would do the most damage to the brand. This version is reframed around the *honest* angle and flags every number with `[VERIFY]`.
+> **Status note (verified June 4, 2026):** The original Gemini draft's catch — *"No Annual Fee is NOT automatic, you must spend ₱20,000 in 60 days"* — turned out to be **TRUE and current.** Our PH-finance expert review confirmed it via Moneymax (carrying UnionBank's 2026 DTI Fair Trade Permit No. FTEB-212281): the card is "No Annual Fee For Life **when you spend ₱20,000 in the first 60 days** of approval." An earlier draft of this corrected file wrongly assumed the condition was outdated — it is not. This post is now built on the real, verified catch. **Still re-confirm the exact figure on `unionbankph.com/cards-fees` on the day you post, because promo permits rotate.**
 
-> 🔒 **Fact-Check before posting** (see playbook §3): confirm each number on `unionbankph.com/rewards` and the official Table of Fees, and log the source + date below.
+> 🔒 **Fact-Check before posting** (see playbook §3): re-confirm each number on `unionbankph.com/cards-fees` + `/rewards`, and log the source + date below.
 
 ---
 
 ## 1. The honest angle for this card
-UnionBank advertises "No Annual Fee for Life." If that is genuinely automatic with no spend condition, **we say so plainly — and that honesty is the hook.** The catch then becomes the thing people *don't* read: the interest rate on unpaid balances and the points-redemption math. Telling the truth about the good part is exactly what makes people trust us on the catch.
+UnionBank advertises "No Annual Fee for Life" — and it's real, **but only if you spend ₱20,000 in your first 60 days.** That gap between the ad and the condition IS the catch, and it's exactly what our "What's the Catch?" pillar exists to expose. We're not calling the card bad — for a starter card it's genuinely good and very accessible (low income requirement). We're just making sure people know the one thing the ad doesn't lead with, so they don't get surprised by a ₱2,500 fee.
 
 ---
 
@@ -41,35 +54,35 @@ Use ChatGPT (DALL·E 3) or Gemini (Imagen 3). **Light-mode** prompts only (match
   > - People who want simple rewards on everyday spend
 
 ### Slide 4 (What's the catch?)
-- **Text Overlay (use only verified items):**
+- **Text Overlay (verified June 4, 2026 — re-confirm on post day):**
   > **What's the catch? 🟡**
-  > - Annual fee: confirm whether it is truly **free for life with no conditions**, or waived only on a spend requirement `[VERIFY — this is the key fact]`
-  > - Interest on unpaid balance: about 3% per month `[VERIFY against current rate]` — pay in full to avoid it
-  > - Points math: it takes a lot of points to redeem a small voucher — check the redemption table before you count on rewards `[VERIFY ratio]`
+  > - "Free for life" only kicks in **if you spend ₱20,000 in your first 60 days.** Miss it and you pay the ₱2,500 annual fee.
+  > - Interest on unpaid balance: about 3% per month — pay in full to avoid it.
+  > - Points add up slowly (1 point per ₱30) — treat rewards as a bonus, not the reason to apply.
 
 ### Slide 5 (Truva Verdict)
 - **Text Overlay:**
   > **The Verdict 📊**
-  > If it is genuinely free for life, it is a solid, low-risk starter card.
-  > Just treat the rewards as a bonus, not a reason to overspend — and always pay the full balance.
+  > A solid, accessible starter card (income requirement is low) — **if** you can hit the ₱20,000 spend on things you'd buy anyway in the first 60 days.
+  > If you can't, look for a card that's free with zero spend conditions. Always pay your full balance.
 
 ---
 
 ## 3. Post Caption (verify bracketed facts first)
 
 ```text
-"No Annual Fee for Life" sounds great on a credit card ad. But what does it really mean for the UnionBank Rewards Card? Here's the plain-English version. 💳
+"No Annual Fee for Life" sounds great on a credit card ad. For the UnionBank Rewards Card it's real — but there's one line the ad doesn't lead with. Here's the plain-English version. 💳
 
 1) WHAT IS IT?
-UnionBank's entry-level rewards card. It earns 1 point per ₱30 you spend, with 3x points on shopping, dining, and online. [VERIFY]
+UnionBank's entry-level rewards card. It earns 1 point per ₱30 you spend, with 3x points on shopping and dining. Minimum income to qualify is low (about ₱15,000/month), so it's one of the easiest starter cards to get.
 
 2) WHO IS IT FOR?
 First-time cardholders, online shoppers, and food-delivery regulars who want simple rewards.
 
 3) WHAT'S THE CATCH?
-The good news: it's marketed as free for life. The part people miss is the interest — around 3% per month on any unpaid balance. [VERIFY] Rewards only pay off if you pay your full balance, on time, every time.
+"Free for life" only applies if you spend ₱20,000 within your first 60 days. Hit it and the card stays free forever. Miss it and you pay ₱2,500 a year. Interest also runs about 3% per month on any unpaid balance, so always pay in full.
 
-Our take: a low-risk starter card if you pay in full each month. Treat the points as a small bonus, not a reason to spend more.
+Our take: a genuinely good, accessible starter card — if you can hit the ₱20,000 spend on things you'd buy anyway in those first 60 days. If you can't, look for a card that's free with no spend condition.
 
 👉 Compare fees, rewards, and requirements side by side, free, at gotruva.com (link in bio).
 
@@ -82,6 +95,6 @@ Affiliate Disclosure: We earn a fee if you apply and get approved through our li
 
 ## 4. Compliance & Payout (Founder Reference)
 - **Affiliate Payout:** confirm current rate with the affiliate network `[VERIFY]` (master range for cards: ₱500–₱2,000+).
-- **Verified on:** `unionbankph.com/rewards` + Table of Fees — date: __________ (fill before posting)
+- **Verified:** moneymax.ph/credit-card/products/unionbank-rewards-credit-card (DTI Permit FTEB-212281 s.2026) — 2026-06-04. Re-confirm on `unionbankph.com/cards-fees` on post day: __________
 - **UTM:** `gotruva.com/credit-cards/unionbank-rewards?utm_source=instagram&utm_medium=carousel&utm_campaign=ub_rewards_catch`
 - **Disclosure:** master wording, present in caption + landing page.

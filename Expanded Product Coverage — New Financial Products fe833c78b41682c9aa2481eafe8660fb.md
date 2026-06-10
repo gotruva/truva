@@ -108,7 +108,7 @@ We currently compare DeFi USDC yields but have no PHP-based foreign currency pro
 
 **Moat implication:** Building a cooperative rate database is labor-intensive but creates a near-impossible-to-replicate competitive advantage. Once we have it, no scraper can copy it.
 
-**Risk labeling:** Cooperative deposits must be clearly labeled as non-PDIC insured with a risk level of "Low-Medium" (vs "Very Low" for bank products). Our PDIC Smart Split optimizer should exclude cooperative deposits from PDIC coverage calculations.
+**Risk labeling:** Cooperative deposits must be clearly labeled as non-PDIC insured with a risk level of "Low-Medium" (vs "Very Low" for bank products). 
 
 **Suggested MVP approach:** Launch with the top 10 most accessible national cooperatives. Expand via community submissions (users submit their coop's rates — we verify before publishing).
 
@@ -219,17 +219,6 @@ We currently compare DeFi USDC yields but have no PHP-based foreign currency pro
 ### High effort / strategic bet (Month 4+)
 
 - Cooperative deposits: No central feed. Requires manual research + community submission model. High moat, high effort. Consider a "Submit your coop's rate" feature where users contribute data (verified before publishing).
-
----
-
-## Impact on PDIC Smart Split Optimizer
-
-Adding government bank products and cooperative deposits requires a PDIC logic update:
-
-- **Landbank / DBP / OFBank:** PDIC-insured — include in PDIC split calculations normally
-- **Cooperative deposits:** NOT PDIC-insured — optimizer must exclude them from PDIC coverage math and label clearly. They can be recommended as a yield-maximizing allocation *outside* the PDIC-insured portion.
-- **Dollar deposits:** PDIC covers up to the peso equivalent of ₱500,000 per depositor per bank (converted at BSP rate) — treat as separate PDIC bucket from peso deposits at the same bank
-- **SSS PESO Fund / GSIS:** Government-guaranteed but not PDIC — exclude from PDIC split, include as a separate "government-safe" tier
 
 ---
 

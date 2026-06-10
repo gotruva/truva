@@ -51,7 +51,7 @@
 **Mitigation:**
 
 - Ship the after-tax calculator FAST (Week 3). This is your #1 feature moat.
-- Build the PDIC Smart Split optimizer — Lemoneyd doesn’t have this and it’s hard to replicate.
+- Build advanced comparison features — Lemoneyd doesn't have after-tax calculations.
 - Go web-first (PWA) while Lemoneyd is app-only — capture SEO traffic they can’t.
 - Compete on breadth: Lemoneyd covers digital banks only. You cover digital banks + government products + DeFi + UITFs + credit cooperatives.
 
@@ -76,7 +76,7 @@
 
 **Mitigation:**
 
-- Every tool interaction should prompt email capture (after calculator result, after PDIC split, on article pages)
+- Every tool interaction should prompt email capture (after calculator result, on article pages)
 - Offer a genuine lead magnet: "Free downloadable PH savings rate spreadsheet" or "Monthly rate report PDF"
 - Cross-promote on r/phinvest (357K members) and Facebook groups
 - Use the tool itself as the growth engine — the shareable result card ("I’m earning ₱X more") drives organic signups
@@ -142,7 +142,7 @@
 
 **Probability:** Medium
 
-**Impact:** With a broader platform vision now documented (Phase 2: credit cards, Phase 3: loans), there is a real risk of scope creep during the 8-week sprint. Building credit card comparison before savings is established wastes dev time, dilutes the product narrative, and competes directly with Moneymax's entrenched SEO without any of Truva's unique advantages (after-tax math, PDIC optimizer, DeFi yields) being applicable to credit cards.
+**Impact:** With a broader platform vision now documented (Phase 2: credit cards, Phase 3: loans), there is a real risk of scope creep during the 8-week sprint. Building credit card comparison before savings is established wastes dev time, dilutes the product narrative, and competes directly with Moneymax's entrenched SEO without any of Truva's unique advantages (after-tax math, DeFi yields) being applicable to credit cards.
 
 **Mitigation:**
 

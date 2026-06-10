@@ -63,14 +63,12 @@ Every competitor (Lemoneyd, BitPinas, Moneymax, FintechNews.ph) shows **gross ra
     /defi/route.ts       — DefiLlama proxy
     /newsletter/route.ts — Resend signup
   /calculator/page.tsx   — Yield calculator (also embedded in homepage)
-  /optimizer/page.tsx    — PDIC Smart Split (login required)
   /tracker/page.tsx      — TD Tracker (login required)
 /components
   /RateTable.tsx          — Desktop comparison table
   /RateCard.tsx           — Mobile card (< 768px)
   /FilterTabs.tsx         — Sticky category filter tabs
   /YieldCalculator.tsx    — Amount + horizon + risk inputs
-  /PDAICOptimizer.tsx     — PDIC split calculator
   /AffiliateButton.tsx    — CTA with UTM + disclosure tooltip
   /NewsletterSignup.tsx   — Email capture form
 /lib
@@ -271,25 +269,9 @@ Embedded ABOVE the rate table — not a separate page.
 **AI Integration (Week 3, optional):**
 User types natural language query → single Claude Haiku API call → ranked recommendation in plain text. User-triggered only (button click), never on page load.
 
-### Module 3: PDIC Smart Split Optimizer (Week 4)
-Free, requires login (email capture for newsletter).
 
-PDIC insures ₱1M per depositor per bank. Users with ₱1M+ need to split.
+### Module 3: Time Deposit Tracker + Reminders (Week 6)
 
-**Input:** Total amount + time horizon + risk tolerance
-**Output:** Bank allocation table showing:
-```
-₱900,000 → Maya Bank (15% promo)    = ₱108,000/yr after tax ✅ PDIC
-₱900,000 → UNO Digital (5.75% TD)  = ₱41,400/yr after tax  ✅ PDIC
-₱900,000 → Tonik (4% flat)         = ₱28,800/yr after tax  ✅ PDIC
-₱800,000 → GoTyme (3.5% liquid)    = ₱22,400/yr after tax  ✅ PDIC
-────────────────────────────────────────────────────────────
-Total: ₱200,600/yr | All PDIC insured ✅
-```
-
-Each bank row has an affiliate CTA. This feature alone is the reason ₱1M+ users sign up.
-
-### Module 4: Time Deposit Tracker + Reminders (Week 6)
 Free, requires login.
 
 Users add their TDs: bank, amount, rate, start date, maturity date.
@@ -325,7 +307,7 @@ interface AffiliateLink {
   baseUrl: string;
   payoutAmount: number; // in PHP
   utmSource: 'tool' | 'newsletter' | 'article';
-  utmMedium: 'comparison-table' | 'calculator' | 'pdic-optimizer';
+  utmMedium: 'comparison-table' | 'calculator';
   utmCampaign: string;
 }
 ```
@@ -351,7 +333,7 @@ Log every affiliate click to Supabase:
 CREATE TABLE affiliate_clicks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   bank TEXT NOT NULL,
-  placement TEXT NOT NULL, -- 'table' | 'calculator' | 'optimizer' | 'newsletter'
+  placement TEXT NOT NULL, -- 'table' | 'calculator' | 'newsletter'
   utm_campaign TEXT,
   user_id UUID REFERENCES auth.users(id),
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -365,7 +347,6 @@ CREATE TABLE affiliate_clicks (
 **Nothing is paywalled. Everything is free.** Login gates exist only to capture email for the newsletter.
 
 ### Login triggers (prompt to sign up, never force):
-- After using the PDIC optimizer → "Save your split for next time"
 - After TD tracker use → "Get maturity reminders by email"
 - After calculator result → "Save your scenario and track rate changes"
 - Newsletter signup → always visible above fold and after every article
@@ -475,7 +456,7 @@ Do not build any of the following unless explicitly instructed:
 | Week 1 | Live URL, rate table (6+ banks + DeFi), mobile cards, affiliate links, newsletter signup | ⬜ Not started |
 | Week 2 | Full 8-bank table, after-tax column, conditions tooltips, GA4, pre-qual flow | ⬜ Not started |
 | Week 3 | Yield calculator embedded above table, Supabase auth, email capture, shareable cards | ⬜ Not started |
-| Week 4 | PDIC optimizer (free, login-gated), all affiliate UTMs, newsletter launch | ⬜ Not started |
+| Week 4 | All affiliate UTMs, newsletter launch | ⬜ Not started |
 | Week 5 | Expand table: MP2, RTBs, T-Bills, UITFs, govt banks, category filters | ⬜ Not started |
 | Week 6 | TD Tracker + maturity email alerts, rate change alerts | ⬜ Not started |
 | Week 7–8 | Palago Score, Top 3 default view, Lighthouse 90+, affiliate link audit, first bank BD outreach | ⬜ Not started |

@@ -1,3 +1,16 @@
+<!-- AI-AGENT METADATA
+doc_type: template
+system: truva-marketing
+read_order: 5
+audience_agents: [claude, founder, hermes]
+consumes: FACT_PACK
+produces: COPY_PACK
+pipeline_stages: [S2, S4]
+pillar: B
+status: draft-verify-before-posting
+authority: subordinate-to TRUVA_MASTER.md
+-->
+
 # Social Content Template: "Card Battle" — UnionBank Rewards vs. HSBC Red (Corrected)
 **Category:** Pillar B (Head-to-Head) | **Status:** ⚠️ DRAFT — verify all numbers before posting
 **Supersedes:** `ub_rewards_vs_hsbc_red.md`
@@ -24,29 +37,29 @@
 - **Text Overlay:** **"Card Battle: UnionBank Rewards vs. HSBC Red ⚔️"**
 
 ### Slide 2 (Annual Fee)
-- **Text Overlay (verify both):**
+- **Text Overlay (verified June 4, 2026 — re-confirm on post day):**
   > **Round 1: Annual Fee 🟡**
-  > **UnionBank Rewards:** ₱[VERIFY] — confirm if free-for-life with no conditions
-  > **HSBC Red:** ₱[VERIFY] — confirm current waiver terms
+  > **UnionBank Rewards:** ₱2,500 — but **free for life if you spend ₱20,000 in your first 60 days**
+  > **HSBC Red:** ₱2,500 — **free year 1**; "for life" needs ~₱60,000 spend + app registration during the promo
 
 ### Slide 3 (Rewards Rate)
 - **Text Overlay:**
   > **Round 2: Rewards 📈**
-  > **UnionBank Rewards:** ₱30 = 1 point, 3x on shopping/dining/online `[VERIFY]`
-  > **HSBC Red:** ₱[VERIFY] = 1 point, [VERIFY]x on online/shopping/dining/overseas
+  > **UnionBank Rewards:** ₱30 = 1 point, 3x on shopping & dining
+  > **HSBC Red:** ₱20 = 1 point (faster base), 4x on online, shopping, dining & overseas
 
 ### Slide 4 (Income Requirement)
 - **Text Overlay:**
   > **Round 3: Getting Approved 🤝**
-  > **UnionBank Rewards:** min income ₱[VERIFY]/year
-  > **HSBC Red:** min income ₱[VERIFY]/year
+  > **UnionBank Rewards:** min income ~₱180,000/year (₱15,000/mo) — very accessible
+  > **HSBC Red:** min income ~₱400,000/year (₱33,000/mo) — harder to qualify
 
 ### Slide 5 (Truva Verdict)
-- **Text Overlay (finalize after numbers confirmed):**
+- **Text Overlay:**
   > **The Truva Verdict 🏆**
-  > Choose **UnionBank Rewards** if you want a simple, low-fee starter card.
-  > Choose **HSBC Red** if you spend more online and want to earn points faster.
-  > (Confirm the verdict matches the verified numbers before posting.)
+  > Both advertise "free for life" — but **neither is automatic.** Each asks for a spend condition.
+  > **UnionBank Rewards:** the easier starter card (low income bar, smaller spend condition).
+  > **HSBC Red:** better if you earn more and spend a lot online — points pile up faster.
 
 ---
 
@@ -55,22 +68,22 @@
 ```text
 UnionBank Rewards vs. HSBC Red: which starter card deserves a spot in your wallet? ⚔️💳
 
-Both are popular first cards, but they reward you differently. Here's the plain-English, side-by-side:
+Both advertise "free for life" — but neither is automatic. Here's the plain-English, side-by-side:
 
 🟡 ANNUAL FEE
-- UnionBank Rewards: ₱[VERIFY]
-- HSBC Red: ₱[VERIFY]
+- UnionBank Rewards: ₱2,500, but free for life if you spend ₱20,000 in your first 60 days.
+- HSBC Red: ₱2,500, free the first year; "for life" needs about ₱60,000 spend plus app registration during the promo.
 
 📈 REWARDS RATE
-- UnionBank Rewards: ₱30 spend = 1 point, 3x on shopping, dining, and online. [VERIFY]
-- HSBC Red: ₱[VERIFY] spend = 1 point, [VERIFY]x on online, shopping, dining, and overseas.
+- UnionBank Rewards: ₱30 spend = 1 point, 3x on shopping and dining.
+- HSBC Red: ₱20 spend = 1 point (faster base), 4x on online, shopping, dining, and overseas.
 
 🤝 GETTING APPROVED
-- UnionBank Rewards: needs about ₱[VERIFY]/month income.
-- HSBC Red: needs about ₱[VERIFY]/month income.
+- UnionBank Rewards: needs about ₱15,000/month income — very accessible.
+- HSBC Red: needs about ₱33,000/month income — harder to qualify.
 
 🏆 OUR TAKE
-Pick UnionBank Rewards for a simple, low-fee starter. Pick HSBC Red if you spend more online and want points faster. Either way, pay your full balance each month so interest doesn't eat your rewards.
+UnionBank Rewards is the easier starter card — low income bar, smaller spend condition. HSBC Red wins if you earn more and spend a lot online, where points pile up faster. Either way, pay your full balance each month so interest doesn't eat your rewards.
 
 👉 Compare these two and more, side by side, free, at gotruva.com (link in bio).
 
@@ -83,6 +96,7 @@ Affiliate Disclosure: We earn a fee if you apply and get approved through our li
 
 ## 3. Compliance & Payout (Founder Reference)
 - **Affiliate Payout:** confirm current per-card rates with the affiliate network `[VERIFY]` (master range: ₱500–₱2,000+).
-- **Verified on:** UnionBank ____________ (date) | HSBC PH ____________ (date) — fill before posting
+- **Verified:** UnionBank + HSBC Red via moneymax.ph (UnionBank DTI Permit FTEB-212281 s.2026; HSBC offers.hsbc.com.ph/waived-annual-fees) — 2026-06-04. Re-confirm on unionbankph.com/cards-fees and hsbc.com.ph on post day.
+- **Note:** HSBC "for life" waiver terms (spend threshold + app registration) rotate by promo — re-verify the exact ₱ threshold each time.
 - **UTM:** `gotruva.com/credit-cards/compare/unionbank-rewards-vs-hsbc-red?utm_source=tiktok&utm_medium=carousel&utm_campaign=ub_vs_hsbc_red`
 - **Disclosure:** master wording, present in caption + landing page.

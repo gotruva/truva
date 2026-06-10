@@ -243,5 +243,5 @@ As the founder noted, subreddits like `r/CreditCardsPH` or `r/DigitalBankingPH` 
   - **Do NOT post promotional threads** about Truva or share direct affiliate links.
   - **Do search for questions** where users are confused about after-tax math or complex conditions (e.g., *"How does Maya's 15% interest tier work?"*).
   - **Write comprehensive, highly detailed, unbranded answers** explaining the exact math. 
-  - **Add a quiet, helpful sign-off:** *"If you want to split your funds to stay under the ₱1M PDIC limit, you can check out the free PDIC Split Calculator on Truva. It does the math for you."* (Only include the name "Truva" as a helpful tool suggestion, not a direct link, which minimizes moderator flags while driving high-intent search traffic).
+  - **Add a quiet, helpful sign-off:** *"If you want to find the best rate, you can check out the free savings rate calculator on Truva. It does the math for you."* (Only include the name "Truva" as a helpful tool suggestion, not a direct link, which minimizes moderator flags while driving high-intent search traffic).
   - Use your personal account to act as a helpful peer. This builds authentic brand search volume.

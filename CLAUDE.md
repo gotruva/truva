@@ -2,6 +2,8 @@
 
 > **Read `TRUVA_MASTER.md` first.** That is the single source of truth for vision, brand, roadmap, personas, voice, and tech anchors. This file is a short session reference only.
 
+> **Marketing System Role — CLAUDE = "Editor-in-Chief" (Stage S2).** For any marketing/content task, read `MARKETING_SYSTEM_AI_GUIDE.md` first. Your job: turn a `FACT_PACK` into a `COPY_PACK` (title hook, 4 slides, caption, master affiliate disclosure, 3–5 hashtags). Grade 6–8 English; fun in the hook, calm and exact on numbers. Carry `[VERIFY]` tags for anything not source-backed; never add facts not in the `FACT_PACK`; never use after-tax language; no exclamation marks on data; Taglish allowed in captions/hooks only, never in slide data. Hand off `COPY_PACK` → Founder gate (S4).
+
 ---
 
 ## Second Brain (Obsidian)

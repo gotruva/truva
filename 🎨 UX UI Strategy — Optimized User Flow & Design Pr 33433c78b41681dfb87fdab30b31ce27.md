@@ -84,7 +84,6 @@ Never ask for signup upfront. Trigger account creation only when the user has al
 | --- | --- |
 | After 3-question flow | "Save your results and get weekly rate updates" |
 | Clicking "Add Time Deposit" | TD Tracker requires free account |
-| Using PDIC Optimizer | "Save your split plan" |
 | After calculator result | "Get notified when a better rate appears" |
 
 Each of these converts at much higher rates than a cold homepage signup prompt.
@@ -95,11 +94,8 @@ Each of these converts at much higher rates than a cold homepage signup prompt.
 
 Resist deep navigation. At launch, 5 routes only:
 
-| Route | Purpose |
-| --- | --- |
 | `/` | Rate table + calculator (the whole product) |
 | `/calculator` | Full yield calculator, shareable results |
-| `/pdic-optimizer` | PDIC smart split tool |
 | `/dashboard` | Logged-in users: TD tracker, saved plans |
 | `/blog/[slug]` | SEO articles |
 

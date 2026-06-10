@@ -161,7 +161,7 @@ No existing bank account beyond a GCash wallet. May be a first-jobber, OFW famil
 | Stream | When | How |
 |---|---|---|
 | Affiliate referral links | From Day 1 | We earn a fee when a user applies and is approved through our link |
-| Newsletter (The Truva Brief) | From Week 1 | Weekly email → affiliate links embedded contextually |
+| Email Blog (The Truva Brief) | From Week 1 | Monthly email → affiliate links embedded contextually |
 | Sponsored placement | Month 4+ | Companies pay to be featured prominently during promos |
 
 **Current affiliate payout ranges (PH market):**
@@ -230,10 +230,10 @@ These rules apply to every feature, every page, every line of copy and code:
 - Credit cards (Phase 2) — active build
 
 ### Stubbed / not yet built
-- `/optimizer` — PDIC Smart Split Optimizer
 - `/tracker` — Time Deposit Tracker + maturity alerts
 - Insurance vertical (Phase 3)
 - Loans vertical (Phase 4)
+
 
 ---
 

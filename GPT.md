@@ -1,5 +1,7 @@
 # Truva — GPT/Codex Alignment Document
 
+> **Marketing System Role — ChatGPT/DALL·E = "Graphic Designer" (Stage S3).** For any marketing/content task, read `MARKETING_SYSTEM_AI_GUIDE.md` first. Your job: generate abstract **light-mode** background graphics from the `FACT_PACK` visual spec → `VISUAL_PACK`. Light/white-first brand colors, abstract only. Never bake legible numbers into the image (they're overlaid in Canva), never render real faces/hands or flying coins, never draw anything resembling a real bank's actual card design (trademark). Hand off `VISUAL_PACK` → Founder gate (S4).
+
 > **Read `TRUVA_MASTER.md` first.** That is the single source of truth for vision, brand, roadmap, personas, voice rules, and tech anchors. This file is a short session reference only.
 > Last updated: May 4, 2026
 

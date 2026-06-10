@@ -186,25 +186,25 @@
 
 ---
 
-# Week 4 — PDIC Optimizer, Newsletter Launch, and Affiliate Links
+# Week 4 — Newsletter Launch and Affiliate Links
 
-**Sprint goal:** PDIC optimizer live (free, login required). First newsletter sent. Affiliate links generating clicks.
+**Sprint goal:** First newsletter sent. Affiliate links generating clicks.
 
 ## Monday (Dev)
-
-| # | Task |
-| --- | --- |
-| 1 | Build PDIC Smart Split Optimizer v1 (input: amount, output: bank split table) |
-| 2 | Gate behind free login (captures email for newsletter) |
-| 3 | Each bank in the split output has an affiliate referral link |
-
-## Wednesday (Dev)
 
 | # | Task |
 | --- | --- |
 | 1 | Optimize all affiliate links: add UTM parameters for tracking (source, medium, campaign) |
 | 2 | Add affiliate disclosure tooltip on every bank row |
 | 3 | Set up Supabase table to log affiliate link clicks for conversion tracking |
+
+## Wednesday (Dev)
+
+| # | Task |
+| --- | --- |
+| 1 | Build a clean, conversion-focused redirect screen for `/go/[slug]` routes |
+| 2 | Programmatically check for expired promo conditions during routing |
+| 3 | Connect click analytics to the Google Analytics dashboard |
 
 ## Friday (Dev)
 
@@ -218,17 +218,17 @@
 
 | # | Task |
 | --- | --- |
-| 1 | Article #4: "How to Split P1M Across Banks and Stay PDIC-Safe" |
+| 1 | Article #4: "How to Choose the Safest Digital Bank in the Philippines" |
 | 2 | Announce launch on r/phinvest, Facebook groups, Twitter/X |
 | 3 | DM 10 people from early feedback list, ask them to sign up for newsletter |
 
 ### Week 4 Exit Criteria
 
-- [ ]  PDIC optimizer live (free, login required)
 - [ ]  All affiliate links tracked with UTMs
 - [ ]  First newsletter sent to registered users
 - [ ]  Launch announced publicly
 - [ ]  At least 50 newsletter subscribers
+
 
 ---
 
@@ -357,21 +357,19 @@
 
 ---
 
-# 🔭 Phase 2 Preview — What Comes After Week 8
+# 🔭 Future Phases Preview — What Comes After Week 8
 
 > **Don’t build this now. Know it’s coming.**
-> 
 
-After the 8-week sprint, Truva has a clear expansion path into higher-revenue affiliate verticals. The savings rate tool is the entry point and trust builder. Credit cards are the revenue multiplier.
+After the 8-week sprint, Truva has a clear expansion path into higher-revenue affiliate and concierge broker verticals. The savings rate tool is the entry point and trust builder. Credit cards and concierge services are the revenue multipliers.
 
-| Phase | Timing | Product | Affiliate CPA | Why Now / Why Wait |
+| Phase | Timing | Product | Revenue Model / CPA | Why Now / Why Wait |
 | --- | --- | --- | --- | --- |
-| **Phase 1** | Now – Month 5 | **Savings rates + Crypto/DeFi yields** | ₱50–300/account | Entry moat. Zero competition on the combined category. Crypto yields = our NerdWallet differentiator — no global comparison platform does this. |
-| **Phase 2** | Month 6+ | **Credit cards** | ₱500–2,000+/approved card | 10–20× CPA of savings. Moneymax’s primary revenue. Same audience, natural upsell. |
-| **Phase 3** | Year 2 | **Personal loans + home loans** | ₱500–10,000+/funded loan | Needs SEO authority + bank partnerships from Phase 1–2. Don’t rush. |
-| **Phase 4** | Year 2+ | **Investing / UITFs / stocks** | Lower CPA, high traffic | GInvest and Investagrams have partial coverage — Truva adds the comparison + after-tax layer they lack. |
-| **Phase 5** | Year 3+ | **Insurance** | High, requires IC broker license | Moneymax’s stronghold. Do not enter without team, license, and capital. |
+| **Phase 1** | Now – Month 5 | **Wealth: Savings, MMFs, Government Bonds, DeFi yields** | ₱50–300/account | Entry moat. Zero competition on the combined category. Focuses on zero-CAC customer acquisition. |
+| **Phase 2** | Month 6+ | **Enablement: Credit Cards** | ₱500–2,000+/approved card | 10–20× CPA of savings. Same audience, natural upsell. |
+| **Phase 3** | Month 9+ | **Enablement: Concierge Loans (Personal & Auto)** | ₱1,000–10,000+/funded loan | Focuses on high-demand, easy-to-test Personal Loans first (requires only ID + payslip), followed by Auto Loans. Bypasses APIs; uses manual concierge email-routing. |
+| **Phase 4** | Year 2 | **Protection: Concierge HMOs & Insurance** | 50/50 broker commission split (₱2,000–10,000+) | Bypasses slow/expensive Insurance Commission licensing by routing pre-packaged user applications to personal insurance contacts or partner brokers. |
 
-**The thesis:** Truva enters with savings + crypto yields (zero competition, genuine product gap) → earns user trust and newsletter subscribers → converts that audience to credit card signups in Phase 2 → adds loans, investing, and eventually insurance → becomes the full NerdWallet of the Philippines by Year 3. The crypto yields category is the one thing NerdWallet doesn't have — and in a market ranked 9th globally in crypto adoption, it's a meaningful first-mover advantage.
+**The thesis:** Truva enters with savings + yields (zero competition, genuine product gap) → earns user trust and newsletter subscribers → converts that audience to credit card signups in Phase 2 → adds concierge Personal/Auto loans in Phase 3 → launches partner-broker HMOs/Insurance in Phase 4 → becomes the ultimate financial outcome engine for the Philippines.
 
 *Created: March 2026 | Owner: CEO / Founder | Sprint status: Pre-Week 0*

@@ -1,3 +1,15 @@
+<!-- AI-AGENT METADATA
+doc_type: strategy
+system: truva-marketing
+read_order: 3
+audience_agents: [gemini, claude, chatgpt, hermes, founder]
+consumes: TRUVA_MASTER.md, MARKETING_SYSTEM_AI_GUIDE.md
+produces: channel-strategy, content-pillars, prompts, visual-direction
+pipeline_stages: [S1, S2, S3]
+status: active
+authority: subordinate-to TRUVA_MASTER.md
+-->
+
 # Truva — Social Media & AI Cooperation Playbook (Corrected)
 **Version:** 2.0 | **Last Updated:** June 2, 2026 | **Status:** Active
 **Supersedes:** `SOCIAL_MEDIA_AI_STRATEGY.md` v1.0 (Gemini draft)
@@ -59,19 +71,29 @@ graph TD
 
 ---
 
-## 2. Credit Card Content Pillars
+## 2. Content Pillars
 
-Three primary pillars (high-intent, highest affiliate payout) plus one retention pillar.
+One reach engine (top-of-funnel) + three high-intent conversion pillars + one retention pillar. Validated against a PH-market scan (see `PILLAR_VALIDATION_SCAN.md`): comparison and no-annual-fee content are proven intent formats; relatable beginner content is what actually earns reach; "what's the catch" is a trust play, not a reach driver.
 
 ```
-┌───────────────────┬───────────────────┬───────────────────┬─────────────┐
-│     PILLAR A      │     PILLAR B      │     PILLAR C      │   SUPPORT   │
-│ "What's the Catch"│   Card Battles    │  "Free For Life"  │ Rate Pulse  │
-│ Fine-print truth  │    Head-to-head   │ Fee-free curations│ Savings/TD  │
-└───────────────────┴───────────────────┴───────────────────┴─────────────┘
+┌───────────────────┬───────────────────┬───────────────────┬───────────────────┬─────────────┐
+│     PILLAR D      │     PILLAR A      │     PILLAR B      │     PILLAR C      │   SUPPORT   │
+│  "Adulting Money" │ "What's the Catch"│   Card Battles    │  "Free For Life"  │ Rate Pulse  │
+│ Reach / beginner  │ Fine-print truth  │    Head-to-head   │ Fee-free curations│ Savings/TD  │
+└───────────────────┴───────────────────┴───────────────────┴───────────────────┴─────────────┘
 ```
 
-### Pillar A: "What's the Catch?" (Fine-Print Teardown)
+**Funnel logic:** `D (earns reach) → B/C (intent: compare, no-annual-fee) → A (trust: the catch) → Apply`.
+
+**Audience:** lead with **first-timers / beginners** (Persona C in `TRUVA_MASTER`). The PH market's highest-pull credit-card content is beginner/first-card ("how I got my first card as a student"). This is also where Truva grows the market, not just competes for it.
+
+### Pillar D: "Adulting Money" (Reach Engine — top of funnel)
+The audience builder. Relatable, beginner, behavioral content that earns reach and saves — then funnels into the conversion pillars. This is the format that actually travels in PH finance (budget breakdowns, "what I wish I knew before my first credit card," the 3 numbers that matter, simple myth-busting), delivered with warm Taglish hooks and humor.
+- **Rule:** Still trust-first and accurate. When it cites numbers, they come from the Facts Sheet (e.g., "PH cards charge about 3% a month on unpaid balance" is DB-grounded). No fabricated per-card claims.
+- **Job:** maximize saves/shares and send beginners to `/credit-cards`. It sets up A/B/C; it rarely sells directly.
+- **Example:** *"Before your first credit card, check only these 3 numbers."* (annual fee + how it's waived, interest per month, income requirement).
+
+### Pillar A: "What's the Catch?" (Fine-Print Teardown — trust play)
 Tear down a popular card in plain English. **The catch must be the *real, current* catch** — verified against the bank's live terms (see §3 Fact-Check Protocol). If a card genuinely has no annual fee for life, say so honestly, then surface the catch that *does* exist (interest rate, points-redemption math, foreign-transaction fees, etc.). Honesty about the good parts is what makes people believe us about the bad parts.
 - **Structure (the Three Questions, same as every Truva product page):**
   1. *What is this card?* (one plain sentence)

@@ -111,28 +111,6 @@ Each row shows: Rate, Conditions, Balance Cap, After-Tax Return, Lock-in Period,
 
 **AI Integration (minimal, targeted):** One Claude Haiku API call (~₱0.02) for natural language queries. User types: *"I have ₱500K for 6 months, low risk, what's best for me?"* — returns a ranked recommendation in plain language. User-triggered only, not running on every page load.
 
-## Module 3: PDIC Smart Split Optimizer
-
-The feature that makes this tool indispensable for anyone with ₱1M+ in savings — and the reason they come back, share it, and click affiliate links.
-
-**The problem it solves:** PDIC insures up to ₱1M per depositor per bank. Anyone saving more than ₱1M needs to split across banks — but nobody tells you exactly how to split it to maximize yield AND stay fully insured simultaneously.
-
-**Input:** Total amount + time horizon + risk tolerance
-
-**Output:** Recommended split that keeps every peso PDIC-insured while maximizing blended yield after tax.
-
-Example for ₱3.5M total savings:
-
-```
-₱900,000 → Maya Bank (15% promo, spend req.)   = ₱135,000/yr
-₱900,000 → UNO Digital (5.75% TD, 12 months)   = ₱51,750/yr
-₱900,000 → Tonik (4% flat, no conditions)       = ₱36,000/yr
-₱800,000 → GoTyme (3.5% Go Save, liquid)         = ₱28,000/yr
-
-Total after 20% tax: ₱200,600/yr | All PDIC insured ✅
-```
-
-No Filipino tool does this today.
 
 ## Module 4: Time Deposit Tracker & Reminders *(Free — Registered Users Only)*
 
@@ -157,16 +135,16 @@ Generates a month-by-month savings plan: amount, where to put it, projected bala
 
 # 4. Competitive Landscape
 
-|  | Digital Banks | Time Deposits | MP2 | RTBs | UITFs | DeFi | PDIC Optimizer | TD Reminders |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Lemoneyd** (closest competitor) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| BitPinas (blog) | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Investagrams | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| GInvest / GCash | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| [Bonds.ph](http://Bonds.ph) | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Truva** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+|  | Digital Banks | Time Deposits | MP2 | RTBs | UITFs | DeFi | TD Reminders |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Lemoneyd** (closest competitor) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| BitPinas (blog) | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Investagrams | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| GInvest / GCash | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| [Bonds.ph](http://Bonds.ph) | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Truva** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-**Lemoneyd** is the closest direct competitor — a PH digital bank savings rate comparison table with 45K+ app downloads (launched Sept 2025), active affiliate referral codes, and strong community engagement. Their gap: no after-tax calculator, no PDIC optimizer, no TD tracker. BitPinas is a manually updated monthly blog post. We are building the product version with a live calculator, reminders, and an optimization engine on top.
+**Lemoneyd** is the closest direct competitor — a PH digital bank savings rate comparison table with 45K+ app downloads (launched Sept 2025), active affiliate referral codes, and strong community engagement. Their gap: no after-tax calculator, no TD tracker. BitPinas is a manually updated monthly blog post. We are building the product version with a live calculator and reminders on top.
 
 ---
 
@@ -473,7 +451,7 @@ Inbound via SEO first, then direct outreach to:
 | 1–2 | Live rate comparison table (PHP banks + DeFi) with affiliate referral links + after-tax column. Newsletter signup form live. First SEO article published. |
 | 3–4 | Yield calculator embedded above table. Supabase auth for registered users. Email capture on every interaction. Shareable result cards. |
 | 5 | Expand table: Pag-IBIG MP2, RTBs, T-Bills, UITFs, government banks. Category filter tabs. First "The Truva Brief" newsletter sent. |
-| 6 | PDIC Smart Split optimizer (free, requires login). TD Tracker + maturity reminders (free, requires login). Rate change alerts via email. |
+| 6 | TD Tracker + maturity reminders (free, requires login). Rate change alerts via email. |
 | 7–8 | Palago Score composite rating. "Top 3 for You" default view. Affiliate links optimized on all rows. Affiliate disclosure tooltips. Lighthouse 90+ mobile. First bank partnership outreach. |
 | Month 3+ | Goal-based planner. Embeddable rate widget for PH finance blogs. Formal bank partnership negotiations. n8n auto-scraping. |
 

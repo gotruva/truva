@@ -195,7 +195,7 @@ This app is the Bloomberg Terminal for Filipino savers — not a lifestyle brand
 | **Barrier** | Skeptical of apps that require account linking or sign-up before showing value |
 | **Device** | 80% mobile |
 
-**Design implication:** The rate table, calculator, and PDIC optimizer must all be accessible **without login**. Login gates activate only on save scenario, TD tracker, and rate alerts — these capture the email for the newsletter list. No paywall exists. Every feature is free.
+**Design implication:** The rate table and calculator must all be accessible **without login**. Login gates activate only on save scenario, TD tracker, and rate alerts — these capture the email for the newsletter list. No paywall exists. Every feature is free.
 
 ---
 

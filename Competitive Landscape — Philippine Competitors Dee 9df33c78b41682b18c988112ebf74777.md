@@ -48,13 +48,12 @@ None of them — not a single one — does what we do. But each one is a reason 
 - No Pag-IBIG MP2 on savings page
 - No RTBs or UITFs
 - No DeFi / stablecoin yields
-- No PDIC Smart Split optimizer
 - No time deposit tracker or maturity reminders
 - Rate data is monthly, not daily (last updated Feb 1, 2026)
 - No personalized calculator for specific amount + time horizon
 - Mobile app and website are separate products with different jobs
 
-**Our edge:** Lemoneyd shows you *what rates exist.* We show you *what you actually take home after tax, on your specific amount, over your specific time horizon, versus every option including DeFi.* They are a rate directory. We are an optimizer.
+**Our edge:** Lemoneyd shows you *what rates exist.* We show you *what you actually take home after tax, on your specific amount, over your specific time horizon, versus every option including DeFi.* They are a rate directory. We are a personalized calculator.
 
 **Threat level: HIGH.** They own search real estate for PH digital bank comparison, have an active user community, and their UI is closest to ours. They could add a calculator relatively quickly.
 
@@ -84,11 +83,10 @@ None of them — not a single one — does what we do. But each one is a reason 
 - No RTB comparison
 - No UITF comparison
 - No DeFi / stablecoin yields
-- No PDIC optimization feature
 - No time deposit maturity reminders
 - No calculator to show after-tax, after-FX take-home
 - Android only — no web, no iOS
-- Passive tracker, not an optimizer
+- Passive tracker, not a comparative calculator
 
 **Our edge:** Finnest tells you how much your money is growing *where it already is.* We tell you where it *should be* to grow the most. Completely different jobs.
 
@@ -121,7 +119,6 @@ None of them — not a single one — does what we do. But each one is a reason 
 - No after-tax computation
 - No DeFi / stablecoin comparison
 - No Pag-IBIG MP2 comparison
-- No PDIC Smart Split optimizer
 - No time deposit tracker or reminders
 - Focused on *loans and credit cards* as primary product — savings is secondary
 - Not designed for the "where do I put my savings to earn the most" use case
@@ -159,7 +156,6 @@ These are media sites and blogs that publish rate comparison *articles* — not 
 - No after-tax computation
 - No Pag-IBIG MP2 or RTB or UITF
 - No DeFi yields
-- No PDIC optimizer
 - No TD reminders
 - Updated monthly — not real-time
 - Cannot personalize to a user's specific amount, risk tolerance, or time horizon
@@ -205,7 +201,7 @@ These are media sites and blogs that publish rate comparison *articles* — not 
 
 - Blog content only, no interactive product
 - Rate data is not real-time
-- No calculator or optimizer
+- No calculator
 
 ---
 
@@ -269,18 +265,18 @@ These are media sites and blogs that publish rate comparison *articles* — not 
 
 ## The Competitive Map in One Table
 
-| Competitor | Type | Live Rates | Calculator | MP2 | RTBs | UITFs | DeFi | PDIC Optimizer | TD Reminders | After-Tax Math |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Lemoneyd** | Web + App | ✅ Monthly | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Finnest App** | Mobile app | ❌ Simulated | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| [**Moneymax.ph**](http://Moneymax.ph) | Web comparison | 🟡 Partial | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **BitPinas** | Blog/Media | 🟡 Monthly | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| [**FintechNews.ph**](http://FintechNews.ph) | Blog/Media | 🟡 Periodic | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| [**Grit.ph**](http://Grit.ph) | Blog/Media | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Investagrams** | Trading platform | ✅ (stocks/crypto) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **GInvest** | Investment app | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| [**Bonds.ph**](http://Bonds.ph) | RTB purchase app | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Truva** | Comparison + optimizer | ✅ Daily | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Competitor | Type | Live Rates | Calculator | MP2 | RTBs | UITFs | DeFi | TD Reminders | After-Tax Math |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Lemoneyd** | Web + App | ✅ Monthly | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Finnest App** | Mobile app | ❌ Simulated | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [**Moneymax.ph**](http://Moneymax.ph) | Web comparison | 🟡 Partial | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **BitPinas** | Blog/Media | 🟡 Monthly | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [**FintechNews.ph**](http://FintechNews.ph) | Blog/Media | 🟡 Periodic | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [**Grit.ph**](http://Grit.ph) | Blog/Media | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Investagrams** | Trading platform | ✅ (stocks/crypto) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **GInvest** | Investment app | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| [**Bonds.ph**](http://Bonds.ph) | RTB purchase app | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Truva** | Comparison | ✅ Daily | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -309,12 +305,12 @@ The cooperative deposit gap in particular is a **strategic moat opportunity** �
 
 **There is no dedicated savings rate comparison and optimization tool in the Philippines.** 
 
-Moneymax is the closest, but their savings section is an afterthought to their core loans and credit cards business — and they haven't added a calculator, MP2, DeFi, or PDIC optimizer in years of operating. Finnest is the most product-like, but it's a tracker not a comparator — it tells you how much your current savings are growing, not where to move them.
+Moneymax is the closest, but their savings section is an afterthought to their core loans and credit cards business — and they haven't added a calculator, MP2, or DeFi in years of operating. Finnest is the most product-like, but it's a tracker not a comparator — it tells you how much your current savings are growing, not where to move them.
 
 This means:
 
 1. **The market is validated** — BitPinas and [FintechNews.ph](http://FintechNews.ph) get significant traffic for manually-updated rate articles. There is clear demand.
-2. **The product gap is real** — not one of these players has built an interactive, personalized, after-tax savings optimizer.
+2. **The product gap is real** — not one of these players has built an interactive, personalized, after-tax savings calculator.
 3. **The moat window is open** — Moneymax *could* build this but hasn't in years. Finnest is focused on budgeting. BitPinas is a media company. Nobody has made the savings comparison tool their primary product.
 
 ---
