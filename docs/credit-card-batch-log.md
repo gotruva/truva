@@ -101,6 +101,35 @@ QA: 107 cards on `/credit-cards/all`; no "Inc." variant leaks; finder
 15–30k no-fee profile → PNB Cart top match with Ze-Lo + U Platinum
 alternatives; 375px clean; production build green.
 
+## 2026-06-10 — Trust audits: official sources + scoring neutrality
+
+**Official-source audit (PASS).** All 107 live cards trace to 14 domains,
+every one an issuer-owned property. The only non-official rows in the whole
+164-card raw pool are the two held moneymax.ph PNB rows. Made durable with
+`public.official_source_domains` (registry of issuer-owned domains) +
+`public.credit_card_source_violations` (view that must always return zero
+rows — check it before and after every batch; migration
+`20260610150000_official_source_guard.sql`).
+
+**Scoring-neutrality audit (one fix shipped).** Reviewed
+`lib/creditCardFinder/rank.ts` end to end:
+- Every scoring factor is user-need × published-card-fact (income fit,
+  priority tag, spend category, avoid penalty, beginner bonus). No bank
+  names in scoring, no affiliate weighting anywhere, penalties never
+  disqualify, all live cards enter the candidate pool.
+- The +0.05 confidence nudge is data-completeness/freshness based
+  (bank-neutral, favors claims we can stand behind).
+- Browse "best" sort is completeness → freshness → name; all browse sorts
+  have deterministic tiebreaks. Neutral.
+- **FIXED: finder tie-breaking was insertion-order dependent.** The DB fetch
+  sorts `bank ASC`, so equal-scored cards systematically favored
+  alphabetically-first banks. Ties now break on consumer-favoring published
+  facts: lower yearly fee → lower income requirement → card key (pure
+  determinism). `compareScoredCards` in rank.ts; regression tests added
+  (61 passing).
+- Display-label special cases for `bdo_secured` / `bdo_world_elite` in
+  `deriveMinIncomeLabel` are factual, display-only (no score impact).
+
 ## Remaining queue (raw cards not yet listed)
 
 RCBC (~16) → Metrobank (~10) → BDO (~5) → EastWest (~7) → Chinabank (~4) →

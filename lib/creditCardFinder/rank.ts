@@ -386,6 +386,35 @@ export function buildScoredCard(
 }
 
 /**
+ * Neutral tie-break (fairness rule): when two cards score the same, the order
+ * must never depend on which bank the row came from — the DB fetch is sorted
+ * `bank ASC`, so relying on stable-sort insertion order would systematically
+ * favor alphabetically-first banks. Instead ties resolve on consumer-favoring
+ * published facts: lower yearly fee first, then lower income requirement
+ * (more people can apply), then card key purely for determinism.
+ */
+function finderFeeValue(card: CreditCard): number | null {
+  if (isNoYearlyFee(card)) return 0;
+  return card.annual_fee_recurring;
+}
+
+function ascNullsLast(a: number | null, b: number | null): number {
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  return a - b;
+}
+
+export function compareScoredCards(a: ScoredCard, b: ScoredCard): number {
+  return (
+    b.score - a.score ||
+    ascNullsLast(finderFeeValue(a.card), finderFeeValue(b.card)) ||
+    ascNullsLast(cardMinIncomeMonthly(a.card), cardMinIncomeMonthly(b.card)) ||
+    a.card.normalized_card_key.localeCompare(b.card.normalized_card_key)
+  );
+}
+
+/**
  * Slot rules:
  *  1 = highest score
  *  2 = highest remaining with no yearly fee
@@ -401,7 +430,7 @@ export function selectFinderResults(
     const qualifying = cards
       .map((c) => buildScoredCard(c, answers))
       .filter((sc) => sc.score >= MATCH_THRESHOLD)
-      .sort((a, b) => b.score - a.score);
+      .sort(compareScoredCards);
 
     if (qualifying.length === 0) return { kind: 'fallback' };
 

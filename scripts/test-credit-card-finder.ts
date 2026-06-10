@@ -15,6 +15,7 @@ import { estimateAnnualValue } from '@/lib/creditCardValue';
 import {
   answersToQuery,
   buildScoredCard,
+  compareScoredCards,
   deriveAnnualFeeLabel,
   incomeBracketMin,
   incomeBracketMax,
@@ -260,9 +261,12 @@ check('helping gets the first-card beginner boost', helpingBeginnerScore > noFir
 eq('helping and yes score the same first-card boost', helpingBeginnerScore, yesBeginnerScore);
 
 // ── 5. Slot selection ────────────────────────────────────────────────────────
+// `strong` earns a real spend-match bonus so it outranks the others on score
+// (slot 1 must be won on merit — ties now break toward the cheaper card).
 const strong = card({
   id: 'strong',
   rewards_type: 'cashback',
+  rewards_formula: { bonus: 'cashback on groceries' },
   annual_fee_recurring: 3500,
   min_income_monthly: 20_000,
   last_scraped_at: RECENT,
@@ -461,6 +465,48 @@ eq(
   'answersToQuery preserves result state for back links',
   resultBackQuery,
   'first=yes&income=30-50&spend=groceries&priority=cashback&avoid=fees',
+);
+
+// ── Neutral tie-break (fairness): equal scores must not depend on bank order ──
+const tieAnswers = answers({ income: '30-50', priority: 'naf' });
+const tieCheap = buildScoredCard(
+  card({
+    normalized_card_key: 'zz_bank_card',
+    card_name: 'ZZ Bank Card',
+    bank: 'ZZ Bank',
+    naffl: true,
+    annual_fee_recurring: 0,
+    min_income_monthly: 15_000,
+  }),
+  tieAnswers,
+);
+const tiePricey = buildScoredCard(
+  card({
+    normalized_card_key: 'aa_bank_card',
+    card_name: 'AA Bank Card',
+    bank: 'AA Bank',
+    naffl: true,
+    annual_fee_recurring: 0,
+    min_income_monthly: 25_000,
+  }),
+  tieAnswers,
+);
+eq('tie-break fixture scores are equal', tieCheap.score, tiePricey.score);
+check(
+  'equal scores break on lower income requirement, not bank name order',
+  compareScoredCards(tieCheap, tiePricey) < 0,
+);
+const tieTwinA = buildScoredCard(
+  card({ normalized_card_key: 'twin_a', min_income_monthly: 20_000 }),
+  tieAnswers,
+);
+const tieTwinB = buildScoredCard(
+  card({ normalized_card_key: 'twin_b', min_income_monthly: 20_000 }),
+  tieAnswers,
+);
+check(
+  'full ties fall back to card key for determinism',
+  compareScoredCards(tieTwinA, tieTwinB) < 0 && compareScoredCards(tieTwinB, tieTwinA) > 0,
 );
 
 console.log(`\ncredit-card-finder: ${passed} passed, ${failures.length} failed`);
