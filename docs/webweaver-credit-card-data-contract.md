@@ -1,6 +1,15 @@
 # WebWeaver Credit Card Data Contract
 
-Last checked: 2026-05-25
+Last checked: 2026-06-10
+
+> **2026-06-10 update — overrides table supersedes view CASEs.** Listing and
+> per-card corrections now live in `public.credit_card_overrides`
+> (`listed = true` exposes a card; nullable columns override raw fields).
+> The old hardcoded allowlist + CASE corrections inside
+> `public.credit_card_listings` were migrated there with a hash-verified,
+> output-identical rewrite (`20260610090000_credit_card_overrides_table.sql`).
+> Do not add new CASE branches to the view — insert/update override rows
+> instead. Batch history: `docs/credit-card-batch-log.md`.
 
 This note is for future agents working on Truva's credit-card pages. It records how
 Truva currently reads `web_weaver` data, what Gelo's v2 table contract says, and

@@ -24,6 +24,7 @@ const BANK_LOGO_MAP: Record<string, string> = {
   'Asia United Bank': '/logos/aub.svg',
   'BDO Unibank, Inc.': '/logos/bdo.svg',
   'China Banking Corporation (Chinabank)': '/logos/chinabank.svg',
+  'UnionBank of the Philippines': '/logos/unionbank-mark.png',
 };
 
 function deriveLogo(bank: string): string {
