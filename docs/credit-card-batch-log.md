@@ -193,6 +193,40 @@ mark (logo assets TODO).
 
 QA: 145 on browse, zero variant leaks, 375px clean, build green.
 
+## 2026-06-10/11 — Card-art run: 23 new clean card images (62 → 85 assets)
+
+Every harvested image was visually audited before shipping; wrong art was
+deleted rather than published.
+
+**UnionBank (18 of 19).** Per-product pages only expose a shared hero (the
+generic scraper literally grabbed the floating Help button — caught by the
+duplicate-hash guard + visual audit). Built a dedicated hub-page harvester
+(`scripts/harvest-unionbank-images.py`): the credit-cards hub renders every
+card's clean art with identifying filenames; originals live at the Drupal
+path minus `/styles/<style>/public`; downloads must run as in-page `fetch()`
+in **headful real Chrome** (Akamai 403s headless browsers AND Playwright's
+own HTTP stack). `rewards_visa_platinum` deliberately left on the branded
+fallback (hub exposes only banner art for the Visa variant).
+
+**Batch script wins (5):** BDO Bench/HOPE/ShopMore (compare-page strategy),
+BPI eCredit, HSBC Red Platinum. Scraper hardening shipped: `--headful` flag
+(real-Chrome channel, sane viewport — 1920x5000 crashes a visible window),
+plus retry-once-then-skip on extraction errors so one bad page can't abort a
+batch.
+
+**Visual-audit rejections (2):** equicom_classic got the Equicom *Business*
+card art; landbank_classic got ambiguous gold-card art from the shared
+LANDBANK page. Both deleted — those cards stay on the branded fallback.
+
+**Still on fallback (~37):** PNB (site yields no art even headful), Maybank +
+RCBC + EastWest (context/banner art only per the generic strategy), Security
+Bank (nothing found), Maya/Home Credit/Landers/misc. Each needs a per-bank
+harvester pass like UnionBank's, or manual curation. Tracked in
+`docs/credit-card-image-scrape-report.json` statuses.
+
+Integrity: report now covers all 145 live cards; 85 clean-card entries match
+85 assets on disk 1:1; `npm run cc:visuals` green; build green.
+
 ## Remaining queue
 
 Catalog sweep is complete — every scraped card is now listed or held with a

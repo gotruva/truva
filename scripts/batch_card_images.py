@@ -523,9 +523,32 @@ async def extract_chinabank_cards(page) -> dict[str, dict]:
 
 
 async def extract_bpi_card_image(page, url: str) -> dict | None:
-    """Extract card image from a BPI per-card product page."""
+    """Extract card image from a per-card product page (generic DOM strategy).
+
+    SPA bank sites (e.g. unionbankph.com) can fire a client-side navigation
+    between goto() and evaluate(), destroying the execution context. Retry the
+    whole extraction once after letting the page settle; on a second failure
+    return None so the batch records the card as unavailable instead of
+    aborting the entire run.
+    """
+    last_error = None
+    for attempt in range(2):
+        try:
+            return await _extract_bpi_card_image_once(page, url, settle_ms=3000 + attempt * 4000)
+        except Exception as exc:  # noqa: BLE001 - one bad page must not kill the batch
+            last_error = exc
+            print(f"  ⚠️  extraction attempt {attempt + 1} failed: {type(exc).__name__}: {exc}")
+    print(f"  ⚠️  giving up on {url}: {last_error}")
+    return None
+
+
+async def _extract_bpi_card_image_once(page, url: str, settle_ms: int = 3000) -> dict | None:
     await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-    await page.wait_for_timeout(3000)
+    await page.wait_for_timeout(settle_ms)
+    try:
+        await page.wait_for_load_state("networkidle", timeout=8000)
+    except Exception:
+        pass  # busy SPAs may never go network-idle; proceed with what we have
 
     result = await page.evaluate("""() => {
         // BPI typically has a card-specific image at hero_xs_* Scene7 URL
@@ -711,7 +734,7 @@ async def extract_generic_card_image(page, url: str, card_name: str, card_key: s
     return candidates[0] if candidates else None
 
 
-async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwrite: bool = False) -> list:
+async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwrite: bool = False, headful: bool = False) -> list:
     """Scrape all cards and return report entries."""
     from playwright.async_api import async_playwright
 
@@ -724,14 +747,26 @@ async def scrape_all_cards(cards_list: list, dry_run: bool = False, allow_overwr
                 "--disable-dev-shm-usage",
             ],
         }
+        if headful:
+            # Real visible Chrome defeats Akamai-style headless detection
+            # (unionbankph.com et al. return 403 + "Access Denied" otherwise).
+            launch_options["headless"] = False
+            launch_options["channel"] = "chrome"
         if os.path.exists("/usr/bin/chromium-browser"):
             launch_options["executable_path"] = "/usr/bin/chromium-browser"
         browser = await p.chromium.launch(**launch_options)
-        context = await browser.new_context(
-            viewport={"width": 1920, "height": 5000},
-            user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                       "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-        )
+        # 1920x5000 forces lazy images to load in headless runs, but a real
+        # window cannot be 5000px tall - headful Chrome crashes on launch.
+        viewport = {"width": 1366, "height": 900} if headful else {"width": 1920, "height": 5000}
+        context_options = {"viewport": viewport}
+        if not headful:
+            # Headful real Chrome should keep its genuine UA; spoofing a Linux
+            # UA on a visible Windows Chrome trips UA-consistency checks.
+            context_options["user_agent"] = (
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+            )
+        context = await browser.new_context(**context_options)
         await context.add_init_script(
             'Object.defineProperty(navigator, "webdriver", { get: () => undefined });'
         )
@@ -1339,6 +1374,13 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Resolve source URLs for the selected live rows and exit before launching the browser.",
     )
+    parser.add_argument(
+        "--headful",
+        action="store_true",
+        help="Launch a visible real-Chrome window instead of headless Chromium. "
+             "Needed for banks behind bot protection that 403s headless browsers "
+             "(e.g. unionbankph.com).",
+    )
     return parser.parse_args()
 
 
@@ -1506,6 +1548,7 @@ def main() -> int:
                 rows_to_process,
                 dry_run=args.dry_run,
                 allow_overwrite=args.allow_overwrite,
+                headful=args.headful,
             )
         )
     except ModuleNotFoundError as exc:

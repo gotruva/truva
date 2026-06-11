@@ -1,4 +1,4 @@
-import type { CreditCard as CreditCardType } from '@/types';
+﻿import type { CreditCard as CreditCardType } from '@/types';
 import { SCRAPE_REPORT_STATUS_MAP } from '@/lib/credit-card-visual-status';
 
 export type CreditCardVisualStatus =
@@ -486,6 +486,167 @@ export const CREDIT_CARD_VISUAL_ASSETS = [
     checkedAt: '2026-06-01',
     status: 'official-art',
   },
+  {
+    cardKeys: ['bdo_bench_mastercard'],
+    assetPath: '/cards/clean/bdo_bench_mastercard.webp',
+    sourceUrl: 'https://www.bdo.com.ph/content/dam/bdounibank/en-ph/cbg-marketing/cards/credit-and-debit/master-card/bench-mastercard/MC-Bench-1125.png',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['bdo_hope_mastercard'],
+    assetPath: '/cards/clean/bdo_hope_mastercard.webp',
+    sourceUrl: 'https://www.bdo.com.ph/content/dam/bdounibank/en-ph/cbg-marketing/cards/credit-and-debit/master-card/hope-mastercard/MC-HOPE-web-2.png',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['bdo_shopmore_mastercard'],
+    assetPath: '/cards/clean/bdo_shopmore_mastercard.webp',
+    sourceUrl: 'https://www.bdo.com.ph/content/dam/bdounibank/en-ph/cbg-marketing/cards/credit-and-debit/master-card/shopmore-mastercard/PERX-Card-Images_Periwinkle.png',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['bpi_ecredit_card'],
+    assetPath: '/cards/clean/bpi_ecredit_card.webp',
+    sourceUrl: 'https://s7ap1.scene7.com/is/image/bpi/hero_xs_Ecredit?qlt=85&wid=600&ts=1704788958666&dpr=off',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['cebu_pacific_gold_credit_card'],
+    assetPath: '/cards/clean/cebu_pacific_gold_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/Ceb-Credit-Card-Gold_0726.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['cebu_pacific_platinum_credit_card'],
+    assetPath: '/cards/clean/cebu_pacific_platinum_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/Ceb-Credit-Card-Plat_0726_0.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['go_rewards_gold_visa_credit_card'],
+    assetPath: '/cards/clean/go_rewards_gold_visa_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/Go-Rewards-Gold-Front.png',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['go_rewards_platinum_visa_credit_card'],
+    assetPath: '/cards/clean/go_rewards_platinum_visa_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/Go-Rewards-Plat-Front.png',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['hsbc_red_platinum_mastercard'],
+    assetPath: '/cards/clean/hsbc_red_platinum_mastercard.webp',
+    sourceUrl: 'https://www.hsbc.com.ph/content/dam/hsbc/ph/images/credit-cards/16975-hsbc-red-credit-card-dummy-300x189.jpg',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['u_platinum_mastercard'],
+    assetPath: '/cards/clean/u_platinum_mastercard.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/ucard-mc_0.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['u_visa_platinum'],
+    assetPath: '/cards/clean/u_visa_platinum.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/ucard-visa_0.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_cash_back_titanium_mastercard'],
+    assetPath: '/cards/clean/unionbank_cash_back_titanium_mastercard.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Cash-Back-No-Name-MC.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_cash_back_visa_platinum_credit_card'],
+    assetPath: '/cards/clean/unionbank_cash_back_visa_platinum_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Cash-Back-No-Name-Visa.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_lazada_credit_card'],
+    assetPath: '/cards/clean/unionbank_lazada_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/2020-07/LAZ_UB-MASTERCARD-2020_CREDITCREDIT-NUMBERLESS.png',
+    checkedAt: '2026-06-10',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_mercury_visa'],
+    assetPath: '/cards/clean/unionbank_mercury_visa.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/mercury-visa.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_miles_plus_visa_signature_credit_card'],
+    assetPath: '/cards/clean/unionbank_miles_plus_visa_signature_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Miles-No-Name-Visa.png',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_miles_plus_world_mastercard'],
+    assetPath: '/cards/clean/unionbank_miles_plus_world_mastercard.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Miles-No-Name-MC.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_play_everyday_credit_card'],
+    assetPath: '/cards/clean/unionbank_play_everyday_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/PlayEveryday-Credit.png',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_reserve_visa_infinite_credit_card'],
+    assetPath: '/cards/clean/unionbank_reserve_visa_infinite_credit_card.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Reserve-No-Name-Visa.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_reserve_world_elite_mastercard'],
+    assetPath: '/cards/clean/unionbank_reserve_world_elite_mastercard.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Reserve-No-Name-MC.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_rewards_platinum_mastercard'],
+    assetPath: '/cards/clean/unionbank_rewards_platinum_mastercard.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/2023-UB-Card-Rewards-No-Name-MC.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_s_and_r_visa_platinum'],
+    assetPath: '/cards/clean/unionbank_s_and_r_visa_platinum.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/UB-SnR-Card.png',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
+  {
+    cardKeys: ['unionbank_shell_power_visa_platinum'],
+    assetPath: '/cards/clean/unionbank_shell_power_visa_platinum.webp',
+    sourceUrl: 'https://www.unionbankph.com/sites/default/files/tmp/UB-Shell-Power.jpg',
+    checkedAt: '2026-06-11',
+    status: 'official-art',
+  },
 ] as const satisfies CreditCardVisualSourceAsset[];
 
 const VISUAL_ASSET_INDEX = new Map<string, CreditCardVisualSourceAsset>();
@@ -522,7 +683,7 @@ export function getCleanCreditCardAssetPath(value: string | null | undefined): s
 export function getCreditCardVisualAsset(
   card: Pick<CreditCardType, 'normalized_card_key' | 'card_name' | 'bank'>,
 ): CreditCardVisualAsset | null {
-  // Check scrape report status first — only clean-card rows get a real asset
+  // Check scrape report status first â€” only clean-card rows get a real asset
   const reportKey = normalizeCleanCreditCardAssetKey(card.normalized_card_key);
   const reportStatus = reportKey ? SCRAPE_REPORT_STATUS_MAP[reportKey] : null;
 
