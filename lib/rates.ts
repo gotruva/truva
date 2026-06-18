@@ -49,6 +49,25 @@ function normalizeProviderKey(key: string | null): string | null {
   return normalized;
 }
 
+// The scraper emits varying provider display names across runs (e.g. "Landbank"
+// vs "Landbank of the Philippines", or dropping the "(by BPI)" parent-bank
+// suffix). Canonicalize to one consumer-facing name per provider so the savings
+// list stays consistent and keeps the parent-bank trust signal.
+const PROVIDER_DISPLAY_CANON: Record<string, string> = {
+  'landbank': 'Landbank of the Philippines',
+  'landbank of the philippines': 'Landbank of the Philippines',
+  'banko': 'BanKo (by BPI)',
+  'banko (by bpi)': 'BanKo (by BPI)',
+  'diskartech': 'DiskarTech by RCBC',
+  'diskartech by rcbc': 'DiskarTech by RCBC',
+  'komo': 'Komo by EastWest Bank',
+  'komo by eastwest bank': 'Komo by EastWest Bank',
+};
+
+function canonicalizeProviderName(name: string): string {
+  return PROVIDER_DISPLAY_CANON[name.toLowerCase().trim()] ?? name;
+}
+
 const MANUAL_PUBLIC_RATE_IDS = new Set(['pagibig-mp2']);
 const DENIED_SNAPSHOT_PRODUCT_IDS = new Set([
   'ownbank-time-deposit',
@@ -581,7 +600,9 @@ function hydrateSnapshotRate(
   const productName = mapping?.preferSeedName
     ? seed?.name ?? rawProductName ?? mappingDefaults?.name ?? id
     : rawProductName ?? seed?.name ?? mappingDefaults?.name ?? id;
-  const providerName = getString(raw.providerDisplayName) ?? seed?.provider ?? mappingDefaults?.provider ?? providerKey ?? 'Unknown Provider';
+  const providerName = canonicalizeProviderName(
+    getString(raw.providerDisplayName) ?? seed?.provider ?? mappingDefaults?.provider ?? providerKey ?? 'Unknown Provider',
+  );
   const rawBaseRate = isRecord(raw.baseRate) ? raw.baseRate : {};
   let headlineRate = getNumber(raw.headlineRate, seed?.headlineRate ?? 0);
   let grossRate = getNumber(rawBaseRate.grossRate, seed?.baseRate.grossRate ?? headlineRate);
