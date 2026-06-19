@@ -227,6 +227,51 @@ harvester pass like UnionBank's, or manual curation. Tracked in
 Integrity: report now covers all 145 live cards; 85 clean-card entries match
 85 assets on disk 1:1; `npm run cc:visuals` green; build green.
 
+## 2026-06-11 — Card art round 2: hub-page harvesters (119/145 cards now have official art)
+
+Built a config-driven hub-page harvester (`tmp/harvest_hub.py`) that loads a
+bank's credit-card listing page in headful real Chrome (PH bank sites 403
+headless), matches each card to its art by exact url-decoded filename, and
+downloads via in-page `fetch()` (Akamai cookie-gates static files). This beat
+the per-product-page batch scraper, which only found banner/context art for
+most banks. Card-image coverage went 85 → 119 of 145 live cards.
+
+Harvested this round (all official issuer art, visually audited):
+- **RCBC 14** — listing page exposes clean 500x315 faces (AirAsia portrait
+  designs letterbox cleanly).
+- **Maybank 7** — 578x398 in-page card faces.
+- **Security Bank 4** — only 250px thumbnails published, but the existing live
+  Wave card is the same resolution so that's the issuer's bar.
+- **EastWest 4** — high-res 1800px+ faces (Dolce Vita, JCB Gold/Platinum,
+  Priority Visa Infinite).
+- **LANDBANK 2** — Classic + Gold on solid product backgrounds.
+- **PNB 3** — Ze-Lo, La Salle Green Hills, Diamond UnionPay (identified by
+  eye from the hub's 8 opaque-hash renders).
+
+Rejected in visual audit (left on branded fallback, not shown as clean):
+Maybank Manchester United (footballer lifestyle poster) and EastWest
+foodpanda (giant mascot composite).
+
+### Still on branded fallback (26 cards) — per-card follow-ups
+- **PNB (8)**: Cart, Cashback Titanium, Essentials, Platinum, PAL Mabuhay
+  Miles ×4 — not among the 8 renders on PNB's hub page; need product-page
+  harvests.
+- **EastWest (3)**: KrisFlyer Platinum/World (not on the main listing page),
+  foodpanda (mascot composite rejected).
+- **Security Bank (2)**: Classic, Next — absent from the listing page.
+- **Chinabank (2)**: World Mastercard, Landers Executive — only 150px
+  meta-encoded thumbnails on the hub; need product-gallery full-size URLs.
+- **Maya (2)**: Maya Black, Landers Cashback — page is GIF/banner only.
+- **Home Credit (2)**: Home Credit Card, Aling Puring — no clean face source.
+- **Singles**: HSBC Premier, Equicom Classic, Fast Track Secured, Metrobank
+  Travel Platinum Visa, RCBC Visa Platinum, Maybank Manchester United
+  (rejected), UnionBank Rewards Visa Platinum (hub shows only banner art).
+
+Tooling: `scripts/batch_card_images.py` gained a `--headful` flag (real
+Chrome defeats Akamai headless detection; viewport clamped to 1366x900 since
+a real window can't be 5000px tall) and the generic DOM extractor now retries
+once and fails soft on SPA navigations instead of aborting the whole run.
+
 ## Remaining queue
 
 Catalog sweep is complete — every scraped card is now listed or held with a
