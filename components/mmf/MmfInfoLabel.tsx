@@ -18,15 +18,15 @@ type Props = {
 
 export const MMF_HELP_TEXT = {
   netYield:
-    "The return you actually keep after the 20% tax and fund management fees are deducted. This is the number that matters most.",
+    "The return you actually keep. Money market fund returns are already net of trust fees and fund-level taxes, and gains are tax-exempt for the investor.",
   cashAccess:
     'How quickly you can get your money back after requesting a withdrawal: same day, next day, or a few business days.',
   vsTbill:
-      'How this fund compares to government Treasury Bills using the published benchmark. Positive = the fund is beating the benchmark.',
+    "How this fund compares to the 91-day Government Treasury Bill, adjusted for its 20% withholding tax. Positive = the fund is beating the benchmark.",
   trustFee:
     "The yearly fee charged by the fund manager. For mutual funds, this is already reflected in the net yield shown.",
   grossYield:
-    "The fund's 1-year return before taxes and fees. Net yield (what you keep) is the more useful number.",
+    "The fund's published 1-year return based on historical NAV growth. For both UITFs and Mutual Funds, this is already net of management fees and fund-level taxes.",
   estimatedEarnings:
     "A rough annual estimate based on your entered amount and the fund's latest net yield. Actual daily returns will vary.",
 } as const;

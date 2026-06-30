@@ -150,13 +150,13 @@ export default async function MoneyMarketFundsPage() {
 
         <div className="rounded-2xl border border-brand-border bg-brand-surface p-4 dark:border-white/10 dark:bg-white/[0.04]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-textSecondary/60 dark:text-white/40">
-            PH Govt Benchmark
+            PH Govt Benchmark (Net)
           </p>
           <p className="mt-2 text-2xl font-bold tabular-nums text-brand-textPrimary dark:text-white">
-            {benchmark ? formatMmfPercent(benchmark.rate) : '-'}
+            {benchmark ? formatMmfPercent(benchmark.rate * 0.80) : '-'}
           </p>
           <p className="mt-1 text-xs text-brand-textSecondary/60 dark:text-white/40">
-            91-day T-Bill · {formatPhtDate(benchmark?.date)}
+            91-day T-Bill (Gross: {benchmark ? formatMmfPercent(benchmark.rate) : '-'}) · {formatPhtDate(benchmark?.date)}
           </p>
         </div>
 
