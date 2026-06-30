@@ -101,12 +101,12 @@ Yield math:
 
 ```text
 gross_yield_1y = source 1Y return / 100
-after_tax_yield = gross_yield_1y * 0.80
-net_yield = after_tax_yield - trust_fee_pct
+after_tax_yield = gross_yield_1y
+net_yield = gross_yield_1y
 vs_benchmark = net_yield - (latest BTR_91D benchmark rate * 0.80)
 ```
 
-`trust_fee_pct` is stored as a decimal value. For example, 0.0050 means 0.50%. `benchmark_rates.rate` keeps the raw BTr auction rate, while `vs_benchmark` compares against the after-tax T-Bill benchmark so the public `vs T-Bill` column is tax-comparable.
+`trust_fee_pct` is stored as a decimal value. For example, 0.0050 means 0.50%. Since NAVpu is already net of management fees and fund-level taxes, net_yield equals gross_yield_1y. `benchmark_rates.rate` keeps the raw BTr auction rate, while `vs_benchmark` compares against the after-tax T-Bill benchmark so the public `vs T-Bill` column is tax-comparable.
 
 Writes:
 
@@ -167,7 +167,7 @@ net_yield = gross_yield_1y
 vs_benchmark = net_yield - (latest BTR_91D benchmark rate * 0.80)
 ```
 
-Mutual-fund published NAV-based one-year returns already reflect fund-level expenses, so this workflow must not apply the UITF `gross * 0.80 - trust_fee_pct` transform. If PIFA and BPI publish ALFM rows for the same source date, the workflow throws on any ALFM mismatch; if BPI lags by a date, PIFA remains the primary source.
+Both Mutual-fund and UITF published NAV-based one-year returns already reflect fund-level expenses and taxes, so these workflows do not apply any deductions to the scraped YoY return. If PIFA and BPI publish ALFM rows for the same source date, the workflow throws on any ALFM mismatch; if BPI lags by a date, PIFA remains the primary source.
 
 ## Workflow 3: BTr benchmark updater (DEPRECATED)
 

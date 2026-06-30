@@ -97,7 +97,7 @@ export default async function MMFAdminPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Money Market Funds</h1>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-          Manage UITF and Mutual Fund metadata, and monitor the automated daily rate ingestion health.
+          Manage UITF and Mutual Fund metadata, and monitor stored-row health for the automated rate pipeline.
         </p>
       </div>
 
@@ -161,7 +161,7 @@ export default async function MMFAdminPage() {
       </div>
 
       <div className="mb-4">
-        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Data Health Report</h2>
+        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Internal Data Health Report</h2>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Target Date: <span className="font-mono">{todayStr}</span>
         </p>
@@ -171,6 +171,7 @@ export default async function MMFAdminPage() {
         <strong>Automation schedule:</strong> The PHP UITF scraper (n8n) runs daily at <strong>6:30 PM PHT</strong>.{' '}
         <code className="rounded bg-sky-100 px-1 text-xs dark:bg-sky-900/40">no_daily_row</code> issues appearing before that time are expected and will self-resolve.{' '}
         If it is past 6:30 PM and issues persist, use <strong>Resolve → Confirm No Change</strong> to copy yesterday&apos;s rate manually. Rows inserted manually are overwritten automatically when the scraper next succeeds.
+        <span className="mt-2 block">Official-source equality is checked by the scheduled MMF backfill workflow.</span>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-800">
@@ -198,8 +199,8 @@ export default async function MMFAdminPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
                       ✓
                     </div>
-                    <p className="mt-2 text-sm font-medium text-slate-900 dark:text-white">All Funds Healthy</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">No issues detected in today&apos;s automated rate extraction.</p>
+                    <p className="mt-2 text-sm font-medium text-slate-900 dark:text-white">Internal Checks Clear</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Stored MMF rows are complete and internally consistent. Official-source cross-checks run in the scheduled MMF workflow.</p>
                   </div>
                 </td>
               </tr>

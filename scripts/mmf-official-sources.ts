@@ -612,9 +612,8 @@ export function computeDailyRatePayload(
   dataSource = 'scraper',
 ): DailyRatePayload {
   const benchmark = latestBenchmarkOnOrBefore(benchmarks, fund.benchmark_key, official.date);
-  const trustFee = Number(fund.trust_fee_pct ?? 0);
-  const afterTaxYield = fund.fund_type === 'UITF' ? official.grossYield * 0.8 : official.grossYield;
-  const netYield = fund.fund_type === 'UITF' ? afterTaxYield - trustFee : official.grossYield;
+  const afterTaxYield = official.grossYield;
+  const netYield = official.grossYield;
   const benchmarkRate = benchmark?.rate ?? null;
   const vsBenchmark = benchmark ? netYield - getTaxComparableBenchmarkRate(benchmark) : null;
 

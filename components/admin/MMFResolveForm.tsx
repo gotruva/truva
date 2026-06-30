@@ -37,7 +37,7 @@ export function MMFResolveForm({ fundId, slug, name, provider, targetDate }: MMF
         date,
         navpu: Number(navpu),
         gross_yield_1y: Number(grossYield) / 100, // User enters e.g. 5.5 for 5.5%
-        after_tax_yield: (Number(grossYield) * 0.80) / 100, // Default 20% tax
+        after_tax_yield: Number(grossYield) / 100, // Align with trigger function
         net_yield: Number(netYield) / 100,
       };
 
@@ -155,7 +155,7 @@ export function MMFResolveForm({ fundId, slug, name, provider, targetDate }: MMF
             />
             <span className="absolute right-3 top-2 text-slate-400">%</span>
           </div>
-          <p className="mt-1 text-[10px] text-slate-500">Net yield = (Gross * 0.80) - trust fee. Verify against KIIDS.</p>
+          <p className="mt-1 text-[10px] text-slate-500">Net yield = Gross yield (no trust fee or tax deductions since NAVpu/NAVPS is already net of all fees/taxes).</p>
         </div>
       </div>
 
