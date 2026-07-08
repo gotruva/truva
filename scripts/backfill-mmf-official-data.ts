@@ -99,11 +99,26 @@ async function main() {
   ]);
   const benchmarkHistory = await loadBenchmarkHistory(client, officialBenchmarks);
 
-  const payloads = funds.map((fund) => {
+  const missingFunds: string[] = [];
+  const payloads = funds.flatMap((fund) => {
     const official = officialRates.get(fund.slug);
-    if (!official) throw new Error(`Missing official source rate for ${fund.slug}`);
-    return computeDailyRatePayload(fund, official, benchmarkHistory, 'scraper');
+    if (!official) {
+      missingFunds.push(`${fund.provider} - ${fund.name} (${fund.slug})`);
+      return [];
+    }
+    return [computeDailyRatePayload(fund, official, benchmarkHistory, 'scraper')];
   });
+
+  if (missingFunds.length) {
+    console.warn(
+      `[mmf] No official source rate for ${missingFunds.length} fund(s); they will be skipped this run:`,
+    );
+    for (const missing of missingFunds) console.warn(`  - ${missing}`);
+  }
+
+  if (!payloads.length) {
+    throw new Error('No official fund rates were available from any source.');
+  }
 
   console.table(payloads.map((payload) => {
     const fund = funds.find((item) => item.id === payload.fund_id);
@@ -197,6 +212,14 @@ async function main() {
   console.log(
     `Applied ${payloads.length} official MMF rows and ${benchmarkRows.length} benchmark rows; deleted ${deletedInvalidRows} invalid scraper row(s).`,
   );
+
+  // Available data is already written above. Fail the run so the workflow still
+  // alerts and a re-run (once the lagging source publishes) fills the gap.
+  if (missingFunds.length) {
+    throw new Error(
+      `Backfill applied partial data — no official source rate for ${missingFunds.length} fund(s): ${missingFunds.join('; ')}. Re-run once the source publishes.`,
+    );
+  }
 }
 
 main().catch((error) => {

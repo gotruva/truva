@@ -263,19 +263,38 @@ function parsePifaDate(text: string) {
   return `${match[3]}-${match[1]}-${match[2]}`;
 }
 
-async function fetchText(url: string) {
-  const response = await fetch(url, {
-    headers: {
-      accept: 'text/html,application/pdf,*/*;q=0.8',
-      'user-agent': 'Mozilla/5.0 (compatible; TruvaMMF/1.0)',
-    },
-  });
+async function fetchText(url: string, { retries = 3, retryDelayMs = 2000 } = {}) {
+  let lastError: unknown;
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: HTTP ${response.status}`);
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: 'text/html,application/pdf,*/*;q=0.8',
+          'user-agent': 'Mozilla/5.0 (compatible; TruvaMMF/1.0)',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${url}: HTTP ${response.status}`);
+      }
+
+      return await response.text();
+    } catch (error) {
+      lastError = error;
+      if (attempt >= retries) break;
+
+      const delay = retryDelayMs * attempt;
+      console.warn(
+        `[mmf] fetch attempt ${attempt}/${retries} for ${url} failed: ${
+          error instanceof Error ? error.message : String(error)
+        }. Retrying in ${delay}ms.`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
   }
 
-  return response.text();
+  throw lastError instanceof Error ? lastError : new Error(`Failed to fetch ${url}`);
 }
 
 function assertNotBlockedByWaf(text: string, url: string) {
@@ -547,12 +566,36 @@ export async function fetchOfficialMutualFundRates({ crossCheckAlfm = true } = {
 }
 
 export async function fetchOfficialFundRates() {
-  const [uitfRates, mutualRates] = await Promise.all([
-    fetchOfficialUitfRates(),
-    fetchOfficialMutualFundRates(),
-  ]);
+  // Fetch each source independently so a late-publishing or temporarily broken
+  // source (e.g. PIFA not yet showing today's "As of" date) does not discard
+  // rates that were fetched successfully from the other source. Downstream
+  // callers (backfill + verify) already report any fund left without a rate.
+  const sources: Array<{ name: string; fetch: () => Promise<Map<string, OfficialFundRate>> }> = [
+    { name: 'UITF (uitf.com.ph)', fetch: () => fetchOfficialUitfRates() },
+    { name: 'PIFA mutual funds', fetch: () => fetchOfficialMutualFundRates() },
+  ];
 
-  return new Map<string, OfficialFundRate>([...uitfRates, ...mutualRates]);
+  const settled = await Promise.allSettled(sources.map((source) => source.fetch()));
+
+  const rates = new Map<string, OfficialFundRate>();
+  const failures: string[] = [];
+
+  settled.forEach((result, index) => {
+    const { name } = sources[index];
+    if (result.status === 'fulfilled') {
+      for (const [slug, rate] of result.value) rates.set(slug, rate);
+    } else {
+      const message = result.reason instanceof Error ? result.reason.message : String(result.reason);
+      failures.push(`${name}: ${message}`);
+      console.warn(`[mmf] Source failed, continuing with remaining sources — ${name}: ${message}`);
+    }
+  });
+
+  if (rates.size === 0) {
+    throw new Error(`All official MMF sources failed: ${failures.join('; ')}`);
+  }
+
+  return rates;
 }
 
 export async function fetchOfficialBenchmarks() {
